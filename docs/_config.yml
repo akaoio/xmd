@@ -1,0 +1,46 @@
+# GitHub Pages configuration for XMD documentation
+
+# Basic site information
+title: "XMD - eXtended MarkDown"
+description: "A programmable markdown processor that transforms regular markdown into a powerful programming language"
+url: "https://akaoio.github.io"
+baseurl: "/xmd"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# GitHub Pages settings
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Navigation
+navigation:
+  - title: "Home"
+    url: "/"
+  - title: "Source Code"
+    url: "https://github.com/akaoio/xmd"
+  - title: "Development Docs"
+    url: "/dev/"
+
+# Exclude files from build
+exclude:
+  - README.md
+  - dev/notes/
+  - dev/plans/
+  - .gitignore
+
+# Include directories
+include:
+  - dev/
+
+# Markdown processing
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    block:
+      line_numbers: false
