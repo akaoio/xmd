@@ -1,55 +1,81 @@
-# Prerequisites
-*.d
-
-# Object files
+# Build artifacts
+build/
 *.o
-*.ko
-*.obj
-*.elf
-
-# Linker output
-*.ilk
-*.map
-*.exp
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Libraries
-*.lib
 *.a
-*.la
-*.lo
-
-# Shared objects (inc. Windows DLLs)
-*.dll
 *.so
-*.so.*
 *.dylib
-
-# Executables
+*.dll
 *.exe
+xmd
+test_runner
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Coverage files
+*.gcov
+*.gcda  
+*.gcno
+coverage.info
+coverage/
+
+# Documentation generated files
+docs/html/
+docs/latex/
+docs/man/
+Doxyfile
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Sandbox directory (for temporary testing)
+sandbox/
+
+# Package files
+*.tar.gz
+*.zip
+*.deb
+*.rpm
+
+# Editor backup files
+*.bak
+*.orig
+*.rej
+
+# Profiling files
+*.prof
 *.out
-*.app
-*.i*86
-*.x86_64
-*.hex
+gmon.out
+callgrind.out.*
 
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
+# Static analysis results
+cppcheck.xml
+*.plist
 
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
-
-# debug information files
-*.dwo
+# Configuration overrides (keep example configs)
+config.yaml
+config.json
+!config.example.yaml
+!config.example.json

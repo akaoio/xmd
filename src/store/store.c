@@ -1,0 +1,222 @@
+/**
+ * @file store.c
+ * @brief Variable store implementation
+ * @author XMD Team
+ *
+ * Implementation of variable storage system using a hash table
+ * for efficient variable lookup and management.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include "store.h"
+#include "variable.h"
+#include "../../include/utils.h"
+
+#define INITIAL_CAPACITY 16
+#define LOAD_FACTOR_THRESHOLD 0.75
+
+/**
+ * @struct store_entry
+ * @brief Store entry for key-value pairs
+ */
+typedef struct store_entry {
+    char* key;                     /**< Variable name (owned) */
+    variable* value;               /**< Variable value (referenced) */
+    struct store_entry* next;      /**< Next entry in collision chain */
+} store_entry;
+
+/**
+ * @struct store
+ * @brief Variable storage container
+ */
+struct store {
+    store_entry** buckets;         /**< Hash table buckets */
+    size_t capacity;               /**< Current capacity */
+    size_t size;                   /**< Number of stored variables */
+};
+
+// hash_key function moved to utils.c as xmd_hash_key
+
+/**
+ * @brief Create a new store entry
+ * @param key Entry key (will be copied)
+ * @param value Entry value (reference will be taken)
+ * @return New entry or NULL on failure
+ */
+static store_entry* store_entry_create(const char* key, variable* value) {
+    if (key == NULL) {
+        return NULL;
+    }
+    
+    store_entry* entry = malloc(sizeof(store_entry));
+    if (entry == NULL) {
+        return NULL;
+    }
+    
+    // Copy key
+    size_t key_len = strlen(key);
+    entry->key = malloc(key_len + 1);
+    if (entry->key == NULL) {
+        free(entry);
+        return NULL;
+    }
+    strcpy(entry->key, key);
+    
+    // Reference value
+    entry->value = variable_ref(value);
+    entry->next = NULL;
+    
+    return entry;
+}
+
+/**
+ * @brief Destroy a store entry
+ * @param entry Entry to destroy (can be NULL)
+ */
+static void store_entry_destroy(store_entry* entry) {
+    if (entry == NULL) {
+        return;
+    }
+    
+    free(entry->key);
+    variable_unref(entry->value);
+    free(entry);
+}
+
+/**
+ * @brief Resize store hash table
+ * @param s Store to resize
+ * @return true on success, false on failure
+ */
+static bool store_resize(store* s) {
+    if (s == NULL) {
+        return false;
+    }
+    
+    size_t old_capacity = s->capacity;
+    store_entry** old_buckets = s->buckets;
+    
+    // Double capacity
+    s->capacity *= 2;
+    s->buckets = calloc(s->capacity, sizeof(store_entry*));
+    if (s->buckets == NULL) {
+        s->capacity = old_capacity;
+        s->buckets = old_buckets;
+        return false;
+    }
+    
+    s->size = 0;
+    
+    // Rehash all entries
+    for (size_t i = 0; i < old_capacity; i++) {
+        store_entry* entry = old_buckets[i];
+        while (entry != NULL) {
+            store_entry* next = entry->next;
+            
+            // Rehash entry
+            size_t hash = xmd_hash_key(entry->key, s->capacity);
+            entry->next = s->buckets[hash];
+            s->buckets[hash] = entry;
+            s->size++;
+            
+            entry = next;
+        }
+    }
+    
+    free(old_buckets);
+    return true;
+}
+
+/**
+ * @brief Create a new variable store
+ * @return New store instance or NULL on failure
+ */
+store* store_create(void) {
+    store* s = malloc(sizeof(store));
+    if (s == NULL) {
+        return NULL;
+    }
+    
+    s->capacity = INITIAL_CAPACITY;
+    s->size = 0;
+    s->buckets = calloc(s->capacity, sizeof(store_entry*));
+    if (s->buckets == NULL) {
+        free(s);
+        return NULL;
+    }
+    
+    return s;
+}
+
+/**
+ * @brief Destroy store and free memory
+ * @param s Store to destroy (can be NULL)
+ */
+void store_destroy(store* s) {
+    if (s == NULL) {
+        return;
+    }
+    
+    // Free all entries
+    for (size_t i = 0; i < s->capacity; i++) {
+        store_entry* entry = s->buckets[i];
+        while (entry != NULL) {
+            store_entry* next = entry->next;
+            store_entry_destroy(entry);
+            entry = next;
+        }
+    }
+    
+    free(s->buckets);
+    free(s);
+}
+
+/**
+ * @brief Set a variable in the store
+ * @param s Store instance
+ * @param name Variable name
+ * @param var Variable to store (reference will be taken)
+ * @return true on success, false on failure
+ */
+bool store_set(store* s, const char* name, variable* var) {
+    if (s == NULL || name == NULL || var == NULL) {
+        return false;
+    }
+    
+    // Check if resize is needed
+    if ((double)s->size / s->capacity >= LOAD_FACTOR_THRESHOLD) {
+        if (!store_resize(s)) {
+            return false;
+        }
+    }
+    
+    size_t hash = xmd_hash_key(name, s->capacity);
+    
+    // Check if key already exists
+    store_entry* entry = s->buckets[hash];
+    while (entry != NULL) {
+        if (strcmp(entry->key, name) == 0) {
+            // Replace existing value
+            variable_unref(entry->value);
+            entry->value = variable_ref(var);
+            return true;
+        }
+        entry = entry->next;
+    }
+    
+    // Create new entry
+    store_entry* new_entry = store_entry_create(name, var);
+    if (new_entry == NULL) {
+        return false;
+    }
+    
+    // Insert at head of chain
+    new_entry->next = s->buckets[hash];
+    s->buckets[hash] = new_entry;
+    s->size++;
+    
+    return true;
+}
