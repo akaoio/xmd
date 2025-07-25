@@ -295,6 +295,46 @@ static char* lexer_read_variable_ref(lexer* lex) {
 }
 
 /**
+ * @brief Read inline XMD directive
+ * @param lex Lexer instance
+ * @return Directive content (must be freed)
+ */
+static char* lexer_read_xmd_directive(lexer* lex) {
+    size_t start_pos = lex->position;
+    
+    // Skip xmd:
+    lexer_advance(lex); // x
+    lexer_advance(lex); // m
+    lexer_advance(lex); // d
+    lexer_advance(lex); // :
+    
+    // Read command name
+    while (lexer_current_char(lex) != '\0' && 
+           lexer_current_char(lex) != '(' &&
+           lexer_current_char(lex) != '\n') {
+        lexer_advance(lex);
+    }
+    
+    // Read arguments if present
+    if (lexer_current_char(lex) == '(') {
+        int paren_count = 1;
+        lexer_advance(lex); // skip opening (
+        
+        while (lexer_current_char(lex) != '\0' && paren_count > 0) {
+            if (lexer_current_char(lex) == '(') {
+                paren_count++;
+            } else if (lexer_current_char(lex) == ')') {
+                paren_count--;
+            }
+            lexer_advance(lex);
+        }
+    }
+    
+    size_t length = lex->position - start_pos;
+    return lexer_extract_substring(lex, start_pos, length);
+}
+
+/**
  * @brief Read text until special marker
  * @param lex Lexer instance
  * @return Text content (must be freed)
@@ -306,10 +346,13 @@ static char* lexer_read_text(lexer* lex) {
         char ch = lexer_current_char(lex);
         
         // Stop at special markers
-        if (ch == '#' || ch == '-' || ch == '*' || ch == '+' || 
+        // Only stop at -, *, + if they're at the beginning of a line (list items)
+        if ((ch == '#' && lex->column == 1) || 
+            ((ch == '-' || ch == '*' || ch == '+') && lex->column == 1) || 
             lexer_starts_with(lex, "<!--") || 
             lexer_starts_with(lex, "```") ||
-            lexer_starts_with(lex, "{{")) {
+            lexer_starts_with(lex, "{{") ||
+            lexer_starts_with(lex, "xmd:")) {  // Add inline XMD directive detection
             break;
         }
         
@@ -401,6 +444,12 @@ token* lexer_next_token(lexer* lex) {
     if (lexer_starts_with(lex, "{{")) {
         char* content = lexer_read_variable_ref(lex);
         return token_create(TOKEN_VARIABLE_REF, content, token_line, token_column);
+    }
+    
+    // Check for inline XMD directives
+    if (lexer_starts_with(lex, "xmd:")) {
+        char* content = lexer_read_xmd_directive(lex);
+        return token_create(TOKEN_XMD_DIRECTIVE, content, token_line, token_column);
     }
     
     // Default to text

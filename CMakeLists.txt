@@ -110,6 +110,8 @@ set(XMD_LIB_SOURCES
     # Cross-platform compatibility layer
     src/platform/platform.c
     
+    # XMD directive processor
+    src/xmd_processor.c
 )
 
 # Create static library

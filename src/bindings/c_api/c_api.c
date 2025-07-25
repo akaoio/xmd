@@ -14,6 +14,10 @@
 #include "../../../include/token.h"
 #include "../../../include/store.h"
 
+// Forward declaration for XMD directive processor
+int process_xmd_directive(const char* directive, store* var_store, char* output, size_t output_size);
+int process_text_with_directives(const char* text, store* var_store, char* output, size_t output_size);
+
 /**
  * @brief Internal XMD context structure
  */
@@ -179,16 +183,27 @@ xmd_result* xmd_process_string(void* handle, const char* input, size_t input_len
                 break;
                 
             case TOKEN_XMD_DIRECTIVE:
-                // Process XMD directives - skip for now but could execute commands
+                // Process XMD directives
+                if (tok->value) {
+                    char directive_output[8192];
+                    int bytes_written = process_xmd_directive(tok->value, var_store, 
+                                                            directive_output, sizeof(directive_output));
+                    if (bytes_written > 0 && output_pos + bytes_written < input_length * 2 + 999) {
+                        strcpy(output + output_pos, directive_output);
+                        output_pos += bytes_written;
+                    }
+                }
                 break;
                 
             default:
-                // For other token types, copy the raw content
+                // For other token types, process text with potential directives
                 if (tok->value) {
-                    size_t text_len = strlen(tok->value);
-                    if (output_pos + text_len < input_length * 2 + 999) {
-                        strcpy(output + output_pos, tok->value);
-                        output_pos += text_len;
+                    char processed_text[8192];
+                    int bytes_written = process_text_with_directives(tok->value, var_store, 
+                                                                   processed_text, sizeof(processed_text));
+                    if (bytes_written > 0 && output_pos + bytes_written < input_length * 2 + 999) {
+                        strcpy(output + output_pos, processed_text);
+                        output_pos += bytes_written;
                     }
                 }
                 break;
@@ -431,53 +446,7 @@ const char* xmd_get_version(void) {
     return "1.0.0";
 }
 
-/**
- * @brief Get error message for error code
- * @param error_code Error code
- * @return Human-readable error message
- */
-const char* xmd_error_string(int error_code) {
-    switch (error_code) {
-        case 0: return "Success";
-        case -1: return "General error";
-        case -2: return "Parse error";
-        case -3: return "Memory allocation failed";
-        case -4: return "File not found";
-        case -5: return "Permission denied";
-        default: return "Unknown error";
-    }
-}
 
-/**
- * @brief Validate syntax
- * @param input Input markdown
- * @param input_length Input length
- * @return 0 on success, -1 on error
- */
-int xmd_validate_syntax(const char* input, size_t input_length) {
-    if (!input || input_length == 0) {
-        return -1;
-    }
-    
-    // Basic validation using lexer
-    lexer* lex = lexer_create(input);
-    if (!lex) {
-        return -1;
-    }
-    
-    // Try to tokenize the entire input
-    token* tok;
-    while ((tok = lexer_next_token(lex)) != NULL && tok->type != TOKEN_EOF) {
-        token_free(tok);
-    }
-    
-    if (tok) {
-        token_free(tok);
-    }
-    
-    lexer_free(lex);
-    return 0; // Valid if we can tokenize it
-}
 
 /**
  * @brief Set variable in processor context
