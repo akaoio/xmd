@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include "../include/token.h"
@@ -19,6 +20,9 @@
 
 #define MAX_OUTPUT_SIZE 65536
 #define MAX_LOOP_ITERATIONS 10000
+
+// Forward declarations
+static size_t process_variable_substitution(const char* text, store* var_store, char* output, size_t output_size);
 
 /**
  * @brief Parse XMD directive command and arguments
@@ -107,18 +111,23 @@ static int execute_command(const char* command, char* output, size_t output_size
 /**
  * @brief Process xmd:exec directive
  * @param args Command arguments
+ * @param var_store Variable store
  * @param output Output buffer
  * @param output_size Size of output buffer
  * @return 0 on success, -1 on error
  */
-static int process_exec(const char* args, char* output, size_t output_size) {
-    return execute_command(args, output, output_size);
+static int process_exec(const char* args, store* var_store, char* output, size_t output_size) {
+    // First substitute variables in the command
+    char expanded_command[4096];
+    process_variable_substitution(args, var_store, expanded_command, sizeof(expanded_command));
+    
+    return execute_command(expanded_command, output, output_size);
 }
 
 /**
- * @brief Process xmd:for directive
+ * @brief Process xmd:for directive  
  * @param args Loop arguments (e.g., "i in 1..5")
- * @param store Variable store
+ * @param var_store Variable store
  * @param output Output buffer
  * @param output_size Size of output buffer
  * @return 0 on success, -1 on error
@@ -134,46 +143,81 @@ static int process_for(const char* args, store* var_store, char* output, size_t 
         return -1;
     }
     
-    // For now, just output a placeholder
-    snprintf(output, output_size, "[for loop: %s from %d to %d]", var_name, start, end);
+    // Validate range
+    if (start > end || end - start > MAX_LOOP_ITERATIONS) {
+        snprintf(output, output_size, "Error: Invalid or too large loop range");
+        return -1;
+    }
+    
+    // For now, return a structured output that can be post-processed
+    // This is a limitation of the current single-token processing architecture
+    snprintf(output, output_size, "XMD_FOR_LOOP:%s:%d:%d", var_name, start, end);
     return 0;
 }
 
 /**
  * @brief Process xmd:if directive
  * @param args Condition arguments
+ * @param var_store Variable store
  * @param output Output buffer
  * @param output_size Size of output buffer
  * @return 0 on success, -1 on error
  */
-static int process_if(const char* args, char* output, size_t output_size) {
-    // For now, evaluate simple conditions
-    if (strcmp(args, "true") == 0) {
-        output[0] = '\0'; // Empty output, content should follow
+static int process_if(const char* args, store* var_store, char* output, size_t output_size) {
+    // First substitute variables in the condition
+    char expanded_args[1024];
+    process_variable_substitution(args, var_store, expanded_args, sizeof(expanded_args));
+    
+    // Handle literal boolean values
+    if (strcmp(expanded_args, "true") == 0) {
+        snprintf(output, output_size, "XMD_IF_TRUE");
         return 1; // Return 1 to indicate condition is true
-    } else if (strcmp(args, "false") == 0) {
-        output[0] = '\0';
+    } else if (strcmp(expanded_args, "false") == 0) {
+        snprintf(output, output_size, "XMD_IF_FALSE");
         return 0; // Return 0 to indicate condition is false
     }
     
-    // Try to execute as shell command and check exit status
-    char cmd_output[1024];
-    int status = execute_command(args, cmd_output, sizeof(cmd_output));
-    output[0] = '\0';
-    return (status == 0) ? 1 : 0;
+    // Execute as shell command and check exit status
+    FILE* pipe = popen(expanded_args, "r");
+    if (!pipe) {
+        snprintf(output, output_size, "XMD_IF_FALSE");
+        return 0; // Command failed to execute, treat as false
+    }
+    
+    // Read and discard output (we only care about exit status)
+    char buffer[256];
+    while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
+        // Discard output
+    }
+    
+    int exit_status = pclose(pipe);
+    int success = (WIFEXITED(exit_status) && WEXITSTATUS(exit_status) == 0);
+    
+    if (success) {
+        snprintf(output, output_size, "XMD_IF_TRUE");
+        return 1;
+    } else {
+        snprintf(output, output_size, "XMD_IF_FALSE");
+        return 0;
+    }
 }
 
 /**
  * @brief Process xmd:import directive
  * @param args File path to import
+ * @param var_store Variable store
  * @param output Output buffer
  * @param output_size Size of output buffer
  * @return 0 on success, -1 on error
  */
-static int process_import(const char* args, char* output, size_t output_size) {
-    FILE* file = fopen(args, "r");
+static int process_import(const char* args, store* var_store, char* output, size_t output_size) {
+    // First substitute variables in the file path
+    char expanded_path[1024];
+    process_variable_substitution(args, var_store, expanded_path, sizeof(expanded_path));
+    
+    FILE* file = fopen(expanded_path, "r");
     if (!file) {
-        snprintf(output, output_size, "Error: Cannot import file '%s'", args);
+        snprintf(output, output_size, "Error: Cannot import file '%s'", expanded_path);
         return -1;
     }
     
@@ -286,13 +330,13 @@ int process_xmd_directive(const char* directive, store* var_store, char* output,
     
     // Process based on command type
     if (strcmp(command, "exec") == 0) {
-        result = process_exec(args, output, output_size);
+        result = process_exec(args, var_store, output, output_size);
     } else if (strcmp(command, "for") == 0) {
         result = process_for(args, var_store, output, output_size);
     } else if (strcmp(command, "if") == 0) {
-        result = process_if(args, output, output_size);
+        result = process_if(args, var_store, output, output_size);
     } else if (strcmp(command, "import") == 0) {
-        result = process_import(args, output, output_size);
+        result = process_import(args, var_store, output, output_size);
     } else if (strcmp(command, "set") == 0) {
         result = process_set(args, var_store, output, output_size);
     } else if (strcmp(command, "get") == 0) {
@@ -374,6 +418,326 @@ int process_text_with_directives(const char* text, store* var_store, char* outpu
     
     output[output_pos] = '\0';
     return output_pos;
+}
+
+/**
+ * @brief Find matching endfor for a for loop
+ * @param content Document content
+ * @param for_start Position after xmd:for(...) 
+ * @param endfor_pos Output: position of matching xmd:endfor
+ * @return 0 on success, -1 on error
+ */
+static int find_matching_endfor(const char* content, size_t for_start, size_t* endfor_pos) {
+    const char* ptr = content + for_start;
+    int nesting_level = 1;
+    
+    while (*ptr) {
+        if (strncmp(ptr, "xmd:for(", 8) == 0) {
+            nesting_level++;
+            ptr += 8;
+        } else if (strncmp(ptr, "xmd:endfor", 10) == 0) {
+            nesting_level--;
+            if (nesting_level == 0) {
+                *endfor_pos = ptr - content;
+                return 0;
+            }
+            ptr += 10;
+        } else {
+            ptr++;
+        }
+    }
+    
+    return -1; // No matching endfor found
+}
+
+/**
+ * @brief Process variable references in text (like $variable_name)
+ * @param text Input text
+ * @param var_store Variable store
+ * @param output Output buffer
+ * @param output_size Size of output buffer
+ * @return Number of bytes written
+ */
+static size_t process_variable_substitution(const char* text, store* var_store, char* output, size_t output_size) {
+    size_t output_pos = 0;
+    const char* ptr = text;
+    
+    while (*ptr && output_pos < output_size - 1) {
+        if (*ptr == '$' && *(ptr + 1) && (isalpha(*(ptr + 1)) || *(ptr + 1) == '_')) {
+            // Found variable reference
+            ptr++; // Skip $
+            
+            // Extract variable name
+            char var_name[256];
+            size_t name_len = 0;
+            while (*ptr && (isalnum(*ptr) || *ptr == '_') && name_len < sizeof(var_name) - 1) {
+                var_name[name_len++] = *ptr++;
+            }
+            var_name[name_len] = '\0';
+            
+            if (name_len > 0) {
+                // Get variable value
+                variable* var = store_get(var_store, var_name);
+                if (var) {
+                    const char* value = variable_to_string(var);
+                    if (value) {
+                        size_t value_len = strlen(value);
+                        if (output_pos + value_len < output_size - 1) {
+                            strcpy(output + output_pos, value);
+                            output_pos += value_len;
+                        }
+                    }
+                } else {
+                    // Variable not found, keep original $var_name
+                    if (output_pos + name_len + 1 < output_size - 1) {
+                        output[output_pos++] = '$';
+                        strcpy(output + output_pos, var_name);
+                        output_pos += name_len;
+                    }
+                }
+            }
+        } else {
+            // Regular character
+            output[output_pos++] = *ptr++;
+        }
+    }
+    
+    output[output_pos] = '\0';
+    return output_pos;
+}
+
+/**
+ * @brief Find matching endif for an if statement
+ * @param content Document content
+ * @param if_start Position after xmd:if(...) 
+ * @param endif_pos Output: position of matching xmd:endif
+ * @param else_pos Output: position of xmd:else (if found, -1 if not)
+ * @return 0 on success, -1 on error
+ */
+static int find_matching_endif(const char* content, size_t if_start, size_t* endif_pos, size_t* else_pos) {
+    const char* ptr = content + if_start;
+    int nesting_level = 1;
+    *else_pos = (size_t)-1; // Initialize to "not found"
+    
+    while (*ptr) {
+        if (strncmp(ptr, "xmd:if(", 7) == 0) {
+            nesting_level++;
+            ptr += 7;
+        } else if (strncmp(ptr, "xmd:endif", 9) == 0) {
+            nesting_level--;
+            if (nesting_level == 0) {
+                *endif_pos = ptr - content;
+                return 0;
+            }
+            ptr += 9;
+        } else if (strncmp(ptr, "xmd:else", 8) == 0 && nesting_level == 1) {
+            // Only capture else at our nesting level
+            *else_pos = ptr - content;
+            ptr += 8;
+        } else {
+            ptr++;
+        }
+    }
+    
+    return -1; // No matching endif found
+}
+
+/**
+ * @brief Process a complete if statement with conditional content
+ * @param content Full document content
+ * @param if_start Start position of if directive
+ * @param args_start Position after opening parenthesis
+ * @param args_end Position of closing parenthesis
+ * @param var_store Variable store
+ * @param output Output buffer
+ * @param output_size Size of output buffer
+ * @return Number of characters processed from input, or -1 on error
+ */
+int process_complete_if_statement(const char* content, size_t if_start, size_t args_start, 
+                                 size_t args_end, store* var_store, char* output, size_t output_size) {
+    // Extract condition arguments
+    size_t args_len = args_end - args_start;
+    if (args_len >= 512) return -1;
+    
+    char args[512];
+    strncpy(args, content + args_start, args_len);
+    args[args_len] = '\0';
+    
+    // Find matching endif and optional else
+    size_t endif_pos, else_pos;
+    if (find_matching_endif(content, args_end + 1, &endif_pos, &else_pos) != 0) {
+        snprintf(output, output_size, "Error: No matching xmd:endif found");
+        return -1;
+    }
+    
+    // Evaluate condition - first substitute variables in the condition
+    char expanded_args[1024];
+    process_variable_substitution(args, var_store, expanded_args, sizeof(expanded_args));
+    
+    bool condition_result;
+    if (strcmp(expanded_args, "true") == 0) {
+        condition_result = true;
+    } else if (strcmp(expanded_args, "false") == 0) {
+        condition_result = false;
+    } else {
+        // Execute as shell command with variable substitution
+        FILE* pipe = popen(expanded_args, "r");
+        if (!pipe) {
+            condition_result = false;
+        } else {
+            // Consume output
+            char buffer[256];
+            while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
+                // Discard output
+            }
+            int exit_status = pclose(pipe);
+            condition_result = (WIFEXITED(exit_status) && WEXITSTATUS(exit_status) == 0);
+        }
+    }
+    
+    // Determine which content to process
+    size_t content_start, content_end;
+    
+    if (condition_result) {
+        // Process IF content
+        content_start = args_end + 1;
+        content_end = (else_pos != (size_t)-1) ? else_pos : endif_pos;
+    } else if (else_pos != (size_t)-1) {
+        // Process ELSE content
+        content_start = else_pos + 8; // Skip "xmd:else"
+        content_end = endif_pos;
+    } else {
+        // No content to process (condition false, no else)
+        output[0] = '\0';
+        return endif_pos + 9 - if_start; // 9 = strlen("xmd:endif")
+    }
+    
+    // Extract and process the selected content
+    size_t content_len = content_end - content_start;
+    char* selected_content = malloc(content_len + 1);
+    if (!selected_content) {
+        snprintf(output, output_size, "Error: Out of memory");
+        return -1;
+    }
+    
+    strncpy(selected_content, content + content_start, content_len);
+    selected_content[content_len] = '\0';
+    
+    // Process content with variable substitution
+    char processed_content[4096];
+    process_variable_substitution(selected_content, var_store, processed_content, sizeof(processed_content));
+    
+    // For now, treat as final content since recursive processing is complex
+    // In a full implementation, this would recursively process document-level structures
+    char final_content[4096];
+    size_t final_len = strlen(processed_content);
+    if (final_len < 4096 - 1) {
+        strcpy(final_content, processed_content);
+    } else {
+        strncpy(final_content, processed_content, 4095);
+        final_content[4095] = '\0';
+    }
+    
+    // Copy to output
+    size_t result_len = strlen(final_content);
+    if (result_len < output_size - 1) {
+        strcpy(output, final_content);
+    } else {
+        strncpy(output, final_content, output_size - 1);
+        output[output_size - 1] = '\0';
+    }
+    
+    free(selected_content);
+    
+    // Return total characters processed (including endif)
+    return endif_pos + 9 - if_start; // 9 = strlen("xmd:endif")
+}
+
+/**
+ * @brief Process a complete for loop with body content
+ * @param content Full document content
+ * @param for_start Start position of for directive
+ * @param args_start Position after opening parenthesis
+ * @param args_end Position of closing parenthesis
+ * @param var_store Variable store
+ * @param output Output buffer
+ * @param output_size Size of output buffer
+ * @return Number of characters processed from input, or -1 on error
+ */
+int process_complete_for_loop(const char* content, size_t for_start, size_t args_start, 
+                             size_t args_end, store* var_store, char* output, size_t output_size) {
+    // Extract arguments
+    size_t args_len = args_end - args_start;
+    if (args_len >= 512) return -1;
+    
+    char args[512];
+    strncpy(args, content + args_start, args_len);
+    args[args_len] = '\0';
+    
+    // Parse loop parameters
+    char var_name[256];
+    int start = 0, end = 0;
+    if (sscanf(args, "%255s in %d..%d", var_name, &start, &end) != 3) {
+        snprintf(output, output_size, "Error: Invalid for loop syntax");
+        return -1;
+    }
+    
+    // Validate range
+    if (start > end || end - start > MAX_LOOP_ITERATIONS) {
+        snprintf(output, output_size, "Error: Invalid or too large loop range");
+        return -1;
+    }
+    
+    // Find matching endfor
+    size_t endfor_pos;
+    if (find_matching_endfor(content, args_end + 1, &endfor_pos) != 0) {
+        snprintf(output, output_size, "Error: No matching xmd:endfor found");
+        return -1;
+    }
+    
+    // Extract loop body
+    size_t body_start = args_end + 1;
+    size_t body_len = endfor_pos - body_start;
+    
+    char* body = malloc(body_len + 1);
+    if (!body) {
+        snprintf(output, output_size, "Error: Out of memory");
+        return -1;
+    }
+    
+    strncpy(body, content + body_start, body_len);
+    body[body_len] = '\0';
+    
+    // Execute loop iterations
+    size_t output_pos = 0;
+    for (int i = start; i <= end && output_pos < output_size - 1000; i++) {
+        // Set loop variable
+        variable* loop_var = variable_create_number((double)i);
+        if (loop_var) {
+            store_set(var_store, var_name, loop_var);
+            variable_unref(loop_var);
+        }
+        
+        // Process body content with variable substitution
+        char processed_body[4096];
+        process_variable_substitution(body, var_store, processed_body, sizeof(processed_body));
+        
+        // Process any XMD directives in the body
+        char final_body[4096];
+        process_text_with_directives(processed_body, var_store, final_body, sizeof(final_body));
+        
+        // Add to output
+        size_t body_result_len = strlen(final_body);
+        if (output_pos + body_result_len < output_size - 1) {
+            strcpy(output + output_pos, final_body);
+            output_pos += body_result_len;
+        }
+    }
+    
+    free(body);
+    
+    // Return total characters processed (including endfor)
+    return endfor_pos + 10 - for_start; // 10 = strlen("xmd:endfor")
 }
 
 /**

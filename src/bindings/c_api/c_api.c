@@ -17,6 +17,10 @@
 // Forward declaration for XMD directive processor
 int process_xmd_directive(const char* directive, store* var_store, char* output, size_t output_size);
 int process_text_with_directives(const char* text, store* var_store, char* output, size_t output_size);
+int process_complete_for_loop(const char* content, size_t for_start, size_t args_start, 
+                             size_t args_end, store* var_store, char* output, size_t output_size);
+int process_complete_if_statement(const char* content, size_t if_start, size_t args_start, 
+                                 size_t args_end, store* var_store, char* output, size_t output_size);
 
 /**
  * @brief Internal XMD context structure
@@ -115,25 +119,45 @@ xmd_result* xmd_process_string(void* handle, const char* input, size_t input_len
     // Record start time
     clock_t start_time = clock();
     
-    // Process the input through the XMD pipeline
-    // 1. Create lexer to tokenize input
-    lexer* lex = lexer_create(input);
-    if (!lex) {
-        return create_result(-1, NULL, "Failed to create lexer");
+    // Pre-process FOR loops (document-level processing)
+    char* preprocessed_input = malloc(input_length * 4 + 10000); // Extra space for loop expansion
+    if (!preprocessed_input) {
+        return create_result(-1, NULL, "Memory allocation failed for preprocessing");
     }
     
-    // 2. Create variable store for processing
+    // Create variable store for preprocessing
     store* var_store = store_create();
     if (!var_store) {
-        lexer_free(lex);
+        free(preprocessed_input);
         return create_result(-1, NULL, "Failed to create variable store");
     }
     
+    // Copy input directly - HTML comment processing is handled by lexer
+    if (input_length >= input_length * 4 + 10000) {
+        free(preprocessed_input);
+        store_destroy(var_store);
+        return create_result(-1, NULL, "Input too large for preprocessing buffer");
+    }
+    
+    memcpy(preprocessed_input, input, input_length);
+    preprocessed_input[input_length] = '\0';
+    
+    // Process the input through the XMD pipeline
+    // 1. Create lexer to tokenize preprocessed input
+    lexer* lex = lexer_create(preprocessed_input);
+    if (!lex) {
+        free(preprocessed_input);
+        store_destroy(var_store);
+        return create_result(-1, NULL, "Failed to create lexer");
+    }
+    
     // 3. Process tokens and build output
-    char* output = malloc(input_length * 2 + 1000); // Allocate extra space for processing
+    size_t preprocessed_len = strlen(preprocessed_input);
+    char* output = malloc(preprocessed_len * 2 + 1000); // Allocate extra space for processing
     if (!output) {
         store_destroy(var_store);
         lexer_free(lex);
+        free(preprocessed_input);
         return create_result(-1, NULL, "Memory allocation failed");
     }
     
@@ -188,7 +212,7 @@ xmd_result* xmd_process_string(void* handle, const char* input, size_t input_len
                     char directive_output[8192];
                     int bytes_written = process_xmd_directive(tok->value, var_store, 
                                                             directive_output, sizeof(directive_output));
-                    if (bytes_written > 0 && output_pos + bytes_written < input_length * 2 + 999) {
+                    if (bytes_written > 0 && output_pos + bytes_written < preprocessed_len * 2 + 999) {
                         strcpy(output + output_pos, directive_output);
                         output_pos += bytes_written;
                     }
@@ -201,7 +225,7 @@ xmd_result* xmd_process_string(void* handle, const char* input, size_t input_len
                     char processed_text[8192];
                     int bytes_written = process_text_with_directives(tok->value, var_store, 
                                                                    processed_text, sizeof(processed_text));
-                    if (bytes_written > 0 && output_pos + bytes_written < input_length * 2 + 999) {
+                    if (bytes_written > 0 && output_pos + bytes_written < preprocessed_len * 2 + 999) {
                         strcpy(output + output_pos, processed_text);
                         output_pos += bytes_written;
                     }
@@ -223,6 +247,7 @@ xmd_result* xmd_process_string(void* handle, const char* input, size_t input_len
     // Cleanup
     store_destroy(var_store);
     lexer_free(lex);
+    free(preprocessed_input);
     
     // Calculate processing time
     clock_t end_time = clock();
