@@ -9,8 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include "../../../include/platform.h"
-#include "../../../include/executor.h"
+#include "../../include/platform.h"
+#include "../../include/executor.h"
 
 /**
  * @brief Executor context structure

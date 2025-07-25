@@ -10,7 +10,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <stdbool.h>
-#include "../../../include/module.h"
+#include "../../include/module.h"
 
 /**
  * @brief Create a new module

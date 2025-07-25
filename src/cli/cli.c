@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../../include/cli.h"
+#include "../../include/cli.h"
 
 #define XMD_VERSION "1.0.0"
 #define XMD_BUILD_DATE __DATE__

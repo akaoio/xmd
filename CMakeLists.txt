@@ -66,12 +66,12 @@ set(XMD_LIB_SOURCES
     src/loop/for_loop/for_loop.c
     src/flow/flow_control/flow_control.c
     src/error/error_handling/error_handling.c
-    src/executor/executor/executor_cross_platform.c
+    src/executor/executor_cross_platform.c
     src/sandbox/sandbox.c
     src/output/formatter/formatter.c
     src/resource/limiter/limiter.c
     src/resource/monitor/monitor.c
-    src/module/module/module.c
+    src/module/module.c
     src/import_export/import/import.c
     src/import_export/export/export.c
     src/dependency/graph/graph.c
@@ -88,10 +88,10 @@ set(XMD_LIB_SOURCES
     src/performance/benchmark/benchmark.c
     
     # CLI components
-    src/cli/cli/cli.c
-    src/cli/parser/parser.c
-    src/config/config/config.c
-    src/plugin/plugin/plugin.c
+    src/cli/cli.c
+    src/cli/parser.c
+    src/config/config_manager.c
+    src/plugin/plugin.c
     src/bindings/c_api/c_api.c
     
     # Phase 8: Documentation and Developer Tools
