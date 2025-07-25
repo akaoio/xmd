@@ -10,6 +10,9 @@
 #include <string.h>
 #include <time.h>
 #include "../../../include/cli.h"
+#include "../../../include/lexer.h"
+#include "../../../include/token.h"
+#include "../../../include/store.h"
 
 /**
  * @brief Internal XMD context structure
@@ -116,14 +119,91 @@ xmd_result* xmd_process_string(void* handle, const char* input, size_t input_len
     // Record start time
     clock_t start_time = clock();
     
-    // For now, just echo the input as a placeholder
-    // In a full implementation, this would process the markdown through the XMD pipeline
-    char* output = malloc(input_length + 100);
+    // Process the input through the XMD pipeline
+    // 1. Create lexer to tokenize input
+    lexer* lex = lexer_create(input);
+    if (!lex) {
+        return create_result(-1, NULL, "Failed to create lexer");
+    }
+    
+    // 2. Create variable store for processing
+    store* var_store = store_create();
+    if (!var_store) {
+        lexer_free(lex);
+        return create_result(-1, NULL, "Failed to create variable store");
+    }
+    
+    // 3. Process tokens and build output
+    char* output = malloc(input_length * 2 + 1000); // Allocate extra space for processing
     if (!output) {
+        store_destroy(var_store);
+        lexer_free(lex);
         return create_result(-1, NULL, "Memory allocation failed");
     }
     
-    snprintf(output, input_length + 100, "Processed: %.*s", (int)input_length, input);
+    // 4. Process the markdown content
+    size_t output_pos = 0;
+    token* tok;
+    
+    while ((tok = lexer_next_token(lex)) != NULL && tok->type != TOKEN_EOF) {
+        // Process each token based on its type
+        switch (tok->type) {
+            case TOKEN_TEXT:
+                // Copy text content directly
+                if (tok->value) {
+                    size_t text_len = strlen(tok->value);
+                    if (output_pos + text_len < input_length * 2 + 999) {
+                        strcpy(output + output_pos, tok->value);
+                        output_pos += text_len;
+                    }
+                }
+                break;
+                
+            case TOKEN_VARIABLE_REF:
+                // Process variable references
+                if (tok->value) {
+                    // Extract variable name (remove {{ and }})
+                    char* var_name = strdup(tok->value);
+                    if (var_name) {
+                        // Simple variable lookup - in real implementation would be more sophisticated
+                        char* var_value = ""; // Default to empty if not found
+                        if (output_pos + strlen(var_value) < input_length * 2 + 999) {
+                            strcpy(output + output_pos, var_value);
+                            output_pos += strlen(var_value);
+                        }
+                        free(var_name);
+                    }
+                }
+                break;
+                
+            case TOKEN_XMD_DIRECTIVE:
+                // Process XMD directives - skip for now but could execute commands
+                break;
+                
+            default:
+                // For other token types, copy the raw content
+                if (tok->value) {
+                    size_t text_len = strlen(tok->value);
+                    if (output_pos + text_len < input_length * 2 + 999) {
+                        strcpy(output + output_pos, tok->value);
+                        output_pos += text_len;
+                    }
+                }
+                break;
+        }
+        
+        token_free(tok);
+    }
+    
+    if (tok) {
+        token_free(tok);
+    }
+    
+    output[output_pos] = '\0';
+    
+    // Cleanup
+    store_destroy(var_store);
+    lexer_free(lex);
     
     // Calculate processing time
     clock_t end_time = clock();
@@ -340,4 +420,143 @@ void xmd_cleanup(void* handle) {
     }
     
     free(ctx);
+}
+
+/**
+ * @brief Get version information
+ * @return Version string
+ */
+const char* xmd_get_version(void) {
+    return "1.0.0";
+}
+
+/**
+ * @brief Get error message for error code
+ * @param error_code Error code
+ * @return Human-readable error message
+ */
+const char* xmd_error_string(int error_code) {
+    switch (error_code) {
+        case 0: return "Success";
+        case -1: return "General error";
+        case -2: return "Parse error";
+        case -3: return "Memory allocation failed";
+        case -4: return "File not found";
+        case -5: return "Permission denied";
+        default: return "Unknown error";
+    }
+}
+
+/**
+ * @brief Validate syntax
+ * @param input Input markdown
+ * @param input_length Input length
+ * @return 0 on success, -1 on error
+ */
+int xmd_validate_syntax(const char* input, size_t input_length) {
+    if (!input || input_length == 0) {
+        return -1;
+    }
+    
+    // Basic validation using lexer
+    lexer* lex = lexer_create(input);
+    if (!lex) {
+        return -1;
+    }
+    
+    // Try to tokenize the entire input
+    token* tok;
+    while ((tok = lexer_next_token(lex)) != NULL && tok->type != TOKEN_EOF) {
+        token_free(tok);
+    }
+    
+    if (tok) {
+        token_free(tok);
+    }
+    
+    lexer_free(lex);
+    return 0; // Valid if we can tokenize it
+}
+
+/**
+ * @brief Set variable in processor context
+ * @param processor Processor instance (actually xmd_context_internal*)
+ * @param key Variable name
+ * @param value Variable value
+ * @return 0 on success, -1 on error
+ */
+int xmd_set_variable(void* processor, const char* key, const char* value) {
+    if (!processor || !key || !value) {
+        return -1;
+    }
+    
+    xmd_context_internal* ctx = (xmd_context_internal*)processor;
+    if (!ctx->initialized) {
+        return -1;
+    }
+    
+    // In a full implementation, would store in variable context
+    // For now, just validate parameters
+    return 0;
+}
+
+/**
+ * @brief Get variable from processor context
+ * @param processor Processor instance (actually xmd_context_internal*)
+ * @param key Variable name
+ * @return Variable value or NULL if not found
+ */
+char* xmd_get_variable(void* processor, const char* key) {
+    if (!processor || !key) {
+        return NULL;
+    }
+    
+    xmd_context_internal* ctx = (xmd_context_internal*)processor;
+    if (!ctx->initialized) {
+        return NULL;
+    }
+    
+    // In a full implementation, would lookup from variable context
+    // For now, return NULL (not found)
+    return NULL;
+}
+
+/**
+ * @brief Create default XMD configuration
+ * @return Default configuration structure
+ */
+void* xmd_config_create_default(void) {
+    return config_create();
+}
+
+/**
+ * @brief Free XMD configuration
+ * @param config Configuration to free
+ */
+void xmd_config_free(void* config) {
+    if (config) {
+        config_destroy((xmd_config*)config);
+    }
+}
+
+/**
+ * @brief Create XMD processor
+ * @param config Configuration
+ * @return Processor instance or NULL on error
+ */
+void* xmd_processor_create(const void* config) {
+    (void)config; // Suppress unused parameter warning
+    
+    // Create using the existing xmd_init function
+    return xmd_init(NULL);
+}
+
+/**
+ * @brief Free XMD processor
+ * @param processor Processor to free
+ */
+void xmd_processor_free(void* processor) {
+    if (processor) {
+        xmd_cleanup(processor);
+    }
 }

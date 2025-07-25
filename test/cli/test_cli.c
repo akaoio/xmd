@@ -157,7 +157,7 @@ static void test_cli_execution(void) {
     
     // Create a temporary test file
     const char* test_content = "# Test\n\nThis is a test markdown file.\n";
-    const char* test_file = "/tmp/xmd_test.md";
+    const char* test_file = "./xmd_test.md";
     
     FILE* f = fopen(test_file, "w");
     assert(f != NULL);

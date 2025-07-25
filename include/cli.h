@@ -200,6 +200,46 @@ void cli_show_version(void);
  */
 void cli_cleanup(cli_context* ctx);
 
+/**
+ * @brief Process a markdown file
+ * @param input_file Input file path
+ * @param output_file Output file path (NULL for stdout)
+ * @param verbose Verbose output
+ * @return Exit code
+ */
+int cli_process_file(const char* input_file, const char* output_file, bool verbose);
+
+/**
+ * @brief Watch directory for changes
+ * @param directory Directory to watch
+ * @param verbose Verbose output
+ * @return Exit code
+ */
+int cli_watch_directory(const char* directory, bool verbose);
+
+/**
+ * @brief Validate XMD file syntax
+ * @param input_file Input file path
+ * @param verbose Verbose output
+ * @return Exit code
+ */
+int cli_validate_file(const char* input_file, bool verbose);
+
+/**
+ * @brief Show configuration
+ * @param config_file Config file path (NULL for default)
+ * @return Exit code
+ */
+int cli_show_config(const char* config_file);
+
+/**
+ * @brief Manage plugins
+ * @param plugin_command Plugin command
+ * @param verbose Verbose output
+ * @return Exit code
+ */
+int cli_manage_plugin(const char* plugin_command, bool verbose);
+
 // =============================================================================
 // Configuration Functions
 // =============================================================================

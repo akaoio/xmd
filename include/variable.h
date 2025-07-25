@@ -34,6 +34,40 @@ typedef enum {
     VARIABLE_TYPE_OBJECT = VAR_OBJECT
 } variable_type;
 
+/* Forward declarations */
+typedef struct variable variable;
+typedef struct variable_array variable_array;
+typedef struct variable_object variable_object;
+
+/**
+ * @struct variable_array
+ * @brief Dynamic array of variables
+ */
+typedef struct variable_array {
+    variable** items;        /**< Array of variable pointers */
+    size_t count;           /**< Number of items */
+    size_t capacity;        /**< Allocated capacity */
+} variable_array;
+
+/**
+ * @struct variable_object_pair
+ * @brief Key-value pair for object
+ */
+typedef struct variable_object_pair {
+    char* key;              /**< Key string (owned) */
+    variable* value;        /**< Value variable (reference) */
+} variable_object_pair;
+
+/**
+ * @struct variable_object
+ * @brief Dynamic object/map of key-value pairs
+ */
+typedef struct variable_object {
+    variable_object_pair* pairs;  /**< Array of key-value pairs */
+    size_t count;                /**< Number of pairs */
+    size_t capacity;             /**< Allocated capacity */
+} variable_object;
+
 /**
  * @struct variable
  * @brief Variable representation with type and value
@@ -44,8 +78,8 @@ typedef struct variable {
         bool boolean_value;       /**< Boolean value */
         double number_value;      /**< Numeric value */
         char* string_value;       /**< String value (owned) */
-        void* array_value;        /**< Array structure pointer */
-        void* object_value;       /**< Object structure pointer */
+        variable_array* array_value;   /**< Array structure pointer */
+        variable_object* object_value; /**< Object structure pointer */
     } value;                      /**< Value union */
     size_t ref_count;            /**< Reference count for memory management */
 } variable;
@@ -88,6 +122,82 @@ variable* variable_create_array(void);
  * @return New empty object variable or NULL on failure
  */
 variable* variable_create_object(void);
+
+/* Array operations */
+
+/**
+ * @brief Add item to array variable
+ * @param array_var Array variable
+ * @param item Item to add (reference will be taken)
+ * @return true on success, false on failure
+ */
+bool variable_array_add(variable* array_var, variable* item);
+
+/**
+ * @brief Get item from array variable by index
+ * @param array_var Array variable
+ * @param index Item index
+ * @return Item variable or NULL if not found/invalid
+ */
+variable* variable_array_get(const variable* array_var, size_t index);
+
+/**
+ * @brief Set item in array variable by index
+ * @param array_var Array variable
+ * @param index Item index
+ * @param item Item to set (reference will be taken)
+ * @return true on success, false on failure
+ */
+bool variable_array_set(variable* array_var, size_t index, variable* item);
+
+/**
+ * @brief Get array size
+ * @param array_var Array variable
+ * @return Array size or 0 if not array/invalid
+ */
+size_t variable_array_size(const variable* array_var);
+
+/* Object operations */
+
+/**
+ * @brief Set property in object variable
+ * @param object_var Object variable
+ * @param key Property key
+ * @param value Property value (reference will be taken)
+ * @return true on success, false on failure
+ */
+bool variable_object_set(variable* object_var, const char* key, variable* value);
+
+/**
+ * @brief Get property from object variable
+ * @param object_var Object variable
+ * @param key Property key
+ * @return Property value or NULL if not found/invalid
+ */
+variable* variable_object_get(const variable* object_var, const char* key);
+
+/**
+ * @brief Remove property from object variable
+ * @param object_var Object variable
+ * @param key Property key
+ * @return true if removed, false if not found/invalid
+ */
+bool variable_object_remove(variable* object_var, const char* key);
+
+/**
+ * @brief Get object property count
+ * @param object_var Object variable
+ * @return Property count or 0 if not object/invalid
+ */
+size_t variable_object_size(const variable* object_var);
+
+/**
+ * @brief Get all object keys
+ * @param object_var Object variable
+ * @param count Output for key count
+ * @return Array of key strings (must be freed) or NULL
+ */
+char** variable_object_keys(const variable* object_var, size_t* count);
 
 /**
  * @brief Increment reference count
@@ -181,29 +291,8 @@ variable* variable_new_array(variable** items, size_t count);
  */
 size_t variable_array_length(const variable* var);
 
-/**
- * @brief Get array element
- * @param var Array variable
- * @param index Element index
- * @return Element variable or NULL if out of bounds
- */
-variable* variable_array_get(const variable* var, size_t index);
+/* variable_array_get is declared above */
 
-/**
- * @brief Set object property
- * @param var Object variable
- * @param key Property key
- * @param value Property value
- */
-void variable_object_set(variable* var, const char* key, variable* value);
-
-/**
- * @brief Get object property
- * @param var Object variable
- * @param key Property key
- * @return Property value or NULL if not found
- */
-variable* variable_object_get(const variable* var, const char* key);
 
 /* Convenience aliases for consistency */
 #define variable_new_null() variable_create_null()

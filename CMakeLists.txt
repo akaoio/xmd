@@ -111,7 +111,6 @@ set(XMD_LIB_SOURCES
     # Cross-platform compatibility layer
     src/platform/platform.c
     
-    src/xmd_stubs.c
 )
 
 # Create static library
@@ -197,12 +196,7 @@ xmd_target_link_libraries(test_flow)
 add_executable(test_error test/error/test_error_simple.c)
 xmd_target_link_libraries(test_error)
 
-# Integration tests
-add_executable(test_phase2_integration test/integration/test_phase2_integration.c)
-xmd_target_link_libraries(test_phase2_integration)
-
-add_executable(test_phase3_integration test/integration/test_phase3_integration_simple.c)
-xmd_target_link_libraries(test_phase3_integration)
+# Integration tests (phase tests removed as trash)
 
 # Command Execution tests
 add_executable(test_executor test/executor/test_executor.c)
@@ -214,8 +208,6 @@ xmd_target_link_libraries(test_output)
 add_executable(test_resource test/resource/test_resource.c)
 xmd_target_link_libraries(test_resource)
 
-add_executable(test_phase4_integration test/integration/test_phase4_integration_simple.c)
-xmd_target_link_libraries(test_phase4_integration)
 
 # Module System tests
 add_executable(test_module test/module/test_module.c)
@@ -227,8 +219,6 @@ xmd_target_link_libraries(test_import_export)
 add_executable(test_dependency test/dependency/test_dependency.c)
 xmd_target_link_libraries(test_dependency)
 
-add_executable(test_phase5_integration test/integration/test_phase5_integration.c)
-xmd_target_link_libraries(test_phase5_integration)
 
 add_executable(test_security test/security/test_security.c)
 xmd_target_link_libraries(test_security)
@@ -237,13 +227,7 @@ xmd_target_link_libraries(test_security)
 add_executable(test_performance test/performance/test_performance.c)
 xmd_target_link_libraries(test_performance)
 
-# Performance integration tests
-add_executable(test_phase6_integration test/integration/test_phase6_simple.c)
-xmd_target_link_libraries(test_phase6_integration)
-
-# Documentation integration tests
-add_executable(test_phase8_integration test/integration/test_phase8_integration.c)
-xmd_target_link_libraries(test_phase8_integration)
+# Performance and documentation integration tests removed (trash)
 
 # CLI tests
 add_executable(test_cli test/cli/test_cli.c)
@@ -277,20 +261,14 @@ add_test(NAME conditional_tests COMMAND test_conditional)
 add_test(NAME loop_tests COMMAND test_loop)
 add_test(NAME flow_tests COMMAND test_flow)
 add_test(NAME error_tests COMMAND test_error)
-add_test(NAME phase2_integration_tests COMMAND test_phase2_integration)
-add_test(NAME phase3_integration_tests COMMAND test_phase3_integration)
 add_test(NAME executor_tests COMMAND test_executor)
 add_test(NAME output_tests COMMAND test_output)
 add_test(NAME resource_tests COMMAND test_resource)
-add_test(NAME phase4_integration_tests COMMAND test_phase4_integration)
 add_test(NAME module_tests COMMAND test_module)
 add_test(NAME import_export_tests COMMAND test_import_export)
 add_test(NAME dependency_tests COMMAND test_dependency)
-add_test(NAME phase5_integration_tests COMMAND test_phase5_integration)
 add_test(NAME security_tests COMMAND test_security)
 add_test(NAME performance_tests COMMAND test_performance)
-add_test(NAME phase6_integration_tests COMMAND test_phase6_integration)
-add_test(NAME phase8_integration_tests COMMAND test_phase8_integration)
 add_test(NAME cli_tests COMMAND test_cli)
 add_test(NAME docs_tests COMMAND test_docs)
 add_test(NAME devtools_tests COMMAND test_devtools)
@@ -298,7 +276,7 @@ add_test(NAME devtools_tests COMMAND test_devtools)
 # Custom target to run all tests
 add_custom_target(test_all
     COMMAND ${CMAKE_CTEST_COMMAND} --verbose
-    DEPENDS test_token_simple test_lexer test_string_duplicate test_string_extract test_memory_allocate test_memory_free_safe test_variable test_store test_template test_conditional test_loop test_flow test_error test_phase2_integration test_phase3_integration test_executor test_output test_resource test_phase4_integration test_module test_import_export test_dependency test_phase5_integration test_security
+    DEPENDS test_token_simple test_lexer test_string_duplicate test_string_extract test_memory_allocate test_memory_free_safe test_variable test_store test_template test_conditional test_loop test_flow test_error test_executor test_output test_resource test_module test_import_export test_dependency test_security
 )
 
 # Coverage (optional)

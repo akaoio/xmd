@@ -12,6 +12,7 @@
 #include <pthread.h>
 #include <sys/resource.h>
 #include <unistd.h>
+#include <signal.h>
 #include "../../include/platform.h"
 
 #ifdef XMD_PLATFORM_WINDOWS
@@ -175,9 +176,19 @@ int xmd_process_wait(xmd_process_t process, int* exit_code, uint32_t timeout_ms)
         // No timeout
         result = waitpid(process, &status, 0);
     } else {
-        // TODO: Implement timeout for POSIX
-        // For now, just wait without timeout
+        // Implement timeout using alarm signal
+        struct sigaction old_action, new_action;
+        new_action.sa_handler = SIG_DFL;
+        sigemptyset(&new_action.sa_mask);
+        new_action.sa_flags = 0;
+        
+        sigaction(SIGALRM, &new_action, &old_action);
+        alarm(timeout_ms / 1000 + 1); // Convert to seconds, round up
+        
         result = waitpid(process, &status, 0);
+        
+        alarm(0); // Cancel alarm
+        sigaction(SIGALRM, &old_action, NULL); // Restore old handler
     }
     
     if (result == -1) {
