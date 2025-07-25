@@ -14,8 +14,19 @@ NC='\033[0m' # No Color
 
 # Configuration
 GITHUB_REPO="akaoio/xmd"
-INSTALL_DIR="/usr/local/bin"
 BINARY_NAME="xmd"
+
+# Detect install directory
+if [ -n "$PREFIX" ]; then
+    # Termux environment
+    INSTALL_DIR="$PREFIX/bin"
+elif [ -w "/usr/local/bin" ] 2>/dev/null; then
+    INSTALL_DIR="/usr/local/bin"
+elif [ -w "$HOME/.local/bin" ] 2>/dev/null || mkdir -p "$HOME/.local/bin" 2>/dev/null; then
+    INSTALL_DIR="$HOME/.local/bin"
+else
+    INSTALL_DIR="/usr/local/bin"
+fi
 
 # Helper functions
 print_step() {
@@ -78,7 +89,10 @@ detect_platform() {
 
 # Check if running as root when needed
 check_permissions() {
-    if [ "$EUID" -ne 0 ] && [ -w "$INSTALL_DIR" ] 2>/dev/null; then
+    if [ -w "$INSTALL_DIR" ] 2>/dev/null; then
+        return 0
+    elif [ -n "$PREFIX" ]; then
+        # Termux environment - should be writable
         return 0
     elif [ "$EUID" -ne 0 ] && [ ! -w "$INSTALL_DIR" ] 2>/dev/null; then
         print_warning "Installation requires sudo privileges for $INSTALL_DIR"
@@ -86,51 +100,85 @@ check_permissions() {
     fi
 }
 
-# Download and install XMD
+# Check build dependencies
+check_dependencies() {
+    local missing_deps=()
+    
+    if ! command -v git >/dev/null 2>&1; then
+        missing_deps+=("git")
+    fi
+    
+    if ! command -v cmake >/dev/null 2>&1; then
+        missing_deps+=("cmake")
+    fi
+    
+    if ! command -v gcc >/dev/null 2>&1 && ! command -v clang >/dev/null 2>&1; then
+        missing_deps+=("gcc or clang")
+    fi
+    
+    if ! command -v make >/dev/null 2>&1; then
+        missing_deps+=("make")
+    fi
+    
+    if [ ${#missing_deps[@]} -gt 0 ]; then
+        print_error "Missing required dependencies: ${missing_deps[*]}
+        
+Install them first:
+  Termux: pkg install git cmake clang make
+  Ubuntu/Debian: apt install git cmake gcc make
+  CentOS/RHEL: yum install git cmake gcc make
+  macOS: brew install git cmake gcc make"
+    fi
+}
+
+# Build and install XMD from source
 install_xmd() {
-    print_step "Installing XMD for $PLATFORM..."
+    print_step "Building XMD from source for $PLATFORM..."
     
     # Create temporary directory
     local tmp_dir=$(mktemp -d)
     cd "$tmp_dir"
     
-    # Get latest release URL
-    local latest_url="https://api.github.com/repos/$GITHUB_REPO/releases/latest"
-    local download_url
-    
-    if command -v curl >/dev/null 2>&1; then
-        download_url=$(curl -s "$latest_url" | grep "browser_download_url.*${PLATFORM}" | cut -d '"' -f 4)
-    elif command -v wget >/dev/null 2>&1; then
-        download_url=$(wget -qO- "$latest_url" | grep "browser_download_url.*${PLATFORM}" | cut -d '"' -f 4)
+    # Clone repository
+    print_step "Cloning XMD repository..."
+    if command -v git >/dev/null 2>&1; then
+        git clone --depth 1 "https://github.com/$GITHUB_REPO.git" xmd-source
     else
-        print_error "curl or wget is required to download XMD"
+        print_error "git is required to clone the repository"
     fi
     
-    if [ -z "$download_url" ]; then
-        print_error "Could not find download URL for platform: $PLATFORM"
+    cd xmd-source
+    
+    # Build
+    print_step "Building XMD..."
+    mkdir -p build
+    cd build
+    
+    if ! cmake -DCMAKE_BUILD_TYPE=Release ..; then
+        print_error "CMake configuration failed"
     fi
     
-    print_step "Downloading from: $download_url"
-    
-    # Download binary
-    if command -v curl >/dev/null 2>&1; then
-        curl -L -o "$BINARY_NAME" "$download_url"
-    else
-        wget -O "$BINARY_NAME" "$download_url"
+    if ! make -j$(nproc 2>/dev/null || echo 4); then
+        print_error "Build failed"
     fi
     
-    # Make executable
-    chmod +x "$BINARY_NAME"
+    # Test the build
+    print_step "Running tests..."
+    if ! ctest --output-on-failure; then
+        print_warning "Some tests failed, but continuing with installation"
+    fi
     
     # Install to system
     print_step "Installing to $INSTALL_DIR..."
-    $SUDO mv "$BINARY_NAME" "$INSTALL_DIR/"
+    if ! $SUDO cp xmd "$INSTALL_DIR/"; then
+        print_error "Failed to install to $INSTALL_DIR"
+    fi
     
     # Cleanup
     cd - >/dev/null
     rm -rf "$tmp_dir"
     
-    print_success "XMD installed successfully!"
+    print_success "XMD built and installed successfully!"
 }
 
 # Verify installation
@@ -197,6 +245,7 @@ EOF
     # Pre-flight checks
     detect_platform
     check_existing
+    check_dependencies
     check_permissions
     
     # Install
