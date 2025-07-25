@@ -1,17 +1,21 @@
+---
+title: XMD - eXtended MarkDown
+description: A programmable markdown processor that transforms regular markdown into a powerful programming language
+layout: default
+---
+
 # XMD - eXtended MarkDown
 
 [![Build Status](https://github.com/akaoio/xmd/workflows/CI/badge.svg)](https://github.com/akaoio/xmd/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/akaoio/xmd/releases)
 
-> **📖 [View Official Documentation](https://akaoio.github.io/xmd/)** - Complete documentation and examples
-
 XMD transforms regular markdown into a powerful programming language while maintaining 100% valid markdown syntax. It uses invisible HTML comments with the `<!-- xmd: -->` namespace to add programming capabilities like variables, control flow, system commands, and modular imports.
 
-## Features
+## Key Features
 
 - **100% Markdown Compatible**: Works with any markdown renderer
-- **Zero Dependencies**: Single 2MB binary, no runtime requirements
+- **Zero Dependencies**: Single 2MB binary, no runtime requirements  
 - **Security First**: Sandboxed execution with granular permissions
 - **High Performance**: Sub-millisecond processing for most documents
 - **Language Agnostic**: No ecosystem lock-in, works everywhere
@@ -113,7 +117,7 @@ Welcome back, {{user}}!
 Server status: <!-- xmd:exec systemctl is-active nginx -->
 ```
 
-## Building
+## Building from Source
 
 XMD uses CMake for building:
 
@@ -138,16 +142,19 @@ make
 
 ## Project Status
 
-XMD is currently in active development. 
+XMD is currently in active development. See the [implementation plan](dev/plans/20250725-1413-xmd-implementation/) for detailed roadmap and progress.
 
-**Documentation:** The official project documentation is hosted at [https://akaoio.github.io/xmd/](https://akaoio.github.io/xmd/)
+## Resources
 
-See the [implementation plan](docs/dev/plans/20250725-1413-xmd-implementation/) for detailed roadmap and progress.
+- [Source Code](https://github.com/akaoio/xmd)
+- [Development Documentation](dev/)
+- [Issue Tracker](https://github.com/akaoio/xmd/issues)
+- [Releases](https://github.com/akaoio/xmd/releases)
 
 ## Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+We welcome contributions! Please see [CONTRIBUTING.md](https://github.com/akaoio/xmd/blob/main/CONTRIBUTING.md) for guidelines.
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT License - see [LICENSE](https://github.com/akaoio/xmd/blob/main/LICENSE) for details.
