@@ -1,9 +1,10 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.21)  # Minimum for reliable C17 support
 project(xmd VERSION 1.0.0 LANGUAGES C)
 
-# Set C standard
+# Set C standard - C17 is the minimum required standard
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS OFF)  # Disable compiler-specific extensions
 
 # Build type
 if(NOT CMAKE_BUILD_TYPE)

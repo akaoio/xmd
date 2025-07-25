@@ -7,7 +7,6 @@
 
 #define _GNU_SOURCE
 #define _POSIX_C_SOURCE 200809L
-#define _ISOC11_SOURCE  /* For aligned_alloc in C17 */
 #include <stdlib.h>
 #include <sys/wait.h>
 #include <pthread.h>

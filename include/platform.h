@@ -4,6 +4,8 @@
  * @author XMD Implementation Team
  * @date 2025-07-25
  * 
+ * REQUIREMENTS: C17 standard or later (no C11/C99 fallbacks)
+ * 
  * This header provides platform detection and abstraction for:
  * - Windows (x86, x64, ARM64)
  * - macOS (Intel, Apple Silicon)
@@ -14,6 +16,11 @@
 
 #ifndef PLATFORM_H
 #define PLATFORM_H
+
+/* Enforce C17 minimum standard */
+#if !defined(__STDC_VERSION__) || __STDC_VERSION__ < 201710L
+#error "XMD requires C17 standard or later. Please compile with -std=c17 or newer."
+#endif
 
 #include <stddef.h>
 #include <stdint.h>
