@@ -34,7 +34,9 @@ typedef struct {
 /**
  * @brief Sandbox context
  */
-typedef struct sandbox_context SandboxContext;
+typedef struct sandbox_context {
+    SandboxConfig* config;              /**< Associated configuration */
+} SandboxContext;
 
 /**
  * @brief Sandbox result codes

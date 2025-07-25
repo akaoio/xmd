@@ -67,7 +67,7 @@ set(XMD_LIB_SOURCES
     src/flow/flow_control/flow_control.c
     src/error/error_handling/error_handling.c
     src/executor/executor/executor_cross_platform.c
-    src/sandbox/sandbox/sandbox.c
+    src/sandbox/sandbox.c
     src/output/formatter/formatter.c
     src/resource/limiter/limiter.c
     src/resource/monitor/monitor.c
@@ -189,9 +189,6 @@ xmd_target_link_libraries(test_phase3_integration)
 add_executable(test_executor test/executor/test_executor.c)
 xmd_target_link_libraries(test_executor)
 
-add_executable(test_sandbox test/sandbox/test_sandbox.c)
-xmd_target_link_libraries(test_sandbox)
-
 add_executable(test_output test/output/test_output.c)
 xmd_target_link_libraries(test_output)
 
@@ -260,7 +257,6 @@ add_test(NAME error_tests COMMAND test_error)
 add_test(NAME phase2_integration_tests COMMAND test_phase2_integration)
 add_test(NAME phase3_integration_tests COMMAND test_phase3_integration)
 add_test(NAME executor_tests COMMAND test_executor)
-add_test(NAME sandbox_tests COMMAND test_sandbox)
 add_test(NAME output_tests COMMAND test_output)
 add_test(NAME resource_tests COMMAND test_resource)
 add_test(NAME phase4_integration_tests COMMAND test_phase4_integration)
@@ -279,7 +275,7 @@ add_test(NAME devtools_tests COMMAND test_devtools)
 # Custom target to run all tests
 add_custom_target(test_all
     COMMAND ${CMAKE_CTEST_COMMAND} --verbose
-    DEPENDS test_token_simple test_lexer test_variable test_store test_template test_conditional test_loop test_flow test_error test_phase2_integration test_phase3_integration test_executor test_sandbox test_output test_resource test_phase4_integration test_module test_import_export test_dependency test_phase5_integration test_security
+    DEPENDS test_token_simple test_lexer test_variable test_store test_template test_conditional test_loop test_flow test_error test_phase2_integration test_phase3_integration test_executor test_output test_resource test_phase4_integration test_module test_import_export test_dependency test_phase5_integration test_security
 )
 
 # Coverage (optional)
