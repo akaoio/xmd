@@ -3,8 +3,8 @@
  * @brief Stub implementations for XMD API functions
  * @author XMD Team
  * 
- * Temporary stub implementations to allow compilation while Phase 1 is in development.
- * These will be replaced with actual implementations in later phases.
+ * Temporary stub implementations to allow compilation during development.
+ * These will be replaced with actual implementations as development progresses.
  */
 
 #include "../include/xmd.h"
@@ -139,7 +139,7 @@ xmd_config* xmd_config_new(void) {
  */
 xmd_processor* xmd_processor_create(const xmd_config* config) {
     (void)config; // Suppress unused parameter warning
-    return NULL; // Not implemented in Phase 1
+    return NULL; // Not implemented yet
 }
 
 /**
@@ -148,7 +148,7 @@ xmd_processor* xmd_processor_create(const xmd_config* config) {
  */
 void xmd_processor_free(xmd_processor* processor) {
     (void)processor; // Suppress unused parameter warning
-    // Not implemented in Phase 1
+    // Not implemented yet
 }
 
 // xmd_process_string, xmd_process_file, and xmd_result_free are now implemented in c_api.c

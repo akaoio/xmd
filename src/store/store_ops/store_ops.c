@@ -12,7 +12,7 @@
 #include <stdbool.h>
 #include "store.h"
 #include "variable.h"
-#include "../../include/utils.h"
+#include "../../../include/utils.h"
 
 /**
  * @struct store_entry

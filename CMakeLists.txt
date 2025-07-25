@@ -50,24 +50,25 @@ endif()
 include_directories(include)
 include_directories(src)
 
-# Core library sources (Phase 1, 2, 3, 4 & 5)
+# Core library sources
 set(XMD_LIB_SOURCES
     src/token/token.c
     src/lexer/lexer.c
     src/variable/variable.c
-    src/variable/variable_convert.c
-    src/variable/variable_extended.c
+    src/variable/variable_convert/variable_convert.c
+    src/variable/variable_extended/variable_extended.c
     src/store/store.c
-    src/store/store_ops.c
+    src/store/store_ops/store_ops.c
     src/template/template.c
-    src/template/template_extract.c
+    src/template/template_extract/template_extract.c
     src/conditional/condition/condition.c
     src/conditional/if_statement/if_statement.c
     src/loop/for_loop/for_loop.c
     src/flow/flow_control/flow_control.c
     src/error/error_handling/error_handling.c
-    src/executor/executor/executor_cross_platform.c
-    src/sandbox/sandbox/sandbox.c
+    src/executor/executor/executor.c
+    src/executor/executor_cross_platform/executor_cross_platform.c
+    src/sandbox/sandbox.c
     src/output/formatter/formatter.c
     src/resource/limiter/limiter.c
     src/resource/monitor/monitor.c
@@ -77,6 +78,7 @@ set(XMD_LIB_SOURCES
     src/dependency/graph/graph.c
     src/dependency/detector/detector.c
     src/config/config.c
+    src/config/config/config.c
     src/utils/utils.c
     src/security/validator/validator.c
     src/security/sanitizer/sanitizer.c
@@ -90,11 +92,10 @@ set(XMD_LIB_SOURCES
     # CLI components
     src/cli/cli/cli.c
     src/cli/parser/parser.c
-    src/config/config/config.c
     src/plugin/plugin/plugin.c
     src/bindings/c_api/c_api.c
     
-    # Phase 8: Documentation and Developer Tools
+    # Documentation and Developer Tools
     src/docs/tutorial/tutorial.c
     src/docs/examples/examples.c
     src/docs/reference/reference.c
@@ -165,7 +166,7 @@ xmd_target_link_libraries(test_store)
 add_executable(test_template test/template/test_template.c)
 xmd_target_link_libraries(test_template)
 
-# Phase 3 tests (Control Flow)
+# Control Flow tests
 add_executable(test_conditional test/conditional/test_conditional_simple.c)
 xmd_target_link_libraries(test_conditional)
 
@@ -185,12 +186,9 @@ xmd_target_link_libraries(test_phase2_integration)
 add_executable(test_phase3_integration test/integration/test_phase3_integration_simple.c)
 xmd_target_link_libraries(test_phase3_integration)
 
-# Phase 4 tests (Command Execution)
+# Command Execution tests
 add_executable(test_executor test/executor/test_executor.c)
 xmd_target_link_libraries(test_executor)
-
-add_executable(test_sandbox test/sandbox/test_sandbox.c)
-xmd_target_link_libraries(test_sandbox)
 
 add_executable(test_output test/output/test_output.c)
 xmd_target_link_libraries(test_output)
@@ -201,7 +199,7 @@ xmd_target_link_libraries(test_resource)
 add_executable(test_phase4_integration test/integration/test_phase4_integration_simple.c)
 xmd_target_link_libraries(test_phase4_integration)
 
-# Phase 5 tests (Module System)
+# Module System tests
 add_executable(test_module test/module/test_module.c)
 xmd_target_link_libraries(test_module)
 
@@ -221,11 +219,11 @@ xmd_target_link_libraries(test_security)
 add_executable(test_performance test/performance/test_performance.c)
 xmd_target_link_libraries(test_performance)
 
-# Phase 6 integration tests
+# Performance integration tests
 add_executable(test_phase6_integration test/integration/test_phase6_simple.c)
 xmd_target_link_libraries(test_phase6_integration)
 
-# Phase 8 integration tests
+# Documentation integration tests
 add_executable(test_phase8_integration test/integration/test_phase8_integration.c)
 xmd_target_link_libraries(test_phase8_integration)
 
@@ -233,7 +231,7 @@ xmd_target_link_libraries(test_phase8_integration)
 add_executable(test_cli test/cli/test_cli.c)
 xmd_target_link_libraries(test_cli)
 
-# Phase 8 tests
+# Documentation and Developer Tools tests
 add_executable(test_docs test/docs/test_docs.c)
 xmd_target_link_libraries(test_docs)
 
@@ -260,7 +258,6 @@ add_test(NAME error_tests COMMAND test_error)
 add_test(NAME phase2_integration_tests COMMAND test_phase2_integration)
 add_test(NAME phase3_integration_tests COMMAND test_phase3_integration)
 add_test(NAME executor_tests COMMAND test_executor)
-add_test(NAME sandbox_tests COMMAND test_sandbox)
 add_test(NAME output_tests COMMAND test_output)
 add_test(NAME resource_tests COMMAND test_resource)
 add_test(NAME phase4_integration_tests COMMAND test_phase4_integration)
@@ -279,7 +276,7 @@ add_test(NAME devtools_tests COMMAND test_devtools)
 # Custom target to run all tests
 add_custom_target(test_all
     COMMAND ${CMAKE_CTEST_COMMAND} --verbose
-    DEPENDS test_token_simple test_lexer test_variable test_store test_template test_conditional test_loop test_flow test_error test_phase2_integration test_phase3_integration test_executor test_sandbox test_output test_resource test_phase4_integration test_module test_import_export test_dependency test_phase5_integration test_security
+    DEPENDS test_token_simple test_lexer test_variable test_store test_template test_conditional test_loop test_flow test_error test_phase2_integration test_phase3_integration test_executor test_output test_resource test_phase4_integration test_module test_import_export test_dependency test_phase5_integration test_security
 )
 
 # Coverage (optional)
