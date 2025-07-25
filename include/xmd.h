@@ -216,6 +216,57 @@ xmd_error_code xmd_init(void);
  */
 void xmd_cleanup(void);
 
+// =============================================================================
+// Phase 8: Documentation and Community Tools
+// =============================================================================
+
+/**
+ * @brief Generate interactive tutorials from example files
+ * @param source_dir Directory containing example files
+ * @param output_dir Directory to write generated tutorials
+ * @return 0 on success, -1 on error
+ */
+int tutorial_generate(const char* source_dir, const char* output_dir);
+
+/**
+ * @brief Generate comprehensive examples documentation
+ * @param source_dir Directory containing example files
+ * @param output_dir Directory to write generated examples
+ * @return 0 on success, -1 on error
+ */
+int examples_generate(const char* source_dir, const char* output_dir);
+
+/**
+ * @brief Generate API reference documentation from header files
+ * @param include_dir Directory containing header files
+ * @param output_file Output file for generated reference
+ * @return 0 on success, -1 on error
+ */
+int reference_generate(const char* include_dir, const char* output_file);
+
+/**
+ * @brief Trace XMD execution with detailed logging
+ * @param input_file Path to XMD file to trace
+ * @param output_file Path to write trace log
+ * @return 0 on success, -1 on error
+ */
+int debugger_trace(const char* input_file, const char* output_file);
+
+/**
+ * @brief Check XMD syntax and style
+ * @param content XMD content to check
+ * @return 0 if valid, -1 if errors found
+ */
+int linter_check(const char* content);
+
+/**
+ * @brief Format XMD content for consistent style
+ * @param content XMD content to format
+ * @param output_file Path to write formatted content
+ * @return 0 on success, -1 on error
+ */
+int formatter_format(const char* content, const char* output_file);
+
 #ifdef __cplusplus
 }
 #endif

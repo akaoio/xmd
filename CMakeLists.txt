@@ -63,6 +63,14 @@ set(XMD_LIB_SOURCES
     src/plugin/plugin/plugin.c
     src/bindings/c_api/c_api.c
     
+    # Phase 8: Documentation and Developer Tools
+    src/docs/tutorial/tutorial.c
+    src/docs/examples/examples.c
+    src/docs/reference/reference.c
+    src/devtools/debugger/debugger.c
+    src/devtools/linter/linter.c
+    src/devtools/formatter/formatter.c
+    
     src/xmd_stubs.c
 )
 
@@ -149,9 +157,20 @@ target_link_libraries(test_performance xmd_lib m)
 add_executable(test_phase6_integration test/integration/test_phase6_simple.c)
 target_link_libraries(test_phase6_integration xmd_lib m pthread)
 
+# Phase 8 integration tests
+add_executable(test_phase8_integration test/integration/test_phase8_integration.c)
+target_link_libraries(test_phase8_integration xmd_lib m)
+
 # CLI tests
 add_executable(test_cli test/cli/test_cli.c)
 target_link_libraries(test_cli xmd_lib m pthread dl)
+
+# Phase 8 tests
+add_executable(test_docs test/docs/test_docs.c)
+target_link_libraries(test_docs xmd_lib m)
+
+add_executable(test_devtools test/devtools/test_devtools.c)
+target_link_libraries(test_devtools xmd_lib m)
 
 # Main CLI executable
 add_executable(xmd_cli src/main_cli.c)
@@ -184,7 +203,10 @@ add_test(NAME phase5_integration_tests COMMAND test_phase5_integration)
 add_test(NAME security_tests COMMAND test_security)
 add_test(NAME performance_tests COMMAND test_performance)
 add_test(NAME phase6_integration_tests COMMAND test_phase6_integration)
+add_test(NAME phase8_integration_tests COMMAND test_phase8_integration)
 add_test(NAME cli_tests COMMAND test_cli)
+add_test(NAME docs_tests COMMAND test_docs)
+add_test(NAME devtools_tests COMMAND test_devtools)
 
 # Custom target to run all tests
 add_custom_target(test_all
