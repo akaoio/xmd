@@ -50,7 +50,7 @@ endif()
 include_directories(include)
 include_directories(src)
 
-# Core library sources (Phase 1, 2, 3, 4 & 5)
+# Core library sources
 set(XMD_LIB_SOURCES
     src/token/token.c
     src/lexer/lexer.c
@@ -94,7 +94,7 @@ set(XMD_LIB_SOURCES
     src/plugin/plugin.c
     src/bindings/c_api/c_api.c
     
-    # Phase 8: Documentation and Developer Tools
+    # Documentation and Developer Tools
     src/docs/tutorial/tutorial.c
     src/docs/examples/examples.c
     src/docs/reference/reference.c
@@ -165,7 +165,7 @@ xmd_target_link_libraries(test_store)
 add_executable(test_template test/template/test_template.c)
 xmd_target_link_libraries(test_template)
 
-# Phase 3 tests (Control Flow)
+# Control Flow tests
 add_executable(test_conditional test/conditional/test_conditional_simple.c)
 xmd_target_link_libraries(test_conditional)
 
@@ -185,7 +185,7 @@ xmd_target_link_libraries(test_phase2_integration)
 add_executable(test_phase3_integration test/integration/test_phase3_integration_simple.c)
 xmd_target_link_libraries(test_phase3_integration)
 
-# Phase 4 tests (Command Execution)
+# Command Execution tests
 add_executable(test_executor test/executor/test_executor.c)
 xmd_target_link_libraries(test_executor)
 
@@ -198,7 +198,7 @@ xmd_target_link_libraries(test_resource)
 add_executable(test_phase4_integration test/integration/test_phase4_integration_simple.c)
 xmd_target_link_libraries(test_phase4_integration)
 
-# Phase 5 tests (Module System)
+# Module System tests
 add_executable(test_module test/module/test_module.c)
 xmd_target_link_libraries(test_module)
 
@@ -218,11 +218,11 @@ xmd_target_link_libraries(test_security)
 add_executable(test_performance test/performance/test_performance.c)
 xmd_target_link_libraries(test_performance)
 
-# Phase 6 integration tests
+# Performance integration tests
 add_executable(test_phase6_integration test/integration/test_phase6_simple.c)
 xmd_target_link_libraries(test_phase6_integration)
 
-# Phase 8 integration tests
+# Documentation integration tests
 add_executable(test_phase8_integration test/integration/test_phase8_integration.c)
 xmd_target_link_libraries(test_phase8_integration)
 
@@ -230,7 +230,7 @@ xmd_target_link_libraries(test_phase8_integration)
 add_executable(test_cli test/cli/test_cli.c)
 xmd_target_link_libraries(test_cli)
 
-# Phase 8 tests
+# Documentation and Developer Tools tests
 add_executable(test_docs test/docs/test_docs.c)
 xmd_target_link_libraries(test_docs)
 
