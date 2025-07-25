@@ -19,7 +19,6 @@
  */
 typedef struct xmd_context_internal {
     xmd_config* config;
-    plugin_manager* plugins;
     bool initialized;
 } xmd_context_internal;
 
@@ -53,13 +52,6 @@ void* xmd_init(const char* config_path) {
     // Load environment configuration
     config_load_env(ctx->config);
     
-    // Initialize plugin manager
-    ctx->plugins = plugin_manager_create();
-    if (!ctx->plugins) {
-        config_destroy(ctx->config);
-        free(ctx);
-        return NULL;
-    }
     
     ctx->initialized = true;
     return ctx;
@@ -415,9 +407,6 @@ void xmd_cleanup(void* handle) {
         config_destroy(ctx->config);
     }
     
-    if (ctx->plugins) {
-        plugin_manager_destroy(ctx->plugins);
-    }
     
     free(ctx);
 }

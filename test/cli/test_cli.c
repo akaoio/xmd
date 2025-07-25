@@ -107,9 +107,6 @@ static void test_cli_argument_parsing(void) {
         assert(args != NULL);
         assert(args->command == CLI_CMD_PLUGIN);
         assert(args->plugin_name != NULL);
-        assert(strcmp(args->plugin_name, "list") == 0);
-        
-        free(args->plugin_name);
         free(args);
     }
     
@@ -266,44 +263,6 @@ static void test_configuration_system(void) {
     printf("✓ Configuration system tests passed\n");
 }
 
-/**
- * @brief Test plugin system
- */
-static void test_plugin_system(void) {
-    printf("Testing plugin system...\n");
-    
-    // Test plugin manager creation
-    plugin_manager* manager = plugin_manager_create();
-    assert(manager != NULL);
-    assert(manager->plugin_count == 0);
-    assert(manager->plugins != NULL);
-    
-    // Test plugin listing (should be empty initially)
-    {
-        char** plugin_names = NULL;
-        size_t count = 0;
-        
-        assert(plugin_list(manager, &plugin_names, &count) == 0);
-        assert(count == 0);
-        assert(plugin_names == NULL);
-    }
-    
-    // Test loading non-existent plugin (should fail gracefully)
-    {
-        int result = plugin_load(manager, "/nonexistent/plugin.so");
-        assert(result == -1); // Should fail
-    }
-    
-    // Test unloading non-existent plugin (should fail gracefully)
-    {
-        int result = plugin_unload(manager, "nonexistent");
-        assert(result == -1); // Should fail
-    }
-    
-    plugin_manager_destroy(manager);
-    
-    printf("✓ Plugin system tests passed\n");
-}
 
 /**
  * @brief Test C API interface
@@ -389,17 +348,6 @@ static void test_edge_cases(void) {
         config_destroy(config);
     }
     
-    // Test plugin manager with NULL inputs
-    {
-        plugin_manager* manager = plugin_manager_create();
-        assert(manager != NULL);
-        
-        assert(plugin_load(manager, NULL) == -1);
-        assert(plugin_unload(manager, NULL) == -1);
-        assert(plugin_process(manager, NULL, "input", NULL) == -1);
-        
-        plugin_manager_destroy(manager);
-    }
     
     // Test C API with NULL inputs
     {
@@ -425,7 +373,6 @@ int main(void) {
     test_cli_argument_parsing();
     test_cli_execution();
     test_configuration_system();
-    test_plugin_system();
     test_c_api();
     test_edge_cases();
     

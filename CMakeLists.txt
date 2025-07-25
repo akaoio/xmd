@@ -97,7 +97,6 @@ set(XMD_LIB_SOURCES
     # CLI components
     src/cli/cli/cli.c
     src/cli/parser/parser.c
-    src/plugin/plugin/plugin.c
     src/bindings/c_api/c_api.c
     
     # Documentation and Developer Tools

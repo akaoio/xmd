@@ -27,9 +27,8 @@ typedef enum {
     CLI_CMD_WATCH = 1,      ///< Watch directory
     CLI_CMD_VALIDATE = 2,   ///< Validate syntax
     CLI_CMD_CONFIG = 3,     ///< Show configuration
-    CLI_CMD_PLUGIN = 4,     ///< Plugin management
-    CLI_CMD_HELP = 5,       ///< Show help
-    CLI_CMD_VERSION = 6     ///< Show version
+    CLI_CMD_HELP = 4,       ///< Show help
+    CLI_CMD_VERSION = 5     ///< Show version
 } cli_command_type;
 
 /**
@@ -40,7 +39,6 @@ typedef struct cli_args {
     char* input_file;
     char* output_file;
     char* config_file;
-    char* plugin_name;
     char* watch_directory;
     bool verbose;
     bool quiet;
@@ -101,38 +99,6 @@ typedef struct xmd_config {
     bool loaded;
 } xmd_config;
 
-/**
- * @brief Plugin API function types
- */
-typedef int (*plugin_init_func)(void);
-typedef void (*plugin_cleanup_func)(void);
-typedef int (*plugin_process_func)(const char* input, char** output);
-
-/**
- * @brief Plugin structure
- */
-typedef struct xmd_plugin {
-    char* name;
-    char* version;
-    char* description;
-    char* path;
-    void* handle;
-    plugin_init_func init;
-    plugin_cleanup_func cleanup;
-    plugin_process_func process;
-    bool loaded;
-} xmd_plugin;
-
-/**
- * @brief Plugin manager structure
- */
-typedef struct plugin_manager {
-    xmd_plugin** plugins;
-    size_t plugin_count;
-    size_t plugin_capacity;
-    char** search_paths;
-    size_t search_path_count;
-} plugin_manager;
 
 /**
  * @brief Language binding types
@@ -232,13 +198,6 @@ int cli_validate_file(const char* input_file, bool verbose);
  */
 int cli_show_config(const char* config_file);
 
-/**
- * @brief Manage plugins
- * @param plugin_command Plugin command
- * @param verbose Verbose output
- * @return Exit code
- */
-int cli_manage_plugin(const char* plugin_command, bool verbose);
 
 // =============================================================================
 // Configuration Functions
@@ -295,57 +254,6 @@ int config_validate(xmd_config* config);
  */
 void config_destroy(xmd_config* config);
 
-// =============================================================================
-// Plugin Functions
-// =============================================================================
-
-/**
- * @brief Create plugin manager
- * @return Plugin manager or NULL on error
- */
-plugin_manager* plugin_manager_create(void);
-
-/**
- * @brief Load plugin from path
- * @param manager Plugin manager
- * @param path Plugin path
- * @return 0 on success, -1 on error
- */
-int plugin_load(plugin_manager* manager, const char* path);
-
-/**
- * @brief Unload plugin
- * @param manager Plugin manager
- * @param name Plugin name
- * @return 0 on success, -1 on error
- */
-int plugin_unload(plugin_manager* manager, const char* name);
-
-/**
- * @brief List all loaded plugins
- * @param manager Plugin manager
- * @param plugins Output array of plugin names
- * @param count Output count of plugins
- * @return 0 on success, -1 on error
- */
-int plugin_list(plugin_manager* manager, char*** plugins, size_t* count);
-
-/**
- * @brief Process input with plugin
- * @param manager Plugin manager
- * @param plugin_name Plugin name
- * @param input Input string
- * @param output Output string (must be freed)
- * @return 0 on success, -1 on error
- */
-int plugin_process(plugin_manager* manager, const char* plugin_name, 
-                   const char* input, char** output);
-
-/**
- * @brief Destroy plugin manager
- * @param manager Plugin manager
- */
-void plugin_manager_destroy(plugin_manager* manager);
 
 // =============================================================================
 // C API Functions (for language bindings)

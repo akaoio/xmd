@@ -114,9 +114,6 @@ extern "C" {
         #include <sys/resource.h>
     #endif
     
-    #ifndef XMD_PLATFORM_IOS
-        #include <dlfcn.h>
-    #endif
     
     #if defined(XMD_PLATFORM_LINUX) && !defined(XMD_PLATFORM_ANDROID)
         #include <pthread.h>
@@ -132,14 +129,10 @@ extern "C" {
     typedef HANDLE xmd_process_t;
     typedef HANDLE xmd_thread_t;
     typedef CRITICAL_SECTION xmd_mutex_t;
-    typedef HANDLE xmd_library_t;
-    typedef FARPROC xmd_symbol_t;
 #else
     typedef pid_t xmd_process_t;
     typedef pthread_t xmd_thread_t;
     typedef pthread_mutex_t xmd_mutex_t;
-    typedef void* xmd_library_t;
-    typedef void* xmd_symbol_t;
 #endif
 
 // File/Directory Types
@@ -180,11 +173,6 @@ int xmd_mutex_lock(xmd_mutex_t* mutex);
 int xmd_mutex_unlock(xmd_mutex_t* mutex);
 int xmd_mutex_destroy(xmd_mutex_t* mutex);
 
-// Dynamic Library Functions
-xmd_library_t xmd_library_load(const char* path);
-xmd_symbol_t xmd_library_symbol(xmd_library_t library, const char* name);
-void xmd_library_unload(xmd_library_t library);
-char* xmd_library_error(void);
 
 // File System Functions
 int xmd_mkdir(const char* path);
@@ -215,17 +203,11 @@ int xmd_get_fd_count(void);
     #define XMD_PATH_SEPARATOR '\\'
     #define XMD_PATH_SEPARATOR_STR "\\"
     #define XMD_LINE_ENDING "\r\n"
-    #define XMD_LIBRARY_EXTENSION ".dll"
     #define XMD_EXECUTABLE_EXTENSION ".exe"
 #else
     #define XMD_PATH_SEPARATOR '/'
     #define XMD_PATH_SEPARATOR_STR "/"
     #define XMD_LINE_ENDING "\n"
-    #ifdef XMD_PLATFORM_MACOS
-        #define XMD_LIBRARY_EXTENSION ".dylib"
-    #else
-        #define XMD_LIBRARY_EXTENSION ".so"
-    #endif
     #define XMD_EXECUTABLE_EXTENSION ""
 #endif
 

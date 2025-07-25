@@ -29,8 +29,6 @@ static int parse_command_type(const char* cmd_str) {
         return CLI_CMD_VALIDATE;
     } else if (strcmp(cmd_str, "config") == 0) {
         return CLI_CMD_CONFIG;
-    } else if (strcmp(cmd_str, "plugin") == 0) {
-        return CLI_CMD_PLUGIN;
     } else if (strcmp(cmd_str, "help") == 0) {
         return CLI_CMD_HELP;
     } else if (strcmp(cmd_str, "version") == 0) {
@@ -177,15 +175,6 @@ cli_args* cli_parse_args(int argc, char** argv) {
             }
             break;
             
-        case CLI_CMD_PLUGIN:
-            // Expect plugin subcommand
-            if (i >= argc) {
-                free(args);
-                return NULL;
-            }
-            args->plugin_name = strdup(argv[i]);
-            i++;
-            break;
             
         case CLI_CMD_CONFIG:
         case CLI_CMD_HELP:

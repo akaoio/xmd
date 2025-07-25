@@ -100,12 +100,6 @@ int cli_execute(cli_context* ctx) {
         case CLI_CMD_CONFIG:
             return cli_show_config(ctx->args->config_file);
             
-        case CLI_CMD_PLUGIN:
-            if (!ctx->args->plugin_name) {
-                fprintf(stderr, "Error: No plugin command specified\n");
-                return 1;
-            }
-            return cli_manage_plugin(ctx->args->plugin_name, ctx->args->verbose);
             
         case CLI_CMD_HELP:
             cli_show_help(ctx->program_name);
@@ -136,7 +130,6 @@ void cli_show_help(const char* program_name) {
     printf("  watch <dir>        Watch directory for changes\n");
     printf("  validate <file>    Validate XMD syntax\n");
     printf("  config             Show configuration\n");
-    printf("  plugin <cmd>       Plugin management\n");
     printf("  help               Show this help\n");
     printf("  version            Show version\n\n");
     
@@ -154,7 +147,6 @@ void cli_show_help(const char* program_name) {
     printf("  %s process input.md -o output.md\n", prog);
     printf("  %s watch ./docs --verbose\n", prog);
     printf("  %s validate document.md\n", prog);
-    printf("  %s plugin list\n", prog);
 }
 
 /**
@@ -178,7 +170,6 @@ void cli_cleanup(cli_context* ctx) {
         free(ctx->args->input_file);
         free(ctx->args->output_file);
         free(ctx->args->config_file);
-        free(ctx->args->plugin_name);
         free(ctx->args->watch_directory);
         free(ctx->args);
     }
@@ -425,44 +416,3 @@ int cli_show_config(const char* config_file) {
     return 0;
 }
 
-/**
- * @brief Manage plugins
- * @param plugin_command Plugin command
- * @param verbose Verbose output
- * @return Exit code
- */
-int cli_manage_plugin(const char* plugin_command, bool verbose) {
-    if (!plugin_command) {
-        fprintf(stderr, "Error: No plugin command specified\n");
-        return 1;
-    }
-    
-    if (verbose) {
-        printf("Plugin command: %s\n", plugin_command);
-    }
-    
-    if (strcmp(plugin_command, "list") == 0) {
-        printf("Available Plugins:\n");
-        printf("==================\n");
-        printf("(No plugins currently loaded)\n");
-        printf("\nPlugin directories searched:\n");
-        printf("- ./plugins/\n");
-        printf("- ~/.xmd/plugins/\n");
-        printf("- /usr/local/lib/xmd/plugins/\n");
-        
-    } else if (strcmp(plugin_command, "help") == 0) {
-        printf("Plugin Management Commands:\n");
-        printf("==========================\n");
-        printf("list     - List available plugins\n");
-        printf("load     - Load a plugin\n");
-        printf("unload   - Unload a plugin\n");
-        printf("info     - Show plugin information\n");
-        printf("help     - Show this help\n");
-        
-    } else {
-        printf("Plugin management for command: %s\n", plugin_command);
-        printf("(Plugin system not fully implemented yet)\n");
-    }
-    
-    return 0;
-}
