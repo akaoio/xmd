@@ -118,12 +118,13 @@ static char lexer_peek_char(const lexer* lex) {
 }
 
 /**
- * @brief Skip whitespace characters
+ * @brief Skip whitespace characters but preserve newlines
  * @param lex Lexer instance
  */
 static void lexer_skip_whitespace(lexer* lex) {
     while (lexer_current_char(lex) != '\0' && 
-           isspace((unsigned char)lexer_current_char(lex))) {
+           isspace((unsigned char)lexer_current_char(lex)) && 
+           lexer_current_char(lex) != '\n') {
         lexer_advance(lex);
     }
 }

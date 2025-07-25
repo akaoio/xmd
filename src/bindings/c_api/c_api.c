@@ -136,8 +136,18 @@ xmd_result* xmd_process_string(void* handle, const char* input, size_t input_len
     // 4. Process the markdown content
     size_t output_pos = 0;
     token* tok;
+    size_t last_line = 0;
     
     while ((tok = lexer_next_token(lex)) != NULL && tok->type != TOKEN_EOF) {
+        // Add newlines if we've moved to a new line
+        if (last_line > 0 && tok->line > last_line) {
+            // Add newlines for the line difference
+            size_t line_diff = tok->line - last_line;
+            for (size_t i = 0; i < line_diff && output_pos < input_length * 2 + 998; i++) {
+                output[output_pos++] = '\n';
+            }
+        }
+        
         // Process each token based on its type
         switch (tok->type) {
             case TOKEN_TEXT:
@@ -184,6 +194,8 @@ xmd_result* xmd_process_string(void* handle, const char* input, size_t input_len
                 break;
         }
         
+        // Update last line for newline tracking
+        last_line = tok->line;
         token_free(tok);
     }
     

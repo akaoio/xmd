@@ -253,12 +253,33 @@ int cli_process_file(const char* input_file, const char* output_file, bool verbo
         return 1;
     }
     
-    // Basic processing - just echo the content for now
+    // Process content through XMD pipeline
+    void* xmd_handle = xmd_init(NULL);
+    if (!xmd_handle) {
+        fprintf(stderr, "Error: Failed to initialize XMD processor\n");
+        store_destroy(var_store);
+        lexer_free(lex);
+        free(content);
+        return 1;
+    }
+    
+    xmd_result* result = xmd_process_string(xmd_handle, content, read_size);
+    if (!result || !result->output) {
+        fprintf(stderr, "Error: XMD processing failed\n");
+        xmd_processor_free(xmd_handle);
+        store_destroy(var_store);
+        lexer_free(lex);
+        free(content);
+        return 1;
+    }
+    
     FILE* output = stdout;
     if (output_file) {
         output = fopen(output_file, "w");
         if (!output) {
             fprintf(stderr, "Error: Cannot create output file '%s'\n", output_file);
+            xmd_result_free(result);
+            xmd_processor_free(xmd_handle);
             store_destroy(var_store);
             lexer_free(lex);
             free(content);
@@ -266,7 +287,7 @@ int cli_process_file(const char* input_file, const char* output_file, bool verbo
         }
     }
     
-    fprintf(output, "%s", content);
+    fprintf(output, "%s", result->output);
     
     if (output_file && output != stdout) {
         fclose(output);
@@ -276,6 +297,8 @@ int cli_process_file(const char* input_file, const char* output_file, bool verbo
     }
     
     // Cleanup
+    xmd_result_free(result);
+    xmd_processor_free(xmd_handle);
     store_destroy(var_store);
     lexer_free(lex);
     free(content);

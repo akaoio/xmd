@@ -358,6 +358,18 @@ void xmd_cleanup(void* handle);
         (val && val->type == CONFIG_BOOLEAN) ? val->data.boolean_val : default_val; \
     })
 
+/**
+ * @brief Free XMD processor
+ * @param processor Processor to free
+ */
+void xmd_processor_free(void* processor);
+
+/**
+ * @brief Cleanup XMD processor context
+ * @param handle XMD context handle
+ */
+void xmd_cleanup(void* handle);
+
 #ifdef __cplusplus
 }
 #endif
