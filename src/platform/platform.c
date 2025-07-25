@@ -1,10 +1,18 @@
 /**
  * @file platform.c
- * @brief Cross-platform compatibility layer implementation
+ * @brief Cross-platform compatibility layer implementation using C17 standard
  * @author XMD Implementation Team
  * @date 2025-07-25
  */
 
+#define _GNU_SOURCE
+#define _POSIX_C_SOURCE 200809L
+#define _ISOC11_SOURCE  /* For aligned_alloc in C17 */
+#include <stdlib.h>
+#include <sys/wait.h>
+#include <pthread.h>
+#include <sys/resource.h>
+#include <unistd.h>
 #include "../../include/platform.h"
 
 #ifdef XMD_PLATFORM_WINDOWS
@@ -498,7 +506,7 @@ char* xmd_get_filename(xmd_dirent_t* entry) {
 // =============================================================================
 
 /**
- * @brief Allocate aligned memory
+ * @brief Allocate aligned memory using C17 compatible approach
  * @param alignment Memory alignment
  * @param size Size to allocate
  * @return Aligned memory or NULL on error
@@ -506,14 +514,13 @@ char* xmd_get_filename(xmd_dirent_t* entry) {
 void* xmd_aligned_alloc(size_t alignment, size_t size) {
 #ifdef XMD_PLATFORM_WINDOWS
     return _aligned_malloc(size, alignment);
-#elif defined(XMD_PLATFORM_MACOS) || defined(XMD_PLATFORM_IOS)
+#else
+    /* Use POSIX approach for all Unix-like systems including Android/Linux */
     void* ptr;
     if (posix_memalign(&ptr, alignment, size) == 0) {
         return ptr;
     }
     return NULL;
-#else
-    return aligned_alloc(alignment, size);
 #endif
 }
 

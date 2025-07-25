@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/wait.h>
+#include <unistd.h>
 #include "../../../include/platform.h"
 #include "../../../include/executor.h"
 
