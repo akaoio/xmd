@@ -8,9 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
-#include <dirent.h>
-#include <unistd.h>
+#include "../../../include/platform.h"
 
 /**
  * @brief Generate comprehensive examples documentation
@@ -24,15 +22,12 @@ int examples_generate(const char* source_dir, const char* output_dir) {
     }
     
     // Create output directory if it doesn't exist
-    struct stat st = {0};
-    if (stat(output_dir, &st) == -1) {
-        if (mkdir(output_dir, 0755) != 0) {
-            return -1;
-        }
+    if (xmd_create_directory(output_dir) != 0) {
+        return -1;
     }
     
     // Open source directory
-    DIR* dir = opendir(source_dir);
+    xmd_dir_t dir = xmd_opendir(source_dir);
     if (!dir) {
         return -1;
     }
@@ -43,7 +38,7 @@ int examples_generate(const char* source_dir, const char* output_dir) {
     
     FILE* index_file = fopen(index_path, "w");
     if (!index_file) {
-        closedir(dir);
+        xmd_closedir(dir);
         return -1;
     }
     

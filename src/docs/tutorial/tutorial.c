@@ -8,9 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
-#include <dirent.h>
-#include <unistd.h>
+#include "../../../include/platform.h"
 
 /**
  * @brief Generate interactive tutorials from example files
@@ -24,15 +22,12 @@ int tutorial_generate(const char* source_dir, const char* output_dir) {
     }
     
     // Create output directory if it doesn't exist
-    struct stat st = {0};
-    if (stat(output_dir, &st) == -1) {
-        if (mkdir(output_dir, 0755) != 0) {
-            return -1;
-        }
+    if (xmd_create_directory(output_dir) != 0) {
+        return -1;
     }
     
     // Open source directory
-    DIR* dir = opendir(source_dir);
+    xmd_dir_t dir = xmd_opendir(source_dir);
     if (!dir) {
         return -1;
     }
@@ -43,7 +38,7 @@ int tutorial_generate(const char* source_dir, const char* output_dir) {
     
     FILE* index_file = fopen(index_path, "w");
     if (!index_file) {
-        closedir(dir);
+        xmd_closedir(dir);
         return -1;
     }
     
@@ -52,18 +47,18 @@ int tutorial_generate(const char* source_dir, const char* output_dir) {
     fprintf(index_file, "Welcome to the XMD tutorial system! These tutorials will guide you through the features of XMD.\n\n");
     fprintf(index_file, "## Available Tutorials\n\n");
     
-    struct dirent* entry;
+    xmd_dirent_t* entry;
     int tutorial_count = 0;
     
     // Process each file in source directory
-    while ((entry = readdir(dir)) != NULL) {
-        if (entry->d_type == DT_REG && strstr(entry->d_name, ".md")) {
+    while ((entry = xmd_readdir(dir)) != NULL) {
+        if (strstr(xmd_get_filename(entry), ".md")) {
             // Create tutorial for this file
             char source_path[512];
             char tutorial_path[512];
             
-            snprintf(source_path, sizeof(source_path), "%s/%s", source_dir, entry->d_name);
-            snprintf(tutorial_path, sizeof(tutorial_path), "%s/tutorial_%s", output_dir, entry->d_name);
+            snprintf(source_path, sizeof(source_path), "%s/%s", source_dir, xmd_get_filename(entry));
+            snprintf(tutorial_path, sizeof(tutorial_path), "%s/tutorial_%s", output_dir, xmd_get_filename(entry));
             
             // Read source file
             FILE* source_file = fopen(source_path, "r");
@@ -79,8 +74,8 @@ int tutorial_generate(const char* source_dir, const char* output_dir) {
             }
             
             // Write tutorial header
-            fprintf(tutorial_file, "# Tutorial: %s\n\n", entry->d_name);
-            fprintf(tutorial_file, "This tutorial demonstrates the features shown in `%s`.\n\n", entry->d_name);
+            fprintf(tutorial_file, "# Tutorial: %s\n\n", xmd_get_filename(entry));
+            fprintf(tutorial_file, "This tutorial demonstrates the features shown in `%s`.\n\n", xmd_get_filename(entry));
             fprintf(tutorial_file, "## Original Example\n\n");
             fprintf(tutorial_file, "```xmd\n");
             
@@ -94,7 +89,7 @@ int tutorial_generate(const char* source_dir, const char* output_dir) {
             fprintf(tutorial_file, "## Step-by-Step Explanation\n\n");
             fprintf(tutorial_file, "1. This example shows XMD syntax in action\n");
             fprintf(tutorial_file, "2. Try modifying the variables and directives\n");
-            fprintf(tutorial_file, "3. Run the example with: `xmd_cli process %s`\n\n", entry->d_name);
+            fprintf(tutorial_file, "3. Run the example with: `xmd_cli process %s`\n\n", xmd_get_filename(entry));
             fprintf(tutorial_file, "## What You Learned\n\n");
             fprintf(tutorial_file, "- XMD syntax and directives\n");
             fprintf(tutorial_file, "- Variable interpolation\n");
@@ -104,7 +99,7 @@ int tutorial_generate(const char* source_dir, const char* output_dir) {
             fclose(tutorial_file);
             
             // Add to index
-            fprintf(index_file, "- [%s](tutorial_%s)\n", entry->d_name, entry->d_name);
+            fprintf(index_file, "- [%s](tutorial_%s)\n", xmd_get_filename(entry), xmd_get_filename(entry));
             tutorial_count++;
         }
     }
@@ -117,7 +112,7 @@ int tutorial_generate(const char* source_dir, const char* output_dir) {
     fprintf(index_file, "Generated %d tutorials.\n", tutorial_count);
     
     fclose(index_file);
-    closedir(dir);
+    xmd_closedir(dir);
     
     return 0;
 }

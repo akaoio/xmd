@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
-#include <time.h>
+#include "platform.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,8 +50,8 @@ typedef struct perf_metrics {
  */
 typedef struct perf_profiler {
     perf_metrics metrics;
-    struct timespec start_time;
-    struct timespec end_time;
+    xmd_time_t start_time;
+    xmd_time_t end_time;
     bool is_active;
     char* profile_data;
     size_t profile_size;

@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <dlfcn.h>
+#include "../../../include/platform.h"
 #include "../../../include/cli.h"
 
 /**
@@ -85,30 +85,30 @@ int plugin_load(plugin_manager* manager, const char* path) {
     }
     
     // Try to load the dynamic library
-    void* handle = dlopen(path, RTLD_LAZY);
+    xmd_library_t handle = xmd_library_load(path);
     if (!handle) {
         return -1; // Failed to load
     }
     
     // Look for required symbols
-    plugin_init_func init_func = dlsym(handle, "plugin_init");
-    plugin_cleanup_func cleanup_func = dlsym(handle, "plugin_cleanup");
-    plugin_process_func process_func = dlsym(handle, "plugin_process");
+    plugin_init_func init_func = (plugin_init_func)xmd_library_symbol(handle, "plugin_init");
+    plugin_cleanup_func cleanup_func = (plugin_cleanup_func)xmd_library_symbol(handle, "plugin_cleanup");
+    plugin_process_func process_func = (plugin_process_func)xmd_library_symbol(handle, "plugin_process");
     
     if (!init_func || !cleanup_func || !process_func) {
-        dlclose(handle);
+        xmd_library_unload(handle);
         return -1; // Missing required functions
     }
     
     // Create plugin structure
     if (resize_plugins_if_needed(manager) != 0) {
-        dlclose(handle);
+        xmd_library_unload(handle);
         return -1;
     }
     
     xmd_plugin* plugin = calloc(1, sizeof(xmd_plugin));
     if (!plugin) {
-        dlclose(handle);
+        xmd_library_unload(handle);
         return -1;
     }
     
@@ -138,7 +138,7 @@ int plugin_load(plugin_manager* manager, const char* path) {
         // Initialization failed
         free(plugin->name);
         free(plugin->path);
-        dlclose(handle);
+        xmd_library_unload(handle);
         free(plugin);
         return -1;
     }
@@ -189,7 +189,7 @@ int plugin_unload(plugin_manager* manager, const char* name) {
             
             // Close dynamic library
             if (plugin->handle) {
-                dlclose(plugin->handle);
+                xmd_library_unload(plugin->handle);
             }
             
             // Free plugin resources

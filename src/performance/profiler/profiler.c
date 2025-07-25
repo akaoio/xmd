@@ -8,8 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
-#include <unistd.h>
+#include "../../../include/platform.h"
 #include "../../../include/performance.h"
 
 /**
@@ -17,11 +16,11 @@
  * @return Time in nanoseconds
  */
 static uint64_t get_time_ns(void) {
-    struct timespec ts;
-    if (clock_gettime(CLOCK_MONOTONIC, &ts) != 0) {
+    xmd_time_t time;
+    if (xmd_get_time(&time) != 0) {
         return 0;
     }
-    return (uint64_t)ts.tv_sec * 1000000000ULL + (uint64_t)ts.tv_nsec;
+    return (uint64_t)time.seconds * 1000000000ULL + (uint64_t)time.nanoseconds;
 }
 
 /**
@@ -30,37 +29,19 @@ static uint64_t get_time_ns(void) {
  * @param end End time
  * @return Difference in nanoseconds
  */
-static uint64_t time_diff_ns(const struct timespec* start, const struct timespec* end) {
-    uint64_t start_ns = (uint64_t)start->tv_sec * 1000000000ULL + (uint64_t)start->tv_nsec;
-    uint64_t end_ns = (uint64_t)end->tv_sec * 1000000000ULL + (uint64_t)end->tv_nsec;
+static uint64_t time_diff_ns(const xmd_time_t* start, const xmd_time_t* end) {
+    uint64_t start_ns = (uint64_t)start->seconds * 1000000000ULL + (uint64_t)start->nanoseconds;
+    uint64_t end_ns = (uint64_t)end->seconds * 1000000000ULL + (uint64_t)end->nanoseconds;
     return end_ns - start_ns;
 }
 
 /**
- * @brief Get current memory usage from /proc/self/status
+ * @brief Get current memory usage using platform-specific method
  * @return Memory usage in bytes or 0 if unavailable
  */
 static uint64_t get_memory_usage(void) {
-    FILE* file = fopen("/proc/self/status", "r");
-    if (!file) {
-        return 0;
-    }
-    
-    char line[256];
-    uint64_t memory = 0;
-    
-    while (fgets(line, sizeof(line), file)) {
-        if (strncmp(line, "VmRSS:", 6) == 0) {
-            // Extract memory in kB
-            char* ptr = line + 6;
-            while (*ptr == ' ' || *ptr == '\t') ptr++;
-            memory = strtoull(ptr, NULL, 10) * 1024; // Convert kB to bytes
-            break;
-        }
-    }
-    
-    fclose(file);
-    return memory;
+    uint64_t mem = xmd_get_memory_usage();
+    return mem;
 }
 
 /**
@@ -97,7 +78,7 @@ int perf_profiler_start(perf_profiler* profiler) {
     }
     
     // Record start time
-    if (clock_gettime(CLOCK_MONOTONIC, &profiler->start_time) != 0) {
+    if (xmd_get_time(&profiler->start_time) != 0) {
         return -1;
     }
     
@@ -120,7 +101,7 @@ int perf_profiler_stop(perf_profiler* profiler) {
     }
     
     // Record end time
-    if (clock_gettime(CLOCK_MONOTONIC, &profiler->end_time) != 0) {
+    if (xmd_get_time(&profiler->end_time) != 0) {
         return -1;
     }
     

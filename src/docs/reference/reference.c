@@ -9,9 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <sys/stat.h>
-#include <dirent.h>
-#include <unistd.h>
+#include "../../../include/platform.h"
 
 /**
  * @brief Generate API reference documentation from header files
@@ -25,7 +23,7 @@ int reference_generate(const char* include_dir, const char* output_file) {
     }
     
     // Open include directory
-    DIR* dir = opendir(include_dir);
+    xmd_dir_t dir = xmd_opendir(include_dir);
     if (!dir) {
         return -1;
     }
@@ -33,7 +31,7 @@ int reference_generate(const char* include_dir, const char* output_file) {
     // Create reference file
     FILE* ref_file = fopen(output_file, "w");
     if (!ref_file) {
-        closedir(dir);
+        xmd_closedir(dir);
         return -1;
     }
     

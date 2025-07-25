@@ -8,17 +8,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <sys/resource.h>
-#include <sys/time.h>
-#include <dirent.h>
+#include "../../../include/platform.h"
 #include "../../../include/resource.h"
 
 /**
  * @brief Resource monitor context structure
  */
 struct resource_monitor {
-    struct timeval start_time;  /**< Monitoring start time */
+    xmd_time_t start_time;      /**< Monitoring start time */
     int is_monitoring;          /**< Whether monitoring is active */
     char* last_error;           /**< Last error message */
 };
@@ -35,7 +32,7 @@ ResourceMonitor* resource_monitor_new(void) {
     
     monitor->is_monitoring = 0;
     monitor->last_error = NULL;
-    memset(&monitor->start_time, 0, sizeof(struct timeval));
+    memset(&monitor->start_time, 0, sizeof(xmd_time_t));
     
     return monitor;
 }
@@ -68,50 +65,19 @@ static void set_monitor_error(ResourceMonitor* monitor, const char* message) {
 }
 
 /**
- * @brief Get current memory usage from /proc/self/status
+ * @brief Get current memory usage using platform-specific method
  * @return Memory usage in bytes, or -1 on error
  */
 static long get_memory_usage(void) {
-    FILE* file = fopen("/proc/self/status", "r");
-    if (!file) {
-        return -1;
-    }
-    
-    char line[256];
-    long memory_kb = -1;
-    
-    while (fgets(line, sizeof(line), file)) {
-        if (strncmp(line, "VmRSS:", 6) == 0) {
-            sscanf(line, "VmRSS: %ld kB", &memory_kb);
-            break;
-        }
-    }
-    
-    fclose(file);
-    return memory_kb > 0 ? memory_kb * 1024 : -1; // Convert to bytes
+    return xmd_get_memory_usage();
 }
 
 /**
- * @brief Count open file descriptors
+ * @brief Count open file descriptors using platform-specific method
  * @return Number of open file descriptors, or -1 on error
  */
 static int count_file_descriptors(void) {
-    DIR* fd_dir = opendir("/proc/self/fd");
-    if (!fd_dir) {
-        return -1;
-    }
-    
-    int count = 0;
-    struct dirent* entry;
-    
-    while ((entry = readdir(fd_dir)) != NULL) {
-        if (entry->d_name[0] != '.') {
-            count++;
-        }
-    }
-    
-    closedir(fd_dir);
-    return count;
+    return xmd_get_fd_count();
 }
 
 /**
@@ -119,14 +85,14 @@ static int count_file_descriptors(void) {
  * @param start_time Start time
  * @return Elapsed time in milliseconds
  */
-static long get_elapsed_time_ms(const struct timeval* start_time) {
-    struct timeval current_time;
-    gettimeofday(&current_time, NULL);
+static long get_elapsed_time_ms(const xmd_time_t* start_time) {
+    xmd_time_t current_time;
+    xmd_get_time(&current_time);
     
-    long elapsed_sec = current_time.tv_sec - start_time->tv_sec;
-    long elapsed_usec = current_time.tv_usec - start_time->tv_usec;
+    long elapsed_sec = current_time.seconds - start_time->seconds;
+    long elapsed_nsec = current_time.nanoseconds - start_time->nanoseconds;
     
-    return (elapsed_sec * 1000) + (elapsed_usec / 1000);
+    return (elapsed_sec * 1000) + (elapsed_nsec / 1000000);
 }
 
 /**
@@ -144,7 +110,7 @@ int resource_monitor_start(ResourceMonitor* monitor) {
         return RESOURCE_ERROR;
     }
     
-    if (gettimeofday(&monitor->start_time, NULL) != 0) {
+    if (xmd_get_time(&monitor->start_time) != 0) {
         set_monitor_error(monitor, "Failed to get start time");
         return RESOURCE_ERROR;
     }
@@ -188,22 +154,12 @@ int resource_monitor_get_usage(ResourceMonitor* monitor, ResourceUsage* usage) {
         return RESOURCE_ERROR;
     }
     
-    // Get CPU time using getrusage
-    struct rusage rusage_data;
-    if (getrusage(RUSAGE_SELF, &rusage_data) != 0) {
-        set_monitor_error(monitor, "Failed to get resource usage");
-        return RESOURCE_ERROR;
-    }
-    
-    // Calculate CPU time in milliseconds
-    usage->cpu_time_ms = (rusage_data.ru_utime.tv_sec + rusage_data.ru_stime.tv_sec) * 1000 +
-                        (rusage_data.ru_utime.tv_usec + rusage_data.ru_stime.tv_usec) / 1000;
+    // Get CPU time using platform-specific method
+    usage->cpu_time_ms = xmd_get_cpu_time();
     
     // Get memory usage
-    usage->memory_bytes = get_memory_usage();
-    if (usage->memory_bytes < 0) {
-        usage->memory_bytes = 0; // Fallback to 0 if unable to read
-    }
+    uint64_t mem = get_memory_usage();
+    usage->memory_bytes = (long)mem;
     
     // Get execution time
     usage->execution_time_ms = get_elapsed_time_ms(&monitor->start_time);
@@ -232,7 +188,7 @@ int resource_monitor_reset(ResourceMonitor* monitor) {
         return RESOURCE_ERROR;
     }
     
-    if (gettimeofday(&monitor->start_time, NULL) != 0) {
+    if (xmd_get_time(&monitor->start_time) != 0) {
         set_monitor_error(monitor, "Failed to reset start time");
         return RESOURCE_ERROR;
     }
