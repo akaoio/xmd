@@ -55,6 +55,14 @@ set(XMD_LIB_SOURCES
     src/performance/optimizer/optimizer.c
     src/performance/profiler/profiler.c
     src/performance/benchmark/benchmark.c
+    
+    # CLI components
+    src/cli/cli/cli.c
+    src/cli/parser/parser.c
+    src/config/config/config.c
+    src/plugin/plugin/plugin.c
+    src/bindings/c_api/c_api.c
+    
     src/xmd_stubs.c
 )
 
@@ -141,6 +149,14 @@ target_link_libraries(test_performance xmd_lib m)
 add_executable(test_phase6_integration test/integration/test_phase6_simple.c)
 target_link_libraries(test_phase6_integration xmd_lib m pthread)
 
+# CLI tests
+add_executable(test_cli test/cli/test_cli.c)
+target_link_libraries(test_cli xmd_lib m pthread dl)
+
+# Main CLI executable
+add_executable(xmd_cli src/main_cli.c)
+target_link_libraries(xmd_cli xmd_lib m pthread dl)
+
 # Enable testing
 enable_testing()
 
@@ -168,6 +184,7 @@ add_test(NAME phase5_integration_tests COMMAND test_phase5_integration)
 add_test(NAME security_tests COMMAND test_security)
 add_test(NAME performance_tests COMMAND test_performance)
 add_test(NAME phase6_integration_tests COMMAND test_phase6_integration)
+add_test(NAME cli_tests COMMAND test_cli)
 
 # Custom target to run all tests
 add_custom_target(test_all

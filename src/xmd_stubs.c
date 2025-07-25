@@ -151,40 +151,7 @@ void xmd_processor_free(xmd_processor* processor) {
     // Not implemented in Phase 1
 }
 
-/**
- * @brief Process markdown string (stub)
- * @param processor Processor instance
- * @param input Input markdown
- * @param input_length Input length
- * @return NULL (not implemented)
- */
-xmd_result* xmd_process_string(xmd_processor* processor, const char* input, size_t input_length) {
-    (void)processor;
-    (void)input;
-    (void)input_length;
-    return NULL; // Not implemented in Phase 1
-}
-
-/**
- * @brief Process markdown file (stub)
- * @param processor Processor instance
- * @param input_path Input file path
- * @return NULL (not implemented)
- */
-xmd_result* xmd_process_file(xmd_processor* processor, const char* input_path) {
-    (void)processor;
-    (void)input_path;
-    return NULL; // Not implemented in Phase 1
-}
-
-/**
- * @brief Free XMD result (stub)
- * @param result Result to free
- */
-void xmd_result_free(xmd_result* result) {
-    (void)result;
-    // Not implemented in Phase 1
-}
+// xmd_process_string, xmd_process_file, and xmd_result_free are now implemented in c_api.c
 
 /**
  * @brief Validate syntax (stub)
@@ -224,17 +191,4 @@ char* xmd_get_variable(xmd_processor* processor, const char* key) {
     return NULL; // Stub implementation
 }
 
-/**
- * @brief Initialize XMD library (stub)
- * @return XMD_SUCCESS
- */
-xmd_error_code xmd_init(void) {
-    return XMD_SUCCESS;
-}
-
-/**
- * @brief Cleanup XMD library (stub)
- */
-void xmd_cleanup(void) {
-    // Stub implementation
-}
+// xmd_init and xmd_cleanup are now implemented in c_api.c
