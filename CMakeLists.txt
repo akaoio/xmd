@@ -54,6 +54,10 @@ include_directories(src)
 set(XMD_LIB_SOURCES
     src/token/token.c
     src/lexer/lexer.c
+    src/utils/string/string_duplicate/string_duplicate.c
+    src/utils/string/string_extract/string_extract.c
+    src/utils/memory/memory_allocate/memory_allocate.c
+    src/utils/memory/memory_free_safe/memory_free_safe.c
     src/variable/variable.c
     src/variable/variable_convert/variable_convert.c
     src/variable/variable_extended/variable_extended.c
@@ -157,6 +161,19 @@ xmd_target_link_libraries(test_token_simple)
 add_executable(test_lexer test/lexer/test_lexer.c)
 xmd_target_link_libraries(test_lexer)
 
+
+add_executable(test_string_duplicate test/utils/string/test_string_duplicate.c)
+xmd_target_link_libraries(test_string_duplicate)
+
+add_executable(test_string_extract test/utils/string/test_string_extract.c)
+xmd_target_link_libraries(test_string_extract)
+
+add_executable(test_memory_allocate test/utils/memory/test_memory_allocate.c)
+xmd_target_link_libraries(test_memory_allocate)
+
+add_executable(test_memory_free_safe test/utils/memory/test_memory_free_safe.c)
+xmd_target_link_libraries(test_memory_free_safe)
+
 add_executable(test_variable test/variable/test_variable.c)
 xmd_target_link_libraries(test_variable)
 
@@ -248,6 +265,10 @@ enable_testing()
 # Add individual tests
 add_test(NAME token_tests COMMAND test_token_simple)
 add_test(NAME lexer_tests COMMAND test_lexer)
+add_test(NAME string_duplicate_tests COMMAND test_string_duplicate)
+add_test(NAME string_extract_tests COMMAND test_string_extract)
+add_test(NAME memory_allocate_tests COMMAND test_memory_allocate)
+add_test(NAME memory_free_safe_tests COMMAND test_memory_free_safe)
 add_test(NAME variable_tests COMMAND test_variable)
 add_test(NAME store_tests COMMAND test_store)
 add_test(NAME template_tests COMMAND test_template)
@@ -276,7 +297,7 @@ add_test(NAME devtools_tests COMMAND test_devtools)
 # Custom target to run all tests
 add_custom_target(test_all
     COMMAND ${CMAKE_CTEST_COMMAND} --verbose
-    DEPENDS test_token_simple test_lexer test_variable test_store test_template test_conditional test_loop test_flow test_error test_phase2_integration test_phase3_integration test_executor test_output test_resource test_phase4_integration test_module test_import_export test_dependency test_phase5_integration test_security
+    DEPENDS test_token_simple test_lexer test_string_duplicate test_string_extract test_memory_allocate test_memory_free_safe test_variable test_store test_template test_conditional test_loop test_flow test_error test_phase2_integration test_phase3_integration test_executor test_output test_resource test_phase4_integration test_module test_import_export test_dependency test_phase5_integration test_security
 )
 
 # Coverage (optional)

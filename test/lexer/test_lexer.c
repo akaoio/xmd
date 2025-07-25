@@ -26,7 +26,7 @@ void test_lexer_create_destroy(void) {
     assert(lexer_get_line(lex) == 1);
     assert(lexer_get_column(lex) == 1);
     
-    lexer_destroy(lex);
+    lexer_free(lex);
     
     // Test with NULL input
     lexer* null_lex = lexer_create(NULL);
@@ -55,7 +55,7 @@ void test_lexer_simple_text(void) {
     assert(eof->type == TOKEN_EOF);
     
     token_free(eof);
-    lexer_destroy(lex);
+    lexer_free(lex);
 }
 
 /**
@@ -92,7 +92,7 @@ void test_lexer_headings(void) {
     assert(t3->column == 1);
     token_free(t3);
     
-    lexer_destroy(lex);
+    lexer_free(lex);
 }
 
 /**
@@ -115,7 +115,7 @@ void test_lexer_list_items(void) {
         token_free(t);
     }
     
-    lexer_destroy(lex);
+    lexer_free(lex);
 }
 
 /**
@@ -135,7 +135,7 @@ void test_lexer_code_blocks(void) {
     assert(t->column == 1);
     
     token_free(t);
-    lexer_destroy(lex);
+    lexer_free(lex);
 }
 
 /**
@@ -163,7 +163,7 @@ void test_lexer_html_comments(void) {
     assert(t2->column == 1);
     token_free(t2);
     
-    lexer_destroy(lex);
+    lexer_free(lex);
 }
 
 /**
@@ -191,7 +191,7 @@ void test_lexer_xmd_directives(void) {
     assert(t2->column == 1);
     token_free(t2);
     
-    lexer_destroy(lex);
+    lexer_free(lex);
 }
 
 /**
@@ -236,7 +236,7 @@ void test_lexer_variable_references(void) {
     assert(strcmp(t5->value, "items.") == 0);
     token_free(t5);
     
-    lexer_destroy(lex);
+    lexer_free(lex);
 }
 
 /**
@@ -267,7 +267,7 @@ void test_lexer_position_tracking(void) {
     assert(t3->column == 1);
     token_free(t3);
     
-    lexer_destroy(lex);
+    lexer_free(lex);
 }
 
 /**
@@ -282,7 +282,7 @@ void test_lexer_empty_input(void) {
     assert(t->type == TOKEN_EOF);
     
     token_free(t);
-    lexer_destroy(lex);
+    lexer_free(lex);
 }
 
 /**
@@ -297,7 +297,7 @@ void test_lexer_whitespace_only(void) {
     assert(t->type == TOKEN_EOF);
     
     token_free(t);
-    lexer_destroy(lex);
+    lexer_free(lex);
 }
 
 /**
@@ -322,7 +322,7 @@ void test_lexer_peek(void) {
     token_free(peek1);
     token_free(peek2);
     token_free(next);
-    lexer_destroy(lex);
+    lexer_free(lex);
 }
 
 /**
@@ -362,7 +362,7 @@ void test_lexer_mixed_content(void) {
         token_free(t);
     }
     
-    lexer_destroy(lex);
+    lexer_free(lex);
 }
 
 /**
@@ -378,7 +378,7 @@ void test_lexer_error_handling(void) {
     assert(t != NULL);
     token_free(t);
     
-    lexer_destroy(lex);
+    lexer_free(lex);
 }
 
 /**
@@ -401,7 +401,7 @@ void test_lexer_utf8(void) {
     assert(strstr(t2->value, "世界") != NULL);
     token_free(t2);
     
-    lexer_destroy(lex);
+    lexer_free(lex);
 }
 
 /**

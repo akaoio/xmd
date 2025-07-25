@@ -34,11 +34,6 @@ lexer* lexer_create(const char* input);
  */
 void lexer_free(lexer* lex);
 
-/**
- * @brief Destroy lexer and free memory (alias for lexer_free)
- * @param lex Lexer to destroy (can be NULL)
- */
-void lexer_destroy(lexer* lex);
 
 /* Token generation */
 

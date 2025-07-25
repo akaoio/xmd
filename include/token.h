@@ -61,11 +61,6 @@ token* token_create(token_type type, const char* value, size_t line, size_t colu
  */
 void token_free(token* tok);
 
-/**
- * @brief Destroy token and free memory (alias for token_free)
- * @param t Token to destroy (can be NULL)
- */
-void token_destroy(token* t);
 
 /**
  * @brief Duplicate a token

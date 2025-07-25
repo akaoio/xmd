@@ -69,13 +69,6 @@ void lexer_free(lexer* lex) {
     free(lex);
 }
 
-/**
- * @brief Destroy lexer and free memory (alias for lexer_free)
- * @param lex Lexer to destroy
- */
-void lexer_destroy(lexer* lex) {
-    lexer_free(lex);
-}
 
 /**
  * @brief Get current character without advancing
@@ -150,6 +143,50 @@ static bool lexer_starts_with(const lexer* lex, const char* str) {
 }
 
 /**
+ * @brief Extract a substring from lexer input
+ * 
+ * Extracts a substring from the lexer's input buffer starting at the given
+ * position with the specified length. The returned string is null-terminated
+ * and must be freed by the caller.
+ * 
+ * This function consolidates the duplicated malloc/memcpy pattern found
+ * throughout the lexer code.
+ * 
+ * @param lex The lexer instance
+ * @param start_pos Starting position in the input buffer
+ * @param length Number of characters to extract
+ * @return New substring on success, NULL if lex is NULL, position is invalid, or allocation fails
+ */
+static char* lexer_extract_substring(const lexer* lex, size_t start_pos, size_t length) {
+    if (lex == NULL || lex->input == NULL) {
+        return NULL;
+    }
+    
+    // Check bounds
+    if (start_pos >= lex->length) {
+        return NULL;
+    }
+    
+    // Adjust length if it extends beyond input
+    size_t available = lex->length - start_pos;
+    if (length > available) {
+        length = available;
+    }
+    
+    // Allocate memory for result
+    char* result = malloc(length + 1);
+    if (result == NULL) {
+        return NULL;
+    }
+    
+    // Copy substring
+    memcpy(result, &lex->input[start_pos], length);
+    result[length] = '\0';
+    
+    return result;
+}
+
+/**
  * @brief Read until end of line
  * @param lex Lexer instance
  * @return Line content (must be freed)
@@ -163,15 +200,7 @@ static char* lexer_read_line(lexer* lex) {
     }
     
     size_t length = lex->position - start_pos;
-    char* result = malloc(length + 1);
-    if (result == NULL) {
-        return NULL;
-    }
-    
-    memcpy(result, &lex->input[start_pos], length);
-    result[length] = '\0';
-    
-    return result;
+    return lexer_extract_substring(lex, start_pos, length);
 }
 
 /**
@@ -200,15 +229,7 @@ static char* lexer_read_html_comment(lexer* lex) {
     }
     
     size_t length = lex->position - start_pos;
-    char* result = malloc(length + 1);
-    if (result == NULL) {
-        return NULL;
-    }
-    
-    memcpy(result, &lex->input[start_pos], length);
-    result[length] = '\0';
-    
-    return result;
+    return lexer_extract_substring(lex, start_pos, length);
 }
 
 /**
@@ -243,15 +264,7 @@ static char* lexer_read_code_block(lexer* lex) {
     }
     
     size_t length = lex->position - start_pos;
-    char* result = malloc(length + 1);
-    if (result == NULL) {
-        return NULL;
-    }
-    
-    memcpy(result, &lex->input[start_pos], length);
-    result[length] = '\0';
-    
-    return result;
+    return lexer_extract_substring(lex, start_pos, length);
 }
 
 /**
@@ -277,15 +290,7 @@ static char* lexer_read_variable_ref(lexer* lex) {
     }
     
     size_t length = lex->position - start_pos;
-    char* result = malloc(length + 1);
-    if (result == NULL) {
-        return NULL;
-    }
-    
-    memcpy(result, &lex->input[start_pos], length);
-    result[length] = '\0';
-    
-    return result;
+    return lexer_extract_substring(lex, start_pos, length);
 }
 
 /**

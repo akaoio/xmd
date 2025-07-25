@@ -61,13 +61,6 @@ void token_free(token* tok) {
     free(tok);
 }
 
-/**
- * @brief Destroy token and free memory (alias for token_free)
- * @param t Token to destroy (can be NULL)
- */
-void token_destroy(token* t) {
-    token_free(t);
-}
 
 /**
  * @brief Duplicate a token
