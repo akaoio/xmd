@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "../../include/cli.h"
+#include "../../../include/cli.h"
 
 /**
  * @brief Parse command type from string

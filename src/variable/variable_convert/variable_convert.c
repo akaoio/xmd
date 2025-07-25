@@ -13,7 +13,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include "variable.h"
-#include "../../include/utils.h"
+#include "../../../include/utils.h"
 
 /**
  * @brief Convert variable to number

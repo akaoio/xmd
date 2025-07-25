@@ -55,28 +55,30 @@ set(XMD_LIB_SOURCES
     src/token/token.c
     src/lexer/lexer.c
     src/variable/variable.c
-    src/variable/variable_convert.c
-    src/variable/variable_extended.c
+    src/variable/variable_convert/variable_convert.c
+    src/variable/variable_extended/variable_extended.c
     src/store/store.c
-    src/store/store_ops.c
+    src/store/store_ops/store_ops.c
     src/template/template.c
-    src/template/template_extract.c
+    src/template/template_extract/template_extract.c
     src/conditional/condition/condition.c
     src/conditional/if_statement/if_statement.c
     src/loop/for_loop/for_loop.c
     src/flow/flow_control/flow_control.c
     src/error/error_handling/error_handling.c
-    src/executor/executor_cross_platform.c
+    src/executor/executor/executor.c
+    src/executor/executor_cross_platform/executor_cross_platform.c
     src/sandbox/sandbox.c
     src/output/formatter/formatter.c
     src/resource/limiter/limiter.c
     src/resource/monitor/monitor.c
-    src/module/module.c
+    src/module/module/module.c
     src/import_export/import/import.c
     src/import_export/export/export.c
     src/dependency/graph/graph.c
     src/dependency/detector/detector.c
     src/config/config.c
+    src/config/config/config.c
     src/utils/utils.c
     src/security/validator/validator.c
     src/security/sanitizer/sanitizer.c
@@ -88,10 +90,9 @@ set(XMD_LIB_SOURCES
     src/performance/benchmark/benchmark.c
     
     # CLI components
-    src/cli/cli.c
-    src/cli/parser.c
-    src/config/config_manager.c
-    src/plugin/plugin.c
+    src/cli/cli/cli.c
+    src/cli/parser/parser.c
+    src/plugin/plugin/plugin.c
     src/bindings/c_api/c_api.c
     
     # Documentation and Developer Tools

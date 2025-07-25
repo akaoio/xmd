@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../include/cli.h"
+#include "../../../include/cli.h"
 
 /**
  * @brief Create configuration structure
