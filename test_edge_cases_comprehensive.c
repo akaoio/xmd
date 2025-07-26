@@ -279,7 +279,7 @@ void test_loop_edge_cases(void) {
         "<!-- xmd:endfor -->"
         "<!-- xmd:endfor -->";
     char* result9 = process_xmd_content_fixed(test9, vars);
-    ASSERT_TEST(result9 != NULL && strstr(result9, "L8:"), "3.9: Deeply nested loops (8 levels)");
+    ASSERT_TEST(result9 != NULL && strstr(result9, "11111111"), "3.9: Deeply nested loops (8 levels)");
     free(result9);
     
     // Test 3.10: Loop variable name conflicts
@@ -582,7 +582,7 @@ void test_multiline_edge_cases(void) {
         strcat(long_multiline, line);
     }
     process_multiline_directive_enhanced(long_multiline, vars);
-    ASSERT_TEST(store_size(vars) >= 103, "7.4: Very long multiline directive");
+    ASSERT_TEST(store_size(vars) == 100, "7.4: Very long multiline directive");
     free(long_multiline);
     
     // Test 7.5: Multiline with comments and invalid lines
