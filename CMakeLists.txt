@@ -133,23 +133,71 @@ set(XMD_LIB_SOURCES
     src/store/store_size/store_size.c
     src/store/store_keys/store_keys.c
     src/store/store_ops/store_ops.c
-    src/template/template.c
+    src/template/template_context_create/template_context_create.c
+    src/template/template_context_destroy/template_context_destroy.c
+    src/template/find_next_variable/find_next_variable.c
+    src/template/extract_variable_name/extract_variable_name.c
+    src/template/template_process/template_process.c
+    src/template/template_extract_variables/template_extract_variables.c
+    src/template/template_has_variables/template_has_variables.c
+    src/template/template_validate/template_validate.c
     src/template/template_extract/template_extract.c
     src/conditional/condition/condition.c
     src/conditional/if_statement/if_statement.c
     src/loop/for_loop/for_loop.c
     src/flow/flow_control/flow_control.c
     src/error/error_handling/error_handling.c
-    src/executor/executor/executor.c
+    src/executor/executor/executor_context_new/executor_context_new.c
+    src/executor/executor/executor_context_free/executor_context_free.c
+    src/executor/executor/set_executor_error/set_executor_error.c
+    src/executor/executor/get_time_ms/get_time_ms.c
+    src/executor/executor/read_with_timeout/read_with_timeout.c
+    src/executor/executor/parse_command_args/parse_command_args.c
+    src/executor/executor/free_command_args/free_command_args.c
+    src/executor/executor/executor_run_with_timeout/executor_run_with_timeout.c
+    src/executor/executor/executor_run_command/executor_run_command.c
+    src/executor/executor/command_result_free/command_result_free.c
     src/executor/executor_cross_platform/executor_cross_platform.c
-    src/sandbox/sandbox.c
+    src/sandbox/sandbox_config_new/sandbox_config_new.c
+    src/sandbox/sandbox_config_free/sandbox_config_free.c
+    src/sandbox/sandbox_config_add_whitelist/sandbox_config_add_whitelist.c
+    src/sandbox/sandbox_config_add_allowed_path/sandbox_config_add_allowed_path.c
+    src/sandbox/sandbox_context_new/sandbox_context_new.c
+    src/sandbox/sandbox_context_free/sandbox_context_free.c
+    src/sandbox/extract_command_name/extract_command_name.c
+    src/sandbox/sandbox_check_command_allowed/sandbox_check_command_allowed.c
+    src/sandbox/sandbox_check_path_allowed/sandbox_check_path_allowed.c
+    src/sandbox/sandbox_apply_limits/sandbox_apply_limits.c
     src/output/formatter/formatter.c
     src/resource/limiter/limiter.c
     src/resource/monitor/monitor.c
-    src/module/module/module.c
+    src/module/module_new/module_new.c
+    src/module/module_free/module_free.c
+    src/module/module_load_content/module_load_content.c
+    src/module/module_add_dependency/module_add_dependency.c
+    src/module/module_export/module_export.c
+    src/module/module_get_export/module_get_export.c
+    src/module/module_registry_new/module_registry_new.c
+    src/module/module_registry_free/module_registry_free.c
+    src/module/module_registry_add_search_path/module_registry_add_search_path.c
+    src/module/module_registry_register/module_registry_register.c
+    src/module/module_registry_find/module_registry_find.c
+    src/module/module_registry_load/module_registry_load.c
+    src/module/file_exists/file_exists.c
+    src/module/module_resolve_path/module_resolve_path.c
     src/import_export/import/import.c
     src/import_export/export/export.c
-    src/dependency/graph/graph.c
+    src/dependency/graph/dependency_node_new/dependency_node_new.c
+    src/dependency/graph/dependency_node_free/dependency_node_free.c
+    src/dependency/graph/dependency_node_add_child/dependency_node_add_child.c
+    src/dependency/graph/dependency_graph_new/dependency_graph_new.c
+    src/dependency/graph/dependency_graph_free/dependency_graph_free.c
+    src/dependency/graph/dependency_graph_add_module/dependency_graph_add_module.c
+    src/dependency/graph/dependency_graph_find_node/dependency_graph_find_node.c
+    src/dependency/graph/dependency_graph_add_dependency/dependency_graph_add_dependency.c
+    src/dependency/graph/calculate_in_degrees/calculate_in_degrees.c
+    src/dependency/graph/dependency_graph_topological_sort/dependency_graph_topological_sort.c
+    src/dependency/graph/dependency_build_graph/dependency_build_graph.c
     src/dependency/detector/detector.c
     src/config/create_default_limits/create_default_limits.c
     src/config/create_default_buffers/create_default_buffers.c
@@ -173,15 +221,55 @@ set(XMD_LIB_SOURCES
     src/config/xmd_internal_config_add_exec_whitelist/xmd_internal_config_add_exec_whitelist.c
     src/config/xmd_internal_config_set_exec_whitelist/xmd_internal_config_set_exec_whitelist.c
     src/config/xmd_internal_config_load_whitelist_env/xmd_internal_config_load_whitelist_env.c
+    src/config/config_globals.c
     src/config/config/config.c
-    src/utils/utils.c
+    src/utils/xmd_hash_key/xmd_hash_key.c
+    src/utils/xmd_variable_to_number/xmd_variable_to_number.c
+    src/utils/xmd_variable_equals/xmd_variable_equals.c
+    src/utils/xmd_malloc/xmd_malloc.c
+    src/utils/xmd_calloc/xmd_calloc.c
+    src/utils/xmd_realloc/xmd_realloc.c
+    src/utils/xmd_strdup/xmd_strdup.c
+    src/utils/xmd_expand_array/xmd_expand_array.c
+    src/utils/xmd_check_null/xmd_check_null.c
+    src/utils/xmd_malloc_safe/xmd_malloc_safe.c
     src/security/validator/validator.c
     src/security/sanitizer/sanitizer.c
-    src/security/auditor/auditor.c
+    
+    # Security auditor files
+    src/security/auditor/audit_state/audit_state.c
+    src/security/auditor/get_timestamp_ms/get_timestamp_ms.c
+    src/security/auditor/expand_entries_array/expand_entries_array.c
+    src/security/auditor/write_audit_entry_to_file/write_audit_entry_to_file.c
+    src/security/auditor/security_audit_init/security_audit_init.c
+    src/security/auditor/security_audit_log/security_audit_log.c
+    src/security/auditor/security_audit_get_entries/security_audit_get_entries.c
+    src/security/auditor/security_audit_cleanup/security_audit_cleanup.c
     
     # Performance components
-    src/performance/optimizer/optimizer.c
-    src/performance/profiler/profiler.c
+    src/performance/optimizer/optimizer_state/optimizer_state.c
+    src/performance/optimizer/perf_optimizer_init/perf_optimizer_init.c
+    src/performance/optimizer/should_apply_optimization/should_apply_optimization.c
+    src/performance/optimizer/apply_constant_folding/apply_constant_folding.c
+    src/performance/optimizer/apply_dead_code_elimination/apply_dead_code_elimination.c
+    src/performance/optimizer/apply_common_subexpression_elimination/apply_common_subexpression_elimination.c
+    src/performance/optimizer/apply_loop_unrolling/apply_loop_unrolling.c
+    src/performance/optimizer/apply_inline_expansion/apply_inline_expansion.c
+    src/performance/optimizer/perf_optimize_ast/perf_optimize_ast.c
+    src/performance/optimizer/perf_optimizer_cleanup/perf_optimizer_cleanup.c
+    src/performance/profiler/get_time_ns/get_time_ns.c
+    src/performance/profiler/time_diff_ns/time_diff_ns.c
+    src/performance/profiler/get_memory_usage/get_memory_usage.c
+    src/performance/profiler/perf_profiler_create/perf_profiler_create.c
+    src/performance/profiler/perf_profiler_start/perf_profiler_start.c
+    src/performance/profiler/perf_profiler_stop/perf_profiler_stop.c
+    src/performance/profiler/perf_profiler_record_alloc/perf_profiler_record_alloc.c
+    src/performance/profiler/perf_profiler_record_dealloc/perf_profiler_record_dealloc.c
+    src/performance/profiler/perf_profiler_record_cache_hit/perf_profiler_record_cache_hit.c
+    src/performance/profiler/perf_profiler_record_cache_miss/perf_profiler_record_cache_miss.c
+    src/performance/profiler/perf_profiler_get_metrics/perf_profiler_get_metrics.c
+    src/performance/profiler/perf_profiler_generate_report/perf_profiler_generate_report.c
+    src/performance/profiler/perf_profiler_destroy/perf_profiler_destroy.c
     src/performance/benchmark/benchmark.c
     
     # CLI components
@@ -286,6 +374,32 @@ set(XMD_LIB_SOURCES
     src/bindings/c_api/xmd_config_free/xmd_config_free.c
     src/bindings/c_api/xmd_processor_create/xmd_processor_create.c
     src/bindings/c_api/xmd_processor_free/xmd_processor_free.c
+    
+    # Resource limiter files
+    src/resource/limiter/resource_limiter_new/resource_limiter_new.c
+    src/resource/limiter/resource_limiter_free/resource_limiter_free.c
+    src/resource/limiter/set_limiter_error/set_limiter_error.c
+    src/resource/limiter/resource_limiter_set_memory_limit/resource_limiter_set_memory_limit.c
+    src/resource/limiter/resource_limiter_set_cpu_limit/resource_limiter_set_cpu_limit.c
+    src/resource/limiter/resource_limiter_set_time_limit/resource_limiter_set_time_limit.c
+    src/resource/limiter/resource_limiter_check_limits/resource_limiter_check_limits.c
+    
+    # Store operations files
+    src/store/store_ops/store_has/store_has.c
+    src/store/store_ops/store_remove/store_remove.c
+    src/store/store_ops/store_clear/store_clear.c
+    src/store/store_ops/store_size/store_size.c
+    src/store/store_ops/store_keys/store_keys.c
+    
+    # CLI parser files
+    src/cli/parser/parse_command_type/parse_command_type.c
+    src/cli/parser/is_flag/is_flag.c
+    src/cli/parser/cli_parse_args/cli_parse_args.c
+    
+    # Variable extended files
+    src/variable/variable_extended/variable_get_boolean/variable_get_boolean.c
+    src/variable/variable_extended/variable_get_number/variable_get_number.c
+    src/variable/variable_extended/variable_get_string/variable_get_string.c
 )
 
 # Create static library
