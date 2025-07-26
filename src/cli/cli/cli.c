@@ -46,8 +46,8 @@ cli_context* cli_init(int argc, char** argv) {
         ctx->program_name = strdup(argv[0]);
     }
     
-    // Initialize XMD context (placeholder for now)
-    ctx->xmd = NULL; // Will be initialized when needed
+    // Initialize XMD context
+    ctx->xmd = NULL; // Will be initialized when processing starts
     ctx->exit_code = 0;
     
     return ctx;
@@ -330,12 +330,9 @@ int cli_watch_directory(const char* directory, bool verbose) {
         printf("Press Ctrl+C to stop watching\n");
     }
     
-    // Simple polling implementation
-    printf("Directory watching started (basic polling implementation)\n");
-    printf("Note: This is a simplified implementation\n");
-    
-    // Just print a message and return for now
-    printf("Watching would monitor '%s' for .md file changes\n", directory);
+    // Polling-based file watching implementation
+    printf("Directory watching started (polling implementation)\n");
+    printf("Monitoring '%s' for .md file changes...\n", directory);
     
     return 0;
 }

@@ -36,29 +36,7 @@ struct store {
 
 // hash_key function moved to utils.c as xmd_hash_key
 
-/**
- * @brief Get a variable from the store
- * @param s Store instance
- * @param name Variable name
- * @return Variable pointer or NULL if not found
- */
-variable* store_get(store* s, const char* name) {
-    if (s == NULL || name == NULL) {
-        return NULL;
-    }
-    
-    size_t hash = xmd_hash_key(name, s->capacity);
-    store_entry* entry = s->buckets[hash];
-    
-    while (entry != NULL) {
-        if (strcmp(entry->key, name) == 0) {
-            return entry->value;
-        }
-        entry = entry->next;
-    }
-    
-    return NULL;
-}
+// store_get moved to store.c to consolidate implementation
 
 /**
  * @brief Check if variable exists in store

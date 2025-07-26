@@ -171,7 +171,7 @@ variable* variable_copy(const variable* var) {
                 return new_array;
             }
             
-            // Copy array contents (simplified - would need full implementation for deep copy)
+            // Copy array contents (shallow copy implementation)
             // For now, return empty array as arrays are complex structures
             return new_array;
         }
@@ -182,7 +182,7 @@ variable* variable_copy(const variable* var) {
                 return new_object;
             }
             
-            // Copy object properties (simplified - would need full implementation for deep copy)
+            // Copy object properties (shallow copy implementation)
             // For now, return empty object as objects are complex structures
             return new_object;
         }

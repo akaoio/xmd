@@ -12,6 +12,14 @@
 #include "variable.h"
 
 /**
+ * @brief Command variable structure
+ */
+typedef struct {
+    char* key;
+    char* value;
+} cmd_variable_t;
+
+/**
  * @brief Print usage information
  * @param program_name Name of the program
  */
@@ -60,7 +68,7 @@ static void print_version(void) {
  * @param cmd_variables Array of command variables
  * @param var_count Number of variables
  */
-static void cleanup_cmd_variables(struct { char* key; char* value; } cmd_variables[], int var_count) {
+static void cleanup_cmd_variables(cmd_variable_t cmd_variables[], int var_count) {
     for (int i = 0; i < var_count; i++) {
         free(cmd_variables[i].key);
         free(cmd_variables[i].value);
@@ -184,10 +192,7 @@ static int cmd_process(int argc, char* argv[]) {
     
     // We'll store variables temporarily and set them on the processor later
     // Simple array to store key-value pairs
-    struct {
-        char* key;
-        char* value;
-    } cmd_variables[100]; // Max 100 variables
+    cmd_variable_t cmd_variables[100]; // Max 100 variables
     int var_count = 0;
     
     // Parse arguments

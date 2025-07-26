@@ -130,7 +130,7 @@ int executor_validate_command(ExecutorContext* ctx, const char* command) {
     
     for (int i = 0; dangerous_commands[i]; i++) {
         if (strstr(command, dangerous_commands[i])) {
-            // Log error (simplified without accessing private struct)
+            // Log execution error
             fprintf(stderr, "Dangerous command detected: %s\n", dangerous_commands[i]);
             return EXECUTOR_ERROR;
         }
@@ -138,7 +138,7 @@ int executor_validate_command(ExecutorContext* ctx, const char* command) {
     
     // Check command length
     if (strlen(command) > 1024) {
-        // Log error (simplified without accessing private struct)
+        // Log execution error
         fprintf(stderr, "Command too long (max 1024 characters)\n");
         return EXECUTOR_ERROR;
     }

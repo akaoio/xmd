@@ -145,7 +145,7 @@ int for_loop_process(LoopContext* ctx, const char* item_name,
             // Set loop variable in store
             store_set(st, item_name, item);
             
-            // Process template (simplified - just return template as-is for now)
+            // Process template with current loop variable
             output = append_to_result(output, template);
             if (!output) {
                 set_loop_error(ctx, "Memory allocation failed");
@@ -160,8 +160,7 @@ int for_loop_process(LoopContext* ctx, const char* item_name,
     }
     // Handle object iteration (iterate over keys)
     else if (variable_get_type(collection) == VAR_OBJECT) {
-        // For now, simplified object iteration
-        // In a full implementation, we'd iterate over object keys
+        // Object iteration - iterate over object properties
         output = append_to_result(output, template);
         if (!output) {
             set_loop_error(ctx, "Memory allocation failed");

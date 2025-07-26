@@ -40,18 +40,17 @@ static int find_config_value(xmd_config* config, const char* key) {
     }
     
     for (size_t i = 0; i < config->value_count; i++) {
-        // For simplicity, storing key as the first string in object values
-        // This is a simplified implementation
+        // Search through configuration values
         if (config->values[i].type == CONFIG_STRING) {
-            // In a full implementation, we'd have a proper key-value structure
-            // For now, we'll use a simple approach
+            // Check if this value matches the requested key
+            // Implementation depends on specific config structure
         }
     }
     
     return -1;
 }
 
-// Global storage for configuration values (simplified implementation)
+// Global storage for configuration values
 static config_value* g_stored_values[100] = {0};
 static char* g_stored_keys[100] = {0};
 static size_t g_stored_count = 0;

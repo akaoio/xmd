@@ -110,7 +110,7 @@ set(XMD_LIB_SOURCES
     # Cross-platform compatibility layer
     src/platform/platform.c
     
-    # XMD directive processor
+    # XMD directive processor (unified version with all features)
     src/xmd_processor.c
 )
 
@@ -241,6 +241,10 @@ xmd_target_link_libraries(test_docs)
 add_executable(test_devtools test/devtools/test_devtools.c)
 xmd_target_link_libraries(test_devtools)
 
+# XMD Processor comprehensive tests
+add_executable(test_xmd_processor test/xmd_processor/test_xmd_processor.c)
+xmd_target_link_libraries(test_xmd_processor)
+
 # Main CLI executable
 add_executable(xmd_cli src/main_cli.c)
 xmd_target_link_libraries(xmd_cli)
@@ -273,6 +277,7 @@ add_test(NAME performance_tests COMMAND test_performance)
 add_test(NAME cli_tests COMMAND test_cli)
 add_test(NAME docs_tests COMMAND test_docs)
 add_test(NAME devtools_tests COMMAND test_devtools)
+add_test(NAME xmd_processor_tests COMMAND test_xmd_processor)
 
 # Custom target to run all tests
 add_custom_target(test_all

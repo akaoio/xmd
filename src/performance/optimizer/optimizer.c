@@ -77,7 +77,7 @@ static uint32_t apply_constant_folding(token** tokens, size_t* token_count) {
     uint32_t optimizations = 0;
     token* token_array = *tokens;
     
-    // Look for consecutive text tokens that can be folded (simplified)
+    // Look for consecutive text tokens that can be folded
     if (*token_count < 3) {
         return 0; // Need at least 3 tokens for folding
     }
@@ -197,7 +197,7 @@ static uint32_t apply_common_subexpression_elimination(token** tokens, size_t* t
     uint32_t optimizations = 0;
     token* token_array = *tokens;
     
-    // Look for repeated expressions (simplified version)
+    // Look for repeated expressions
     for (size_t i = 0; i < *token_count - 2; i++) {
         for (size_t j = i + 3; j < *token_count - 2; j++) {
             // Check for identical 3-token sequences

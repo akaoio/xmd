@@ -220,3 +220,27 @@ bool store_set(store* s, const char* name, variable* var) {
     
     return true;
 }
+
+/**
+ * @brief Get a variable from the store
+ * @param s Store instance
+ * @param name Variable name
+ * @return Variable pointer or NULL if not found
+ */
+variable* store_get(store* s, const char* name) {
+    if (s == NULL || name == NULL) {
+        return NULL;
+    }
+    
+    size_t hash = xmd_hash_key(name, s->capacity);
+    
+    store_entry* entry = s->buckets[hash];
+    while (entry != NULL) {
+        if (strcmp(entry->key, name) == 0) {
+            return entry->value;
+        }
+        entry = entry->next;
+    }
+    
+    return NULL;
+}
