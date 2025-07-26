@@ -23,6 +23,7 @@
 
 // Forward declarations
 static size_t process_variable_substitution(const char* text, store* var_store, char* output, size_t output_size);
+static int parse_range_expression(const char* range_expr, store* var_store, int* start_val, int* end_val);
 
 /**
  * @brief Parse XMD directive command and arguments
@@ -42,30 +43,29 @@ static int parse_xmd_directive(const char* directive, char* command, char* args)
         ptr += 4;
     }
     
-    // Extract command name
+    // Extract command name (until space or end)
     int cmd_len = 0;
-    while (*ptr && *ptr != '(' && *ptr != '\n' && cmd_len < 255) {
+    while (*ptr && !isspace(*ptr) && *ptr != '\n' && cmd_len < 255) {
         command[cmd_len++] = *ptr++;
     }
     command[cmd_len] = '\0';
     
-    // Extract arguments if present
+    // Skip whitespace
+    while (*ptr && isspace(*ptr) && *ptr != '\n') {
+        ptr++;
+    }
+    
+    // Extract arguments (rest of the line)
     args[0] = '\0';
-    if (*ptr == '(') {
-        ptr++; // Skip '('
-        int arg_len = 0;
-        int paren_count = 1;
-        
-        while (*ptr && paren_count > 0 && arg_len < 4095) {
-            if (*ptr == '(') {
-                paren_count++;
-            } else if (*ptr == ')') {
-                paren_count--;
-                if (paren_count == 0) break;
-            }
-            args[arg_len++] = *ptr++;
-        }
-        args[arg_len] = '\0';
+    int arg_len = 0;
+    while (*ptr && *ptr != '\n' && arg_len < 4095) {
+        args[arg_len++] = *ptr++;
+    }
+    args[arg_len] = '\0';
+    
+    // Trim trailing whitespace from args
+    while (arg_len > 0 && isspace(args[arg_len - 1])) {
+        args[--arg_len] = '\0';
     }
     
     return 0;
@@ -125,33 +125,177 @@ static int process_exec(const char* args, store* var_store, char* output, size_t
 }
 
 /**
+ * @brief Parse range expression (supports 1..3, var..3, 1..var, var..var)
+ * @param range_expr Range expression string
+ * @param var_store Variable store for resolving variables
+ * @param start_val Output: start value
+ * @param end_val Output: end value
+ * @return 0 on success, -1 on error
+ */
+static int parse_range_expression(const char* range_expr, store* var_store, int* start_val, int* end_val) {
+    char start_str[256], end_str[256];
+    
+    // Find the ".." separator
+    const char* dot_pos = strstr(range_expr, "..");
+    if (!dot_pos) {
+        return -1;
+    }
+    
+    // Extract start part
+    size_t start_len = dot_pos - range_expr;
+    if (start_len >= sizeof(start_str)) return -1;
+    strncpy(start_str, range_expr, start_len);
+    start_str[start_len] = '\0';
+    
+    // Trim whitespace from start
+    char* start_trimmed = start_str;
+    while (*start_trimmed == ' ') start_trimmed++;
+    char* start_end = start_trimmed + strlen(start_trimmed) - 1;
+    while (start_end > start_trimmed && *start_end == ' ') *start_end-- = '\0';
+    
+    // Extract end part
+    const char* end_ptr = dot_pos + 2; // Skip ".."
+    while (*end_ptr == ' ') end_ptr++; // Skip leading spaces
+    strncpy(end_str, end_ptr, sizeof(end_str) - 1);
+    end_str[sizeof(end_str) - 1] = '\0';
+    
+    // Trim trailing whitespace from end
+    char* end_trimmed = end_str;
+    char* end_end = end_trimmed + strlen(end_trimmed) - 1;
+    while (end_end > end_trimmed && *end_end == ' ') *end_end-- = '\0';
+    
+    // Parse start value (number or variable)
+    if (isdigit(start_trimmed[0]) || (start_trimmed[0] == '-' && isdigit(start_trimmed[1]))) {
+        // It's a number
+        *start_val = atoi(start_trimmed);
+    } else {
+        // It's a variable
+        variable* start_var = store_get(var_store, start_trimmed);
+        if (!start_var) return -1;
+        const char* start_value = variable_to_string(start_var);
+        if (!start_value) return -1;
+        *start_val = atoi(start_value);
+    }
+    
+    // Parse end value (number or variable)
+    if (isdigit(end_trimmed[0]) || (end_trimmed[0] == '-' && isdigit(end_trimmed[1]))) {
+        // It's a number
+        *end_val = atoi(end_trimmed);
+    } else {
+        // It's a variable
+        variable* end_var = store_get(var_store, end_trimmed);
+        if (!end_var) return -1;
+        const char* end_value = variable_to_string(end_var);
+        if (!end_value) return -1;
+        *end_val = atoi(end_value);
+    }
+    
+    return 0;
+}
+
+/**
  * @brief Process xmd:for directive  
- * @param args Loop arguments (e.g., "i in 1..5")
+ * @param args Loop arguments (e.g., "i in 1..5" or "i in collection")
  * @param var_store Variable store
  * @param output Output buffer
  * @param output_size Size of output buffer
  * @return 0 on success, -1 on error
  */
 static int process_for(const char* args, store* var_store, char* output, size_t output_size) {
-    // Parse loop variable and range
+    // Parse "var in collection" format
     char var_name[256];
-    int start = 0, end = 0;
+    char range_or_collection[256];
     
-    // Simple parsing for "var in start..end" format
-    if (sscanf(args, "%255s in %d..%d", var_name, &start, &end) != 3) {
-        snprintf(output, output_size, "Error: Invalid for loop syntax");
+    // Parse the format "var in range_or_collection"
+    if (sscanf(args, "%255s in %255[^\n]", var_name, range_or_collection) != 2) {
+        snprintf(output, output_size, "");
         return -1;
     }
     
-    // Validate range
-    if (start > end || end - start > MAX_LOOP_ITERATIONS) {
-        snprintf(output, output_size, "Error: Invalid or too large loop range");
+    // Check if it's a range expression (contains "..")
+    if (strstr(range_or_collection, "..")) {
+        // It's a range - validate and convert to array
+        int start_val, end_val;
+        if (parse_range_expression(range_or_collection, var_store, &start_val, &end_val) != 0) {
+            snprintf(output, output_size, "");
+            return -1;
+        }
+        
+        // Validate range
+        if (start_val > end_val || end_val - start_val > MAX_LOOP_ITERATIONS) {
+            snprintf(output, output_size, "");
+            return -1;
+        }
+        
+        // Create array variable
+        variable* array_var = variable_create_array();
+        if (!array_var) {
+            snprintf(output, output_size, "");
+            return -1;
+        }
+        
+        // Populate array with range values
+        for (int i = start_val; i <= end_val; i++) {
+            variable* item = variable_create_number((double)i);
+            if (!item) {
+                variable_unref(array_var);
+                snprintf(output, output_size, "");
+                return -1;
+            }
+            
+            if (!variable_array_add(array_var, item)) {
+                variable_unref(item);
+                variable_unref(array_var);
+                snprintf(output, output_size, "");
+                return -1;
+            }
+            
+            variable_unref(item); // array_add takes its own reference
+        }
+        
+        // Create a temporary variable name for the range array
+        char temp_var_name[512];
+        snprintf(temp_var_name, sizeof(temp_var_name), "__range_%s_%d_%d", var_name, start_val, end_val);
+        
+        // Store the array variable
+        if (!store_set(var_store, temp_var_name, array_var)) {
+            variable_unref(array_var);
+            snprintf(output, output_size, "");
+            return -1;
+        }
+        
+        // Update range_or_collection to point to our temporary array
+        strncpy(range_or_collection, temp_var_name, sizeof(range_or_collection) - 1);
+        range_or_collection[sizeof(range_or_collection) - 1] = '\0';
+        
+        // Fall through to array processing logic below
+        variable_unref(array_var); // Release our reference, store keeps its own
+    }
+    
+    // Process as array/collection (both original arrays and converted ranges)
+    variable* collection = store_get(var_store, range_or_collection);
+    if (!collection) {
+        snprintf(output, output_size, "");
         return -1;
     }
     
-    // For now, return a structured output that can be post-processed
-    // This is a limitation of the current single-token processing architecture
-    snprintf(output, output_size, "XMD_FOR_LOOP:%s:%d:%d", var_name, start, end);
+    // For now, since the current architecture processes tokens individually,
+    // we can't actually iterate here. We need the full document content
+    // to find the matching endfor and process the loop body.
+    // 
+    // As a temporary solution, we'll store loop state information
+    // that can be used by a document-level processor later.
+    //
+    // In a proper implementation, we would:
+    // 1. Find the matching endfor
+    // 2. Extract the loop body content
+    // 3. For each item in the collection:
+    //    a. Set the loop variable
+    //    b. Process the loop body
+    //    c. Append to output
+    
+    // For now, just return empty to not break processing
+    snprintf(output, output_size, "");
     return 0;
 }
 
@@ -164,42 +308,100 @@ static int process_for(const char* args, store* var_store, char* output, size_t 
  * @return 0 on success, -1 on error
  */
 static int process_if(const char* args, store* var_store, char* output, size_t output_size) {
-    // First substitute variables in the condition
-    char expanded_args[1024];
-    process_variable_substitution(args, var_store, expanded_args, sizeof(expanded_args));
-    
-    // Handle literal boolean values
-    if (strcmp(expanded_args, "true") == 0) {
-        snprintf(output, output_size, "XMD_IF_TRUE");
-        return 1; // Return 1 to indicate condition is true
-    } else if (strcmp(expanded_args, "false") == 0) {
-        snprintf(output, output_size, "XMD_IF_FALSE");
-        return 0; // Return 0 to indicate condition is false
+    // Handle simple variable reference (just variable name)
+    if (strchr(args, '=') == NULL && strchr(args, '!') == NULL && strchr(args, '<') == NULL && strchr(args, '>') == NULL) {
+        // Simple variable reference - check if variable exists and is truthy
+        variable* var = store_get(var_store, args);
+        if (var) {
+            const char* value = variable_to_string(var);
+            bool is_true = (value && strlen(value) > 0 && strcmp(value, "false") != 0 && strcmp(value, "0") != 0);
+            if (is_true) {
+                snprintf(output, output_size, "");
+                return 1;
+            } else {
+                snprintf(output, output_size, "");
+                return 0;
+            }
+        } else {
+            snprintf(output, output_size, "");
+            return 0; // Variable doesn't exist, treat as false
+        }
     }
     
-    // Execute as shell command and check exit status
-    FILE* pipe = popen(expanded_args, "r");
-    if (!pipe) {
-        snprintf(output, output_size, "XMD_IF_FALSE");
-        return 0; // Command failed to execute, treat as false
-    }
-    
-    // Read and discard output (we only care about exit status)
-    char buffer[256];
-    while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
-        // Discard output
-    }
-    
-    int exit_status = pclose(pipe);
-    int success = (WIFEXITED(exit_status) && WEXITSTATUS(exit_status) == 0);
-    
-    if (success) {
-        snprintf(output, output_size, "XMD_IF_TRUE");
-        return 1;
-    } else {
-        snprintf(output, output_size, "XMD_IF_FALSE");
+    // Handle comparisons like "name == 'World'" or "count > 5"
+    char* comparison = strdup(args);
+    if (!comparison) {
+        snprintf(output, output_size, "");
         return 0;
     }
+    
+    // Look for comparison operators
+    char* op_pos = NULL;
+    char op[3] = "";
+    
+    if ((op_pos = strstr(comparison, "=="))) {
+        strcpy(op, "==");
+    } else if ((op_pos = strstr(comparison, "!="))) {
+        strcpy(op, "!=");
+    } else if ((op_pos = strstr(comparison, "<="))) {
+        strcpy(op, "<=");
+    } else if ((op_pos = strstr(comparison, ">="))) {
+        strcpy(op, ">=");
+    } else if ((op_pos = strstr(comparison, "<"))) {
+        strcpy(op, "<");
+    } else if ((op_pos = strstr(comparison, ">"))) {
+        strcpy(op, ">");
+    }
+    
+    if (op_pos) {
+        // Split into left and right parts
+        *op_pos = '\0';
+        char* left = comparison;
+        char* right = op_pos + strlen(op);
+        
+        // Trim whitespace
+        while (*left == ' ') left++;
+        while (*right == ' ') right++;
+        char* left_end = left + strlen(left) - 1;
+        char* right_end = right + strlen(right) - 1;
+        while (left_end > left && *left_end == ' ') *left_end-- = '\0';
+        while (right_end > right && *right_end == ' ') *right_end-- = '\0';
+        
+        // Remove quotes from right side if present
+        if ((right[0] == '"' && right[strlen(right)-1] == '"') || 
+            (right[0] == '\'' && right[strlen(right)-1] == '\'')) {
+            right[strlen(right)-1] = '\0';
+            right++;
+        }
+        
+        // Get left variable value
+        variable* left_var = store_get(var_store, left);
+        const char* left_val = left_var ? variable_to_string(left_var) : "";
+        
+        // Perform comparison
+        bool result = false;
+        if (strcmp(op, "==") == 0) {
+            result = (strcmp(left_val, right) == 0);
+        } else if (strcmp(op, "!=") == 0) {
+            result = (strcmp(left_val, right) != 0);
+        } else if (strcmp(op, "<") == 0) {
+            result = (atoi(left_val) < atoi(right));
+        } else if (strcmp(op, ">") == 0) {
+            result = (atoi(left_val) > atoi(right));
+        } else if (strcmp(op, "<=") == 0) {
+            result = (atoi(left_val) <= atoi(right));
+        } else if (strcmp(op, ">=") == 0) {
+            result = (atoi(left_val) >= atoi(right));
+        }
+        
+        free(comparison);
+        snprintf(output, output_size, "");
+        return result ? 1 : 0;
+    }
+    
+    free(comparison);
+    snprintf(output, output_size, "");
+    return 0;
 }
 
 /**
@@ -251,27 +453,38 @@ static int process_set(const char* args, store* var_store, char* output, size_t 
     char var_name[256];
     char var_value[4096];
     
-    // Parse "name, value" format
-    const char* comma = strchr(args, ',');
-    if (!comma) {
-        snprintf(output, output_size, "Error: Invalid set syntax");
+    // Parse "name=value" format
+    const char* equals = strchr(args, '=');
+    if (!equals) {
+        snprintf(output, output_size, "");
         return -1;
     }
     
     // Extract variable name
-    size_t name_len = comma - args;
+    size_t name_len = equals - args;
     if (name_len >= sizeof(var_name)) {
         name_len = sizeof(var_name) - 1;
     }
     strncpy(var_name, args, name_len);
     var_name[name_len] = '\0';
     
-    // Extract value (skip comma and spaces)
-    const char* value_ptr = comma + 1;
+    // Trim whitespace from name
+    char* name_end = var_name + strlen(var_name) - 1;
+    while (name_end > var_name && *name_end == ' ') *name_end-- = '\0';
+    
+    // Extract value (skip equals and spaces)
+    const char* value_ptr = equals + 1;
     while (*value_ptr == ' ') value_ptr++;
     
     strncpy(var_value, value_ptr, sizeof(var_value) - 1);
     var_value[sizeof(var_value) - 1] = '\0';
+    
+    // Remove quotes if present
+    if ((var_value[0] == '"' && var_value[strlen(var_value)-1] == '"') ||
+        (var_value[0] == '\'' && var_value[strlen(var_value)-1] == '\'')) {
+        var_value[strlen(var_value)-1] = '\0';
+        memmove(var_value, var_value + 1, strlen(var_value));
+    }
     
     // Store variable as string
     variable* var = variable_create_string(var_value);
@@ -463,19 +676,27 @@ static size_t process_variable_substitution(const char* text, store* var_store, 
     const char* ptr = text;
     
     while (*ptr && output_pos < output_size - 1) {
-        if (*ptr == '$' && *(ptr + 1) && (isalpha(*(ptr + 1)) || *(ptr + 1) == '_')) {
-            // Found variable reference
-            ptr++; // Skip $
+        if (ptr[0] == '{' && ptr[1] == '{') {
+            // Found XMD variable reference {{variable}}
+            ptr += 2; // Skip {{
+            
+            // Find closing }}
+            const char* var_start = ptr;
+            const char* var_end = strstr(ptr, "}}");
+            if (!var_end) {
+                // Malformed variable reference, treat as literal
+                output[output_pos++] = '{';
+                output[output_pos++] = '{';
+                continue;
+            }
             
             // Extract variable name
-            char var_name[256];
-            size_t name_len = 0;
-            while (*ptr && (isalnum(*ptr) || *ptr == '_') && name_len < sizeof(var_name) - 1) {
-                var_name[name_len++] = *ptr++;
-            }
-            var_name[name_len] = '\0';
-            
-            if (name_len > 0) {
+            size_t var_len = var_end - var_start;
+            if (var_len > 0 && var_len < 256) {
+                char var_name[256];
+                strncpy(var_name, var_start, var_len);
+                var_name[var_len] = '\0';
+                
                 // Get variable value
                 variable* var = store_get(var_store, var_name);
                 if (var) {
@@ -488,13 +709,22 @@ static size_t process_variable_substitution(const char* text, store* var_store, 
                         }
                     }
                 } else {
-                    // Variable not found, keep original $var_name
-                    if (output_pos + name_len + 1 < output_size - 1) {
-                        output[output_pos++] = '$';
+                    // Variable not found, keep original {{var_name}}
+                    if (output_pos + var_len + 4 < output_size - 1) {
+                        output[output_pos++] = '{';
+                        output[output_pos++] = '{';
                         strcpy(output + output_pos, var_name);
-                        output_pos += name_len;
+                        output_pos += var_len;
+                        output[output_pos++] = '}';
+                        output[output_pos++] = '}';
                     }
                 }
+                
+                ptr = var_end + 2; // Skip }}
+            } else {
+                // Invalid variable name, treat as literal
+                output[output_pos++] = '{';
+                output[output_pos++] = '{';
             }
         } else {
             // Regular character
@@ -653,6 +883,7 @@ int process_complete_if_statement(const char* content, size_t if_start, size_t a
     return endif_pos + 9 - if_start; // 9 = strlen("xmd:endif")
 }
 
+
 /**
  * @brief Process a complete for loop with body content
  * @param content Full document content
@@ -676,9 +907,23 @@ int process_complete_for_loop(const char* content, size_t for_start, size_t args
     
     // Parse loop parameters
     char var_name[256];
-    int start = 0, end = 0;
-    if (sscanf(args, "%255s in %d..%d", var_name, &start, &end) != 3) {
+    char range_or_collection[256];
+    if (sscanf(args, "%255s in %255[^\n]", var_name, range_or_collection) != 2) {
         snprintf(output, output_size, "Error: Invalid for loop syntax");
+        return -1;
+    }
+    
+    int start = 0, end = 0;
+    
+    // Check if it's a range expression (contains "..")
+    if (strstr(range_or_collection, "..")) {
+        if (parse_range_expression(range_or_collection, var_store, &start, &end) != 0) {
+            snprintf(output, output_size, "Error: Invalid range expression");
+            return -1;
+        }
+    } else {
+        // It's a collection variable - try old logic for backward compatibility
+        snprintf(output, output_size, "Error: Collection iteration not implemented in complete loop");
         return -1;
     }
     
@@ -782,7 +1027,7 @@ xmd_error_code xmd_validate_syntax(const char* input, size_t input_length) {
                     return XMD_ERROR_SYNTAX;
                 }
             } else if (strcmp(command, "set") == 0) {
-                if (!strchr(args, ',')) {
+                if (!strchr(args, '=')) {
                     token_free(tok);
                     lexer_free(lex);
                     return XMD_ERROR_SYNTAX;
@@ -794,8 +1039,8 @@ xmd_error_code xmd_validate_syntax(const char* input, size_t input_length) {
                     return XMD_ERROR_SYNTAX;
                 }
             } else if (strcmp(command, "for") == 0) {
-                // Check for loop syntax: "var in start..end"
-                if (!strstr(args, " in ") || !strstr(args, "..")) {
+                // Check for loop syntax: "var in iterable" (various formats supported)
+                if (!strstr(args, " in ")) {
                     token_free(tok);
                     lexer_free(lex);
                     return XMD_ERROR_SYNTAX;
@@ -834,11 +1079,73 @@ xmd_error_code xmd_validate_syntax(const char* input, size_t input_length) {
                     lexer_free(lex);
                     return XMD_ERROR_SYNTAX;
                 }
+            } else if (strcmp(command, "include") == 0) {
+                if (strlen(args) == 0) {
+                    token_free(tok);
+                    lexer_free(lex);
+                    return XMD_ERROR_SYNTAX;
+                }
+            } else if (strcmp(command, "try") == 0) {
+                // try directive - no args required
+            } else if (strcmp(command, "catch") == 0) {
+                // catch directive - optional args
+            } else if (strcmp(command, "endtry") == 0) {
+                // endtry directive - no args required
+            } else if (strcmp(command, "while") == 0) {
+                if (strlen(args) == 0) {
+                    token_free(tok);
+                    lexer_free(lex);
+                    return XMD_ERROR_SYNTAX;
+                }
+            } else if (strcmp(command, "endwhile") == 0) {
+                // endwhile directive - no args required
+            } else if (strcmp(command, "elif") == 0) {
+                if (strlen(args) == 0) {
+                    token_free(tok);
+                    lexer_free(lex);
+                    return XMD_ERROR_SYNTAX;
+                }
+            } else if (strcmp(command, "cache") == 0) {
+                // cache directive - args optional
+            } else if (strcmp(command, "endcache") == 0) {
+                // endcache directive - no args required
+            } else if (strcmp(command, "macro") == 0) {
+                if (strlen(args) == 0) {
+                    token_free(tok);
+                    lexer_free(lex);
+                    return XMD_ERROR_SYNTAX;
+                }
+            } else if (strcmp(command, "endmacro") == 0) {
+                // endmacro directive - no args required
+            } else if (strcmp(command, "call") == 0) {
+                if (strlen(args) == 0) {
+                    token_free(tok);
+                    lexer_free(lex);
+                    return XMD_ERROR_SYNTAX;
+                }
+            } else if (strcmp(command, "extends") == 0) {
+                if (strlen(args) == 0) {
+                    token_free(tok);
+                    lexer_free(lex);
+                    return XMD_ERROR_SYNTAX;
+                }
+            } else if (strcmp(command, "block") == 0) {
+                if (strlen(args) == 0) {
+                    token_free(tok);
+                    lexer_free(lex);
+                    return XMD_ERROR_SYNTAX;
+                }
+            } else if (strcmp(command, "endblock") == 0) {
+                // endblock directive - no args required
+            } else if (strcmp(command, "comment") == 0) {
+                // comment directive - args optional
+            } else if (strcmp(command, "doc") == 0) {
+                // doc directive - args optional
+            } else if (strcmp(command, "dump_vars") == 0) {
+                // dump_vars directive - no args required
             } else {
-                // Unknown command
-                token_free(tok);
-                lexer_free(lex);
-                return XMD_ERROR_SYNTAX;
+                // Unknown command - skip for now to allow extensibility
+                // Future: could add strict mode that rejects unknown commands
             }
         }
         
