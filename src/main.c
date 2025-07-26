@@ -214,7 +214,6 @@ static int cmd_process(int argc, char* argv[]) {
                     if (var_count < 100) {
                         cmd_variables[var_count].key = strdup(key);
                         cmd_variables[var_count].value = strdup(value);
-                        fprintf(stderr, "Setting variable: %s = %s\n", key, value);
                         var_count++;
                     } else {
                         fprintf(stderr, "Error: Too many variables (max 100)\n");
@@ -350,7 +349,6 @@ static int cmd_process(int argc, char* argv[]) {
             snprintf(trace_filename, sizeof(trace_filename), "%s.trace", input_file);
         }
         
-        fprintf(stderr, "Generating execution trace to %s\n", trace_filename);
         int trace_result = debugger_trace(input_file, trace_filename);
         if (trace_result != 0) {
             fprintf(stderr, "Warning: Failed to generate trace file\n");
@@ -623,10 +621,6 @@ static int convert_shorthand_to_process(int argc, char* argv[], int* new_argc, c
         has_stdin = false;
     }
     
-    if (getenv("XMD_DEBUG_SHORTHAND")) {
-        fprintf(stderr, "DEBUG: has_stdin=%d, first_is_file=%d, argv[1]='%s'\n", 
-                has_stdin, first_is_file, argc >= 2 ? argv[1] : "N/A");
-    }
     
     if (argc == 1) {
         // Just "xmd" - if stdin available, process it
@@ -664,12 +658,6 @@ static int convert_shorthand_to_process(int argc, char* argv[], int* new_argc, c
         
         // Check for two-file pattern: xmd input.md output.md
         // Only if: argc == 3 AND second arg is file AND second arg doesn't start with -
-        if (getenv("XMD_DEBUG_SHORTHAND")) {
-            fprintf(stderr, "DEBUG: argc=%d, argv[2]='%s', looks_like_file=%d, not_dash=%d\n", 
-                    argc, argc > 2 ? argv[2] : "N/A", 
-                    argc > 2 ? looks_like_file_path(argv[2]) : 0,
-                    argc > 2 ? (argv[2][0] != '-') : 0);
-        }
         if (argc == 3 && 
             looks_like_file_path(argv[2]) && 
             argv[2][0] != '-') {
