@@ -572,26 +572,6 @@ static bool looks_like_file_path(const char* arg) {
     return false;
 }
 
-/**
- * @brief Find the output file in arguments (looks for pattern: file.ext after input)
- * @param argc Argument count
- * @param argv Argument vector
- * @param start_idx Index to start searching from
- * @return Index of output file, or -1 if not found
- */
-static int find_output_file_index(int argc, char* argv[], int start_idx) {
-    // Look for a file that appears before any options (arguments starting with -)
-    for (int i = start_idx; i < argc; i++) {
-        if (argv[i][0] == '-') {
-            // Hit an option, stop looking
-            break;
-        }
-        if (looks_like_file_path(argv[i])) {
-            return i;
-        }
-    }
-    return -1;
-}
 
 /**
  * @brief Convert shorthand arguments to full process command
