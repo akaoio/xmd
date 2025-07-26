@@ -53,16 +53,85 @@ include_directories(src)
 
 # Core library sources
 set(XMD_LIB_SOURCES
-    src/token/token.c
-    src/lexer/lexer.c
+    src/token/token_create/token_create.c
+    src/token/token_free/token_free.c
+    src/token/token_duplicate/token_duplicate.c
+    src/token/token_copy/token_copy.c
+    src/token/token_type_to_string/token_type_to_string.c
+    src/token/token_type_is_valid/token_type_is_valid.c
+    src/token/token_equals/token_equals.c
+    src/token/token_set_value/token_set_value.c
+    src/token/token_list_append/token_list_append.c
+    src/token/token_list_length/token_list_length.c
+    src/token/token_list_get/token_list_get.c
+    src/token/token_list_reverse/token_list_reverse.c
+    src/token/token_list_free/token_list_free.c
+    src/token/token_list_destroy/token_list_destroy.c
+    src/token/token_to_string/token_to_string.c
+    src/lexer/lexer_create/lexer_create.c
+    src/lexer/lexer_free/lexer_free.c
+    src/lexer/lexer_current_char/lexer_current_char.c
+    src/lexer/lexer_advance/lexer_advance.c
+    src/lexer/lexer_peek_char/lexer_peek_char.c
+    src/lexer/lexer_skip_whitespace/lexer_skip_whitespace.c
+    src/lexer/lexer_starts_with/lexer_starts_with.c
+    src/lexer/lexer_extract_substring/lexer_extract_substring.c
+    src/lexer/lexer_read_line/lexer_read_line.c
+    src/lexer/lexer_read_html_comment/lexer_read_html_comment.c
+    src/lexer/lexer_read_code_block/lexer_read_code_block.c
+    src/lexer/lexer_read_variable_ref/lexer_read_variable_ref.c
+    src/lexer/lexer_read_xmd_directive/lexer_read_xmd_directive.c
+    src/lexer/lexer_read_text/lexer_read_text.c
+    src/lexer/lexer_next_token/lexer_next_token.c
+    src/lexer/lexer_peek_token/lexer_peek_token.c
+    src/lexer/lexer_get_position/lexer_get_position.c
+    src/lexer/lexer_get_line/lexer_get_line.c
+    src/lexer/lexer_get_column/lexer_get_column.c
+    src/lexer/lexer_at_end/lexer_at_end.c
+    src/lexer/lexer_reset/lexer_reset.c
     src/utils/string/string_duplicate/string_duplicate.c
     src/utils/string/string_extract/string_extract.c
     src/utils/memory/memory_allocate/memory_allocate.c
     src/utils/memory/memory_free_safe/memory_free_safe.c
-    src/variable/variable.c
+    src/variable/variable_create_null/variable_create_null.c
+    src/variable/variable_create_boolean/variable_create_boolean.c
+    src/variable/variable_create_number/variable_create_number.c
+    src/variable/variable_create_string/variable_create_string.c
+    src/variable/variable_create_array/variable_create_array.c
+    src/variable/variable_create_object/variable_create_object.c
+    src/variable/variable_ref/variable_ref.c
+    src/variable/variable_unref/variable_unref.c
+    src/variable/variable_get_type/variable_get_type.c
+    src/variable/variable_to_boolean/variable_to_boolean.c
+    src/variable/variable_to_number/variable_to_number.c
+    src/variable/variable_to_string/variable_to_string.c
+    src/variable/variable_equals/variable_equals.c
+    src/variable/variable_copy/variable_copy.c
+    src/variable/variable_array_add/variable_array_add.c
+    src/variable/variable_array_get/variable_array_get.c
+    src/variable/variable_array_set/variable_array_set.c
+    src/variable/variable_array_size/variable_array_size.c
+    src/variable/variable_object_set/variable_object_set.c
+    src/variable/variable_object_get/variable_object_get.c
+    src/variable/variable_object_remove/variable_object_remove.c
+    src/variable/variable_object_size/variable_object_size.c
+    src/variable/variable_object_keys/variable_object_keys.c
+    src/variable/variable_array_length/variable_array_length.c
+    src/variable/variable_new_array/variable_new_array.c
     src/variable/variable_convert/variable_convert.c
     src/variable/variable_extended/variable_extended.c
-    src/store/store.c
+    src/store/store_entry_create/store_entry_create.c
+    src/store/store_entry_destroy/store_entry_destroy.c
+    src/store/store_resize/store_resize.c
+    src/store/store_create/store_create.c
+    src/store/store_destroy/store_destroy.c
+    src/store/store_set/store_set.c
+    src/store/store_get/store_get.c
+    src/store/store_has/store_has.c
+    src/store/store_remove/store_remove.c
+    src/store/store_clear/store_clear.c
+    src/store/store_size/store_size.c
+    src/store/store_keys/store_keys.c
     src/store/store_ops/store_ops.c
     src/template/template.c
     src/template/template_extract/template_extract.c
@@ -82,7 +151,28 @@ set(XMD_LIB_SOURCES
     src/import_export/export/export.c
     src/dependency/graph/graph.c
     src/dependency/detector/detector.c
-    src/config/config.c
+    src/config/create_default_limits/create_default_limits.c
+    src/config/create_default_buffers/create_default_buffers.c
+    src/config/create_default_paths/create_default_paths.c
+    src/config/create_default_security/create_default_security.c
+    src/config/create_default_timing/create_default_timing.c
+    src/config/create_default_precision/create_default_precision.c
+    src/config/xmd_internal_config_new/xmd_internal_config_new.c
+    src/config/free_paths_config/free_paths_config.c
+    src/config/free_security_config/free_security_config.c
+    src/config/xmd_internal_config_free/xmd_internal_config_free.c
+    src/config/parse_env_size_t/parse_env_size_t.c
+    src/config/parse_env_double/parse_env_double.c
+    src/config/parse_env_bool/parse_env_bool.c
+    src/config/xmd_internal_config_load_env/xmd_internal_config_load_env.c
+    src/config/xmd_internal_config_load_file/xmd_internal_config_load_file.c
+    src/config/xmd_internal_config_save_file/xmd_internal_config_save_file.c
+    src/config/xmd_internal_config_get_global/xmd_internal_config_get_global.c
+    src/config/xmd_internal_config_set_global/xmd_internal_config_set_global.c
+    src/config/xmd_internal_config_add_module_path/xmd_internal_config_add_module_path.c
+    src/config/xmd_internal_config_add_exec_whitelist/xmd_internal_config_add_exec_whitelist.c
+    src/config/xmd_internal_config_set_exec_whitelist/xmd_internal_config_set_exec_whitelist.c
+    src/config/xmd_internal_config_load_whitelist_env/xmd_internal_config_load_whitelist_env.c
     src/config/config/config.c
     src/utils/utils.c
     src/security/validator/validator.c
@@ -108,7 +198,32 @@ set(XMD_LIB_SOURCES
     src/devtools/formatter/formatter.c
     
     # Cross-platform compatibility layer
-    src/platform/platform.c
+    src/platform/xmd_get_time/xmd_get_time.c
+    src/platform/xmd_sleep_ms/xmd_sleep_ms.c
+    src/platform/xmd_get_tick_count/xmd_get_tick_count.c
+    src/platform/xmd_process_create/xmd_process_create.c
+    src/platform/xmd_process_wait/xmd_process_wait.c
+    src/platform/xmd_process_kill/xmd_process_kill.c
+    src/platform/xmd_process_close/xmd_process_close.c
+    src/platform/xmd_mutex_init/xmd_mutex_init.c
+    src/platform/xmd_mutex_lock/xmd_mutex_lock.c
+    src/platform/xmd_mutex_unlock/xmd_mutex_unlock.c
+    src/platform/xmd_mutex_destroy/xmd_mutex_destroy.c
+    src/platform/xmd_mkdir/xmd_mkdir.c
+    src/platform/xmd_create_directory/xmd_create_directory.c
+    src/platform/xmd_file_exists/xmd_file_exists.c
+    src/platform/xmd_is_directory/xmd_is_directory.c
+    src/platform/xmd_opendir/xmd_opendir.c
+    src/platform/xmd_readdir/xmd_readdir.c
+    src/platform/xmd_closedir/xmd_closedir.c
+    src/platform/xmd_get_filename/xmd_get_filename.c
+    src/platform/xmd_aligned_alloc/xmd_aligned_alloc.c
+    src/platform/xmd_aligned_free/xmd_aligned_free.c
+    src/platform/xmd_get_cpu_count/xmd_get_cpu_count.c
+    src/platform/xmd_get_memory_size/xmd_get_memory_size.c
+    src/platform/xmd_get_memory_usage/xmd_get_memory_usage.c
+    src/platform/xmd_get_cpu_time/xmd_get_cpu_time.c
+    src/platform/xmd_get_fd_count/xmd_get_fd_count.c
     
     # XMD directive processor (modular version)
     src/xmd_processor/context/create_context.c
@@ -139,6 +254,38 @@ set(XMD_LIB_SOURCES
     src/xmd_processor/api/xmd_process_string.c
     src/xmd_processor/api/xmd_validate_syntax.c
     src/xmd_processor/api/xmd_error_string.c
+    
+    # Main module functions
+    src/main/print_usage/print_usage.c
+    src/main/print_version/print_version.c
+    src/main/cleanup_cmd_variables/cleanup_cmd_variables.c
+    src/main/format_output/format_output.c
+    src/main/cmd_process/cmd_process.c
+    src/main/cmd_validate/cmd_validate.c
+    src/main/looks_like_file_path/looks_like_file_path.c
+    src/main/convert_shorthand_to_process/convert_shorthand_to_process.c
+    src/main/free_converted_argv/free_converted_argv.c
+    
+    # C API bindings functions
+    src/bindings/c_api/preprocess_variables/preprocess_variables.c
+    src/bindings/c_api/preprocess_for_loops/preprocess_for_loops.c
+    src/bindings/c_api/evaluate_condition/evaluate_condition.c
+    src/bindings/c_api/preprocess_if_statements/preprocess_if_statements.c
+    src/bindings/c_api/create_result/create_result.c
+    src/bindings/c_api/xmd_cleanup/xmd_cleanup.c
+    src/bindings/c_api/xmd_get_version/xmd_get_version.c
+    src/bindings/c_api/xmd_result_free/xmd_result_free.c
+    src/bindings/c_api/xmd_init/xmd_init.c
+    src/bindings/c_api/xmd_process_file/xmd_process_file.c
+    src/bindings/c_api/xmd_validate/xmd_validate.c
+    src/bindings/c_api/xmd_set_config/xmd_set_config.c
+    src/bindings/c_api/xmd_get_config/xmd_get_config.c
+    src/bindings/c_api/xmd_set_variable/xmd_set_variable.c
+    src/bindings/c_api/xmd_get_variable/xmd_get_variable.c
+    src/bindings/c_api/xmd_config_create_default/xmd_config_create_default.c
+    src/bindings/c_api/xmd_config_free/xmd_config_free.c
+    src/bindings/c_api/xmd_processor_create/xmd_processor_create.c
+    src/bindings/c_api/xmd_processor_free/xmd_processor_free.c
 )
 
 # Create static library

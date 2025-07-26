@@ -12,7 +12,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
-#include "variable.h"
+#include "../../../include/variable_internal.h"
 #include "../../../include/utils.h"
 
 /**
@@ -190,3 +190,5 @@ variable* variable_copy(const variable* var) {
     
     return NULL;
 }
+
+

@@ -54,3 +54,4 @@ const char* variable_get_string(const variable* var) {
 /* Object functions are implemented in variable.c - using those implementations */
 
 /* Free functions are internal and implemented in variable.c */
+
