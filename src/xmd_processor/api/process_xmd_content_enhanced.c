@@ -24,6 +24,7 @@ typedef struct {
 typedef struct {
     loop_state loops[MAX_LOOP_DEPTH];
     int loop_depth;
+    int total_iterations;
     processor_context* ctx;
 } enhanced_context;
 
@@ -106,7 +107,7 @@ char* process_xmd_content_enhanced(const char* input, store* variables) {
     if (!input || !variables) return NULL;
     
     processor_context* ctx = create_context(variables);
-    enhanced_context ectx = { .loop_depth = 0, .ctx = ctx };
+    enhanced_context ectx = { .loop_depth = 0, .total_iterations = 0, .ctx = ctx };
     
     size_t input_len = strlen(input);
     size_t output_capacity = input_len * 3;
@@ -214,8 +215,9 @@ char* process_xmd_content_enhanced(const char* input, store* variables) {
                                 ectx.loop_depth++;
                                 
                                 // Iterate through all items
-                                for (int i = 0; i < item_count && i < MAX_LOOP_ITERATIONS; i++) {
+                                for (int i = 0; i < item_count && i < MAX_LOOP_ITERATIONS && ectx.total_iterations < MAX_LOOP_ITERATIONS; i++) {
                                     current_loop->current_index = i;
+                                    ectx.total_iterations++;
                                     
                                     // Process loop content
                                     char* loop_result = process_loop_content(&ectx, 

@@ -21,6 +21,8 @@ extern "C" {
 #endif
 
 #define MAX_IF_DEPTH 32
+#define MAX_LOOP_DEPTH 8
+#define MAX_LOOP_ITERATIONS 1000
 
 /**
  * @struct if_stack_entry
@@ -40,6 +42,8 @@ typedef struct {
     store* variables;                       /**< Variable store */
     if_stack_entry if_stack[MAX_IF_DEPTH];  /**< If statement stack */
     int if_stack_size;                      /**< Current if stack size */
+    int loop_depth;                         /**< Current loop nesting depth */
+    int total_iterations;                   /**< Total iterations across all loops */
     bool currently_executing;               /**< Current execution state */
 } processor_context;
 

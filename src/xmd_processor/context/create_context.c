@@ -18,6 +18,8 @@ processor_context* create_context(store* variables) {
     
     ctx->variables = variables;
     ctx->if_stack_size = 0;
+    ctx->loop_depth = 0;
+    ctx->total_iterations = 0;
     ctx->currently_executing = true;
     return ctx;
 }

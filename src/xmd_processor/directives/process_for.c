@@ -26,6 +26,12 @@ int process_for(const char* args, processor_context* ctx, char* output, size_t o
         return 0;
     }
     
+    // Check loop depth limit to prevent excessive nesting
+    if (ctx->loop_depth >= MAX_LOOP_DEPTH) {
+        snprintf(output, output_size, "<!-- Error: Maximum loop nesting depth (%d) exceeded -->", MAX_LOOP_DEPTH);
+        return -1;
+    }
+    
     // Parse for loop syntax: "item in collection_or_range"
     char* args_copy = strdup(args);
     char* in_pos = strstr(args_copy, " in ");
