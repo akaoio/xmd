@@ -169,6 +169,10 @@ Skills: {{skills[0]}}, {{skills[1]}}, {{skills[2]}}
 <!-- xmd:for skill in skills -->
 - ✨ {{skill}}
 <!-- xmd:endfor -->
+
+<!-- xmd:for i in 1..5 -->
+- Step {{i}}: Complete
+<!-- xmd:endfor -->
 ```
 
 </div>
@@ -240,6 +244,20 @@ Create documentation that stays current with your codebase, automatically updati
 [![GitHub Forks](https://img.shields.io/github/forks/akaoio/xmd?style=social)](https://github.com/akaoio/xmd/fork)
 
 **💬 [Discord Chat](https://discord.gg/xmd)** • **🐛 [Report Issues](https://github.com/akaoio/xmd/issues)** • **💡 [Discussions](https://github.com/akaoio/xmd/discussions)** • **📚 [Examples](https://github.com/akaoio/xmd/tree/main/examples)**
+
+## 📖 Documentation
+
+### Getting Started
+- **[🚀 Quick Start Guide](quick-start.md)** - Get running in under 5 minutes
+- **[🔧 CLI Reference](cli-reference.md)** - Complete command-line documentation
+- **[🔢 Range Syntax](range-syntax.md)** - Advanced range expressions for loops
+- **[🔧 Troubleshooting](troubleshooting.md)** - Common issues and solutions
+
+### Advanced Topics
+- **[📘 Developer Guide](dev/)** - Architecture and development setup
+- **[🔒 Security Guide](security.md)** - Security best practices and sandboxing
+- **[⚡ Performance Guide](performance.md)** - Optimization tips and benchmarks
+- **[🔌 Plugin Development](plugins.md)** - Creating custom extensions
 
 </div>
 

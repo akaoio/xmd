@@ -1,0 +1,1 @@
+Setting variable: name = World

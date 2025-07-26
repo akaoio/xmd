@@ -61,10 +61,23 @@ You're running your first XMD document! Here are some next steps:
 <!-- xmd:endif -->
 ```
 
-Process it:
+Process it with different options:
 
 ```bash
+# Basic processing
 xmd process hello.md
+
+# With command-line variables
+xmd process hello.md -v name="Alice" 
+
+# Output to file with HTML format
+xmd process hello.md -o output.html --format html
+
+# Generate execution trace for debugging
+xmd process hello.md --trace
+
+# Safe mode (no command execution)
+xmd process hello.md --no-exec
 ```
 
 You'll see output like:
@@ -129,6 +142,7 @@ Disk usage: <!-- xmd:exec df -h / | tail -1 | awk '{print $5}' -->
 ### 4. Loops
 
 ```markdown
+<!-- Array loops -->
 <!-- xmd:set services=["web", "api", "db"] -->
 
 ## Service Status
@@ -136,6 +150,78 @@ Disk usage: <!-- xmd:exec df -h / | tail -1 | awk '{print $5}' -->
 <!-- xmd:for service in services -->
 - **{{service}}**: <!-- xmd:exec systemctl is-active {{service}} 2>/dev/null || echo "inactive" -->
 <!-- xmd:endfor -->
+
+<!-- Range loops -->
+<!-- xmd:for i in 1..5 -->
+### Server {{i}}
+Status: Checking...
+<!-- xmd:endfor -->
+
+<!-- Advanced ranges with variables -->
+<!-- xmd:set start=1 -->
+<!-- xmd:set end=3 -->
+<!-- xmd:for port in start..end -->
+- Port 808{{port}}: <!-- xmd:exec netstat -ln | grep :808{{port}} >/dev/null && echo "Open" || echo "Closed" -->
+<!-- xmd:endfor -->
+```
+
+## Advanced Features
+
+### Command-Line Variables
+
+You can set variables directly from the command line:
+
+```bash
+# Set variables when processing
+xmd process template.md -v env="production" -v version="2.1.0"
+
+# Use in your document
+# Environment: {{env}}
+# Version: {{version}}
+```
+
+### Output Formats
+
+Choose different output formats:
+
+```bash
+# HTML output with styling
+xmd process doc.md --format html -o output.html
+
+# JSON output with metadata  
+xmd process doc.md --format json -o output.json
+
+# Default markdown (same as no --format)
+xmd process doc.md --format markdown
+```
+
+### Debugging & Tracing
+
+Debug your documents with tracing:
+
+```bash
+# Generate detailed execution trace
+xmd process complex.md --trace
+# Creates complex.md.trace with step-by-step processing
+
+# Enable debug information
+xmd process doc.md --debug
+# Shows processing time and memory usage
+
+# Combine for full debugging
+xmd process doc.md --trace --debug --format json
+```
+
+### Security Options
+
+Control command execution:
+
+```bash
+# Safe mode - disable all command execution
+xmd process untrusted.md --no-exec
+
+# Use configuration file for detailed security settings
+xmd process doc.md --config security.conf
 ```
 
 ## Common Use Cases

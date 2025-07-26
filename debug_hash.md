@@ -1,0 +1,2 @@
+# {{title}}
+Regular: {{title}}

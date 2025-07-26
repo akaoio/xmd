@@ -24,33 +24,55 @@ int process_complete_if_statement(const char* content, size_t if_start, size_t a
                                  size_t args_end, store* var_store, char* output, size_t output_size);
 
 /**
- * @brief Preprocess variables by extracting and storing them
+ * @brief Preprocess variables by extracting and storing them, and removing set directives
  * @param input Input content
  * @param input_length Input length
  * @param var_store Variable store
+ * @param output Output buffer with set directives removed
+ * @param output_size Output buffer size
  * @return 0 on success, -1 on error
  */
-static int preprocess_variables(const char* input, size_t input_length, store* var_store) {
+static int preprocess_variables(const char* input, size_t input_length, store* var_store, 
+                               char* output, size_t output_size) {
     const char* ptr = input;
     const char* input_end = input + input_length;
+    size_t output_pos = 0;
     
-    while (ptr < input_end) {
+    while (ptr < input_end && output_pos < output_size - 1) {
         // Look for set directive
         const char* set_start = strstr(ptr, "<!-- xmd:set ");
         if (!set_start) {
+            // No more set directives, copy rest of input
+            size_t remaining = input_end - ptr;
+            if (output_pos + remaining < output_size - 1) {
+                memcpy(output + output_pos, ptr, remaining);
+                output_pos += remaining;
+            }
             break;
+        }
+        
+        // Copy content before set directive
+        size_t before_len = set_start - ptr;
+        if (output_pos + before_len < output_size - 1) {
+            memcpy(output + output_pos, ptr, before_len);
+            output_pos += before_len;
         }
         
         // Find the end of the set directive
         const char* set_end = strstr(set_start, "-->");
         if (!set_end) {
-            ptr = set_start + 13;
-            continue;
+            // Malformed directive, copy as-is
+            if (output_pos + strlen(set_start) < output_size - 1) {
+                strcpy(output + output_pos, set_start);
+                output_pos += strlen(set_start);
+            }
+            break;
         }
+        set_end += 3; // Skip -->
         
         // Extract set arguments
         const char* args_start = set_start + 13; // Skip "<!-- xmd:set "
-        size_t args_len = set_end - args_start;
+        size_t args_len = set_end - 3 - args_start; // Don't include -->
         
         if (args_len > 0 && args_len < 512) {
             char args[512];
@@ -66,9 +88,11 @@ static int preprocess_variables(const char* input, size_t input_length, store* v
             process_xmd_directive(directive, var_store, dummy_output, sizeof(dummy_output));
         }
         
-        ptr = set_end + 3;
+        // Skip the set directive entirely (don't copy to output)
+        ptr = set_end;
     }
     
+    output[output_pos] = '\0';
     return 0;
 }
 
@@ -303,10 +327,47 @@ static int preprocess_for_loops(const char* input, size_t input_length, store* v
                                 }
                                 processed_body[processed_len] = '\0';
                                 
-                                // Add processed body to output
-                                if (output_pos + processed_len < output_size - 1) {
-                                    strcpy(output + output_pos, processed_body);
-                                    output_pos += processed_len;
+                                // Process the body for other variables after loop variable substitution
+                                char final_body[4096];
+                                size_t final_pos = 0;
+                                const char* body_scan = processed_body;
+                                
+                                // Manual variable substitution for remaining {{variable}} patterns
+                                while (*body_scan && final_pos < sizeof(final_body) - 1) {
+                                    if (body_scan[0] == '{' && body_scan[1] == '{') {
+                                        const char* var_end = strstr(body_scan + 2, "}}");
+                                        if (var_end) {
+                                            // Extract variable name
+                                            size_t var_name_len = var_end - body_scan - 2;
+                                            if (var_name_len < 256) {
+                                                char var_name[256];
+                                                strncpy(var_name, body_scan + 2, var_name_len);
+                                                var_name[var_name_len] = '\0';
+                                                
+                                                // Look up variable value
+                                                variable* var = store_get(var_store, var_name);
+                                                const char* var_value = var ? variable_to_string(var) : "";
+                                                
+                                                // Add variable value to output
+                                                size_t value_len = strlen(var_value);
+                                                if (final_pos + value_len < sizeof(final_body) - 1) {
+                                                    strcpy(final_body + final_pos, var_value);
+                                                    final_pos += value_len;
+                                                }
+                                                
+                                                body_scan = var_end + 2; // Skip past }}
+                                                continue;
+                                            }
+                                        }
+                                    }
+                                    final_body[final_pos++] = *body_scan++;
+                                }
+                                final_body[final_pos] = '\0';
+                                
+                                // Use the fully processed body
+                                if (output_pos + final_pos < output_size - 1) {
+                                    strcpy(output + output_pos, final_body);
+                                    output_pos += final_pos;
                                 }
                                 
                                 item = strtok(NULL, ",");
@@ -330,11 +391,255 @@ static int preprocess_for_loops(const char* input, size_t input_length, store* v
 }
 
 /**
+ * @brief Simple condition evaluator for if statements
+ * @param condition Condition string (e.g., "status == \"active\"")
+ * @param var_store Variable store
+ * @return true if condition is true, false otherwise
+ */
+static bool evaluate_condition(const char* condition, store* var_store) {
+    if (!condition || !var_store) {
+        return false;
+    }
+    
+    // Simple condition parsing: var == "value" or var != "value"
+    char var_name[256], operator[8], value[256];
+    
+    // Try to parse pattern: var == "value" or var != "value"
+    if (sscanf(condition, "%255s %7s \"%255[^\"]\"", var_name, operator, value) == 3) {
+        variable* var = store_get(var_store, var_name);
+        const char* var_value = var ? variable_to_string(var) : "";
+        
+        if (strcmp(operator, "==") == 0) {
+            return strcmp(var_value, value) == 0;
+        } else if (strcmp(operator, "!=") == 0) {
+            return strcmp(var_value, value) != 0;
+        }
+    }
+    
+    // Try without quotes: var == value or var != value
+    if (sscanf(condition, "%255s %7s %255s", var_name, operator, value) == 3) {
+        variable* var = store_get(var_store, var_name);
+        const char* var_value = var ? variable_to_string(var) : "";
+        
+        if (strcmp(operator, "==") == 0) {
+            return strcmp(var_value, value) == 0;
+        } else if (strcmp(operator, "!=") == 0) {
+            return strcmp(var_value, value) != 0;
+        }
+    }
+    
+    // Default: treat as variable existence check
+    variable* var = store_get(var_store, condition);
+    return var != NULL;
+}
+
+/**
+ * @brief Preprocess if statements by evaluating conditions and selecting branches
+ * @param input Input content
+ * @param input_length Input length
+ * @param var_store Variable store
+ * @param output Output buffer
+ * @param output_size Output buffer size
+ * @return 0 on success, -1 on error
+ */
+static int preprocess_if_statements(const char* input, size_t input_length, store* var_store, 
+                                   char* output, size_t output_size) {
+    size_t output_pos = 0;
+    const char* ptr = input;
+    const char* input_end = input + input_length;
+    
+    while (ptr < input_end && output_pos < output_size - 1) {
+        // Look for if statement start
+        const char* if_start = strstr(ptr, "<!-- xmd:if ");
+        if (!if_start) {
+            // No more if statements, copy rest of input
+            size_t remaining = input_end - ptr;
+            if (output_pos + remaining < output_size - 1) {
+                memcpy(output + output_pos, ptr, remaining);
+                output_pos += remaining;
+            }
+            break;
+        }
+        
+        // Copy content before if statement
+        size_t before_len = if_start - ptr;
+        if (output_pos + before_len < output_size - 1) {
+            memcpy(output + output_pos, ptr, before_len);
+            output_pos += before_len;
+        }
+        
+        // Find the end of the if directive
+        const char* if_end = strstr(if_start, "-->");
+        if (!if_end) {
+            // Malformed directive, copy as-is
+            if (output_pos + strlen(if_start) < output_size - 1) {
+                strcpy(output + output_pos, if_start);
+                output_pos += strlen(if_start);
+            }
+            break;
+        }
+        if_end += 3; // Skip -->
+        
+        // Extract if condition
+        const char* condition_start = if_start + 12; // Skip "<!-- xmd:if "
+        const char* condition_end = strstr(condition_start, " -->");
+        if (!condition_end) {
+            condition_end = strstr(condition_start, "-->");
+        }
+        
+        if (!condition_end) {
+            ptr = if_end;
+            continue;
+        }
+        
+        size_t condition_len = condition_end - condition_start;
+        char condition[512];
+        if (condition_len < sizeof(condition)) {
+            strncpy(condition, condition_start, condition_len);
+            condition[condition_len] = '\0';
+            
+            // Find matching else and endif
+            const char* else_start = strstr(if_end, "<!-- xmd:else");
+            const char* endif_start = strstr(if_end, "<!-- xmd:endif");
+            
+            if (!endif_start) {
+                ptr = if_end;
+                continue;
+            }
+            
+            const char* endif_end = strstr(endif_start, "-->");
+            if (!endif_end) {
+                ptr = if_end;
+                continue;
+            }
+            endif_end += 3;
+            
+            // Evaluate condition
+            bool condition_result = evaluate_condition(condition, var_store);
+            
+            if (condition_result) {
+                // Take the true branch (from if_end to else_start or endif_start)
+                const char* true_branch_end = else_start ? else_start : endif_start;
+                size_t true_branch_len = true_branch_end - if_end;
+                
+                // Copy branch content to temporary buffer for variable substitution
+                char branch_content[4096];
+                if (true_branch_len < sizeof(branch_content) - 1) {
+                    memcpy(branch_content, if_end, true_branch_len);
+                    branch_content[true_branch_len] = '\0';
+                    
+                    // Apply variable substitution to branch content
+                    char processed_branch[4096];
+                    size_t processed_pos = 0;
+                    const char* scan = branch_content;
+                    
+                    while (*scan && processed_pos < sizeof(processed_branch) - 1) {
+                        if (scan[0] == '{' && scan[1] == '{') {
+                            const char* var_end = strstr(scan + 2, "}}");
+                            if (var_end) {
+                                size_t var_name_len = var_end - scan - 2;
+                                if (var_name_len < 256) {
+                                    char var_name[256];
+                                    strncpy(var_name, scan + 2, var_name_len);
+                                    var_name[var_name_len] = '\0';
+                                    
+                                    variable* var = store_get(var_store, var_name);
+                                    const char* var_value = var ? variable_to_string(var) : "";
+                                    
+                                    size_t value_len = strlen(var_value);
+                                    if (processed_pos + value_len < sizeof(processed_branch) - 1) {
+                                        strcpy(processed_branch + processed_pos, var_value);
+                                        processed_pos += value_len;
+                                    }
+                                    
+                                    scan = var_end + 2;
+                                    continue;
+                                }
+                            }
+                        }
+                        processed_branch[processed_pos++] = *scan++;
+                    }
+                    processed_branch[processed_pos] = '\0';
+                    
+                    // Add processed branch to output
+                    if (output_pos + processed_pos < output_size - 1) {
+                        strcpy(output + output_pos, processed_branch);
+                        output_pos += processed_pos;
+                    }
+                }
+            } else if (else_start) {
+                // Take the false branch (from else_end to endif_start)
+                const char* else_end = strstr(else_start, "-->");
+                if (else_end) {
+                    else_end += 3;
+                    size_t false_branch_len = endif_start - else_end;
+                    
+                    // Copy branch content to temporary buffer for variable substitution
+                    char branch_content[4096];
+                    if (false_branch_len < sizeof(branch_content) - 1) {
+                        memcpy(branch_content, else_end, false_branch_len);
+                        branch_content[false_branch_len] = '\0';
+                        
+                        // Apply variable substitution to branch content
+                        char processed_branch[4096];
+                        size_t processed_pos = 0;
+                        const char* scan = branch_content;
+                        
+                        while (*scan && processed_pos < sizeof(processed_branch) - 1) {
+                            if (scan[0] == '{' && scan[1] == '{') {
+                                const char* var_end = strstr(scan + 2, "}}");
+                                if (var_end) {
+                                    size_t var_name_len = var_end - scan - 2;
+                                    if (var_name_len < 256) {
+                                        char var_name[256];
+                                        strncpy(var_name, scan + 2, var_name_len);
+                                        var_name[var_name_len] = '\0';
+                                        
+                                        variable* var = store_get(var_store, var_name);
+                                        const char* var_value = var ? variable_to_string(var) : "";
+                                        
+                                        size_t value_len = strlen(var_value);
+                                        if (processed_pos + value_len < sizeof(processed_branch) - 1) {
+                                            strcpy(processed_branch + processed_pos, var_value);
+                                            processed_pos += value_len;
+                                        }
+                                        
+                                        scan = var_end + 2;
+                                        continue;
+                                    }
+                                }
+                            }
+                            processed_branch[processed_pos++] = *scan++;
+                        }
+                        processed_branch[processed_pos] = '\0';
+                        
+                        // Add processed branch to output
+                        if (output_pos + processed_pos < output_size - 1) {
+                            strcpy(output + output_pos, processed_branch);
+                            output_pos += processed_pos;
+                        }
+                    }
+                }
+            }
+            // If condition is false and no else branch, output nothing
+            
+            ptr = endif_end;
+        } else {
+            ptr = if_end;
+        }
+    }
+    
+    output[output_pos] = '\0';
+    return 0;
+}
+
+/**
  * @brief Internal XMD context structure
  */
 typedef struct xmd_context_internal {
     xmd_config* config;
     bool initialized;
+    store* global_variables;
 } xmd_context_internal;
 
 /**
@@ -367,6 +672,13 @@ void* xmd_init(const char* config_path) {
     // Load environment configuration
     config_load_env(ctx->config);
     
+    // Initialize global variable store
+    ctx->global_variables = store_create();
+    if (!ctx->global_variables) {
+        config_destroy(ctx->config);
+        free(ctx);
+        return NULL;
+    }
     
     ctx->initialized = true;
     return ctx;
@@ -439,20 +751,76 @@ xmd_result* xmd_process_string(void* handle, const char* input, size_t input_len
         return create_result(-1, NULL, "Failed to create variable store");
     }
     
-    // First, extract and process variable declarations to populate the store
-    if (preprocess_variables(input, input_length, var_store) != 0) {
+    // Copy global variables from context to processing store
+    if (ctx->global_variables) {
+        size_t global_var_count;
+        char** global_keys = store_keys(ctx->global_variables, &global_var_count);
+        if (global_keys) {
+            for (size_t i = 0; i < global_var_count; i++) {
+                variable* global_var = store_get(ctx->global_variables, global_keys[i]);
+                if (global_var) {
+                    // Create a copy of the variable for the processing store
+                    const char* var_value = variable_to_string(global_var);
+                    if (var_value) {
+                        variable* var_copy = variable_create_string(var_value);
+                        if (var_copy) {
+                            store_set(var_store, global_keys[i], var_copy);
+                        }
+                    }
+                }
+            }
+            free(global_keys);
+        }
+    }
+    
+    // First, extract and process variable declarations to populate the store and remove set directives
+    char* var_processed_input = malloc(input_length * 2 + 1000);
+    if (!var_processed_input) {
+        free(preprocessed_input);
+        store_destroy(var_store);
+        return create_result(-1, NULL, "Memory allocation failed for variable preprocessing");
+    }
+    
+    if (preprocess_variables(input, input_length, var_store, var_processed_input, input_length * 2 + 1000) != 0) {
+        free(var_processed_input);
         free(preprocessed_input);
         store_destroy(var_store);
         return create_result(-1, NULL, "Failed to preprocess variables");
     }
     
     // Then pre-process for loops by expanding them
-    if (preprocess_for_loops(input, input_length, var_store, preprocessed_input, 
+    size_t var_processed_len = strlen(var_processed_input);
+    if (preprocess_for_loops(var_processed_input, var_processed_len, var_store, preprocessed_input, 
                             input_length * 4 + 10000) != 0) {
+        free(var_processed_input);
         free(preprocessed_input);
         store_destroy(var_store);
         return create_result(-1, NULL, "Failed to preprocess for loops");
     }
+    
+    // Free var_processed_input as we now have preprocessed_input
+    free(var_processed_input);
+    
+    // Then pre-process if statements by evaluating conditions and selecting branches
+    char* if_processed_input = malloc(input_length * 4 + 10000);
+    if (!if_processed_input) {
+        free(preprocessed_input);
+        store_destroy(var_store);
+        return create_result(-1, NULL, "Memory allocation failed for if preprocessing");
+    }
+    
+    size_t for_processed_len = strlen(preprocessed_input);
+    if (preprocess_if_statements(preprocessed_input, for_processed_len, var_store, if_processed_input, 
+                                input_length * 4 + 10000) != 0) {
+        free(if_processed_input);
+        free(preprocessed_input);
+        store_destroy(var_store);
+        return create_result(-1, NULL, "Failed to preprocess if statements");
+    }
+    
+    // Replace preprocessed_input with if_processed_input for further processing
+    free(preprocessed_input);
+    preprocessed_input = if_processed_input;
     
     // Process the input through the XMD pipeline
     // 1. Create lexer to tokenize preprocessed input
@@ -542,14 +910,48 @@ xmd_result* xmd_process_string(void* handle, const char* input, size_t input_len
                 break;
                 
             default:
-                // For other token types, process text with potential directives
+                // For other token types (including TOKEN_HEADING), process text with variable substitution
                 if (tok->value) {
                     char processed_text[8192];
-                    int bytes_written = process_text_with_directives(tok->value, var_store, 
-                                                                   processed_text, sizeof(processed_text));
-                    if (bytes_written > 0 && output_pos + bytes_written < preprocessed_len * 2 + 999) {
+                    size_t processed_pos = 0;
+                    const char* scan = tok->value;
+                    
+                    // Manual variable substitution for {{variable}} patterns
+                    while (*scan && processed_pos < sizeof(processed_text) - 1) {
+                        if (scan[0] == '{' && scan[1] == '{') {
+                            const char* var_end = strstr(scan + 2, "}}");
+                            if (var_end) {
+                                // Extract variable name
+                                size_t var_name_len = var_end - scan - 2;
+                                if (var_name_len < 256) {
+                                    char var_name[256];
+                                    strncpy(var_name, scan + 2, var_name_len);
+                                    var_name[var_name_len] = '\0';
+                                    
+                                    // Look up variable value
+                                    variable* var = store_get(var_store, var_name);
+                                    const char* var_value = var ? variable_to_string(var) : "";
+                                    
+                                    // Add variable value to output
+                                    size_t value_len = strlen(var_value);
+                                    if (processed_pos + value_len < sizeof(processed_text) - 1) {
+                                        strcpy(processed_text + processed_pos, var_value);
+                                        processed_pos += value_len;
+                                    }
+                                    
+                                    scan = var_end + 2; // Skip past }}
+                                    continue;
+                                }
+                            }
+                        }
+                        processed_text[processed_pos++] = *scan++;
+                    }
+                    processed_text[processed_pos] = '\0';
+                    
+                    // Add processed text to output
+                    if (output_pos + processed_pos < preprocessed_len * 2 + 999) {
                         strcpy(output + output_pos, processed_text);
-                        output_pos += bytes_written;
+                        output_pos += processed_pos;
                     }
                 }
                 break;
@@ -781,6 +1183,9 @@ void xmd_cleanup(void* handle) {
         config_destroy(ctx->config);
     }
     
+    if (ctx->global_variables) {
+        store_destroy(ctx->global_variables);
+    }
     
     free(ctx);
 }
@@ -808,12 +1213,21 @@ int xmd_set_variable(void* processor, const char* key, const char* value) {
     }
     
     xmd_context_internal* ctx = (xmd_context_internal*)processor;
-    if (!ctx->initialized) {
+    if (!ctx->initialized || !ctx->global_variables) {
         return -1;
     }
     
-    // In a full implementation, would store in variable context
-    // For now, just validate parameters
+    // Create a string variable and store it
+    variable* var = variable_create_string(value);
+    if (!var) {
+        return -1;
+    }
+    
+    if (!store_set(ctx->global_variables, key, var)) {
+        variable_unref(var);
+        return -1;
+    }
+    
     return 0;
 }
 
