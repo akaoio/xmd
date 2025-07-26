@@ -244,3 +244,111 @@ variable* store_get(store* s, const char* name) {
     
     return NULL;
 }
+
+/**
+ * @brief Check if variable exists in store
+ * @param s Store instance
+ * @param name Variable name
+ * @return true if variable exists, false otherwise
+ */
+bool store_has(store* s, const char* name) {
+    return store_get(s, name) != NULL;
+}
+
+/**
+ * @brief Remove a variable from the store
+ * @param s Store instance
+ * @param name Variable name
+ * @return true if removed, false if not found
+ */
+bool store_remove(store* s, const char* name) {
+    if (s == NULL || name == NULL) {
+        return false;
+    }
+    
+    size_t hash = xmd_hash_key(name, s->capacity);
+    store_entry** entry_ptr = &s->buckets[hash];
+    
+    while (*entry_ptr != NULL) {
+        if (strcmp((*entry_ptr)->key, name) == 0) {
+            store_entry* to_remove = *entry_ptr;
+            *entry_ptr = to_remove->next;
+            store_entry_destroy(to_remove);
+            s->size--;
+            return true;
+        }
+        entry_ptr = &(*entry_ptr)->next;
+    }
+    
+    return false;
+}
+
+/**
+ * @brief Clear all variables from store
+ * @param s Store instance
+ */
+void store_clear(store* s) {
+    if (s == NULL) {
+        return;
+    }
+    
+    for (size_t i = 0; i < s->capacity; i++) {
+        store_entry* entry = s->buckets[i];
+        while (entry != NULL) {
+            store_entry* next = entry->next;
+            store_entry_destroy(entry);
+            entry = next;
+        }
+        s->buckets[i] = NULL;
+    }
+    s->size = 0;
+}
+
+/**
+ * @brief Get number of variables in store
+ * @param s Store instance
+ * @return Number of variables
+ */
+size_t store_size(store* s) {
+    if (s == NULL) {
+        return 0;
+    }
+    return s->size;
+}
+
+/**
+ * @brief Get all variable names
+ * @param s Store instance
+ * @param count Output parameter for array size
+ * @return Array of variable names (must be freed)
+ */
+char** store_keys(store* s, size_t* count) {
+    if (s == NULL || count == NULL) {
+        if (count) *count = 0;
+        return NULL;
+    }
+    
+    if (s->size == 0) {
+        *count = 0;
+        return NULL;
+    }
+    
+    char** keys = malloc(s->size * sizeof(char*));
+    if (!keys) {
+        *count = 0;
+        return NULL;
+    }
+    
+    size_t key_index = 0;
+    for (size_t i = 0; i < s->capacity; i++) {
+        store_entry* entry = s->buckets[i];
+        while (entry != NULL && key_index < s->size) {
+            keys[key_index] = strdup(entry->key);
+            key_index++;
+            entry = entry->next;
+        }
+    }
+    
+    *count = key_index;
+    return keys;
+}

@@ -110,8 +110,35 @@ set(XMD_LIB_SOURCES
     # Cross-platform compatibility layer
     src/platform/platform.c
     
-    # XMD directive processor (unified version with all features)
-    src/xmd_processor.c
+    # XMD directive processor (modular version)
+    src/xmd_processor/context/create_context.c
+    src/xmd_processor/context/should_execute_block.c
+    src/xmd_processor/execution/execute_command.c
+    src/xmd_processor/utilities/trim_whitespace.c
+    src/xmd_processor/utilities/substitute_variables.c
+    src/xmd_processor/utilities/evaluate_condition.c
+    src/xmd_processor/utilities/is_multiline_directive.c
+    src/xmd_processor/utilities/process_multiline_directive.c
+    src/xmd_processor/utilities/process_multiline_directive_enhanced.c
+    src/xmd_processor/utilities/parse_range.c
+    src/xmd_processor/utilities/parse_collection.c
+    src/xmd_processor/directives/process_exec.c
+    src/xmd_processor/directives/process_set.c
+    src/xmd_processor/directives/process_if.c
+    src/xmd_processor/directives/process_elif.c
+    src/xmd_processor/directives/process_else.c
+    src/xmd_processor/directives/process_endif.c
+    src/xmd_processor/directives/process_import.c
+    src/xmd_processor/directives/process_for.c
+    src/xmd_processor/directives/process_directive.c
+    src/xmd_processor/api/process_xmd_content.c
+    src/xmd_processor/api/process_xmd_content_enhanced.c
+    src/xmd_processor/api/process_xmd_content_fixed.c
+    src/xmd_processor/api/process_xmd_directive.c
+    src/xmd_processor/api/process_text_with_directives.c
+    src/xmd_processor/api/xmd_process_string.c
+    src/xmd_processor/api/xmd_validate_syntax.c
+    src/xmd_processor/api/xmd_error_string.c
 )
 
 # Create static library
