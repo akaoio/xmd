@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)  # Minimum for reliable C17 support
-project(xmd VERSION 1.0.0 LANGUAGES C)
+project(xmd VERSION 0.0.2 LANGUAGES C)
 
 # Set C standard - C17 is the minimum required standard
 set(CMAKE_C_STANDARD 17)
