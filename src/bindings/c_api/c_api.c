@@ -14,6 +14,8 @@ int process_complete_for_loop(const char* content, size_t for_start, size_t args
                              size_t args_end, store* var_store, char* output, size_t output_size);
 int process_complete_if_statement(const char* content, size_t if_start, size_t args_start, 
                                  size_t args_end, store* var_store, char* output, size_t output_size);
+bool is_multiline_directive(const char* comment_content);
+void process_multiline_directive_enhanced(const char* directive_content, store* variables);
 
 
 
@@ -32,6 +34,7 @@ int process_complete_if_statement(const char* content, size_t if_start, size_t a
  * @return Processing result (must be freed with xmd_result_free)
  */
 xmd_result* xmd_process_string_api(void* handle, const char* input, size_t input_length) {
+    printf("DEBUG: xmd_process_string_api called with input length %zu\n", input_length);
     if (!handle || !input) {
         return NULL; // Return NULL for invalid parameters
     }
@@ -206,11 +209,51 @@ xmd_result* xmd_process_string_api(void* handle, const char* input, size_t input
                 // Process XMD directives
                 if (tok->value) {
                     char directive_output[32768];  // Increased from 8192 to 32KB for long command outputs
-                    int bytes_written = process_xmd_directive(tok->value, var_store, 
-                                                            directive_output, sizeof(directive_output));
-                    if (bytes_written > 0 && output_pos + bytes_written < preprocessed_len * 2 + 999) {
-                        strcpy(output + output_pos, directive_output);
-                        output_pos += bytes_written;
+                    
+                    // DEBUG: Add temporary debug output
+                    printf("DEBUG: Processing TOKEN_XMD_DIRECTIVE\n");
+                    printf("DEBUG: Token value: '%s'\n", tok->value);
+                    
+                    // Check if this is a multiline directive
+                    bool is_multiline = is_multiline_directive(tok->value);
+                    printf("DEBUG: is_multiline_directive returned: %s\n", is_multiline ? "true" : "false");
+                    
+                    if (is_multiline) {
+                        // Use multiline directive processor
+                        printf("DEBUG: Calling process_multiline_directive_enhanced\n");
+                        process_multiline_directive_enhanced(tok->value, var_store);
+                        
+                        // Get accumulated output from multiline processing
+                        variable* output_var = store_get(var_store, "_multiline_output");
+                        printf("DEBUG: Retrieved _multiline_output variable: %p\n", (void*)output_var);
+                        if (output_var) {
+                            const char* multiline_output = variable_to_string(output_var);
+                            printf("DEBUG: Multiline output content: '%s'\n", multiline_output ? multiline_output : "(null)");
+                            if (multiline_output && strlen(multiline_output) > 0) {
+                                size_t dir_len = strlen(multiline_output);
+                                if (output_pos + dir_len < preprocessed_len * 2 + 999) {
+                                    strcpy(output + output_pos, multiline_output);
+                                    output_pos += dir_len;
+                                    printf("DEBUG: Added %zu bytes to output\n", dir_len);
+                                }
+                                // Clear the multiline output variable for next use
+                                variable* empty_var = variable_create_string("");
+                                if (empty_var) {
+                                    store_set(var_store, "_multiline_output", empty_var);
+                                    variable_unref(empty_var);
+                                }
+                            }
+                        }
+                    } else {
+                        // Use single-line directive processor
+                        printf("DEBUG: Calling process_xmd_directive (single-line)\n");
+                        int bytes_written = process_xmd_directive(tok->value, var_store, 
+                                                                directive_output, sizeof(directive_output));
+                        printf("DEBUG: Single-line processor returned %d bytes: '%s'\n", bytes_written, directive_output);
+                        if (bytes_written > 0 && output_pos + bytes_written < preprocessed_len * 2 + 999) {
+                            strcpy(output + output_pos, directive_output);
+                            output_pos += bytes_written;
+                        }
                     }
                 }
                 break;

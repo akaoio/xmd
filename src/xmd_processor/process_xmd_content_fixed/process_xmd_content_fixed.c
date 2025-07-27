@@ -263,6 +263,21 @@ char* process_xmd_content_fixed(const char* input, store* variables) {
                 // Handle other directives normally
                 if (is_multiline_directive(comment_content)) {
                     process_multiline_directive_enhanced(comment_content, variables);
+                    
+                    // Get accumulated output from multiline processing
+                    variable* output_var = store_get(variables, "_multiline_output");
+                    if (output_var && should_execute_block(ctx)) {
+                        const char* multiline_output = variable_to_string(output_var);
+                        if (multiline_output && strlen(multiline_output) > 0) {
+                            size_t dir_len = strlen(multiline_output);
+                            if (output_pos + dir_len >= output_capacity) {
+                                output_capacity = (output_pos + dir_len + 1000) * 2;
+                                output = realloc(output, output_capacity);
+                            }
+                            memcpy(output + output_pos, multiline_output, dir_len);
+                            output_pos += dir_len;
+                        }
+                    }
                 } else {
                     char directive_output[32768];  // Increased from 4096 to 32KB for long command outputs
                     process_directive(trimmed, ctx, directive_output, sizeof(directive_output));

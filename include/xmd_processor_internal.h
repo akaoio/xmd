@@ -74,6 +74,8 @@ int process_loop_body(const char* content, processor_context* ctx, LoopContext* 
 /* Directive processing functions */
 int process_exec(const char* args, processor_context* ctx, char* output, size_t output_size);
 char* process_exec_dynamic(const char* args, processor_context* ctx);
+int process_print_function(const char* function_call, processor_context* ctx, char* output, size_t output_size);
+int process_cmd_function(const char* function_call, processor_context* ctx, char* output, size_t output_size);
 int process_set(const char* args, processor_context* ctx, char* output, size_t output_size);
 int process_if(const char* args, processor_context* ctx, char* output, size_t output_size);
 int process_elif(const char* args, processor_context* ctx, char* output, size_t output_size);

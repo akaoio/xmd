@@ -82,6 +82,12 @@ int process_directive(const char* directive, processor_context* ctx, char* outpu
     } else if (strcmp(command, "endfor") == 0) {
         output[0] = '\0';
         result = 0;
+    } else if (strncmp(trimmed, "print(", 6) == 0) {
+        // Handle print() function calls
+        result = process_print_function(trimmed, ctx, output, output_size);
+    } else if (strncmp(trimmed, "cmd(", 4) == 0) {
+        // Handle cmd() function calls
+        result = process_cmd_function(trimmed, ctx, output, output_size);
     } else {
         snprintf(output, output_size, "[Unknown command: %s]", command);
         result = -1;

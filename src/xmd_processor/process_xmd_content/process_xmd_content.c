@@ -85,7 +85,7 @@ char* process_xmd_content(const char* input, store* variables) {
         if (strncmp(trimmed, "xmd:", 4) == 0) {
             // Process XMD directive
             if (is_multiline_directive(comment_content)) {
-                process_multiline_directive(comment_content, variables);
+                process_multiline_directive_enhanced(comment_content, variables);
             } else {
                 // Check if this is an exec directive - use dynamic allocation for it
                 char* space = strchr(trimmed + 4, ' ');

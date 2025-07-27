@@ -220,7 +220,30 @@ char* process_xmd_content_enhanced(const char* input, store* variables) {
             } else {
                 // Handle other directives normally
                 if (is_multiline_directive(comment_content)) {
-                    process_multiline_directive(comment_content, variables);
+                    // Process multiline directive and capture output
+                    process_multiline_directive_enhanced(comment_content, variables);
+                    
+                    // Get accumulated output from multiline processing
+                    variable* output_var = store_get(variables, "_multiline_output");
+                    if (output_var && should_execute_block(ctx)) {
+                        const char* multiline_output = variable_to_string(output_var);
+                        if (multiline_output && strlen(multiline_output) > 0) {
+                            size_t dir_len = strlen(multiline_output);
+                            if (output_pos + dir_len >= output_capacity) {
+                                output_capacity = (output_pos + dir_len + 1000) * 2;
+                                output = realloc(output, output_capacity);
+                            }
+                            memcpy(output + output_pos, multiline_output, dir_len);
+                            output_pos += dir_len;
+                            
+                            // Clear the multiline output variable for next use
+                            variable* empty_var = variable_create_string("");
+                            if (empty_var) {
+                                store_set(variables, "_multiline_output", empty_var);
+                                variable_unref(empty_var);
+                            }
+                        }
+                    }
                 } else {
                     // Check if this is an exec directive - use dynamic allocation for it
                     char* space = strchr(directive, ' ');

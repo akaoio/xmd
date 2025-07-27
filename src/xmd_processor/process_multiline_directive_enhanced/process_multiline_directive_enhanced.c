@@ -22,7 +22,16 @@ void process_multiline_directive_enhanced(const char* directive_content, store* 
     char* content_copy = strdup(directive_content);
     char* line = strtok(content_copy, "\n\r");
     
-    processor_context* ctx = create_context(variables);
+    // Create a single context that persists throughout all directive processing
+    processor_context ctx = { .variables = variables, .if_stack_size = 0 };
+    
+    // Clear any previous multiline output
+    variable* empty_var = variable_create_string("");
+    if (empty_var) {
+        store_set(variables, "_multiline_output", empty_var);
+        variable_unref(empty_var);
+    }
+    
     char output_buffer[4096];
     size_t accumulated_output_len = 0;
     char* accumulated_output = malloc(8192);
@@ -38,13 +47,20 @@ void process_multiline_directive_enhanced(const char* directive_content, store* 
             snprintf(output_buffer, sizeof(output_buffer), "xmd:%s", trimmed);
             
             char directive_result[32768];  // Increased from 4096 to 32KB for long command outputs
-            int result = process_directive(output_buffer, ctx, directive_result, sizeof(directive_result));
+            int result = process_directive(output_buffer, &ctx, directive_result, sizeof(directive_result));
             
             // Accumulate any output from directives
             if (result == 0 && strlen(directive_result) > 0) {
                 size_t result_len = strlen(directive_result);
-                if (accumulated_output_len + result_len + 1 >= 8192) {
-                    accumulated_output = realloc(accumulated_output, accumulated_output_len + result_len + 1024);
+                // Add space for newline if this isn't the first output
+                size_t newline_space = (accumulated_output_len > 0) ? 1 : 0;
+                if (accumulated_output_len + result_len + newline_space + 1 >= 8192) {
+                    accumulated_output = realloc(accumulated_output, accumulated_output_len + result_len + newline_space + 1024);
+                }
+                // Add newline before output if there's already content
+                if (accumulated_output_len > 0) {
+                    strcat(accumulated_output, "\n");
+                    accumulated_output_len += 1;
                 }
                 strcat(accumulated_output, directive_result);
                 accumulated_output_len += result_len;
@@ -64,6 +80,5 @@ void process_multiline_directive_enhanced(const char* directive_content, store* 
     }
     
     free(accumulated_output);
-    free(ctx);
     free(content_copy);
 }
