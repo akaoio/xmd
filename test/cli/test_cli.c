@@ -57,11 +57,12 @@ static void test_cli_argument_parsing(void) {
     
     // Test watch command
     {
-        char* argv[] = {"xmd", "--verbose", "watch", "/path/to/dir"};
+        char* argv[] = {"xmd", "watch", "/path/to/dir", "--verbose"};
         int argc = 4;
         
         cli_args* args = cli_parse_args(argc, argv);
         assert(args != NULL);
+        printf("DEBUG: Expected CLI_CMD_WATCH=%d, got command=%d\n", CLI_CMD_WATCH, args->command);
         assert(args->command == CLI_CMD_WATCH);
         assert(args->watch_directory != NULL);
         assert(strcmp(args->watch_directory, "/path/to/dir") == 0);

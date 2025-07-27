@@ -132,14 +132,33 @@ security_result security_validate_path(const char* path, const char* allowed_bas
         return SECURITY_PATH_TRAVERSAL;
     }
     
+    // For relative paths, create full path first
+    char* full_path = NULL;
+    if (path[0] != '/') {
+        // Relative path - combine with base
+        size_t full_len = strlen(allowed_base) + strlen(path) + 2;
+        full_path = malloc(full_len);
+        if (!full_path) {
+            return SECURITY_INVALID_INPUT;
+        }
+        snprintf(full_path, full_len, "%s/%s", allowed_base, path);
+    } else {
+        full_path = strdup(path);
+        if (!full_path) {
+            return SECURITY_INVALID_INPUT;
+        }
+    }
+    
     // Normalize both paths
-    char* normalized_path = normalize_path(path);
+    char* normalized_path = normalize_path(full_path);
     char* normalized_base = normalize_path(allowed_base);
+    
+    free(full_path);
     
     if (!normalized_path || !normalized_base) {
         free(normalized_path);
         free(normalized_base);
-        return SECURITY_PATH_TRAVERSAL;
+        return SECURITY_INVALID_INPUT;
     }
     
     // Check if the normalized path is within the allowed base
