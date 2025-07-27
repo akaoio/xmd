@@ -1,3 +1,5 @@
+#define _GNU_SOURCE  // For strdup - must be before includes
+
 /**
  * @file if_statement.c
  * @brief If statement implementation

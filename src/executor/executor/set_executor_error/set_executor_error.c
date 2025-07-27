@@ -1,9 +1,14 @@
+#define _GNU_SOURCE  // For strdup - must be before includes
+
 /**
  * @file set_executor_error.c
  * @brief Set error message in context
  * @author XMD Team
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "../../../../include/executor_internal.h"
 
 /**

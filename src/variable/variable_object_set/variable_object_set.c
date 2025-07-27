@@ -1,36 +1,19 @@
+#define _GNU_SOURCE  // For strdup - must be before includes
+
 /**
  * @file variable_object_set.c
- * @brief Variable system implementation - object property setter
- * @author XMD Team
- *
- * Implementation of object property setter for the XMD variable system.
- * Includes helper function for key finding.
+ * @brief Variable object property setter function
+ * @author XMD Implementation Team
+ * @date 2025-07-27
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
+#include <limits.h>
 #include <stdbool.h>
-#include <math.h>
-#include "../../../include/variable_internal.h"
-#include "../../../include/utils.h"
-
-/**
- * @brief Find pair index by key
- * @param object Object to search
- * @param key Key to find
- * @return Index if found, SIZE_MAX if not found
- */
-static size_t variable_object_find_key(const variable_object* object, const char* key) {
-    if (!object || !key) return SIZE_MAX;
-    
-    for (size_t i = 0; i < object->count; i++) {
-        if (strcmp(object->pairs[i].key, key) == 0) {
-            return i;
-        }
-    }
-    return SIZE_MAX;
-}
+#include "../../../include/variable.h"
 
 /**
  * @brief Set property in object variable
@@ -40,34 +23,43 @@ static size_t variable_object_find_key(const variable_object* object, const char
  * @return true on success, false on failure
  */
 bool variable_object_set(variable* object_var, const char* key, variable* value) {
-    if (!object_var || object_var->type != VAR_OBJECT || !object_var->value.object_value || !key) {
+    if (!object_var || object_var->type != VAR_OBJECT || !key || !value) {
         return false;
     }
     
-    variable_object* object = object_var->value.object_value;
-    size_t existing_index = variable_object_find_key(object, key);
+    variable_object* obj = object_var->value.object_value;
+    if (!obj) {
+        return false;
+    }
     
+    // Check if key already exists
+    size_t existing_index = variable_object_find_key(object_var, key);
     if (existing_index != SIZE_MAX) {
-        // Update existing
-        variable_unref(object->pairs[existing_index].value);
-        object->pairs[existing_index].value = variable_ref(value);
+        // Update existing value
+        variable_unref(obj->pairs[existing_index].value);
+        obj->pairs[existing_index].value = variable_ref(value);
         return true;
     }
     
-    // Add new pair
-    if (object->count >= object->capacity) {
-        size_t new_capacity = object->capacity == 0 ? 4 : object->capacity * 2;
-        variable_object_pair* new_pairs = realloc(object->pairs, new_capacity * sizeof(variable_object_pair));
-        if (!new_pairs) return false;
-        
-        object->pairs = new_pairs;
-        object->capacity = new_capacity;
+    // Add new key-value pair
+    if (obj->count >= obj->capacity) {
+        size_t new_capacity = obj->capacity == 0 ? 8 : obj->capacity * 2;
+        variable_object_pair* new_pairs = realloc(obj->pairs, 
+                                                 new_capacity * sizeof(variable_object_pair));
+        if (!new_pairs) {
+            return false;
+        }
+        obj->pairs = new_pairs;
+        obj->capacity = new_capacity;
     }
     
-    object->pairs[object->count].key = strdup(key);
-    if (!object->pairs[object->count].key) return false;
+    obj->pairs[obj->count].key = strdup(key);
+    if (!obj->pairs[obj->count].key) {
+        return false;
+    }
     
-    object->pairs[object->count].value = variable_ref(value);
-    object->count++;
+    obj->pairs[obj->count].value = variable_ref(value);
+    obj->count++;
+    
     return true;
 }

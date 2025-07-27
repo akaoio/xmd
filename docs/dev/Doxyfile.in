@@ -20,6 +20,8 @@ GENERATE_MAN           = NO
 HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
 HTML_TIMESTAMP         = YES
+HTML_HEADER            = docs/dev/doxygen-header.html
+HTML_FOOTER            = docs/dev/doxygen-footer.html
 
 # Source browsing
 SOURCE_BROWSER         = YES
@@ -52,10 +54,28 @@ CALLER_GRAPH           = YES
 GRAPHICAL_HIERARCHY    = YES
 DIRECTORY_GRAPH        = YES
 
-# Styling
-HTML_COLORSTYLE_HUE    = 220
-HTML_COLORSTYLE_SAT    = 100
-HTML_COLORSTYLE_GAMMA  = 80
+# Modern theme settings for doxygen-awesome
+GENERATE_TREEVIEW      = YES
+DISABLE_INDEX          = NO
+FULL_SIDEBAR           = NO
+HTML_COLORSTYLE        = LIGHT
+HTML_COLORSTYLE_HUE    = 209
+HTML_COLORSTYLE_SAT    = 255
+HTML_COLORSTYLE_GAMMA  = 113
+
+# IMPORTANT: Required for doxygen-awesome-css
+GENERATE_HTML          = YES
+HTML_DYNAMIC_MENUS     = YES
+TREEVIEW_WIDTH         = 300
+
+# Additional modern settings
+HTML_DYNAMIC_SECTIONS  = YES
+HTML_INDEX_NUM_ENTRIES = 100
+SEARCHENGINE           = YES
+SERVER_BASED_SEARCH    = NO
+EXTERNAL_SEARCH        = NO
+USE_MATHJAX            = NO
+MATHJAX_VERSION        = MathJax_3
 
 # Warnings
 QUIET                  = NO

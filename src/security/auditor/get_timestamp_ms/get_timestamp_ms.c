@@ -1,9 +1,15 @@
+#define _GNU_SOURCE  // For clock_gettime - must be before includes
+
 /**
  * @file get_timestamp_ms.c
  * @brief Get current timestamp in milliseconds
  * @author XMD Team
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <stdint.h>
 #include "../../../../include/auditor_internal.h"
 
 /**

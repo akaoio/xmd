@@ -8,19 +8,11 @@
 #ifndef RESOURCE_H
 #define RESOURCE_H
 
+#include "platform.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @brief Resource limiter context
- */
-typedef struct resource_limiter ResourceLimiter;
-
-/**
- * @brief Resource monitor context
- */
-typedef struct resource_monitor ResourceMonitor;
 
 /**
  * @brief Resource usage information
@@ -41,6 +33,35 @@ typedef enum {
     RESOURCE_LIMIT_EXCEEDED = -2, /**< Resource limit exceeded */
     RESOURCE_TIMEOUT = -3       /**< Operation timed out */
 } ResourceResult;
+
+/**
+ * @brief Resource limiter context structure
+ */
+struct resource_limiter {
+    long max_memory_mb;         /**< Maximum memory in MB */
+    long max_cpu_time_ms;       /**< Maximum CPU time in milliseconds */
+    long max_execution_time_ms; /**< Maximum execution time in milliseconds */
+    char* last_error;           /**< Last error message */
+};
+
+/**
+ * @brief Resource monitor context structure
+ */
+struct resource_monitor {
+    xmd_time_t start_time;      /**< Monitoring start time */
+    int is_monitoring;          /**< Whether monitoring is active */
+    char* last_error;           /**< Last error message */
+};
+
+/**
+ * @brief Resource limiter context typedef
+ */
+typedef struct resource_limiter ResourceLimiter;
+
+/**
+ * @brief Resource monitor context typedef
+ */
+typedef struct resource_monitor ResourceMonitor;
 
 /**
  * @brief Create a new resource limiter
@@ -126,6 +147,32 @@ int resource_monitor_get_usage(ResourceMonitor* monitor, ResourceUsage* usage);
  * @return ResourceResult indicating success/failure
  */
 int resource_monitor_reset(ResourceMonitor* monitor);
+
+/**
+ * @brief Set error message in monitor
+ * @param monitor Resource monitor
+ * @param message Error message
+ */
+void set_monitor_error(ResourceMonitor* monitor, const char* message);
+
+/**
+ * @brief Get current memory usage using platform-specific method
+ * @return Memory usage in bytes, or -1 on error
+ */
+long get_memory_usage(void);
+
+/**
+ * @brief Count open file descriptors using platform-specific method
+ * @return Number of open file descriptors, or -1 on error
+ */
+int count_file_descriptors(void);
+
+/**
+ * @brief Get elapsed time in milliseconds
+ * @param start_time Start time
+ * @return Elapsed time in milliseconds
+ */
+long get_elapsed_time_ms(const xmd_time_t* start_time);
 
 #ifdef __cplusplus
 }

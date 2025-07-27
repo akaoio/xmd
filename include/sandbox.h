@@ -36,6 +36,7 @@ typedef struct {
  */
 typedef struct sandbox_context {
     SandboxConfig* config;              /**< Associated configuration */
+    char* last_error;                   /**< Last error message */
 } SandboxContext;
 
 /**
@@ -111,6 +112,27 @@ int sandbox_check_path_allowed(SandboxContext* ctx, const char* path);
  * @return SandboxResult indicating success/failure
  */
 int sandbox_apply_limits(SandboxContext* ctx);
+
+/**
+ * @brief Extract base command from command string
+ * @param command Full command string
+ * @return Base command (caller must free) or NULL on error
+ */
+char* extract_base_command(const char* command);
+
+/**
+ * @brief Check for command injection attempts
+ * @param command Command to check
+ * @return 1 if injection detected, 0 if safe
+ */
+int check_command_injection(const char* command);
+
+/**
+ * @brief Normalize path (remove .. and . components)
+ * @param path Input path
+ * @return Normalized path (caller must free) or NULL on error
+ */
+char* normalize_path(const char* path);
 
 #ifdef __cplusplus
 }

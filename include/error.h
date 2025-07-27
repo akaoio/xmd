@@ -13,11 +13,6 @@ extern "C" {
 #endif
 
 /**
- * @brief Error handling context
- */
-typedef struct error_context ErrorContext;
-
-/**
  * @brief Error types
  */
 typedef enum {
@@ -39,6 +34,22 @@ typedef struct {
     char* file;            /**< Source file where error occurred */
     int line;              /**< Line number where error occurred */
 } XMDError;
+
+/**
+ * @brief Error handling context structure
+ */
+struct error_context {
+    XMDError* current_error;    /**< Current error */
+    int in_try_block;           /**< Whether in try block */
+    int in_catch_block;         /**< Whether in catch block */
+    ErrorType catch_type;       /**< Type of error being caught */
+    int error_caught;           /**< Whether error was caught */
+};
+
+/**
+ * @brief Error handling context typedef
+ */
+typedef struct error_context ErrorContext;
 
 /**
  * @brief Create a new error context
@@ -112,6 +123,12 @@ int error_is_caught(ErrorContext* ctx);
  * @param ctx Error context
  */
 void error_clear(ErrorContext* ctx);
+
+/**
+ * @brief Free XMDError structure
+ * @param error Error to free
+ */
+void free_xmd_error(XMDError* error);
 
 #ifdef __cplusplus
 }

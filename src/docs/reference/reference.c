@@ -1,3 +1,5 @@
+#define _GNU_SOURCE  // For DT_REG and strdup - must be before includes
+
 /**
  * @file reference.c
  * @brief API reference generator for XMD
@@ -9,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <dirent.h>
 #include "../../../include/platform.h"
 
 /**

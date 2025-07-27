@@ -16,11 +16,6 @@ extern "C" {
 #endif
 
 /**
- * @brief Loop context for managing for/while loops
- */
-typedef struct loop_context LoopContext;
-
-/**
  * @brief Result of loop operations
  */
 typedef enum {
@@ -29,6 +24,21 @@ typedef enum {
     LOOP_CONTINUE = 2,     /**< Loop continue requested */
     LOOP_ERROR = -1        /**< Error during loop processing */
 } LoopResult;
+
+/**
+ * @brief Loop context structure
+ */
+struct loop_context {
+    int break_requested;      /**< Whether break was requested */
+    int continue_requested;   /**< Whether continue was requested */
+    size_t max_iterations;    /**< Maximum allowed iterations */
+    char* last_error;         /**< Last error message */
+};
+
+/**
+ * @brief Loop context typedef
+ */
+typedef struct loop_context LoopContext;
 
 /**
  * @brief Create a new loop context
@@ -81,6 +91,21 @@ int loop_break(LoopContext* ctx);
  * @return LOOP_CONTINUE
  */
 int loop_continue(LoopContext* ctx);
+
+/**
+ * @brief Set error message in loop context
+ * @param ctx Loop context
+ * @param message Error message
+ */
+void set_loop_error(LoopContext* ctx, const char* message);
+
+/**
+ * @brief Append content to result string
+ * @param current_result Current result string
+ * @param new_content Content to append
+ * @return New result string (caller must free)
+ */
+char* append_to_result(char* current_result, const char* new_content);
 
 #ifdef __cplusplus
 }

@@ -16,15 +16,7 @@
 #include "../include/resource.h"
 #include "../include/config.h"
 
-// Resource limiter structure
-struct resource_limiter {
-    long max_memory_mb;         /**< Maximum memory in MB */
-    long max_cpu_time_ms;       /**< Maximum CPU time in milliseconds */
-    long max_execution_time_ms; /**< Maximum execution time in milliseconds */
-    char* last_error;           /**< Last error message */
-};
-
-// Function prototypes
+// Function prototypes (struct is already defined in resource.h)
 ResourceLimiter* resource_limiter_new(void);
 void resource_limiter_free(ResourceLimiter* limiter);
 void set_limiter_error(ResourceLimiter* limiter, const char* message);

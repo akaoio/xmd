@@ -16,11 +16,6 @@ extern "C" {
 #endif
 
 /**
- * @brief Command execution context
- */
-typedef struct executor_context ExecutorContext;
-
-/**
  * @brief Command execution result
  */
 typedef struct {
@@ -41,6 +36,22 @@ typedef enum {
     EXECUTOR_TIMEOUT = -2,          /**< Command timed out */
     EXECUTOR_PERMISSION_DENIED = -3 /**< Permission denied */
 } ExecutorResult;
+
+/**
+ * @brief Command execution context structure
+ */
+struct executor_context {
+    char* last_error;           /**< Last error message */
+    int timeout_ms;             /**< Default timeout in milliseconds */
+    int default_timeout_ms;     /**< Default timeout for new commands */
+    int enable_capture;         /**< Whether to capture output */
+    size_t max_output_size;     /**< Maximum output size to capture */
+};
+
+/**
+ * @brief Command execution context typedef
+ */
+typedef struct executor_context ExecutorContext;
 
 /**
  * @brief Create a new executor context

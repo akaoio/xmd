@@ -1,9 +1,19 @@
+#define _GNU_SOURCE  // For system functions - must be before includes
+
 /**
  * @file executor_run_with_timeout.c
  * @brief Execute a command with timeout
  * @author XMD Team
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <signal.h>
+#include <sys/wait.h>
+#include <sys/time.h>
+#include <errno.h>
 #include "../../../../include/executor_internal.h"
 
 /**

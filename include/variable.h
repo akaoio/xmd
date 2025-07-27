@@ -200,6 +200,14 @@ size_t variable_object_size(const variable* object_var);
 char** variable_object_keys(const variable* object_var, size_t* count);
 
 /**
+ * @brief Find key index in object variable (internal helper)
+ * @param object_var Object variable
+ * @param key Key to find
+ * @return Key index or SIZE_MAX if not found
+ */
+size_t variable_object_find_key(const variable* object_var, const char* key);
+
+/**
  * @brief Increment reference count
  * @param var Variable to reference (can be NULL)
  * @return Same variable pointer for chaining

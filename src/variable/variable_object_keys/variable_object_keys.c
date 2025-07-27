@@ -1,3 +1,5 @@
+#define _GNU_SOURCE  // For strdup - must be before includes
+
 /**
  * @file variable_object_keys.c
  * @brief Variable system implementation - object keys getter

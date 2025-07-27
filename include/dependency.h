@@ -171,6 +171,26 @@ int dependency_build_graph(ModuleRegistry* registry, DependencyGraph** graph);
  */
 int dependency_validate_all(ModuleRegistry* registry);
 
+/**
+ * @brief Reset visit states for all nodes in dependency graph
+ * @param graph Dependency graph
+ */
+void reset_visit_states(DependencyGraph* graph);
+
+/**
+ * @brief Clear the cycle path tracking
+ * @param detector Dependency detector
+ */
+void clear_cycle_path(DependencyDetector* detector);
+
+/**
+ * @brief Perform DFS cycle detection from a specific node
+ * @param detector Dependency detector
+ * @param node Starting node for DFS
+ * @return MODULE_SUCCESS if no cycle, MODULE_CIRCULAR_DEPENDENCY if cycle found
+ */
+int dfs_cycle_detection(DependencyDetector* detector, DependencyNode* node);
+
 #ifdef __cplusplus
 }
 #endif

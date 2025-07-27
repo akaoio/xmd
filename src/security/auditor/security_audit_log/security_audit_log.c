@@ -1,3 +1,5 @@
+#define _GNU_SOURCE  // For strdup - must be before includes
+
 /**
  * @file security_audit_log.c
  * @brief Log security audit event

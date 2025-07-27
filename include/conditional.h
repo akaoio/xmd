@@ -8,6 +8,7 @@
 #ifndef CONDITIONAL_H
 #define CONDITIONAL_H
 
+#include <stdbool.h>
 #include "variable.h"
 #include "store.h"
 
@@ -20,6 +21,14 @@ extern "C" {
 /**
  * @brief Conditional context for managing if/else/elif logic
  */
+struct conditional_context {
+    bool last_result;      /**< Result of last condition evaluation */
+    char* last_error;      /**< Last error message */
+};
+
+/**
+ * @brief Conditional context typedef  
+ */
 typedef struct conditional_context ConditionContext;
 
 /**
@@ -30,6 +39,22 @@ typedef enum {
     CONDITION_FALSE = 0,   /**< Condition evaluated to false */
     CONDITION_ERROR = -1   /**< Error during evaluation */
 } ConditionResult;
+
+/**
+ * @brief Conditional operator types
+ */
+typedef enum {
+    CONDITION_OP_EQUAL,         /**< == operator */
+    CONDITION_OP_NOT_EQUAL,     /**< != operator */
+    CONDITION_OP_LESS,          /**< < operator */
+    CONDITION_OP_LESS_EQUAL,    /**< <= operator */
+    CONDITION_OP_GREATER,       /**< > operator */
+    CONDITION_OP_GREATER_EQUAL, /**< >= operator */
+    CONDITION_OP_LOGICAL_AND,   /**< && operator */
+    CONDITION_OP_LOGICAL_OR,    /**< || operator */
+    CONDITION_OP_LOGICAL_NOT,   /**< ! operator */
+    CONDITION_OP_UNKNOWN        /**< Unknown operator */
+} ConditionOperator;
 
 /**
  * @brief Create a new conditional context
@@ -79,6 +104,30 @@ int if_statement_process(ConditionContext* ctx, const char* condition,
 int elif_statement_process(ConditionContext* ctx, const char* conditions[], 
                           const char* contents[], int count, 
                           store* st, char** result);
+
+/**
+ * @brief Parse logical AND operator
+ * @param expr Expression to parse
+ * @param operator Output operator type
+ * @return Position after operator or NULL if not found
+ */
+const char* condition_logical_and(const char* expr, int* operator);
+
+/**
+ * @brief Parse logical OR operator
+ * @param expr Expression to parse
+ * @param operator Output operator type
+ * @return Position after operator or NULL if not found
+ */
+const char* condition_logical_or(const char* expr, int* operator);
+
+/**
+ * @brief Parse logical NOT operator
+ * @param expr Expression to parse
+ * @param operator Output operator type
+ * @return Position after operator or NULL if not found
+ */
+const char* condition_logical_not(const char* expr, int* operator);
 
 #ifdef __cplusplus
 }

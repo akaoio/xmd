@@ -4,6 +4,10 @@
  * @author XMD Team
  */
 
+#define _GNU_SOURCE
+#include <string.h>
+#include <stdlib.h>
+
 #include "../../../../include/dependency_graph_internal.h"
 
 /**

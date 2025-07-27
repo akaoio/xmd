@@ -1,3 +1,5 @@
+#define _GNU_SOURCE  // For strdup - must be before includes
+
 /**
  * @file create_result.c
  * @brief XMD result creation function
@@ -6,6 +8,9 @@
  * Implementation of result structure creation for the XMD C API.
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "../../../../include/c_api_internal.h"
 
 /**

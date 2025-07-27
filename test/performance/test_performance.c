@@ -5,6 +5,8 @@
  * @date 2025-07-25
  */
 
+#define _GNU_SOURCE  // For strdup
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -84,17 +86,39 @@ static void test_optimizer(void) {
     token* test_tokens = malloc(5 * sizeof(token));
     assert(test_tokens != NULL);
     
+    // Initialize all fields to zero
+    memset(test_tokens, 0, 5 * sizeof(token));
+    
     // Create a simple text sequence
     test_tokens[0].type = TOKEN_TEXT;
     test_tokens[0].value = strdup("2");
+    test_tokens[0].line = 1;
+    test_tokens[0].column = 1;
+    
     test_tokens[1].type = TOKEN_TEXT;
     test_tokens[1].value = strdup("+");
+    test_tokens[1].line = 1;
+    test_tokens[1].column = 2;
+    
     test_tokens[2].type = TOKEN_TEXT;
     test_tokens[2].value = strdup("3");
+    test_tokens[2].line = 1;
+    test_tokens[2].column = 3;
+    
     test_tokens[3].type = TOKEN_TEXT;
     test_tokens[3].value = strdup("*");
+    test_tokens[3].line = 1;
+    test_tokens[3].column = 4;
+    
     test_tokens[4].type = TOKEN_TEXT;
     test_tokens[4].value = strdup("1");
+    test_tokens[4].line = 1;
+    test_tokens[4].column = 5;
+    
+    // Verify all strdup calls succeeded
+    for (int i = 0; i < 5; i++) {
+        assert(test_tokens[i].value != NULL);
+    }
     
     size_t token_count = 5;
     

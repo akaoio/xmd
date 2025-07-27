@@ -15,11 +15,6 @@ extern "C" {
 #endif
 
 /**
- * @brief Output formatter context
- */
-typedef struct output_formatter OutputFormatter;
-
-/**
  * @brief Output format types
  */
 typedef enum {
@@ -29,6 +24,19 @@ typedef enum {
     OUTPUT_FORMAT_HTML,         /**< Format as HTML (escaped) */
     OUTPUT_FORMAT_JSON          /**< Format as JSON (escaped) */
 } OutputFormat;
+
+/**
+ * @brief Output formatter context structure
+ */
+struct output_formatter {
+    char* last_error;              /**< Last error message */
+    OutputFormat default_format;   /**< Default output format */
+};
+
+/**
+ * @brief Output formatter context typedef
+ */
+typedef struct output_formatter OutputFormatter;
 
 /**
  * @brief Output result codes
@@ -103,6 +111,13 @@ int output_strip_ansi_codes(const char* input, char** result);
  * @return OutputResult indicating success/failure
  */
 int output_truncate(const char* input, size_t max_length, char** result);
+
+/**
+ * @brief Set error message in formatter
+ * @param formatter Output formatter
+ * @param message Error message
+ */
+void set_formatter_error(OutputFormatter* formatter, const char* message);
 
 #ifdef __cplusplus
 }

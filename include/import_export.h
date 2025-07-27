@@ -155,6 +155,22 @@ int export_symbol(ImportExportProcessor* processor,
                  const char* symbol_name, 
                  variable* value);
 
+/**
+ * @brief Skip whitespace in string
+ * @param str String pointer
+ * @return Pointer to first non-whitespace character
+ */
+const char* skip_whitespace(const char* str);
+
+/**
+ * @brief Extract word from string
+ * @param str String to extract from
+ * @param word Output buffer for word (caller must free)
+ * @param next Output pointer to next position in string
+ * @return Length of extracted word, 0 if no word found
+ */
+size_t extract_word(const char* str, char** word, const char** next);
+
 #ifdef __cplusplus
 }
 #endif

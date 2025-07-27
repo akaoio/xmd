@@ -223,6 +223,35 @@ char* benchmark_generate_report(benchmark_suite* suite);
  */
 void benchmark_suite_destroy(benchmark_suite* suite);
 
+/**
+ * @brief Get current time in nanoseconds
+ * @return Time in nanoseconds
+ */
+uint64_t get_time_ns(void);
+
+/**
+ * @brief Calculate statistics from timing data
+ * @param times Array of timing measurements
+ * @param count Number of measurements
+ * @param result Benchmark result to populate
+ */
+void calculate_stats(uint64_t* times, uint32_t count, benchmark_result* result);
+
+/**
+ * @brief Resize results array if needed
+ * @param suite Benchmark suite
+ * @return 0 on success, -1 on error
+ */
+int resize_results_if_needed(benchmark_suite* suite);
+
+/**
+ * @brief Compare function for sorting times
+ * @param a First time value
+ * @param b Second time value
+ * @return Comparison result
+ */
+int compare_times(const void* a, const void* b);
+
 // =============================================================================
 // Utility Macros
 // =============================================================================

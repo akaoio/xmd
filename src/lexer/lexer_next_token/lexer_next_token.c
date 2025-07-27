@@ -54,37 +54,8 @@ token* lexer_next_token(lexer* lex) {
         // Check if it's an XMD directive
         char* xmd_start = strstr(content, "xmd:");
         if (xmd_start != NULL) {
-            // Extract just the XMD directive part, not the HTML comment wrapper
-            size_t content_len = strlen(content);
-            char* xmd_directive = malloc(content_len + 1);
-            if (xmd_directive) {
-                // Find the start of xmd: directive
-                char* directive_start = xmd_start;
-                
-                // Find the end of the directive (before --> or end of content)
-                char* directive_end = strstr(directive_start, "-->");
-                if (!directive_end) {
-                    directive_end = content + content_len;
-                }
-                
-                // Copy just the directive part
-                size_t directive_len = directive_end - directive_start;
-                strncpy(xmd_directive, directive_start, directive_len);
-                xmd_directive[directive_len] = '\0';
-                
-                // Trim whitespace
-                char* trimmed = xmd_directive;
-                while (*trimmed == ' ' || *trimmed == '\t' || *trimmed == '\n') trimmed++;
-                char* end = trimmed + strlen(trimmed) - 1;
-                while (end > trimmed && (*end == ' ' || *end == '\t' || *end == '\n')) end--;
-                *(end + 1) = '\0';
-                
-                token* result = token_create(TOKEN_XMD_DIRECTIVE, trimmed, token_line, token_column);
-                free(xmd_directive);
-                free(content);
-                return result;
-            }
-            return token_create(TOKEN_HTML_COMMENT, content, token_line, token_column);
+            // Return the full HTML comment for XMD directives
+            return token_create(TOKEN_XMD_DIRECTIVE, content, token_line, token_column);
         } else {
             return token_create(TOKEN_HTML_COMMENT, content, token_line, token_column);
         }

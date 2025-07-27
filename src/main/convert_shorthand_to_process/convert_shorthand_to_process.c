@@ -1,3 +1,5 @@
+#define _GNU_SOURCE  // For strdup - must be before includes
+
 /**
  * @file convert_shorthand_to_process.c
  * @brief Shorthand to process command conversion function
@@ -6,6 +8,9 @@
  * Implementation of shorthand argument conversion for the XMD main module.
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "../../../include/main_internal.h"
 
 /**

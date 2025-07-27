@@ -1,11 +1,5 @@
 # XMD - eXtended MarkDown
 
-[![Build Status](https://github.com/akaoio/xmd/workflows/CI/badge.svg)](https://github.com/akaoio/xmd/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/akaoio/xmd/releases)
-[![C17](https://img.shields.io/badge/C-17-blue.svg)](https://en.wikipedia.org/wiki/C17_(C_standard_revision))
-[![Documentation](https://img.shields.io/badge/docs-online-green.svg)](https://akaoio.github.io/xmd/)
-
 > **📖 [View Official Documentation](https://akaoio.github.io/xmd/)** | **🚀 [Quick Start Guide](docs/quick-start.md)** | **📚 [API Reference](docs/api/)**
 
 **XMD** (eXtended MarkDown) transforms regular markdown into a powerful, programmable language while maintaining 100% markdown compatibility. Using invisible HTML comments with the `<!-- xmd: -->` namespace, XMD adds variables, control flow, system integration, and modular composition to markdown without breaking existing renderers.

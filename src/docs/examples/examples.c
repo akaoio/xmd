@@ -1,3 +1,5 @@
+#define _GNU_SOURCE  // For DT_REG and strdup - must be before includes
+
 /**
  * @file examples.c
  * @brief Example generator and manager for XMD
@@ -8,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <dirent.h>
 #include "../../../include/platform.h"
 
 /**

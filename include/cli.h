@@ -28,23 +28,27 @@ typedef enum {
     CLI_CMD_VALIDATE = 2,   ///< Validate syntax
     CLI_CMD_CONFIG = 3,     ///< Show configuration
     CLI_CMD_HELP = 4,       ///< Show help
-    CLI_CMD_VERSION = 5     ///< Show version
+    CLI_CMD_VERSION = 5,    ///< Show version
+    CLI_CMD_PLUGIN = 6      ///< Plugin command
 } cli_command_type;
 
 /**
  * @brief CLI argument structure
  */
 typedef struct cli_args {
-    cli_command_type command;
-    char* input_file;
-    char* output_file;
-    char* config_file;
-    char* watch_directory;
-    bool verbose;
-    bool quiet;
-    bool debug;
-    bool version;
-    bool help;
+    cli_command_type command;   ///< Command type
+    char *input_file;          ///< Input file path
+    char *output_file;         ///< Output file path
+    char *config_file;         ///< Config file path
+    char *watch_dir;           ///< Directory to watch
+    char *watch_directory;     ///< Directory to watch (alternate field name)
+    char *plugin_name;         ///< Plugin name for plugin command
+    bool verbose;              ///< Verbose output flag
+    bool quiet;                ///< Quiet output flag
+    bool debug;                ///< Debug output flag
+    bool help;                 ///< Help flag
+    bool version;              ///< Version flag
+    int watch_recursive;       ///< Recursive watch flag
 } cli_args;
 
 /**
@@ -122,6 +126,16 @@ typedef struct xmd_result {
     double processing_time_ms;
 } xmd_result;
 
+/**
+ * @brief Plugin manager structure
+ */
+typedef struct plugin_manager {
+    void** plugins;             /**< Array of loaded plugins */
+    size_t plugin_count;        /**< Number of loaded plugins */
+    size_t plugin_capacity;     /**< Capacity of plugin array */
+    bool initialized;           /**< Whether manager is initialized */
+} plugin_manager;
+
 // =============================================================================
 // CLI Functions
 // =============================================================================
@@ -198,6 +212,11 @@ int cli_validate_file(const char* input_file, bool verbose);
  */
 int cli_show_config(const char* config_file);
 
+/**
+ * @brief Create plugin manager
+ * @return Plugin manager or NULL on error
+ */
+plugin_manager* plugin_manager_create(void);
 
 // =============================================================================
 // Configuration Functions
@@ -283,6 +302,15 @@ xmd_result* xmd_process_string(void* handle, const char* input, size_t input_len
  * @return Processing result (must be freed with xmd_result_free)
  */
 xmd_result* xmd_process_file(void* handle, const char* input_path, const char* output_path);
+
+/**
+ * @brief Process markdown string
+ * @param handle XMD context handle
+ * @param input Input markdown string
+ * @param input_length Input string length
+ * @return Processing result (must be freed with xmd_result_free)
+ */
+xmd_result* xmd_process_string(void* handle, const char* input, size_t input_length);
 
 /**
  * @brief Validate markdown syntax

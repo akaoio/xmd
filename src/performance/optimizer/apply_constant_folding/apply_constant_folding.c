@@ -1,3 +1,5 @@
+#define _GNU_SOURCE  // For strdup - must be before includes
+
 /**
  * @file apply_constant_folding.c
  * @brief Apply constant folding optimization
@@ -31,7 +33,7 @@ uint32_t apply_constant_folding(token** tokens, size_t* token_count) {
             token_array[i + 2].type == TOKEN_TEXT) {
             
             // Simple arithmetic operations
-            if (token_array[i + 1].value && 
+            if (token_array[i].value && token_array[i + 1].value && token_array[i + 2].value &&
                 (strcmp(token_array[i + 1].value, "+") == 0 ||
                  strcmp(token_array[i + 1].value, "-") == 0 ||
                  strcmp(token_array[i + 1].value, "*") == 0)) {

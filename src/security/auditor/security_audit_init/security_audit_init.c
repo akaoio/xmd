@@ -1,9 +1,14 @@
+#define _GNU_SOURCE  // For strdup - must be before includes
+
 /**
  * @file security_audit_init.c
  * @brief Initialize security audit system
  * @author XMD Team
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "../../../../include/auditor_internal.h"
 
 /**

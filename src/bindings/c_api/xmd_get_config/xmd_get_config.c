@@ -1,3 +1,5 @@
+#define _GNU_SOURCE  // For strdup - must be before includes
+
 /**
  * @file xmd_get_config.c
  * @brief XMD configuration getter
@@ -6,6 +8,9 @@
  * Implementation of XMD configuration getting for the C API.
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "../../../../include/c_api_internal.h"
 
 /**

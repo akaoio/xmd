@@ -1,9 +1,8 @@
 /**
  * @file variable_to_string.c
- * @brief Variable system implementation - string conversion
- * @author XMD Team
- *
- * Implementation of variable to string conversion for the XMD variable system.
+ * @brief Variable to string conversion function
+ * @author XMD Implementation Team
+ * @date 2025-07-27
  */
 
 #include <stdio.h>
@@ -12,7 +11,6 @@
 #include <stdbool.h>
 #include <math.h>
 #include "../../../include/variable_internal.h"
-#include "../../../include/utils.h"
 
 /**
  * @brief Convert variable to string
@@ -22,67 +20,105 @@
 char* variable_to_string(const variable* var) {
     if (var == NULL) {
         char* result = malloc(5);
-        if (result) strcpy(result, "null");
+        if (result == NULL) {
+            return NULL;
+        }
+        strcpy(result, "null");
         return result;
     }
     
     switch (var->type) {
         case VAR_NULL: {
             char* result = malloc(5);
-            if (result) strcpy(result, "null");
+            if (result == NULL) {
+                return NULL;
+            }
+            strcpy(result, "null");
             return result;
         }
         case VAR_BOOLEAN: {
-            const char* str = var->value.boolean_value ? "true" : "false";
-            char* result = malloc(strlen(str) + 1);
-            if (result) strcpy(result, str);
-            return result;
-        }
-        case VAR_NUMBER: {
-            double num = var->value.number_value;
-            if (isnan(num)) {
-                char* result = malloc(4);
-                if (result) strcpy(result, "NaN");
-                return result;
-            } else if (isinf(num)) {
-                char* result = malloc(9);
-                if (result) strcpy(result, num > 0 ? "Infinity" : "-Infinity");
-                return result;
-            } else if (num == floor(num) && num >= -2147483648.0 && num <= 2147483647.0) {
-                char* result = malloc(32);
-                if (result) snprintf(result, 32, "%.0f", num);
+            if (var->value.boolean_value) {
+                char* result = malloc(5);
+                if (result == NULL) {
+                    return NULL;
+                }
+                strcpy(result, "true");
                 return result;
             } else {
-                char* result = malloc(32);
-                if (result) snprintf(result, 32, "%.6g", num);
+                char* result = malloc(6);
+                if (result == NULL) {
+                    return NULL;
+                }
+                strcpy(result, "false");
                 return result;
             }
+        }
+        case VAR_NUMBER: {
+            // Convert number to string
+            char buffer[64];
+            double num = var->value.number_value;
+            
+            if (isnan(num)) {
+                strcpy(buffer, "NaN");
+            } else if (isinf(num)) {
+                if (num > 0) {
+                    strcpy(buffer, "Infinity");
+                } else {
+                    strcpy(buffer, "-Infinity");
+                }
+            } else if (floor(num) == num && num >= -2147483648.0 && num <= 2147483647.0) {
+                // Integer representation
+                snprintf(buffer, sizeof(buffer), "%.0f", num);
+            } else {
+                // Floating point representation
+                snprintf(buffer, sizeof(buffer), "%.15g", num);
+            }
+            
+            size_t len = strlen(buffer);
+            char* result = malloc(len + 1);
+            if (result == NULL) {
+                return NULL;
+            }
+            strcpy(result, buffer);
+            return result;
         }
         case VAR_STRING: {
             if (var->value.string_value == NULL) {
                 char* result = malloc(1);
-                if (result) result[0] = '\0';
+                if (result == NULL) {
+                    return NULL;
+                }
+                result[0] = '\0';
                 return result;
             }
+            
             size_t len = strlen(var->value.string_value);
             char* result = malloc(len + 1);
-            if (result) strcpy(result, var->value.string_value);
+            if (result == NULL) {
+                return NULL;
+            }
+            strcpy(result, var->value.string_value);
             return result;
         }
         case VAR_ARRAY: {
-            char* result = malloc(3);
-            if (result) strcpy(result, "[]");
+            // Simple array representation for now
+            char* result = malloc(8);
+            if (result == NULL) {
+                return NULL;
+            }
+            strcpy(result, "[array]");
             return result;
         }
         case VAR_OBJECT: {
-            char* result = malloc(3);
-            if (result) strcpy(result, "{}");
-            return result;
-        }
-        default: {
-            char* result = malloc(8);
-            if (result) strcpy(result, "unknown");
+            // Simple object representation for now
+            char* result = malloc(9);
+            if (result == NULL) {
+                return NULL;
+            }
+            strcpy(result, "[object]");
             return result;
         }
     }
+    
+    return NULL;
 }

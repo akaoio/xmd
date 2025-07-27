@@ -1,3 +1,5 @@
+#define _GNU_SOURCE  // For strdup - must be before includes
+
 /**
  * @file cli_parse_args.c
  * @brief Parse command line arguments

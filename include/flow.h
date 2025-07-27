@@ -15,11 +15,6 @@ extern "C" {
 #endif
 
 /**
- * @brief Flow control context
- */
-typedef struct flow_context FlowContext;
-
-/**
  * @brief Flow control result types
  */
 typedef enum {
@@ -28,6 +23,21 @@ typedef enum {
     FLOW_RETURN = 2,       /**< Return from function/block */
     FLOW_ERROR = -1        /**< Error in flow control */
 } FlowResult;
+
+/**
+ * @brief Flow control context structure
+ */
+struct flow_context {
+    FlowResult status;          /**< Current flow status */
+    variable* return_value;     /**< Return value if any */
+    int in_loop;               /**< Whether currently in a loop */
+    int loop_depth;            /**< Current loop nesting depth */
+};
+
+/**
+ * @brief Flow control context typedef
+ */
+typedef struct flow_context FlowContext;
 
 /**
  * @brief Create a new flow context

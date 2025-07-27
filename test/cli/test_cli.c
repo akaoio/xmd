@@ -5,6 +5,7 @@
  * @date 2025-07-25
  */
 
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

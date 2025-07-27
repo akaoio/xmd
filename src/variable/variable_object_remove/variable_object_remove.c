@@ -1,35 +1,17 @@
 /**
  * @file variable_object_remove.c
- * @brief Variable system implementation - object property removal
- * @author XMD Team
- *
- * Implementation of object property removal for the XMD variable system.
+ * @brief Variable object property removal function
+ * @author XMD Implementation Team
+ * @date 2025-07-27
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
-#include <math.h>
+#include <stdint.h>
+#include <limits.h>
+#include "../../../include/variable.h"
 #include "../../../include/variable_internal.h"
-#include "../../../include/utils.h"
-
-/**
- * @brief Find pair index by key
- * @param object Object to search
- * @param key Key to find
- * @return Index if found, SIZE_MAX if not found
- */
-static size_t variable_object_find_key(const variable_object* object, const char* key) {
-    if (!object || !key) return SIZE_MAX;
-    
-    for (size_t i = 0; i < object->count; i++) {
-        if (strcmp(object->pairs[i].key, key) == 0) {
-            return i;
-        }
-    }
-    return SIZE_MAX;
-}
 
 /**
  * @brief Remove property from object variable
@@ -43,7 +25,7 @@ bool variable_object_remove(variable* object_var, const char* key) {
     }
     
     variable_object* object = object_var->value.object_value;
-    size_t index = variable_object_find_key(object, key);
+    size_t index = variable_object_find_key(object_var, key);
     
     if (index == SIZE_MAX) return false;
     

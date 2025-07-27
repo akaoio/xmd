@@ -19,15 +19,6 @@
 #include "platform.h"
 #include "executor.h"
 
-/**
- * @brief Executor context structure
- */
-struct executor_context {
-    int default_timeout_ms;     /**< Default timeout in milliseconds */
-    size_t max_output_size;     /**< Maximum output size to capture */
-    char* last_error;           /**< Last error message */
-};
-
 // Internal function declarations
 void set_executor_error(ExecutorContext* ctx, const char* message);
 long get_time_ms(void);

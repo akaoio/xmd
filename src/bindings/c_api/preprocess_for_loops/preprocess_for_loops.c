@@ -1,10 +1,15 @@
+#define _GNU_SOURCE  // For strdup - must be before includes
+
 /**
  * @file preprocess_for_loops.c
  * @brief For loop preprocessing function
  * @author XMD Implementation Team
- * @date 2025-07-25
+ * @date 2025-07-27
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "../../../../include/c_api_internal.h"
 #include <ctype.h>
 

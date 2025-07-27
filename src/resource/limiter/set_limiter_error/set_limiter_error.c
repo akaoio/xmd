@@ -1,9 +1,15 @@
+#define _GNU_SOURCE  // For strdup - must be before includes
+
 /**
  * @file set_limiter_error.c
  * @brief Set error message in limiter
- * @author XMD Team
+ * @author XMD Implementation Team
+ * @date 2025-07-27
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "../../../../include/limiter_internal.h"
 
 /**

@@ -6,6 +6,10 @@
  * Implementation of file-based configuration loading for the XMD config system.
  */
 
+#define _GNU_SOURCE
+#include <string.h>
+#include <stdlib.h>
+
 #include "../../../include/config_internal.h"
 
 /**

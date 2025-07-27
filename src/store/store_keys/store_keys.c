@@ -1,3 +1,5 @@
+#define _GNU_SOURCE  // For strdup - must be before includes
+
 /**
  * @file store_keys.c
  * @brief Store keys enumeration function
@@ -6,6 +8,10 @@
  * Implementation of key enumeration for the XMD store system.
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "../../../include/store.h"
 #include "../../../include/store_internal.h"
 
 /**

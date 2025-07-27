@@ -34,8 +34,9 @@ bool variable_to_boolean(const variable* var) {
         case VAR_STRING:
             return var->value.string_value != NULL && strlen(var->value.string_value) > 0;
         case VAR_ARRAY:
+            return var->value.array_value != NULL && var->value.array_value->count > 0;
         case VAR_OBJECT:
-            return var->value.array_value != NULL || var->value.object_value != NULL;
+            return var->value.object_value != NULL && var->value.object_value->count > 0;
         default:
             return false;
     }

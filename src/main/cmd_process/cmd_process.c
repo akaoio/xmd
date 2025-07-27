@@ -1,3 +1,5 @@
+#define _GNU_SOURCE  // For strdup - must be before includes
+
 /**
  * @file cmd_process.c
  * @brief Process command implementation function
@@ -6,6 +8,10 @@
  * Implementation of process command for the XMD main module.
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <getopt.h>
 #include "../../../include/main_internal.h"
 
 /**
