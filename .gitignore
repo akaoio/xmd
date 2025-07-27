@@ -50,8 +50,8 @@ Doxyfile
 *.temp
 *.log
 
-# Sandbox directory (for temporary testing)
-sandbox/
+# Sandbox directory (for temporary testing - exclude root sandbox, not src/sandbox)
+/sandbox/
 
 # Package files
 *.tar.gz
