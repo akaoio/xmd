@@ -42,7 +42,7 @@ char* process_multiline_block(const char* content, store* variables) {
                 char directive_line[512];
                 snprintf(directive_line, sizeof(directive_line), "xmd:%s", trimmed);
                 
-                char directive_output[4096];
+                char directive_output[32768];  // Increased from 4096 to 32KB for long command outputs
                 process_directive(directive_line, ctx, directive_output, sizeof(directive_output));
                 
                 // Add output

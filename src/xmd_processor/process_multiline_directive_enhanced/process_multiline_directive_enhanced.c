@@ -37,7 +37,7 @@ void process_multiline_directive_enhanced(const char* directive_content, store* 
             // Process any XMD directive (not just 'set')
             snprintf(output_buffer, sizeof(output_buffer), "xmd:%s", trimmed);
             
-            char directive_result[4096];
+            char directive_result[32768];  // Increased from 4096 to 32KB for long command outputs
             int result = process_directive(output_buffer, ctx, directive_result, sizeof(directive_result));
             
             // Accumulate any output from directives

@@ -88,11 +88,11 @@ char* process_xmd_content(const char* input, store* variables) {
                 process_multiline_directive(comment_content, variables);
             } else {
                 // Rule 14: Memory management - use heap allocation for large buffers
-                char* directive_output = malloc(4096);
+                char* directive_output = malloc(32768);  // Increased from 4096 to 32KB for long command outputs
                 if (!directive_output) {
                     continue; // Skip this directive on allocation failure
                 }
-                process_directive(trimmed, ctx, directive_output, 4096);
+                process_directive(trimmed, ctx, directive_output, 32768);
                 
                 // Add directive output if any
                 if (strlen(directive_output) > 0 && should_execute_block(ctx)) {

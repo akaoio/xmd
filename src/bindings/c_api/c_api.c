@@ -205,7 +205,7 @@ xmd_result* xmd_process_string_api(void* handle, const char* input, size_t input
             case TOKEN_XMD_DIRECTIVE:
                 // Process XMD directives
                 if (tok->value) {
-                    char directive_output[8192];
+                    char directive_output[32768];  // Increased from 8192 to 32KB for long command outputs
                     int bytes_written = process_xmd_directive(tok->value, var_store, 
                                                             directive_output, sizeof(directive_output));
                     if (bytes_written > 0 && output_pos + bytes_written < preprocessed_len * 2 + 999) {
