@@ -222,7 +222,7 @@ char* process_xmd_content_enhanced(const char* input, store* variables) {
                 if (is_multiline_directive(comment_content)) {
                     process_multiline_directive(comment_content, variables);
                 } else {
-                    char directive_output[4096];
+                    char directive_output[32768];  // Increased from 4096 to 32KB for long command outputs
                     process_directive(trimmed, ctx, directive_output, sizeof(directive_output));
                     
                     // Add directive output if any
