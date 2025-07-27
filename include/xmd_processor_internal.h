@@ -46,10 +46,13 @@ typedef struct {
     int loop_depth;                         /**< Current loop nesting depth */
     int total_iterations;                   /**< Total iterations across all loops */
     bool currently_executing;               /**< Current execution state */
+    char* source_file_path;                 /**< Path to currently processed source file */
 } processor_context;
 
 /* Context functions */
 processor_context* create_context(store* variables);
+void destroy_context(processor_context* ctx);
+void set_context_source_file(processor_context* ctx, const char* file_path);
 bool should_execute_block(processor_context* ctx);
 
 /* Execution functions */
@@ -84,6 +87,12 @@ int process_endif(processor_context* ctx, char* output, size_t output_size);
 int process_import(const char* args, processor_context* ctx, char* output, size_t output_size);
 int process_for(const char* args, processor_context* ctx, char* output, size_t output_size);
 int process_directive(const char* directive, processor_context* ctx, char* output, size_t output_size);
+
+/* Helper functions */
+variable* parse_array_literal(const char* input);
+
+/* Script processing functions */
+void process_script_block(const char* directive_content, store* variables);
 
 /* Core processing functions */
 char* process_xmd_content(const char* input, store* variables);

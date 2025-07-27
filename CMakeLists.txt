@@ -193,6 +193,19 @@ xmd_target_link_libraries(test_xmd_processor)
 add_executable(test_truncate_fix test/xmd_processor/test_truncate_fix.c)
 xmd_target_link_libraries(test_truncate_fix)
 
+# Advanced scripting tests
+add_executable(test_advanced_scripting test/xmd_processor/test_advanced_scripting.c)
+xmd_target_link_libraries(test_advanced_scripting)
+
+add_executable(test_variable_advanced test/variable/test_variable_advanced.c)
+xmd_target_link_libraries(test_variable_advanced)
+
+add_executable(test_multiline_enhanced test/xmd_processor/test_multiline_enhanced.c)
+xmd_target_link_libraries(test_multiline_enhanced)
+
+add_executable(test_advanced_integration test/integration/test_advanced_integration.c)
+xmd_target_link_libraries(test_advanced_integration)
+
 # Stress tests (brutal panic battle tests)
 add_executable(test_brutal_nesting test/stress/test_brutal_nesting.c)
 xmd_target_link_libraries(test_brutal_nesting)
@@ -245,6 +258,13 @@ add_test(NAME docs_tests COMMAND test_docs)
 add_test(NAME devtools_tests COMMAND test_devtools)
 add_test(NAME xmd_processor_tests COMMAND test_xmd_processor)
 add_test(NAME truncate_fix_tests COMMAND test_truncate_fix)
+add_test(NAME advanced_scripting_tests COMMAND test_advanced_scripting)
+set_tests_properties(advanced_scripting_tests PROPERTIES WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME variable_advanced_tests COMMAND test_variable_advanced)
+add_test(NAME multiline_enhanced_tests COMMAND test_multiline_enhanced)
+set_tests_properties(multiline_enhanced_tests PROPERTIES WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME advanced_integration_tests COMMAND test_advanced_integration)
+set_tests_properties(advanced_integration_tests PROPERTIES WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # Stress tests - now included in main test suite per INSTRUCTIONS.md Rule 17
 add_test(NAME brutal_nesting_tests COMMAND test_brutal_nesting)
@@ -262,7 +282,7 @@ add_test(NAME sandbox_tests COMMAND test_sandbox)
 # Custom target to run all tests
 add_custom_target(test_all
     COMMAND ${CMAKE_CTEST_COMMAND} --verbose
-    DEPENDS test_token_simple test_lexer test_string_duplicate test_string_extract test_memory_allocate test_memory_free_safe test_variable test_store test_template test_conditional test_loop test_flow test_error test_executor test_long_output test_output test_resource test_module test_import_export test_dependency test_security test_performance test_cli test_docs test_devtools test_xmd_processor test_truncate_fix test_brutal_nesting test_resource_exhaustion test_c_api_integration test_cli_e2e test_sandbox
+    DEPENDS test_token_simple test_lexer test_string_duplicate test_string_extract test_memory_allocate test_memory_free_safe test_variable test_store test_template test_conditional test_loop test_flow test_error test_executor test_long_output test_output test_resource test_module test_import_export test_dependency test_security test_performance test_cli test_docs test_devtools test_xmd_processor test_truncate_fix test_advanced_scripting test_variable_advanced test_multiline_enhanced test_advanced_integration test_brutal_nesting test_resource_exhaustion test_c_api_integration test_cli_e2e test_sandbox
 )
 
 # Coverage (optional)
