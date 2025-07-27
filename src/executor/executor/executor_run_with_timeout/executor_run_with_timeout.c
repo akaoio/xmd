@@ -104,9 +104,10 @@ int executor_run_with_timeout(ExecutorContext* ctx, const char* command,
         return EXECUTOR_ERROR;
     }
     
-    // Initialize result
-    cmd_result->stdout_data = malloc(ctx->max_output_size);
-    cmd_result->stderr_data = malloc(ctx->max_output_size);
+    // Initialize result with initial buffer sizes
+    size_t initial_buffer_size = 64 * 1024; // Start with 64KB buffers
+    cmd_result->stdout_data = malloc(initial_buffer_size);
+    cmd_result->stderr_data = malloc(initial_buffer_size);
     if (!cmd_result->stdout_data || !cmd_result->stderr_data) {
         command_result_free(cmd_result);
         close(stdout_pipe[0]);
@@ -117,11 +118,14 @@ int executor_run_with_timeout(ExecutorContext* ctx, const char* command,
         return EXECUTOR_ERROR;
     }
     
-    // Read stdout and stderr with timeout
-    cmd_result->stdout_size = read_with_timeout(stdout_pipe[0], cmd_result->stdout_data, 
-                                               ctx->max_output_size, timeout_ms);
-    cmd_result->stderr_size = read_with_timeout(stderr_pipe[0], cmd_result->stderr_data, 
-                                               ctx->max_output_size, timeout_ms);
+    // Read stdout and stderr with timeout using dynamic buffer growth
+    size_t stdout_buffer_size = initial_buffer_size;
+    size_t stderr_buffer_size = initial_buffer_size;
+    
+    cmd_result->stdout_size = read_with_timeout_dynamic(stdout_pipe[0], &cmd_result->stdout_data, 
+                                                       &stdout_buffer_size, ctx->max_output_size, timeout_ms);
+    cmd_result->stderr_size = read_with_timeout_dynamic(stderr_pipe[0], &cmd_result->stderr_data, 
+                                                       &stderr_buffer_size, ctx->max_output_size, timeout_ms);
     
     close(stdout_pipe[0]);
     close(stderr_pipe[0]);

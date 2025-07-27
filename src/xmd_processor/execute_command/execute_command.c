@@ -80,8 +80,8 @@ int execute_command(const char* command, char* output, size_t output_size) {
     
     // If we're truncating, try to end at a line boundary to avoid cutting mid-line
     if (copy_size < total_read && copy_size > 0) {
-        // Look backwards from the cut point to find the last newline
-        for (size_t i = copy_size - 1; i > 0 && i > copy_size - 100; i--) {
+        // Look backwards from the cut point to find the last newline (increased search range)
+        for (size_t i = copy_size - 1; i > 0 && i > copy_size - 500; i--) {
             if (temp_buffer[i] == '\n') {
                 copy_size = i + 1;  // Include the newline
                 break;
@@ -97,4 +97,76 @@ int execute_command(const char* command, char* output, size_t output_size) {
     int status = pclose(pipe);
     
     return WIFEXITED(status) ? WEXITSTATUS(status) : -1;
+}
+
+/**
+ * @brief Execute command with fully dynamic output allocation
+ * @param command Command string to execute
+ * @param exit_status Pointer to store command exit status (can be NULL)
+ * @return Dynamically allocated output string (caller must free) or NULL on error
+ */
+char* execute_command_dynamic(const char* command, int* exit_status) {
+    // Rule 13: Error handling - validate inputs
+    if (!command) {
+        if (exit_status) *exit_status = -1;
+        return NULL;
+    }
+    
+    FILE* pipe = popen(command, "r");
+    if (!pipe) {
+        if (exit_status) *exit_status = -1;
+        return strdup("[Error: Failed to execute command]");
+    }
+    
+    // Start with a reasonable initial capacity and grow as needed
+    size_t buffer_capacity = 8192;  // Start with 8KB
+    char* buffer = malloc(buffer_capacity);
+    if (!buffer) {
+        pclose(pipe);
+        if (exit_status) *exit_status = -1;
+        return strdup("[Error: Memory allocation failed]");
+    }
+    
+    size_t total_read = 0;
+    size_t chunk_size = 4096;  // Read in 4KB chunks
+    
+    while (1) {
+        // Ensure we have space for the next chunk plus null terminator
+        while (total_read + chunk_size + 1 > buffer_capacity) {
+            buffer_capacity *= 2;
+            char* new_buffer = realloc(buffer, buffer_capacity);
+            if (!new_buffer) {
+                free(buffer);
+                pclose(pipe);
+                if (exit_status) *exit_status = -1;
+                return strdup("[Error: Memory reallocation failed]");
+            }
+            buffer = new_buffer;
+        }
+        
+        size_t bytes_read = fread(buffer + total_read, 1, chunk_size, pipe);
+        if (bytes_read > 0) {
+            total_read += bytes_read;
+        } else {
+            break;  // End of stream or error
+        }
+    }
+    
+    // Null terminate the output
+    buffer[total_read] = '\0';
+    
+    // Shrink buffer to actual size needed (optional optimization)
+    if (total_read + 1 < buffer_capacity / 2) {
+        char* final_buffer = realloc(buffer, total_read + 1);
+        if (final_buffer) {
+            buffer = final_buffer;
+        }
+    }
+    
+    int status = pclose(pipe);
+    if (exit_status) {
+        *exit_status = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
+    }
+    
+    return buffer;
 }

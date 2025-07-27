@@ -222,11 +222,38 @@ char* process_xmd_content_enhanced(const char* input, store* variables) {
                 if (is_multiline_directive(comment_content)) {
                     process_multiline_directive(comment_content, variables);
                 } else {
-                    char directive_output[32768];  // Increased from 4096 to 32KB for long command outputs
-                    process_directive(trimmed, ctx, directive_output, sizeof(directive_output));
+                    // Check if this is an exec directive - use dynamic allocation for it
+                    char* space = strchr(directive, ' ');
+                    char command[64];
+                    char* args = "";
+                    
+                    if (space) {
+                        size_t cmd_len = space - directive;
+                        if (cmd_len >= sizeof(command)) cmd_len = sizeof(command) - 1;
+                        strncpy(command, directive, cmd_len);
+                        command[cmd_len] = '\0';
+                        args = trim_whitespace(space + 1);
+                    } else {
+                        strncpy(command, directive, sizeof(command) - 1);
+                        command[sizeof(command) - 1] = '\0';
+                    }
+                    
+                    char* directive_output = NULL;
+                    
+                    if (strcmp(command, "exec") == 0) {
+                        // Use dynamic allocation for exec commands
+                        directive_output = process_exec_dynamic(args, ctx);
+                    } else {
+                        // Use fixed buffer for other directives
+                        char* fixed_buffer = malloc(65536);  // 64KB should be enough for non-exec directives
+                        if (fixed_buffer) {
+                            process_directive(trimmed, ctx, fixed_buffer, 65536);
+                            directive_output = fixed_buffer;
+                        }
+                    }
                     
                     // Add directive output if any
-                    if (strlen(directive_output) > 0 && should_execute_block(ctx)) {
+                    if (directive_output && strlen(directive_output) > 0 && should_execute_block(ctx)) {
                         size_t dir_len = strlen(directive_output);
                         if (output_pos + dir_len >= output_capacity) {
                             output_capacity = (output_pos + dir_len + 1000) * 2;
@@ -234,6 +261,11 @@ char* process_xmd_content_enhanced(const char* input, store* variables) {
                         }
                         memcpy(output + output_pos, directive_output, dir_len);
                         output_pos += dir_len;
+                    }
+                    
+                    // Rule 14: Memory management - free allocated buffer
+                    if (directive_output) {
+                        free(directive_output);
                     }
                 }
             }

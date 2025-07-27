@@ -54,6 +54,7 @@ bool should_execute_block(processor_context* ctx);
 
 /* Execution functions */
 int execute_command(const char* command, char* output, size_t output_size);
+char* execute_command_dynamic(const char* command, int* exit_status);
 
 /* Utility functions */
 char* trim_whitespace(char* str);
@@ -72,6 +73,7 @@ int process_loop_body(const char* content, processor_context* ctx, LoopContext* 
 
 /* Directive processing functions */
 int process_exec(const char* args, processor_context* ctx, char* output, size_t output_size);
+char* process_exec_dynamic(const char* args, processor_context* ctx);
 int process_set(const char* args, processor_context* ctx, char* output, size_t output_size);
 int process_if(const char* args, processor_context* ctx, char* output, size_t output_size);
 int process_elif(const char* args, processor_context* ctx, char* output, size_t output_size);

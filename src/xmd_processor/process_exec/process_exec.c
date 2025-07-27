@@ -40,3 +40,30 @@ int process_exec(const char* args, processor_context* ctx, char* output, size_t 
     free(expanded);
     return result;
 }
+
+/**
+ * @brief Process exec directive with dynamic output allocation
+ * @param args Arguments for exec directive
+ * @param ctx Processor context
+ * @return Dynamically allocated output string (caller must free) or NULL on error
+ */
+char* process_exec_dynamic(const char* args, processor_context* ctx) {
+    // Rule 13: Error handling - validate inputs
+    if (!args || !ctx) {
+        return NULL;
+    }
+    
+    if (!should_execute_block(ctx)) {
+        return strdup("");  // Return empty string for consistency
+    }
+    
+    // Substitute variables in command
+    char* expanded = substitute_variables(args, ctx->variables);
+    if (!expanded) {
+        return NULL;
+    }
+    
+    char* result = execute_command_dynamic(expanded, NULL);
+    free(expanded);
+    return result;
+}

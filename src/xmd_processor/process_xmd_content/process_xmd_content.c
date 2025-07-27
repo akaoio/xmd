@@ -87,15 +87,38 @@ char* process_xmd_content(const char* input, store* variables) {
             if (is_multiline_directive(comment_content)) {
                 process_multiline_directive(comment_content, variables);
             } else {
-                // Rule 14: Memory management - use heap allocation for large buffers
-                char* directive_output = malloc(32768);  // Increased from 4096 to 32KB for long command outputs
-                if (!directive_output) {
-                    continue; // Skip this directive on allocation failure
+                // Check if this is an exec directive - use dynamic allocation for it
+                char* space = strchr(trimmed + 4, ' ');
+                char command[64];
+                char* args = "";
+                
+                if (space) {
+                    size_t cmd_len = space - (trimmed + 4);
+                    if (cmd_len >= sizeof(command)) cmd_len = sizeof(command) - 1;
+                    strncpy(command, trimmed + 4, cmd_len);
+                    command[cmd_len] = '\0';
+                    args = trim_whitespace(space + 1);
+                } else {
+                    strncpy(command, trimmed + 4, sizeof(command) - 1);
+                    command[sizeof(command) - 1] = '\0';
                 }
-                process_directive(trimmed, ctx, directive_output, 32768);
+                
+                char* directive_output = NULL;
+                
+                if (strcmp(command, "exec") == 0) {
+                    // Use dynamic allocation for exec commands
+                    directive_output = process_exec_dynamic(args, ctx);
+                } else {
+                    // Use fixed buffer for other directives
+                    char* fixed_buffer = malloc(65536);  // 64KB should be enough for non-exec directives
+                    if (fixed_buffer) {
+                        process_directive(trimmed, ctx, fixed_buffer, 65536);
+                        directive_output = fixed_buffer;
+                    }
+                }
                 
                 // Add directive output if any
-                if (strlen(directive_output) > 0 && should_execute_block(ctx)) {
+                if (directive_output && strlen(directive_output) > 0 && should_execute_block(ctx)) {
                     size_t dir_len = strlen(directive_output);
                     if (output_pos + dir_len >= output_capacity) {
                         output_capacity = (output_pos + dir_len + 1000) * 2;
@@ -106,7 +129,9 @@ char* process_xmd_content(const char* input, store* variables) {
                 }
                 
                 // Rule 14: Memory management - free allocated buffer
-                free(directive_output);
+                if (directive_output) {
+                    free(directive_output);
+                }
             }
         } else {
             // Regular HTML comment, copy if executing

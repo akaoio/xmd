@@ -23,6 +23,7 @@
 void set_executor_error(ExecutorContext* ctx, const char* message);
 long get_time_ms(void);
 ssize_t read_with_timeout(int fd, char* buffer, size_t max_size, int timeout_ms);
+ssize_t read_with_timeout_dynamic(int fd, char** buffer, size_t* buffer_size, size_t max_size, int timeout_ms);
 int parse_command_args(const char* command, char*** args);
 void free_command_args(char** args, int argc);
 
