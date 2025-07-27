@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "../../../src/utils/memory/memory_free_safe/memory_free_safe.h"
+#include "../../../include/utils.h"
 
 /**
  * @brief Test memory_free_safe with valid pointer

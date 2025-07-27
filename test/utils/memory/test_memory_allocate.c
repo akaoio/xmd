@@ -11,7 +11,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <assert.h>
-#include "../../../src/utils/memory/memory_allocate/memory_allocate.h"
+#include "../../../include/utils.h"
 
 /**
  * @brief Test memory_allocate with normal size

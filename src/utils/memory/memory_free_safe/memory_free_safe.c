@@ -6,7 +6,8 @@
  */
 
 #include <stdlib.h>
-#include "memory_free_safe.h"
+#include <stddef.h>
+#include "../../../../include/utils.h"
 
 /**
  * @brief Free memory safely and set pointer to NULL

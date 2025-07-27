@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include "../../../src/utils/string/string_duplicate/string_duplicate.h"
+#include "../../../include/utils.h"
 
 /**
  * @brief Test string_duplicate with normal string

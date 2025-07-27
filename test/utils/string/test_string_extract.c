@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include "../../../src/utils/string/string_extract/string_extract.h"
+#include "../../../include/utils.h"
 
 /**
  * @brief Test string_extract with normal substring

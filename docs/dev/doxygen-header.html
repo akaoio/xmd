@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="$langISO">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen $doxygenversion"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!--BEGIN PROJECT_NAME--><title>$projectname: $title</title><!--END PROJECT_NAME-->
+<!--BEGIN !PROJECT_NAME--><title>$title</title><!--END !PROJECT_NAME-->
+
+<!-- doxygen-awesome-css from CDN -->
+<link href="https://cdn.jsdelivr.net/npm/doxygen-awesome-css@2.3.1/doxygen-awesome.min.css" rel="stylesheet">
+
+<!-- Custom styles -->
+<style>
+:root {
+    /* Light mode colors */
+    --primary-color: #1779c4;
+    --primary-dark-color: #00559f;
+    --page-background-color: #ffffff;
+    --page-foreground-color: #2f3e46;
+    --separator-color: #ededf0;
+    --side-nav-background: #f8f9fa;
+}
+
+[data-theme="dark"] {
+    /* Dark mode colors */
+    --primary-color: #1982d2;
+    --primary-dark-color: #5ca8e2;
+    --page-background-color: #1a1a1a;
+    --page-foreground-color: #d2d2d2;
+    --separator-color: #38383d;
+    --side-nav-background: #252526;
+}
+
+/* Override default Doxygen styles */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    font-size: 16px;
+    background-color: var(--page-background-color);
+    color: var(--page-foreground-color);
+}
+
+/* Header styling */
+#titlearea {
+    background-color: var(--side-nav-background);
+    border-bottom: 1px solid var(--separator-color);
+    padding: 1rem 2rem;
+}
+
+#projectname {
+    font-size: 2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Navigation */
+#nav-tree {
+    background: var(--side-nav-background);
+    border-right: 1px solid var(--separator-color);
+}
+
+/* Content area */
+.contents {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Code blocks */
+.fragment {
+    background-color: var(--side-nav-background);
+    border: 1px solid var(--separator-color);
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+}
+
+/* Tables */
+table.doxtable {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1rem 0;
+}
+
+table.doxtable th,
+table.doxtable td {
+    border: 1px solid var(--separator-color);
+    padding: 0.5rem;
+}
+
+table.doxtable th {
+    background-color: var(--side-nav-background);
+    font-weight: 600;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    #nav-tree {
+        display: none;
+    }
+    
+    .contents {
+        padding: 1rem;
+    }
+    
+    #titlearea {
+        padding: 0.75rem 1rem;
+    }
+    
+    #projectname {
+        font-size: 1.5rem;
+    }
+}
+
+/* Dark mode toggle button */
+.theme-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1000;
+    background: transparent;
+    border: 1px solid var(--separator-color);
+    border-radius: 4px;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--page-foreground-color);
+}
+
+.theme-toggle:hover {
+    background-color: var(--side-nav-background);
+}
+</style>
+
+<!-- Doxygen default styles -->
+<link href="$relpath^tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="$relpath^jquery.js"></script>
+<script type="text/javascript" src="$relpath^dynsections.js"></script>
+$treeview
+$search
+$mathjax
+$darkmode
+<link href="$relpath^$stylesheet" rel="stylesheet" type="text/css" />
+$extrastylesheet
+</head>
+<body>
+<!-- Dark mode toggle -->
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path class="sun-icon" d="M12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12C18 15.3137 15.3137 18 12 18ZM11 1V4H13V1H11ZM11 20V23H13V20H11ZM3.51472 4.92893L4.92893 3.51472L7.05025 5.63604L5.63604 7.05025L3.51472 4.92893ZM16.9497 18.364L18.364 16.9497L20.4853 19.0711L19.0711 20.4853L16.9497 18.364ZM19.0711 3.51472L20.4853 4.92893L18.364 7.05025L16.9497 5.63604L19.0711 3.51472ZM5.63604 16.9497L7.05025 18.364L4.92893 20.4853L3.51472 19.0711L5.63604 16.9497ZM23 11V13H20V11H23ZM1 11V13H4V11H1Z"/>
+        <path class="moon-icon" style="display:none" d="M10 6C10 10.4183 13.5817 14 18 14C19.4386 14 20.7885 13.6203 21.9549 12.9556C21.4738 18.0302 17.2005 22 12 22C6.47715 22 2 17.5228 2 12C2 6.79948 5.9698 2.52616 11.0444 2.04507C10.3797 3.21152 10 4.56142 10 6Z"/>
+    </svg>
+</button>
+
+<script>
+// Theme toggle functionality
+function toggleTheme() {
+    const html = document.documentElement;
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', newTheme);
+    localStorage.setItem('doxygen-theme', newTheme);
+    
+    // Toggle icons
+    document.querySelector('.sun-icon').style.display = newTheme === 'dark' ? 'none' : 'block';
+    document.querySelector('.moon-icon').style.display = newTheme === 'dark' ? 'block' : 'none';
+}
+
+// Load saved theme
+document.addEventListener('DOMContentLoaded', function() {
+    const savedTheme = localStorage.getItem('doxygen-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.querySelector('.sun-icon').style.display = savedTheme === 'dark' ? 'none' : 'block';
+    document.querySelector('.moon-icon').style.display = savedTheme === 'dark' ? 'block' : 'none';
+});
+</script>
+
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->

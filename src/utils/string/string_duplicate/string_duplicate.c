@@ -8,7 +8,8 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "string_duplicate.h"
+#include <stddef.h>
+#include "../../../../include/utils.h"
 
 /**
  * @brief Duplicate a string safely

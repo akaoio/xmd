@@ -6,7 +6,8 @@
  */
 
 #include <stdlib.h>
-#include "memory_allocate.h"
+#include <stddef.h>
+#include "../../../../include/utils.h"
 
 /**
  * @brief Allocate memory safely
