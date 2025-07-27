@@ -182,11 +182,17 @@ char* process_xmd_content_fixed(const char* input, store* variables) {
                                 const char* body_start = comment_end + 3;
                                 const char* body_end = endfor_pos - strlen("<!-- xmd:endfor -->");
                                 
+                                // Extract loop body content
+                                size_t body_len = body_end - body_start;
+                                char* body_content = malloc(body_len + 1);
+                                strncpy(body_content, body_start, body_len);
+                                body_content[body_len] = '\0';
+                                
                                 // Iterate through all items
                                 for (int i = 0; i < item_count; i++) {
                                     current_loop->current_index = i;
                                     
-                                    char* loop_result = process_loop_body(body_start, body_end, ctx, current_loop);
+                                    char* loop_result = process_xmd_content_enhanced(body_content, variables);
                                     
                                     if (loop_result) {
                                         size_t result_len = strlen(loop_result);
@@ -199,6 +205,9 @@ char* process_xmd_content_fixed(const char* input, store* variables) {
                                         free(loop_result);
                                     }
                                 }
+                                
+                                // Clean up body content
+                                free(body_content);
                                 
                                 // Restore variable scope
                                 restore_variable_scope(variables, current_loop->saved_variables, item_name);

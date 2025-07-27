@@ -15,6 +15,7 @@
 #include <stddef.h>
 #include "store.h"
 #include "xmd.h"
+#include "loop.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -64,6 +65,10 @@ void process_multiline_directive_enhanced(const char* directive_content, store* 
 char* process_multiline_block(const char* content, store* variables);
 int parse_range(const char* range_str, store* variables, char*** items, int* count);
 int parse_collection(const char* collection_name, store* variables, char*** items, int* count);
+const char* find_matching_endfor(const char* start, const char* input_end);
+store* backup_variable_scope(store* variables, const char* loop_var_name);
+void restore_variable_scope(store* variables, store* backup, const char* loop_var_name);
+int process_loop_body(const char* content, processor_context* ctx, LoopContext* loop_ctx);
 
 /* Directive processing functions */
 int process_exec(const char* args, processor_context* ctx, char* output, size_t output_size);
