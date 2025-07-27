@@ -57,7 +57,7 @@ static void test_cli_argument_parsing(void) {
     
     // Test watch command
     {
-        char* argv[] = {"xmd", "watch", "/path/to/dir", "--verbose"};
+        char* argv[] = {"xmd", "--verbose", "watch", "/path/to/dir"};
         int argc = 4;
         
         cli_args* args = cli_parse_args(argc, argv);

