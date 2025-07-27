@@ -158,8 +158,12 @@ install_xmd() {
         print_error "CMake configuration failed"
     fi
     
-    if ! make -j$(nproc 2>/dev/null || echo 4); then
-        print_error "Build failed"
+    make -j$(nproc 2>/dev/null || echo 4)
+    make_exit_code=$?
+    
+    # Check if the main binary was built successfully
+    if [ $make_exit_code -ne 0 ] || [ ! -f "xmd" ]; then
+        print_error "Build failed - exit code: $make_exit_code"
     fi
     
     # Test the build
