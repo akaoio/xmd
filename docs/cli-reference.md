@@ -29,6 +29,65 @@ echo "# {{title}}" | xmd process - -v title="Hello World"
 **Arguments:**
 - `<file>` - Input XMD file to process (required, or `-` for stdin)
 
+### `xmd watch <input_dir> [output_dir] [options]`
+
+Watch a directory for changes and automatically process markdown files.
+
+```bash
+# Shorthand: watch input directory, output to another directory  
+xmd watch src/ dist/
+
+# With specific format
+xmd watch docs/ build/ --format html
+
+# Using --output-dir option
+xmd watch src/ --output-dir dist/ --format html
+
+# Output to stdout (no output directory)
+xmd watch src/ --verbose
+
+# JSON format for API documentation
+xmd watch api-docs/ --output-dir dist/ --format json --verbose
+```
+
+**Arguments:**
+- `<input_dir>` - Input directory to watch for changes (required)
+- `[output_dir]` - Output directory (optional, can also use `--output-dir`)
+
+**Watch-specific Options:**
+- `--output-dir, -o <dir>` - Output directory (alternative to positional argument)
+- `--format <fmt>` - Output format: `markdown` (default), `html`, `json`
+- `--verbose, -v` - Show detailed processing information
+
+**Features:**
+- **Recursive scanning**: Finds `.md` files in all subdirectories
+- **Directory mirroring**: Preserves relative directory structure in output
+- **Real-time processing**: Detects file changes instantly (500ms polling)
+- **All XMD features**: Full support for variables, imports, commands, loops
+- **Multiple formats**: Output as processed markdown, HTML, or JSON
+
+**Example Output:**
+```
+🔍 Watching directory: docs/
+📝 Monitoring .md files for changes...
+📁 Output directory: dist/
+📄 Output format: html
+
+Found 3 markdown file(s):
+  docs/getting-started.md
+  docs/api/authentication.md
+  docs/guides/deployment.md
+
+✅ docs/getting-started.md → dist/getting-started.html
+✅ docs/api/authentication.md → dist/api/authentication.html
+✅ docs/guides/deployment.md → dist/guides/deployment.html
+
+✅ Initial processing complete. Watching for changes...
+
+📝 File changed: docs/getting-started.md
+✅ docs/getting-started.md → dist/getting-started.html
+```
+
 ### `xmd validate <file>`
 
 Validate XMD syntax without processing.

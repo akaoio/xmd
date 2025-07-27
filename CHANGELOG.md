@@ -24,6 +24,9 @@ This is the stable release of XMD (eXtended MarkDown) - a powerful programmable 
 
 #### Command Line Interface
 - **Production-Ready CLI**: Full argument parsing with shorthand detection
+- **Enhanced Watch Command**: Real-time file monitoring with recursive directory scanning
+- **Directory Structure Mirroring**: Preserves relative paths in output directory
+- **Watch Shorthand Syntax**: `xmd watch src/ dist/` for quick development workflows
 - **Shorthand Support**: `xmd input.md output.md` auto-converts to process commands
 - **Stdin/Pipe Support**: Seamless integration with shell pipelines (`cat file | xmd process -`)
 - **Multiple Output Formats**: `--format markdown|html|json` with proper formatting

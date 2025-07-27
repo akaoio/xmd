@@ -151,6 +151,9 @@ Tool 3: Ready ✅
 # Process a file
 xmd process <file> [options]
 
+# Watch directory for changes and auto-process
+xmd watch <input_dir> [output_dir] [options]
+
 # Validate syntax without processing  
 xmd validate <file>
 
@@ -166,9 +169,11 @@ xmd help
 | Option | Description | Example |
 |--------|-------------|---------|
 | `-o, --output <file>` | Output file (default: stdout) | `xmd process doc.md -o output.md` |
+| `--output-dir <dir>` | Output directory for watch command | `xmd watch src/ --output-dir dist/` |
 | `-v, --variable <k=v>` | Set variables (multiple allowed) | `xmd process doc.md -v env=prod -v region=us` |
 | `--config <file>` | Use configuration file | `xmd process doc.md --config settings.conf` |
 | `--format <fmt>` | Output format: `markdown`, `html`, `json` | `xmd process doc.md --format html` |
+| `--verbose` | Enable verbose output | `xmd watch src/ dist/ --verbose` |
 | `--trace` | Enable execution tracing | `xmd process doc.md --trace` |
 | `--debug` | Enable debug mode | `xmd process doc.md --debug` |
 | `--no-exec` | Disable command execution | `xmd process doc.md --no-exec` |
@@ -212,6 +217,65 @@ xmd process doc.md -v env="production" -v region="us-east" -v debug=true
 # {{name}}, {{env}}, {{region}}, {{debug}}
 ```
 
+### 🔍 Watch Command (Live Development)
+
+The watch command provides a powerful live development workflow by automatically processing markdown files when they change.
+
+**Shorthand Syntax:**
+```bash
+# Watch input directory, output to another directory
+xmd watch src/ dist/
+
+# Watch with specific format
+xmd watch docs/ build/ --format html
+
+# Watch with verbose output (recommended for development)
+xmd watch project/ output/ --verbose
+```
+
+**Standard Option Syntax:**
+```bash
+# Using --output-dir option
+xmd watch src/ --output-dir dist/ --format html
+
+# Output to stdout (no output directory)
+xmd watch src/ --verbose
+
+# JSON format for API documentation  
+xmd watch api-docs/ --output-dir dist/ --format json
+```
+
+**Key Features:**
+- **🔄 Recursive Directory Scanning**: Finds `.md` files in all subdirectories
+- **📁 Directory Structure Mirroring**: Preserves relative paths in output
+- **⚡ Real-time Processing**: Detects file changes instantly
+- **🎯 Format Control**: Output as `markdown`, `html`, or `json`
+- **🛡️ All XMD Features**: Full support for variables, imports, commands, loops
+
+**Example Development Workflow:**
+```bash
+# Start watching your documentation project
+xmd watch docs/ dist/ --format html --verbose
+
+# 🔍 Watching directory: docs/
+# 📝 Monitoring .md files for changes...
+# 📁 Output directory: dist/
+# 📄 Output format: html
+# 
+# Found 5 markdown file(s):
+#   docs/getting-started.md
+#   docs/api/authentication.md
+#   docs/guides/deployment.md
+# 
+# ✅ docs/getting-started.md → dist/getting-started.html
+# ✅ docs/api/authentication.md → dist/api/authentication.html
+# ✅ docs/guides/deployment.md → dist/guides/deployment.html
+# 
+# ✅ Initial processing complete. Watching for changes...
+```
+
+When you edit any `.md` file in the `docs/` directory (or subdirectories), XMD automatically reprocesses it and updates the corresponding output file with all XMD directives executed.
+
 ## 🆕 Latest Improvements (v1.0.0)
 
 ### ✅ **Complete Test Suite - 27/27 Tests Pass**
@@ -231,6 +295,13 @@ set role="admin"
 set permissions=["read", "write", "admin"]
 -->
 ```
+
+### 🔍 **Enhanced Watch Command**
+- **Recursive Directory Scanning**: Automatically finds `.md` files in all subdirectories
+- **Directory Structure Mirroring**: Preserves relative paths in output directory
+- **Shorthand Syntax**: `xmd watch src/ dist/` for quick development workflows
+- **Multiple Output Formats**: Support for `markdown`, `html`, and `json` formats
+- **Real-time Processing**: Instant file change detection and reprocessing
 
 ### 🔧 **Enhanced Variable Substitution**
 - **Universal Support**: Variables work in ALL contexts including markdown headers (`# {{title}}`)

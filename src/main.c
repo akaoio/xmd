@@ -40,6 +40,8 @@ int main(int argc, char* argv[]) {
         return cmd_process(argc, argv);
     } else if (strcmp(command, "validate") == 0) {
         return cmd_validate(argc, argv);
+    } else if (strcmp(command, "watch") == 0) {
+        return cmd_watch(argc, argv);
     } else if (strcmp(command, "version") == 0) {
         print_version();
         return 0;

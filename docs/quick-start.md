@@ -92,6 +92,35 @@ xmd process hello.md --trace
 xmd process hello.md --no-exec
 ```
 
+### Live Development with Watch
+
+For a powerful development workflow, use the watch command to automatically process files when they change:
+
+```bash
+# Create a simple project structure
+mkdir -p docs/guides
+echo '# Getting Started with {{project}}' > docs/getting-started.md
+echo '# {{project}} Deployment Guide' > docs/guides/deployment.md
+
+# Watch and auto-process to HTML
+xmd watch docs/ dist/ --format html --verbose
+
+# 🔍 Watching directory: docs/
+# 📁 Output directory: dist/
+# 📄 Output format: html
+# 
+# Found 2 markdown file(s):
+#   docs/getting-started.md
+#   docs/guides/deployment.md
+# 
+# ✅ docs/getting-started.md → dist/getting-started.html
+# ✅ docs/guides/deployment.md → dist/guides/deployment.html
+# 
+# ✅ Initial processing complete. Watching for changes...
+
+# Now edit any file in docs/ and watch it auto-update in dist/!
+```
+
 You'll see output like:
 
 ```markdown
@@ -237,6 +266,46 @@ xmd process doc.md --config security.conf
 ```
 
 ## Common Use Cases
+
+### Live Documentation Development
+
+Use watch mode for real-time documentation development:
+
+```bash
+# Set up a documentation project
+mkdir -p my-docs/{getting-started,api,guides}
+
+# Create template files with variables
+cat > my-docs/getting-started/index.md << 'EOF'
+<!-- xmd:
+set product="MyApp"
+set version="2.0.0"
+set last_updated=exec("date '+%Y-%m-%d'")
+-->
+
+# Getting Started with {{product}} v{{version}}
+
+*Last updated: {{last_updated}}*
+
+Welcome to {{product}}! This guide will help you get started quickly.
+
+## Quick Installation
+
+```bash
+npm install {{product}}@{{version}}
+```
+
+## Next Steps
+- [API Documentation](../api/index.html)
+- [User Guides](../guides/deployment.html)
+EOF
+
+# Watch and auto-generate HTML documentation
+xmd watch my-docs/ docs-dist/ --format html --verbose
+
+# Now edit any .md file in my-docs/ and watch the HTML auto-update!
+# Perfect for documentation websites, blogs, or API docs
+```
 
 ### DevOps Dashboard
 
