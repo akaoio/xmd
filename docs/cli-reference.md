@@ -17,10 +17,17 @@ xmd process document.md -o output.md
 
 # With variables
 xmd process template.md -v env=production -v version=1.2.0
+
+# Shorthand syntax (auto-converts to process command)
+xmd input.md output.md
+
+# Pipe support
+cat input.md | xmd process -
+echo "# {{title}}" | xmd process - -v title="Hello World"
 ```
 
 **Arguments:**
-- `<file>` - Input XMD file to process (required)
+- `<file>` - Input XMD file to process (required, or `-` for stdin)
 
 ### `xmd validate <file>`
 

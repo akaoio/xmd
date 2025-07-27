@@ -5,31 +5,31 @@ All notable changes to the XMD project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2025-07-26
+## [1.0.0] - 2025-07-27
 
-### 🎉 Initial Release - Production Ready
+### 🎉 Production Release - Feature Complete & Battle Tested
 
-This is the first stable release of XMD (eXtended MarkDown) - a powerful programmable markdown processor that has achieved **100% test coverage** with all 31 comprehensive tests passing.
+This is the stable release of XMD (eXtended MarkDown) - a powerful programmable markdown processor that has achieved **100% test coverage** with all 27 comprehensive tests passing, including brutal stress testing.
 
 ### ✨ Added
 
 #### Core Features
-- **XMD Directive Processing**: Full support for HTML comment-based directives
-- **Variable System**: Set and use variables with `{{variable}}` syntax
-- **Control Flow**: if/elif/else conditionals and for/while loops
-- **Command Execution**: Execute system commands with `<!-- xmd:exec -->`
-- **Range Syntax**: Advanced range expressions like `1..5`, `start..end`, `var..10`
-- **Module System**: Import and process external files
+- **Multiline Directive Support**: Clean syntax for multiple commands in single comment blocks
+- **Cross-Comment Control Flow**: if/endif and for/endfor spanning multiple comments
+- **Variable System**: Full JSON support with strings, numbers, booleans, arrays, objects
+- **Complete Control Flow**: if/elif/else/endif with logical operators (&&, ||, !)
+- **Advanced Loops**: for/endfor with arrays, ranges, and complex collections
+- **Command Execution**: Sandboxed system command execution with security controls
+- **Module System**: Import/export with selective symbol loading and re-export
 
 #### Command Line Interface
-- **Multiple Commands**: `process`, `validate`, `version`, `help`
-- **Variable Setting**: `-v/--variable key=value` for command-line variables
-- **Output Formats**: `--format markdown|html|json` with distinct formatting
-- **Execution Tracing**: `--trace` generates detailed processing logs
-- **Debug Mode**: `--debug` shows performance statistics
-- **Security Options**: `--no-exec` disables command execution
-- **Config Files**: `--config file` for configuration management
-- **Output Control**: `-o/--output file` for file output
+- **Production-Ready CLI**: Full argument parsing with shorthand detection
+- **Shorthand Support**: `xmd input.md output.md` auto-converts to process commands
+- **Stdin/Pipe Support**: Seamless integration with shell pipelines (`cat file | xmd process -`)
+- **Multiple Output Formats**: `--format markdown|html|json` with proper formatting
+- **Variable Injection**: `-v/--variable key=value` for command-line variables
+- **Debug & Tracing**: `--trace` and `--debug` for development and troubleshooting
+- **Security Controls**: `--no-exec` disables command execution for untrusted content
 
 #### Output Formats
 - **Markdown**: Default format, processed content as-is

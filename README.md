@@ -28,10 +28,10 @@
 - **Network Requests**: HTTP/API integration with security policies
 
 ### 🏗️ Advanced Features
-- **Template System**: Parameterized content generation
-- **Caching Layer**: Intelligent result caching for performance
-- **Plugin Architecture**: Extend functionality with custom modules
-- **Multi-threading**: Parallel execution for complex operations
+- **Module System**: Import/export with selective symbol loading and re-export
+- **Security Sandbox**: Command execution with granular permission controls
+- **Memory Management**: Intelligent resource monitoring and limits
+- **Performance Optimization**: Sub-millisecond processing with stress-tested reliability
 
 ## 🚀 Quick Start
 
@@ -59,10 +59,11 @@ xmd --version
 ```bash
 git clone https://github.com/akaoio/xmd.git
 cd xmd
-mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=Release ..
-make -j$(nproc)
-sudo make install
+make clean && make
+make test  # Run all 27 tests to verify build
+
+# Install system-wide (optional)
+sudo cp xmd /usr/local/bin/
 ```
 
 ### Your First XMD Document
@@ -70,8 +71,11 @@ sudo make install
 Create `hello.md`:
 
 ```markdown
-<!-- xmd:set user="Developer" -->
-<!-- xmd:set project="MyApp" -->
+<!-- xmd:
+set user="Developer"
+set project="MyApp"
+set tools=["git", "cmake", "gcc"]
+-->
 
 # 👋 Hello {{user}}!
 
@@ -90,7 +94,7 @@ Your development environment is configured and ready to use!
 Tool {{i}}: Ready ✅
 <!-- xmd:endfor -->
 
-<!-- xmd:for tool in ["git", "cmake", "gcc"] -->
+<!-- xmd:for tool in tools -->
 - ✅ {{tool}}: <!-- xmd:exec which {{tool}} && echo "Available" || echo "Not found" -->
 <!-- xmd:endfor -->
 <!-- xmd:endif -->
@@ -210,23 +214,38 @@ xmd process doc.md -v env="production" -v region="us-east" -v debug=true
 
 ## 🆕 Latest Improvements (v1.0.0)
 
-### ✅ **100% Test Coverage Achieved**
-All 31 comprehensive tests now pass, ensuring rock-solid reliability across all features.
+### ✅ **Complete Test Suite - 27/27 Tests Pass**
+- **100% pass rate** across all functional and stress tests
+- **Stress testing** with brutal panic battle tests (50-level nested loops, resource exhaustion)
+- **Full integration testing** including multiline directives and security features
+
+### 🎨 **Multiline Directive Support**
+- **Clean multiline syntax**: Write multiple commands in single comment blocks
+- **Cross-comment control flow**: `if/endif` and `for/endfor` span multiple comments
+- **Enhanced readability**: No need for `<!-- xmd:` on every line
+
+```markdown
+<!-- xmd:
+set name="Alice"
+set role="admin"
+set permissions=["read", "write", "admin"]
+-->
+```
 
 ### 🔧 **Enhanced Variable Substitution**
-- **Universal Support**: Variables now work in ALL contexts including markdown headers (`# {{title}}`)
-- **Complex Templates**: Multi-variable expressions work seamlessly in conditionals and loops
-- **Clean Processing**: `xmd:set` directives are now properly removed from output
+- **Universal Support**: Variables work in ALL contexts including markdown headers (`# {{title}}`)
+- **Complex Templates**: Multi-variable expressions in conditionals and loops
+- **JSON Support**: Full object and array manipulation with dot notation
 
-### 🎯 **Improved Control Flow**
-- **Full If/Else Support**: Complete condition evaluation with `==`, `!=` operators
-- **Advanced For Loops**: Variable substitution works correctly in loop bodies
-- **Range Expressions**: Support for `var..var`, `1..n`, and complex ranges
+### 🎯 **Complete Control Flow**
+- **Full Conditionals**: `if/elif/else/endif` with logical operators (`&&`, `||`, `!`)
+- **Advanced Loops**: `for/endfor` with arrays, ranges, and complex collections
+- **Error Handling**: `try/catch` blocks for robust error management
 
-### 🚀 **Better Command Line Experience**
-- **Smart Shorthand Detection**: `xmd input.md output.md` automatically converts to full commands
-- **Robust Stdin Handling**: Improved detection and processing of piped input
-- **Reliable File Output**: `-o` option works consistently across all scenarios
+### 🚀 **Production-Ready CLI**
+- **Shorthand Support**: `xmd input.md output.md` auto-converts to process commands
+- **Stdin/Pipe Support**: Seamless integration with shell pipelines
+- **Multiple Formats**: Output to markdown, HTML, JSON with proper formatting
 
 ### Debugging & Tracing
 
@@ -249,14 +268,20 @@ xmd process doc.md --trace --debug --format json
 <summary><b>🔢 Variables & Data Types</b></summary>
 
 ```markdown
-<!-- xmd:set name="Alice" -->
-<!-- xmd:set age=25 -->
-<!-- xmd:set active=true -->
-<!-- xmd:set scores=[95, 87, 92] -->
-<!-- xmd:set user={"name": "Bob", "role": "admin"} -->
+<!-- xmd:
+set name="Alice"
+set age=25
+set active=true
+set scores=[95, 87, 92]
+set user={"name": "Bob", "role": "admin"}
+-->
 
 Hello {{name}}, age {{age}}. Admin: {{user.role == "admin"}}
 Your scores: {{scores[0]}}, {{scores[1]}}, {{scores[2]}}
+
+<!-- Also supports single-line syntax -->
+<!-- xmd:set temperature=22.5 -->
+<!-- xmd:set status="online" -->
 ```
 
 </details>
@@ -381,23 +406,21 @@ System load: <!-- xmd:exec uptime | awk '{print $(NF-2)}' -->
 ### Build Commands
 
 ```bash
-# Quick development build
-make debug
+# Standard build
+make
 
-# Optimized release build  
-make release
+# Clean and rebuild
+make clean && make
 
-# Run all tests
+# Run all 27 tests (functional + stress)
 make test
 
-# Code coverage analysis
-make coverage
+# Run specific stress tests manually
+./test_brutal_nesting
+./test_resource_exhaustion
 
-# Generate documentation
-make docs
-
-# Clean everything
-make clean
+# Clean build artifacts
+./clean.sh
 ```
 
 ### Advanced Build Options
@@ -426,15 +449,15 @@ cmake -DENABLE_ALL_FEATURES=ON ..
 
 ## 🛣️ Roadmap
 
-**Current Status:** `v1.0.0-rc1` - Feature complete, stability testing
+**Current Status:** `v1.0.0` - Stable release with comprehensive testing
 
 | Phase | Status | Features |
 |-------|--------|----------|
-| ✅ **Phase 1** | Complete | Core parser, variables, basic control flow |
+| ✅ **Phase 1** | Complete | Core parser, variables, control flow |
 | ✅ **Phase 2** | Complete | Command execution, modules, security sandbox |
-| ✅ **Phase 3** | Complete | Advanced features, plugins, performance optimization |
-| 🔄 **Phase 4** | In Progress | Testing, documentation, community tools |
-| 📋 **Phase 5** | Planned | Language bindings, IDE integrations |
+| ✅ **Phase 3** | Complete | Multiline directives, stress testing, performance optimization |
+| ✅ **Phase 4** | Complete | 27/27 tests passing, comprehensive documentation |
+| 📋 **Phase 5** | Planned | Language bindings, IDE integrations, ecosystem tools |
 
 See [implementation plan](docs/dev/plans/20250725-1413-xmd-implementation/) for detailed progress.
 

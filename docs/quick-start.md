@@ -27,10 +27,11 @@ xmd --version
 ```bash
 git clone https://github.com/akaoio/xmd.git
 cd xmd
-mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=Release ..
-make -j$(nproc)
-sudo make install
+make clean && make
+make test  # Verify all 27 tests pass
+
+# Install system-wide (optional)
+sudo cp xmd /usr/local/bin/
 ```
 
 ## Your First XMD Document
@@ -38,8 +39,11 @@ sudo make install
 Create a file called `hello.md`:
 
 ```markdown
-<!-- xmd:set name="World" -->
-<!-- xmd:set timestamp=now -->
+<!-- xmd:
+set name="World"
+set services=["nginx", "docker", "postgresql"]
+set environment="development"
+-->
 
 # Hello {{name}}! 👋
 
@@ -48,6 +52,14 @@ Welcome to XMD at <!-- xmd:exec date "+%Y-%m-%d %H:%M:%S" -->
 ## System Information
 - Hostname: <!-- xmd:exec hostname -->
 - OS: <!-- xmd:exec uname -s -->
+- Environment: **{{environment}}**
+
+<!-- xmd:if environment == "development" -->
+## 🚀 Development Services Status
+<!-- xmd:for service in services -->
+- {{service}}: <!-- xmd:exec systemctl is-active {{service}} 2>/dev/null || echo "not installed" -->
+<!-- xmd:endfor -->
+<!-- xmd:endif -->
 - User: <!-- xmd:exec whoami -->
 
 <!-- xmd:if name == "World" -->
