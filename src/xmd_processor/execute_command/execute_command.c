@@ -5,6 +5,8 @@
  * @date 2025-07-26
  */
 
+#define _GNU_SOURCE  // For popen/pclose
+#include <stdio.h>
 #include <sys/wait.h>
 #include "../../../include/xmd_processor_internal.h"
 
@@ -16,6 +18,20 @@
  * @return Command exit status, -1 on error
  */
 int execute_command(const char* command, char* output, size_t output_size) {
+    // Rule 13: Error handling - validate inputs
+    if (!command || !output || output_size == 0) {
+        if (output && output_size > 0) {
+            output[0] = '\0';
+        }
+        return -1;
+    }
+    
+    // Rule 13: Ensure minimum buffer size
+    if (output_size < 64) {
+        output[0] = '\0';
+        return -1;
+    }
+    
     FILE* pipe = popen(command, "r");
     if (!pipe) {
         snprintf(output, output_size, "[Error: Failed to execute command]");

@@ -26,35 +26,18 @@ cli_args* cli_parse_args(int argc, char** argv) {
     
     int i = 1; // Skip program name
     
-    // Check for global flags first
-    while (i < argc && is_flag(argv[i])) {
+    // Check for global help/version flags first
+    if (i < argc) {
         if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0) {
             args->help = true;
-            i++;
+            return args;
         } else if (strcmp(argv[i], "--version") == 0 || strcmp(argv[i], "-v") == 0) {
             args->version = true;
-            i++;
-        } else if (strcmp(argv[i], "--verbose") == 0) {
-            args->verbose = true;
-            i++;
-        } else if (strcmp(argv[i], "--quiet") == 0 || strcmp(argv[i], "-q") == 0) {
-            args->quiet = true;
-            i++;
-        } else if (strcmp(argv[i], "--debug") == 0 || strcmp(argv[i], "-d") == 0) {
-            args->debug = true;
-            i++;
-        } else {
-            // Unknown flag, skip for now
-            i++;
+            return args;
         }
     }
     
-    // If help or version requested, return immediately
-    if (args->help || args->version) {
-        return args;
-    }
-    
-    // Parse command
+    // Parse command first
     if (i >= argc) {
         free(args);
         return NULL; // No command specified
@@ -136,6 +119,15 @@ cli_args* cli_parse_args(int argc, char** argv) {
             }
             break;
             
+        case CLI_CMD_PLUGIN:
+            // Expect plugin subcommand
+            if (i >= argc || is_flag(argv[i])) {
+                free(args);
+                return NULL;
+            }
+            args->plugin_name = strdup(argv[i]);
+            i++;
+            break;
             
         case CLI_CMD_CONFIG:
         case CLI_CMD_HELP:

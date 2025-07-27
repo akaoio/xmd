@@ -87,8 +87,12 @@ char* process_xmd_content(const char* input, store* variables) {
             if (is_multiline_directive(comment_content)) {
                 process_multiline_directive(comment_content, variables);
             } else {
-                char directive_output[4096];
-                process_directive(trimmed, ctx, directive_output, sizeof(directive_output));
+                // Rule 14: Memory management - use heap allocation for large buffers
+                char* directive_output = malloc(4096);
+                if (!directive_output) {
+                    continue; // Skip this directive on allocation failure
+                }
+                process_directive(trimmed, ctx, directive_output, 4096);
                 
                 // Add directive output if any
                 if (strlen(directive_output) > 0 && should_execute_block(ctx)) {
@@ -100,6 +104,9 @@ char* process_xmd_content(const char* input, store* variables) {
                     memcpy(output + output_pos, directive_output, dir_len);
                     output_pos += dir_len;
                 }
+                
+                // Rule 14: Memory management - free allocated buffer
+                free(directive_output);
             }
         } else {
             // Regular HTML comment, copy if executing

@@ -136,12 +136,26 @@ security_result security_validate_path(const char* path, const char* allowed_bas
     char* full_path = NULL;
     if (path[0] != '/') {
         // Relative path - combine with base
-        size_t full_len = strlen(allowed_base) + strlen(path) + 2;
-        full_path = malloc(full_len);
-        if (!full_path) {
-            return SECURITY_INVALID_INPUT;
+        // Handle "." base directory specially
+        if (strcmp(allowed_base, ".") == 0) {
+            char cwd[PATH_MAX];
+            if (getcwd(cwd, sizeof(cwd)) == NULL) {
+                return SECURITY_INVALID_INPUT;
+            }
+            size_t full_len = strlen(cwd) + strlen(path) + 2;
+            full_path = malloc(full_len);
+            if (!full_path) {
+                return SECURITY_INVALID_INPUT;
+            }
+            snprintf(full_path, full_len, "%s/%s", cwd, path);
+        } else {
+            size_t full_len = strlen(allowed_base) + strlen(path) + 2;
+            full_path = malloc(full_len);
+            if (!full_path) {
+                return SECURITY_INVALID_INPUT;
+            }
+            snprintf(full_path, full_len, "%s/%s", allowed_base, path);
         }
-        snprintf(full_path, full_len, "%s/%s", allowed_base, path);
     } else {
         full_path = strdup(path);
         if (!full_path) {
@@ -151,7 +165,20 @@ security_result security_validate_path(const char* path, const char* allowed_bas
     
     // Normalize both paths
     char* normalized_path = normalize_path(full_path);
-    char* normalized_base = normalize_path(allowed_base);
+    
+    // Handle "." base directory specially
+    char* normalized_base;
+    if (strcmp(allowed_base, ".") == 0) {
+        char cwd[PATH_MAX];
+        if (getcwd(cwd, sizeof(cwd)) == NULL) {
+            free(full_path);
+            free(normalized_path);
+            return SECURITY_INVALID_INPUT;
+        }
+        normalized_base = normalize_path(cwd);
+    } else {
+        normalized_base = normalize_path(allowed_base);
+    }
     
     free(full_path);
     

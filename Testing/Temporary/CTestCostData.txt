@@ -1,29 +1,26 @@
-token_tests 11 0.000183828
-lexer_tests 11 0.000169404
-string_duplicate_tests 10 0.000159073
-string_extract_tests 10 0.000153911
-memory_allocate_tests 10 0.000219943
-memory_free_safe_tests 12 0.0001347
-variable_tests 12 0.000148676
-store_tests 12 0.000193008
-template_tests 12 0.000145297
-conditional_tests 12 0.000247695
-loop_tests 12 0.000255376
-flow_tests 12 0.000245313
-error_tests 12 0.000226428
-executor_tests 12 0.105533
-output_tests 12 0.000262692
-resource_tests 12 0.00917775
-module_tests 12 0.000148773
-import_export_tests 12 0.000118756
-dependency_tests 11 0.000252103
-security_tests 0 0
-performance_tests 3 0.000914754
-cli_tests 0 0
-docs_tests 3 0.0010322
-devtools_tests 3 0.000939157
-xmd_processor_tests 0 0
+token_tests 1 0.0126232
+lexer_tests 1 0.00182464
+string_duplicate_tests 1 0.00709208
+string_extract_tests 1 0.00330367
+memory_allocate_tests 1 0.00572826
+memory_free_safe_tests 1 0.00630546
+variable_tests 1 0.00195968
+store_tests 1 0.00241701
+template_tests 1 0.00784399
+conditional_tests 1 0.00312313
+loop_tests 1 0.00308871
+flow_tests 1 0.00292509
+error_tests 1 0.00270955
+executor_tests 1 1.26421
+output_tests 1 0.00337688
+resource_tests 1 0.105965
+module_tests 1 0.00181298
+import_export_tests 1 0.00300296
+dependency_tests 1 0.0014204
+security_tests 1 0.00366212
+performance_tests 1 0.00422299
+cli_tests 1 0.00311992
+docs_tests 1 0.00283934
+devtools_tests 1 0.00284401
+xmd_processor_tests 1 0.00505277
 ---
-security_tests
-cli_tests
-xmd_processor_tests

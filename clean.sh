@@ -85,7 +85,7 @@ PROTECTED_DIRS=(
     "assets"
     "static"
     "public"
-    "tmp"
+    # Note: tmp/ is not protected to allow cleaning temporary files
 )
 
 # Function to check if a file should be protected
@@ -291,6 +291,57 @@ safe_remove "*.core" "core dump files"
 
 # Remove log files
 safe_remove "*.log" "log files"
+
+# Remove CMake generated files and build artifacts
+safe_remove "CMakeCache.txt" "CMake cache file"
+safe_remove "cmake_install.cmake" "CMake install script"
+safe_remove "CPackConfig.cmake" "CPack configuration"
+safe_remove "CPackSourceConfig.cmake" "CPack source configuration"
+safe_remove "CTestTestfile.cmake" "CTest configuration"
+
+# Remove test executables (but preserve test/ source directory)
+safe_remove "test_*" "test executables"
+
+# Remove main executables
+safe_remove "xmd" "main XMD executable"
+safe_remove "xmd_cli" "CLI executable"
+
+# Remove library files
+safe_remove "*.a" "static library files"
+safe_remove "libxmd_lib.a" "XMD library file"
+
+# Remove temporary analysis files
+safe_remove "analyze_codebase.js" "codebase analysis script"
+safe_remove "find_orphaned_files.js" "orphaned files scanner"
+safe_remove "actual_files.txt" "actual files list"
+safe_remove "existing_files.txt" "existing files list"
+safe_remove "correct_sources.txt" "correct sources list"
+
+# Remove additional script files (but keep core scripts)
+safe_remove "fix_*.sh" "fix scripts"
+safe_remove "format.sh" "format script"
+safe_remove "generate-docs.sh" "docs generation script"
+
+# Remove simple test files
+safe_remove "simple_flow_test" "simple flow test executable"
+safe_remove "simple_flow_test.c" "simple flow test source"
+
+# Remove clean executable (not the script)
+safe_remove "clean" "clean executable"
+
+# Remove CMake directories (generated build files)
+safe_remove_dir "CMakeFiles" "CMake generated files directory"
+safe_remove_dir "Testing" "CMake testing directory"
+
+# Clean up tmp/ directory contents (but keep directory structure)
+echo -e "${YELLOW}Cleaning tmp/ directory contents...${NC}"
+if [[ -d "./tmp" ]]; then
+    find ./tmp -type f -exec rm -f {} \; 2>/dev/null || true
+    echo -e "${GREEN}  ✓ Cleaned tmp/ directory contents${NC}"
+else
+    echo -e "${GREEN}  ✓ No tmp/ directory to clean${NC}"
+fi
+echo
 
 # Clean up any stray files that might have been created during testing
 # These are specific files I know we created during development

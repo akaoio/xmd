@@ -22,7 +22,20 @@
  * @return 0 on success, -1 on error
  */
 int process_directive(const char* directive, processor_context* ctx, char* output, size_t output_size) {
+    // Rule 13: Error handling - validate inputs
+    if (!directive || !ctx || !output || output_size == 0) {
+        if (output && output_size > 0) {
+            output[0] = '\0';
+        }
+        return -1;
+    }
+    
     char* dir_copy = strdup(directive);
+    if (!dir_copy) {
+        output[0] = '\0';
+        return -1;
+    }
+    
     char* trimmed = trim_whitespace(dir_copy);
     
     // Skip "xmd:" prefix if present

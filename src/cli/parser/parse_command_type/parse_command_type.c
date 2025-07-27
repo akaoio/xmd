@@ -28,6 +28,8 @@ int parse_command_type(const char* cmd_str) {
         return CLI_CMD_HELP;
     } else if (strcmp(cmd_str, "version") == 0) {
         return CLI_CMD_VERSION;
+    } else if (strcmp(cmd_str, "plugin") == 0) {
+        return CLI_CMD_PLUGIN;
     }
     
     return -1;

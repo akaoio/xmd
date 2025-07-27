@@ -67,12 +67,18 @@ void test_conditional_logic(void) {
     
     free(result1);
     
-    // Test 2: elif condition true
-    variable* role_var = variable_create_string("user");
-    store_set(vars, "role", role_var);
-    variable_unref(role_var);
+    // Test 2: elif condition true  
+    const char* input2 = 
+        "<!-- xmd:set role=\"user\" -->\n"
+        "<!-- xmd:if role == \"admin\" -->\n"
+        "Admin access granted\n"
+        "<!-- xmd:elif role == \"user\" -->\n"
+        "User access\n"
+        "<!-- xmd:else -->\n"
+        "Guest access\n"
+        "<!-- xmd:endif -->\n";
     
-    char* result2 = process_xmd_content(input1, vars);
+    char* result2 = process_xmd_content(input2, vars);
     assert(result2 != NULL);
     assert(strstr(result2, "Admin access granted") == NULL);
     assert(strstr(result2, "User access") != NULL);
@@ -81,11 +87,17 @@ void test_conditional_logic(void) {
     free(result2);
     
     // Test 3: else condition
-    role_var = variable_create_string("unknown");
-    store_set(vars, "role", role_var);
-    variable_unref(role_var);
+    const char* input3 = 
+        "<!-- xmd:set role=\"unknown\" -->\n"
+        "<!-- xmd:if role == \"admin\" -->\n"
+        "Admin access granted\n"
+        "<!-- xmd:elif role == \"user\" -->\n"
+        "User access\n"
+        "<!-- xmd:else -->\n"
+        "Guest access\n"
+        "<!-- xmd:endif -->\n";
     
-    char* result3 = process_xmd_content(input1, vars);
+    char* result3 = process_xmd_content(input3, vars);
     assert(result3 != NULL);
     assert(strstr(result3, "Admin access granted") == NULL);
     assert(strstr(result3, "User access") == NULL);

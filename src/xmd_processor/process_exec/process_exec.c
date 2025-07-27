@@ -16,6 +16,14 @@
  * @return 0 on success, -1 on error
  */
 int process_exec(const char* args, processor_context* ctx, char* output, size_t output_size) {
+    // Rule 13: Error handling - validate inputs
+    if (!args || !ctx || !output || output_size == 0) {
+        if (output && output_size > 0) {
+            output[0] = '\0';
+        }
+        return -1;
+    }
+    
     if (!should_execute_block(ctx)) {
         output[0] = '\0';
         return 0;
@@ -23,6 +31,11 @@ int process_exec(const char* args, processor_context* ctx, char* output, size_t 
     
     // Substitute variables in command
     char* expanded = substitute_variables(args, ctx->variables);
+    if (!expanded) {
+        output[0] = '\0';
+        return -1;
+    }
+    
     int result = execute_command(expanded, output, output_size);
     free(expanded);
     return result;
