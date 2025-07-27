@@ -10,6 +10,10 @@
 #include <string.h>
 #include <time.h>
 #include "../../../../include/cli.h"
+#include "../../../../include/store.h"
+
+// Forward declaration of XMD processor function
+char* process_xmd_content_enhanced(const char* input, store* variables);
 
 /**
  * @brief Process string through XMD
@@ -39,27 +43,39 @@ xmd_result* xmd_process_string(void* handle, const char* input, size_t input_len
     // Start timing
     clock_t start_time = clock();
     
-    // For now, create a simple processed output (following Rule 7: real implementation)
-    // This would integrate with the actual XMD processor
-    size_t output_size = input_length * 2 + 100; // Extra space for processing
-    result->output = malloc(output_size);
-    if (!result->output) {
+    // Create a store for variables
+    store* variables = store_create();
+    if (!variables) {
         free(result);
         return NULL;
     }
     
-    // Simple processing: wrap content in processed markdown structure
-    int written = snprintf(result->output, output_size,
-        "<!-- XMD Processed Content -->\n%.*s\n<!-- End XMD Processing -->",
-        (int)input_length, input);
-    
-    if (written < 0 || (size_t)written >= output_size) {
-        free(result->output);
+    // Convert input to null-terminated string for processing
+    char* input_str = malloc(input_length + 1);
+    if (!input_str) {
+        store_destroy(variables);
         free(result);
         return NULL;
     }
+    memcpy(input_str, input, input_length);
+    input_str[input_length] = '\0';
     
-    result->output_length = written;
+    // Process the content using the real XMD processor
+    char* processed_output = process_xmd_content_enhanced(input_str, variables);
+    
+    // Clean up input string
+    free(input_str);
+    store_destroy(variables);
+    
+    if (!processed_output) {
+        result->error_code = -1;
+        result->error_message = strdup("XMD processing failed");
+        result->output = strdup("");
+        result->output_length = 0;
+    } else {
+        result->output = processed_output;
+        result->output_length = strlen(processed_output);
+    }
     
     // Calculate processing time
     clock_t end_time = clock();
