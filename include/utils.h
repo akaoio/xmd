@@ -42,6 +42,35 @@ bool xmd_variable_equals(const variable* a, const variable* b);
 void* xmd_malloc(size_t size);
 
 /**
+ * @brief Allocate memory safely
+ * @param size Number of bytes to allocate
+ * @return Pointer to allocated memory on success, NULL on failure or if size is 0
+ */
+void* memory_allocate(size_t size);
+
+/**
+ * @brief Free memory safely and set pointer to NULL
+ * @param ptr Pointer to pointer to memory to free
+ */
+void memory_free_safe(void** ptr);
+
+/**
+ * @brief Duplicate a string safely
+ * @param str String to duplicate
+ * @return Duplicated string or NULL on failure
+ */
+char* string_duplicate(const char* str);
+
+/**
+ * @brief Extract a substring from a string
+ * @param str Source string
+ * @param start Starting position
+ * @param length Length of substring
+ * @return Extracted substring or NULL on failure
+ */
+char* string_extract(const char* str, size_t start, size_t length);
+
+/**
  * @brief Safe calloc with NULL check
  * @param count Number of elements
  * @param size Size of each element

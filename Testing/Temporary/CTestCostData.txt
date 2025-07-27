@@ -1,22 +1,22 @@
-token_tests 5 0.000905265
-lexer_tests 5 0.00116374
-string_duplicate_tests 5 0
-string_extract_tests 5 0
-memory_allocate_tests 5 0
-memory_free_safe_tests 6 0.000424905
-variable_tests 6 0.00048421
-store_tests 6 0.000762894
-template_tests 6 0.000499182
-conditional_tests 6 0.000463842
-loop_tests 6 0.000492863
-flow_tests 6 0.00047303
-error_tests 6 0.000453828
-executor_tests 6 0.210639
-output_tests 6 0.000826671
-resource_tests 6 0.0183384
-module_tests 6 0.000797894
-import_export_tests 6 0.000702617
-dependency_tests 5 0.000769641
+token_tests 8 0.00040224
+lexer_tests 8 0.000200628
+string_duplicate_tests 7 0.000439079
+string_extract_tests 7 0.000438204
+memory_allocate_tests 7 0.000576327
+memory_free_safe_tests 9 0.000315677
+variable_tests 9 0.000355732
+store_tests 9 0.000214664
+template_tests 9 0.00034601
+conditional_tests 9 0.000313376
+loop_tests 9 0.000328543
+flow_tests 9 0.000326307
+error_tests 9 0.000335348
+executor_tests 9 0.143332
+output_tests 9 0.000331103
+resource_tests 9 0.0122167
+module_tests 9 0.000451301
+import_export_tests 9 0.00038613
+dependency_tests 8 0.000423568
 security_tests 0 0
 performance_tests 0 0
 cli_tests 0 0
@@ -24,6 +24,3 @@ docs_tests 0 0
 devtools_tests 0 0
 xmd_processor_tests 0 0
 ---
-string_duplicate_tests
-string_extract_tests
-memory_allocate_tests
