@@ -1,210 +1,91 @@
-# 🔧 XMD Command Line Reference
-
-Complete reference for XMD command-line interface.
+# CLI Reference
 
 ## Commands
 
-### `xmd process <file> [options]`
+### `xmd <file> [options]`
 
 Process an XMD file and output the result.
 
 ```bash
 # Basic usage
-xmd process document.md
+xmd document.md
 
 # With output file
-xmd process document.md -o output.md
+xmd document.md -o output.md
 
 # With variables
-xmd process template.md -v env=production -v version=1.2.0
-
-# Shorthand syntax (auto-converts to process command)
-xmd input.md output.md
-
-# Pipe support
-cat input.md | xmd process -
-echo "# {{title}}" | xmd process - -v title="Hello World"
+xmd template.md -v env=production -v version=1.2.0
 ```
 
-**Arguments:**
-- `<file>` - Input XMD file to process (required, or `-` for stdin)
+### `xmd watch <dir> [options]`
 
-### `xmd watch <input_dir> [output_dir] [options]`
-
-Watch a directory for changes and automatically process markdown files.
+Watch directory for changes and auto-process files.
 
 ```bash
-# Shorthand: watch input directory, output to another directory  
-xmd watch src/ dist/
+# Watch directory
+xmd watch docs/
 
-# With specific format
-xmd watch docs/ build/ --format html
-
-# Using --output-dir option
-xmd watch src/ --output-dir dist/ --format html
-
-# Output to stdout (no output directory)
-xmd watch src/ --verbose
-
-# JSON format for API documentation
-xmd watch api-docs/ --output-dir dist/ --format json --verbose
+# Watch with output directory
+xmd watch docs/ dist/
 ```
 
-**Arguments:**
-- `<input_dir>` - Input directory to watch for changes (required)
-- `[output_dir]` - Output directory (optional, can also use `--output-dir`)
-
-**Watch-specific Options:**
-- `--output-dir, -o <dir>` - Output directory (alternative to positional argument)
-- `--format <fmt>` - Output format: `markdown` (default), `html`, `json`
-- `--verbose, -v` - Show detailed processing information
-
-**Features:**
-- **Recursive scanning**: Finds `.md` files in all subdirectories
-- **Directory mirroring**: Preserves relative directory structure in output
-- **Real-time processing**: Detects file changes instantly (500ms polling)
-- **All XMD features**: Full support for variables, imports, commands, loops
-- **Multiple formats**: Output as processed markdown, HTML, or JSON
-
-**Example Output:**
-```
-🔍 Watching directory: docs/
-📝 Monitoring .md files for changes...
-📁 Output directory: dist/
-📄 Output format: html
-
-Found 3 markdown file(s):
-  docs/getting-started.md
-  docs/api/authentication.md
-  docs/guides/deployment.md
-
-✅ docs/getting-started.md → dist/getting-started.html
-✅ docs/api/authentication.md → dist/api/authentication.html
-✅ docs/guides/deployment.md → dist/guides/deployment.html
-
-✅ Initial processing complete. Watching for changes...
-
-📝 File changed: docs/getting-started.md
-✅ docs/getting-started.md → dist/getting-started.html
-```
-
-### `xmd validate <file>`
-
-Validate XMD syntax without processing.
-
-```bash
-xmd validate document.md
-```
-
-**Arguments:**
-- `<file>` - Input XMD file to validate (required)
-
-### `xmd version`
+### `xmd --version`
 
 Display version information.
 
 ```bash
-xmd version
+xmd --version
 # Output: XMD v1.0.0
 ```
 
-### `xmd help`
+### `xmd --help`
 
 Display help information.
 
 ```bash
-xmd help
+xmd --help
 ```
 
 ## Options
 
 ### `-o, --output <file>`
 
-Specify output file. If not provided, output goes to stdout.
+Specify output file. Default: stdout.
 
 ```bash
-xmd process doc.md -o result.md
-xmd process doc.md --output result.html
+xmd doc.md -o result.md
 ```
 
 ### `-v, --variable <key=value>`
 
-Set variables that can be used in the document. Can be used multiple times.
+Set variables. Can be used multiple times.
 
 ```bash
-# Single variable
-xmd process doc.md -v name="Alice"
-
-# Multiple variables
-xmd process doc.md -v env="prod" -v region="us-east" -v debug=true
-
-# Variables in document: {{name}}, {{env}}, {{region}}, {{debug}}
+xmd doc.md -v name="Alice" -v debug=true
 ```
 
-### `--config <file>`
+### `--watch`
 
-Use a configuration file. The file must exist or an error will be shown.
+Watch mode for live development.
 
 ```bash
-xmd process doc.md --config settings.conf
+xmd doc.md --watch
 ```
 
 ### `--format <format>`
 
-Specify output format. Valid formats: `markdown`, `html`, `json`
+Output format: `markdown` (default), `html`, `json`.
 
 ```bash
-# Markdown (default)
-xmd process doc.md --format markdown
-
-# HTML with full document structure and CSS
-xmd process doc.md --format html
-
-# JSON with metadata
-xmd process doc.md --format json
-```
-
-**Format Details:**
-
-- **`markdown`**: Default format, outputs processed content as-is
-- **`html`**: Complete HTML document with DOCTYPE, head, CSS styling
-- **`json`**: Structured JSON with status, format, processor version, and content
-
-### `--trace`  
-
-Enable execution tracing. Creates a `.trace` file with detailed processing steps.
-
-```bash
-xmd process doc.md --trace
-# Creates doc.md.trace
-
-xmd process doc.md -o output.md --trace  
-# Creates output.md.trace
-```
-
-The trace file contains:
-- Line-by-line processing details
-- Directive detection (variables, conditionals, loops)
-- Variable interpolation tracking
-- Processing summary
-
-### `--debug`
-
-Enable debug mode. Shows processing statistics on stderr.
-
-```bash
-xmd process doc.md --debug
-# Output includes:
-# Processing time: 15 ms
-# Memory used: 2048 bytes
+xmd doc.md --format html
 ```
 
 ### `--no-exec`
 
-Disable command execution for security. XMD directives like `<!-- xmd:exec -->` will be ignored.
+Disable command execution for security.
 
 ```bash
-xmd process untrusted.md --no-exec
+xmd untrusted.md --no-exec
 ```
 
 ## Examples
@@ -212,119 +93,45 @@ xmd process untrusted.md --no-exec
 ### Basic Processing
 
 ```bash
-# Process and display to stdout
-xmd process document.md
+# Process to stdout
+xmd document.md
 
-# Process to file
-xmd process document.md -o output.md
+# Process to file  
+xmd document.md -o output.md
 ```
 
 ### With Variables
 
 ```bash
 # Template with variables
-echo '# Hello {{name}}! Version: {{version}}' > template.md
+echo '# Hello {{name}}!' > template.md
 
 # Process with variables
-xmd process template.md -v name="World" -v version="1.0"
-# Output: # Hello World! Version: 1.0
+xmd template.md -v name="World"
+# Output: # Hello World!
 ```
 
-### Different Output Formats
+### Different Formats
 
 ```bash
 # HTML output
-xmd process doc.md --format html > output.html
+xmd doc.md --format html > output.html
 
-# JSON output  
-xmd process doc.md --format json > output.json
-
-# Example JSON structure:
-# {
-#   "status": "success",
-#   "format": "json",
-#   "processor": "XMD v1.0.0", 
-#   "content": "processed content"
-# }
+# JSON output
+xmd doc.md --format json > output.json
 ```
 
-### Debugging
+### Watch Mode
 
 ```bash
-# Generate trace for debugging
-xmd process complex.md --trace
-cat complex.md.trace  # View detailed processing steps
+# Watch single file
+xmd doc.md --watch
 
-# Debug mode with performance info
-xmd process doc.md --debug
-
-# Full debugging
-xmd process doc.md --trace --debug --format json
-```
-
-### Security
-
-```bash
-# Safe processing (no command execution)
-xmd process untrusted.md --no-exec
-
-# With configuration file
-xmd process doc.md --config secure.conf --no-exec
-```
-
-### Real-World Examples
-
-```bash
-# DevOps status report
-xmd process status-template.md -v env="production" --format html -o status.html
-
-# API documentation with live examples
-xmd process api-template.md -v base_url="https://api.example.com" --trace
-
-# System monitoring report  
-xmd process monitoring.md --format json | jq .content
-
-# Secure document processing
-xmd process user-content.md --no-exec --format html
+# Watch directory
+xmd watch docs/ dist/
 ```
 
 ## Exit Codes
 
 - `0` - Success
-- `1` - Error (invalid arguments, file not found, processing failed, etc.)
-
-## Error Handling
-
-XMD provides clear error messages for common issues:
-
-```bash
-# Invalid format
-$ xmd process doc.md --format invalid
-Error: Invalid format 'invalid'. Valid formats: markdown, html, json
-
-# Missing config file  
-$ xmd process doc.md --config missing.conf
-Error: Cannot open config file 'missing.conf'
-
-# Missing argument
-$ xmd process doc.md --variable
-Error: --variable requires an argument
-
-# Invalid variable format
-$ xmd process doc.md -v invalid
-Error: Variable must be in key=value format
-```
-
-## Performance Notes
-
-- XMD is optimized for speed - most documents process in under 100ms
-- Use `--debug` to see actual processing time and memory usage
-- Large documents or complex logic may benefit from `--trace` for optimization
-- The `--no-exec` option improves performance by skipping command execution
-
-## Security Considerations
-
-- Always use `--no-exec` when processing untrusted content
-- Validate input files with `xmd validate` before processing
-- Use configuration files to set detailed security policies
-- Review trace files to understand what commands would be executed
+- `1` - Error (invalid arguments, file not found, etc.)

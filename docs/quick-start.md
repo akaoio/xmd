@@ -1,388 +1,87 @@
-# 🚀 XMD Quick Start Guide
-
-Welcome to XMD! This guide will get you up and running in under 5 minutes.
+# Quick Start Guide
 
 ## Installation
 
-### Option 1: One-Line Install (Recommended)
-
 ```bash
+# One-line install
 curl -fsSL https://raw.githubusercontent.com/akaoio/xmd/main/install.sh | bash
-```
-
-### Option 2: Manual Download
-
-```bash
-# Download for your platform
-curl -L https://github.com/akaoio/xmd/releases/latest/download/xmd-linux-x64 -o xmd
-chmod +x xmd
-sudo mv xmd /usr/local/bin/
 
 # Verify installation
 xmd --version
 ```
 
-### Option 3: Build from Source
+## Basic Usage
 
-```bash
-git clone https://github.com/akaoio/xmd.git
-cd xmd
-make clean && make
-make test  # Verify all 27 tests pass
+### 1. Create a simple XMD file
 
-# Install system-wide (optional)
-sudo cp xmd /usr/local/bin/
-```
-
-## Your First XMD Document
-
-Create a file called `hello.md`:
-
+Create `example.md`:
 ```markdown
 <!-- xmd:
-set name="World"
-set services=["nginx", "docker", "postgresql"]
-set environment="development"
+set name = "Developer"
+set date = exec date +"%Y-%m-%d"
 -->
 
-# Hello {{name}}! 👋
+# Hello {{name}}!
 
-Welcome to XMD at <!-- xmd:exec date "+%Y-%m-%d %H:%M:%S" -->
+Today is {{date}}.
 
-## System Information
-- Hostname: <!-- xmd:exec hostname -->
-- OS: <!-- xmd:exec uname -s -->
-- Environment: **{{environment}}**
-
-<!-- xmd:if environment == "development" -->
-## 🚀 Development Services Status
-<!-- xmd:for service in services -->
-- {{service}}: <!-- xmd:exec systemctl is-active {{service}} 2>/dev/null || echo "not installed" -->
-<!-- xmd:endfor -->
-<!-- xmd:endif -->
-- User: <!-- xmd:exec whoami -->
-
-<!-- xmd:if name == "World" -->
-## Getting Started
-
-You're running your first XMD document! Here are some next steps:
-
-1. Try changing the `name` variable above
-2. Add your own commands with `<!-- xmd:exec command -->`
-3. Explore our [examples](examples/) for more ideas
-<!-- xmd:endif -->
+<!-- xmd: for i in 1..3 -->
+- Item {{i}}
+<!-- xmd: endfor -->
 ```
 
-Process it with different options:
+### 2. Process the file
 
 ```bash
-# Basic processing
-xmd process hello.md
+# Output to stdout
+xmd example.md
 
-# With command-line variables
-xmd process hello.md -v name="Alice" 
+# Save to file
+xmd example.md -o output.md
 
-# Output to file with HTML format
-xmd process hello.md -o output.html --format html
-
-# Generate execution trace for debugging
-xmd process hello.md --trace
-
-# Safe mode (no command execution)
-xmd process hello.md --no-exec
-```
-
-### Live Development with Watch
-
-For a powerful development workflow, use the watch command to automatically process files when they change:
-
-```bash
-# Create a simple project structure
-mkdir -p docs/guides
-echo '# Getting Started with {{project}}' > docs/getting-started.md
-echo '# {{project}} Deployment Guide' > docs/guides/deployment.md
-
-# Watch and auto-process to HTML
-xmd watch docs/ dist/ --format html --verbose
-
-# 🔍 Watching directory: docs/
-# 📁 Output directory: dist/
-# 📄 Output format: html
-# 
-# Found 2 markdown file(s):
-#   docs/getting-started.md
-#   docs/guides/deployment.md
-# 
-# ✅ docs/getting-started.md → dist/getting-started.html
-# ✅ docs/guides/deployment.md → dist/guides/deployment.html
-# 
-# ✅ Initial processing complete. Watching for changes...
-
-# Now edit any file in docs/ and watch it auto-update in dist/!
-```
-
-You'll see output like:
-
-```markdown
-# Hello World! 👋
-
-Welcome to XMD at 2025-07-25 14:30:22
-
-## System Information
-- Hostname: mycomputer
-- OS: Linux
-- User: developer
-
-## Getting Started
-
-You're running your first XMD document! Here are some next steps:
-
-1. Try changing the `name` variable above
-2. Add your own commands with `<!-- xmd:exec command -->`
-3. Explore our [examples](examples/) for more ideas
+# Use with variables
+xmd example.md -v name="Alice"
 ```
 
 ## Key Concepts
 
-### 1. Variables
-
+### Variables
 ```markdown
-<!-- Set variables -->
-<!-- xmd:set project="MyApp" -->
-<!-- xmd:set version="1.0.0" -->
-<!-- xmd:set developers=["Alice", "Bob", "Charlie"] -->
-
-# {{project}} v{{version}}
-
-Team: {{developers[0]}}, {{developers[1]}}, and {{developers[2]}}
+<!-- xmd: set user = "John" -->
+<!-- xmd: set count = 42 -->
+<!-- xmd: set active = true -->
 ```
 
-### 2. Commands
-
+### Command Execution
 ```markdown
-<!-- Execute system commands -->
-Current directory: <!-- xmd:exec pwd -->
-Files count: <!-- xmd:exec ls -1 | wc -l -->
-Disk usage: <!-- xmd:exec df -h / | tail -1 | awk '{print $5}' -->
+<!-- xmd: exec ls -la -->
+<!-- xmd: set files = exec find . -name "*.md" -->
 ```
 
-### 3. Conditionals
-
+### Functions
 ```markdown
-<!-- xmd:set environment="production" -->
-
-<!-- xmd:if environment == "production" -->
-🔴 **PRODUCTION** - Be careful!
-<!-- xmd:elif environment == "staging" -->
-🟡 **STAGING** - Testing environment
-<!-- xmd:else -->
-🟢 **DEVELOPMENT** - Safe to experiment
-<!-- xmd:endif -->
-```
-
-### 4. Loops
-
-```markdown
-<!-- Array loops -->
-<!-- xmd:set services=["web", "api", "db"] -->
-
-## Service Status
-
-<!-- xmd:for service in services -->
-- **{{service}}**: <!-- xmd:exec systemctl is-active {{service}} 2>/dev/null || echo "inactive" -->
-<!-- xmd:endfor -->
-
-<!-- Range loops -->
-<!-- xmd:for i in 1..5 -->
-### Server {{i}}
-Status: Checking...
-<!-- xmd:endfor -->
-
-<!-- Advanced ranges with variables -->
-<!-- xmd:set start=1 -->
-<!-- xmd:set end=3 -->
-<!-- xmd:for port in start..end -->
-- Port 808{{port}}: <!-- xmd:exec netstat -ln | grep :808{{port}} >/dev/null && echo "Open" || echo "Closed" -->
-<!-- xmd:endfor -->
-```
-
-## Advanced Features
-
-### Command-Line Variables
-
-You can set variables directly from the command line:
-
-```bash
-# Set variables when processing
-xmd process template.md -v env="production" -v version="2.1.0"
-
-# Use in your document
-# Environment: {{env}}
-# Version: {{version}}
-```
-
-### Output Formats
-
-Choose different output formats:
-
-```bash
-# HTML output with styling
-xmd process doc.md --format html -o output.html
-
-# JSON output with metadata  
-xmd process doc.md --format json -o output.json
-
-# Default markdown (same as no --format)
-xmd process doc.md --format markdown
-```
-
-### Debugging & Tracing
-
-Debug your documents with tracing:
-
-```bash
-# Generate detailed execution trace
-xmd process complex.md --trace
-# Creates complex.md.trace with step-by-step processing
-
-# Enable debug information
-xmd process doc.md --debug
-# Shows processing time and memory usage
-
-# Combine for full debugging
-xmd process doc.md --trace --debug --format json
-```
-
-### Security Options
-
-Control command execution:
-
-```bash
-# Safe mode - disable all command execution
-xmd process untrusted.md --no-exec
-
-# Use configuration file for detailed security settings
-xmd process doc.md --config security.conf
-```
-
-## Common Use Cases
-
-### Live Documentation Development
-
-Use watch mode for real-time documentation development:
-
-```bash
-# Set up a documentation project
-mkdir -p my-docs/{getting-started,api,guides}
-
-# Create template files with variables
-cat > my-docs/getting-started/index.md << 'EOF'
 <!-- xmd:
-set product="MyApp"
-set version="2.0.0"
-set last_updated=exec("date '+%Y-%m-%d'")
+set data = "Hello World"
+print(data)
 -->
 
-# Getting Started with {{product}} v{{version}}
-
-*Last updated: {{last_updated}}*
-
-Welcome to {{product}}! This guide will help you get started quickly.
-
-## Quick Installation
-
-```bash
-npm install {{product}}@{{version}}
+<!-- xmd: cmd("echo 'Hello from cmd!'") -->
 ```
 
-## Next Steps
-- [API Documentation](../api/index.html)
-- [User Guides](../guides/deployment.html)
-EOF
-
-# Watch and auto-generate HTML documentation
-xmd watch my-docs/ docs-dist/ --format html --verbose
-
-# Now edit any .md file in my-docs/ and watch the HTML auto-update!
-# Perfect for documentation websites, blogs, or API docs
-```
-
-### DevOps Dashboard
-
-Create `status.md`:
-
+### Multiline Blocks
 ```markdown
-<!-- xmd:set servers=["web1", "web2", "db1"] -->
-
-# Infrastructure Status Report
-
-Generated: <!-- xmd:exec date -->
-
-## Server Health
-
-<!-- xmd:for server in servers -->
-### {{server}}
-- Status: <!-- xmd:exec ping -c1 {{server}} >/dev/null 2>&1 && echo "🟢 Online" || echo "🔴 Offline" -->
-- Load: <!-- xmd:exec ssh {{server}} "uptime | awk '{print \\$(NF-2)}'" 2>/dev/null || echo "N/A" -->
-<!-- xmd:endfor -->
-```
-
-### API Documentation
-
-Create `api-status.md`:
-
-```markdown
-<!-- xmd:set api_base="https://api.example.com" -->
-
-# API Status
-
-Base URL: {{api_base}}
-
-## Endpoints
-
-### Health Check
-- URL: `{{api_base}}/health`
-- Status: <!-- xmd:exec curl -s {{api_base}}/health | jq -r '.status' 2>/dev/null || echo "Down" -->
-
-### Version
-- Current: <!-- xmd:exec curl -s {{api_base}}/version | jq -r '.version' 2>/dev/null || echo "Unknown" -->
-```
-
-### Project README
-
-Create `project-info.md`:
-
-```markdown
-<!-- xmd:set project_name="awesome-project" -->
-
-# {{project_name}}
-
-## Quick Stats
-
-- Files: <!-- xmd:exec find . -type f -name "*.py" | wc -l --> Python files
-- Lines of code: <!-- xmd:exec find . -name "*.py" -exec wc -l {} + | tail -1 | awk '{print $1}' -->
-- Last commit: <!-- xmd:exec git log -1 --pretty=format:"%h - %s (%cr)" -->
-- Contributors: <!-- xmd:exec git shortlog -sn | wc -l -->
-
-## Recent Activity
-
-<!-- xmd:exec git log --oneline -5 -->
+<!-- xmd:
+set name = "Project"
+set version = "1.0.0"
+set author = exec git config user.name
+print(name)
+print(version)
+print(author)
+-->
 ```
 
 ## Next Steps
 
-1. **Explore Examples**: Check out our [examples directory](examples/) for real-world use cases
-2. **Read the Docs**: Visit our [full documentation](https://akaoio.github.io/xmd/) for advanced features
-3. **Join the Community**: Connect with other users on [Discord](https://discord.gg/xmd)
-4. **Contribute**: Help improve XMD by contributing on [GitHub](https://github.com/akaoio/xmd)
-
-## Getting Help
-
-- 📖 **Documentation**: [akaoio.github.io/xmd](https://akaoio.github.io/xmd/)
-- 💬 **Discord**: [discord.gg/xmd](https://discord.gg/xmd)
-- 🐛 **Issues**: [github.com/akaoio/xmd/issues](https://github.com/akaoio/xmd/issues)
-- 💡 **Discussions**: [github.com/akaoio/xmd/discussions](https://github.com/akaoio/xmd/discussions)
-
----
-
-**Happy documenting with XMD!** 🎉
+- [CLI Reference](cli-reference.md) - All command options
+- [Multiline Directives](multiline-directives.md) - Advanced syntax
+- [Examples](../examples/) - Real-world use cases
