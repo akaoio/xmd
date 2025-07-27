@@ -6,6 +6,7 @@
  * Implementation of store cleanup for the XMD store system.
  */
 
+#include <stdint.h>
 #include "../../../include/store_internal.h"
 
 /**
@@ -15,6 +16,12 @@
 void store_destroy(store* s) {
     if (s == NULL) {
         return;
+    }
+    
+    // Rule 14: Memory management - validate pointer is not corrupted
+    // Check for obviously invalid pointers (common corruption patterns)
+    if ((uintptr_t)s < 0x1000 || ((uintptr_t)s & 0x3) != 0) {
+        return; // Skip corrupted pointers
     }
     
     // Free all entries

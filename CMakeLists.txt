@@ -184,6 +184,13 @@ xmd_target_link_libraries(test_devtools)
 add_executable(test_xmd_processor test/xmd_processor/test_xmd_processor.c)
 xmd_target_link_libraries(test_xmd_processor)
 
+# Stress tests (brutal panic battle tests)
+add_executable(test_brutal_nesting test/stress/test_brutal_nesting.c)
+xmd_target_link_libraries(test_brutal_nesting)
+
+add_executable(test_resource_exhaustion test/stress/test_resource_exhaustion.c)
+xmd_target_link_libraries(test_resource_exhaustion)
+
 # Enable testing
 enable_testing()
 
@@ -215,10 +222,14 @@ add_test(NAME docs_tests COMMAND test_docs)
 add_test(NAME devtools_tests COMMAND test_devtools)
 add_test(NAME xmd_processor_tests COMMAND test_xmd_processor)
 
+# Stress tests - now included in main test suite per INSTRUCTIONS.md Rule 17
+add_test(NAME brutal_nesting_tests COMMAND test_brutal_nesting)
+add_test(NAME resource_exhaustion_tests COMMAND test_resource_exhaustion)
+
 # Custom target to run all tests
 add_custom_target(test_all
     COMMAND ${CMAKE_CTEST_COMMAND} --verbose
-    DEPENDS test_token_simple test_lexer test_string_duplicate test_string_extract test_memory_allocate test_memory_free_safe test_variable test_store test_template test_conditional test_loop test_flow test_error test_executor test_output test_resource test_module test_import_export test_dependency test_security test_performance test_cli test_docs test_devtools test_xmd_processor
+    DEPENDS test_token_simple test_lexer test_string_duplicate test_string_extract test_memory_allocate test_memory_free_safe test_variable test_store test_template test_conditional test_loop test_flow test_error test_executor test_output test_resource test_module test_import_export test_dependency test_security test_performance test_cli test_docs test_devtools test_xmd_processor test_brutal_nesting test_resource_exhaustion
 )
 
 # Coverage (optional)
