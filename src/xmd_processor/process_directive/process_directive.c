@@ -74,7 +74,16 @@ int process_directive(const char* directive, processor_context* ctx, char* outpu
     } else if (strcmp(command, "endif") == 0) {
         result = process_endif(ctx, output, output_size);
     } else if (strcmp(command, "exec") == 0) {
-        result = process_exec(args, ctx, output, output_size);
+        // Use dynamic allocation for exec to avoid truncation
+        char* exec_output = process_exec_dynamic(args, ctx);
+        if (exec_output) {
+            snprintf(output, output_size, "%s", exec_output);
+            free(exec_output);
+            result = 0;
+        } else {
+            output[0] = '\0';
+            result = -1;
+        }
     } else if (strcmp(command, "import") == 0) {
         result = process_import(args, ctx, output, output_size);
     } else if (strcmp(command, "for") == 0) {
