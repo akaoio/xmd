@@ -35,6 +35,7 @@ typedef enum {
     AST_VARIABLE_REF,      /**< Variable references */
     AST_LITERAL,           /**< String, number, boolean literals */
     AST_ARRAY_LITERAL,     /**< Array literals [1, 2, 3] */
+    AST_ARRAY_ACCESS,      /**< Array indexing array[index] */
     AST_CONDITIONAL,       /**< if/elif/else blocks */
     AST_LOOP,              /**< for loops */
     AST_BLOCK,             /**< Statement blocks */
@@ -156,6 +157,12 @@ struct ast_node {
             size_t element_count;
         } array_literal;
         
+        /**< Array access */
+        struct {
+            ast_node* array_expr;    /**< Array expression */
+            ast_node* index_expr;    /**< Index expression */
+        } array_access;
+        
         /**< Conditional (if/elif/else) */
         struct {
             ast_node* condition;     /**< NULL for else */
@@ -196,6 +203,7 @@ ast_node* ast_create_string_literal(const char* value, source_location loc);
 ast_node* ast_create_number_literal(double value, source_location loc);
 ast_node* ast_create_boolean_literal(bool value, source_location loc);
 ast_node* ast_create_array_literal(source_location loc);
+ast_node* ast_create_array_access(ast_node* array_expr, ast_node* index_expr, source_location loc);
 ast_node* ast_create_conditional(ast_node* condition, source_location loc);
 ast_node* ast_create_loop(const char* variable, ast_node* iterable, source_location loc);
 ast_node* ast_create_block(source_location loc);

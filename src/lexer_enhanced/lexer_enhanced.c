@@ -145,8 +145,13 @@ token* lexer_enhanced_tokenize(const char* input, const char* filename) {
             column++;
             
             while (pos < len && input[pos] != quote) {
-                pos++;
-                column++;
+                if (input[pos] == '\\' && pos + 1 < len) {
+                    pos += 2; // Skip backslash and next character
+                    column += 2;
+                } else {
+                    pos++;
+                    column++;
+                }
             }
             
             if (pos < len) {

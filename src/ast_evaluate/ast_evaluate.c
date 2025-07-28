@@ -53,11 +53,41 @@ ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
                 return NULL;
             }
             
-            ast_value* value = ast_value_create(AST_VAL_STRING);
-            if (value && var->type == VAR_STRING) {
-                value->value.string_value = strdup(var->value.string_value);
+            // Handle different variable types
+            switch (var->type) {
+                case VAR_STRING: {
+                    ast_value* value = ast_value_create(AST_VAL_STRING);
+                    if (value) {
+                        value->value.string_value = strdup(var->value.string_value);
+                    }
+                    return value;
+                }
+                case VAR_ARRAY: {
+                    ast_value* value = ast_value_create(AST_VAL_ARRAY);
+                    if (value) {
+                        // Copy array elements from variable to AST value
+                        value->value.array_value.element_count = var->value.array_value->count;
+                        if (value->value.array_value.element_count > 0) {
+                            value->value.array_value.elements = malloc(value->value.array_value.element_count * sizeof(ast_value*));
+                            if (value->value.array_value.elements) {
+                                for (size_t i = 0; i < value->value.array_value.element_count; i++) {
+                                    variable* elem_var = var->value.array_value->items[i];
+                                    if (elem_var && elem_var->type == VAR_STRING) {
+                                        ast_value* elem_val = ast_value_create(AST_VAL_STRING);
+                                        if (elem_val) {
+                                            elem_val->value.string_value = strdup(elem_var->value.string_value);
+                                            value->value.array_value.elements[i] = elem_val;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return value;
+                }
+                default:
+                    return NULL;
             }
-            return value;
         }
         
         case AST_BINARY_OP: {
@@ -162,6 +192,78 @@ ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
             }
             
             return array_val;
+        }
+        
+        case AST_ARRAY_ACCESS: {
+            // Evaluate array expression
+            ast_value* array_val = ast_evaluate(node->data.array_access.array_expr, evaluator);
+            if (!array_val) {
+                return NULL;
+            }
+            
+            // Evaluate index expression
+            ast_value* index_val = ast_evaluate(node->data.array_access.index_expr, evaluator);
+            if (!index_val) {
+                ast_value_free(array_val);
+                return NULL;
+            }
+            
+            // Check that array is actually an array
+            if (array_val->type != AST_VAL_ARRAY) {
+                ast_value_free(array_val);
+                ast_value_free(index_val);
+                return NULL;
+            }
+            
+            // Check that index is a number
+            if (index_val->type != AST_VAL_NUMBER) {
+                ast_value_free(array_val);
+                ast_value_free(index_val);
+                return NULL;
+            }
+            
+            // Get index as integer
+            int index = (int)index_val->value.number_value;
+            ast_value_free(index_val);
+            
+            // Check bounds
+            if (index < 0 || (size_t)index >= array_val->value.array_value.element_count) {
+                ast_value_free(array_val);
+                return NULL;
+            }
+            
+            // Get element at index
+            ast_value* element = array_val->value.array_value.elements[index];
+            ast_value* result = NULL;
+            
+            if (element) {
+                // Create a copy of the element
+                result = ast_value_create(element->type);
+                if (result) {
+                    switch (element->type) {
+                        case AST_VAL_STRING:
+                            result->value.string_value = strdup(element->value.string_value);
+                            break;
+                        case AST_VAL_NUMBER:
+                            result->value.number_value = element->value.number_value;
+                            break;
+                        case AST_VAL_BOOLEAN:
+                            result->value.boolean_value = element->value.boolean_value;
+                            break;
+                        case AST_VAL_ARRAY:
+                            // For array copying, we'll just return NULL for now
+                            ast_value_free(result);
+                            result = NULL;
+                            break;
+                        case AST_VAL_NULL:
+                            // NULL values don't need copying
+                            break;
+                    }
+                }
+            }
+            
+            ast_value_free(array_val);
+            return result;
         }
             
         default:

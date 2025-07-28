@@ -181,9 +181,82 @@ ast_node* ast_parse_primary(parser_state* state) {
                 }
                 
                 return func_call;
+            } else if (strcmp(tok->value, "join") == 0) {
+                // Handle join function without parentheses
+                const char* func_name = tok->value;
+                parser_advance_token(state); // Skip function name
+                
+                // Create function call node
+                ast_node* func_call = ast_create_function_call(func_name, loc);
+                if (!func_call) {
+                    return NULL;
+                }
+                
+                // Parse the first argument (array)
+                ast_node* arg1 = ast_parse_primary(state);
+                if (!arg1) {
+                    ast_free(func_call);
+                    return NULL;
+                }
+                
+                if (ast_add_argument(func_call, arg1) != 0) {
+                    ast_free(arg1);
+                    ast_free(func_call);
+                    return NULL;
+                }
+                
+                // Check for optional second argument (separator)
+                token* next_tok = parser_peek_token(state);
+                if (next_tok && (next_tok->type == TOKEN_STRING || next_tok->type == TOKEN_IDENTIFIER)) {
+                    ast_node* arg2 = ast_parse_primary(state);
+                    if (arg2) {
+                        if (ast_add_argument(func_call, arg2) != 0) {
+                            ast_free(arg2);
+                            ast_free(func_call);
+                            return NULL;
+                        }
+                    }
+                }
+                
+                return func_call;
             } else {
                 ast_node* node = ast_create_variable_ref(tok->value, loc);
                 parser_advance_token(state);
+                
+                // Check for array indexing
+                token* next_tok = parser_peek_token(state);
+                if (next_tok && next_tok->type == TOKEN_LBRACKET) {
+                    parser_advance_token(state); // Skip '['
+                    
+                    // Parse index expression
+                    ast_node* index_expr = ast_parse_expression(state);
+                    if (!index_expr) {
+                        parser_set_error(state, "Expected index expression after '['");
+                        ast_free(node);
+                        return NULL;
+                    }
+                    
+                    // Expect closing ']'
+                    token* close_tok = parser_peek_token(state);
+                    if (!close_tok || close_tok->type != TOKEN_RBRACKET) {
+                        parser_set_error(state, "Expected ']' after index expression");
+                        ast_free(node);
+                        ast_free(index_expr);
+                        return NULL;
+                    }
+                    parser_advance_token(state); // Skip ']'
+                    
+                    // Create array access node
+                    ast_node* access_node = ast_create_array_access(node, index_expr, loc);
+                    if (!access_node) {
+                        ast_free(node);
+                        ast_free(index_expr);
+                        return NULL;
+                    }
+                    
+                    return access_node;
+                }
+                
                 return node;
             }
         }

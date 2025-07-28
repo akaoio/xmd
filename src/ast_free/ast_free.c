@@ -80,6 +80,11 @@ void ast_free(ast_node* node) {
             }
             break;
             
+        case AST_ARRAY_ACCESS:
+            ast_free(node->data.array_access.array_expr);
+            ast_free(node->data.array_access.index_expr);
+            break;
+            
         case AST_CONDITIONAL:
             ast_free(node->data.conditional.condition);
             ast_free(node->data.conditional.then_block);

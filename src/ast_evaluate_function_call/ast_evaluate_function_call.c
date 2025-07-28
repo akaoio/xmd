@@ -63,8 +63,17 @@ ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) 
             return NULL;
         }
         
+        // Substitute variables in command string
+        char* substituted_command = ast_substitute_variables(command_val->value.string_value, evaluator->ctx->variables);
+        const char* final_command = substituted_command ? substituted_command : command_val->value.string_value;
+        
         // Execute command and get output
-        char* command_output = execute_command_dynamic(command_val->value.string_value, NULL);
+        char* command_output = execute_command_dynamic(final_command, NULL);
+        
+        // Clean up substituted command
+        if (substituted_command) {
+            free(substituted_command);
+        }
         ast_value_free(command_val);
         
         if (command_output) {
@@ -81,6 +90,77 @@ ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) 
             free(command_output);
             return value;
         }
+        return NULL;
+    }
+    
+    // Handle join function
+    if (strcmp(func_name, "join") == 0) {
+        if (node->data.function_call.argument_count < 1) {
+            return NULL;
+        }
+        
+        ast_value* array_val = ast_evaluate(node->data.function_call.arguments[0], evaluator);
+        if (!array_val) {
+            return NULL;
+        }
+        
+        // Get separator (default to ", " if not provided)
+        const char* separator = ", ";
+        ast_value* separator_val = NULL;
+        if (node->data.function_call.argument_count >= 2) {
+            separator_val = ast_evaluate(node->data.function_call.arguments[1], evaluator);
+            if (separator_val && separator_val->type == AST_VAL_STRING) {
+                separator = separator_val->value.string_value;
+            }
+        }
+        
+        // Handle both array literals and array variables
+        if (array_val->type == AST_VAL_ARRAY) {
+            size_t separator_len = strlen(separator);
+            
+            // Calculate total length needed
+            size_t total_len = 0;
+            for (size_t i = 0; i < array_val->value.array_value.element_count; i++) {
+                ast_value* element = array_val->value.array_value.elements[i];
+                if (element && element->type == AST_VAL_STRING && element->value.string_value) {
+                    total_len += strlen(element->value.string_value);
+                    if (i > 0) total_len += separator_len;
+                }
+            }
+            
+            // Create result string
+            char* result_str = malloc(total_len + 1);
+            if (!result_str) {
+                ast_value_free(array_val);
+                ast_value_free(separator_val);
+                return NULL;
+            }
+            result_str[0] = '\0';
+            
+            // Join array elements with custom separator
+            for (size_t i = 0; i < array_val->value.array_value.element_count; i++) {
+                ast_value* element = array_val->value.array_value.elements[i];
+                if (element && element->type == AST_VAL_STRING && element->value.string_value) {
+                    if (i > 0) {
+                        strcat(result_str, separator);
+                    }
+                    strcat(result_str, element->value.string_value);
+                }
+            }
+            
+            ast_value_free(array_val);
+            ast_value_free(separator_val);
+            
+            ast_value* value = ast_value_create(AST_VAL_STRING);
+            if (value) {
+                value->value.string_value = result_str;
+            } else {
+                free(result_str);
+            }
+            return value;
+        }
+        
+        ast_value_free(array_val);
         return NULL;
     }
     
