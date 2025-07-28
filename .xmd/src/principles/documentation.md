@@ -1,2 +1,1 @@
-Documentation Standards
-Create design notes before implementation: `docs/notes/<YYYYMMDD-HHMM-topic>.md` (≤100 lines). Use Doxygen-compatible comments with required tags: @brief, @struct, @input, @output. Update documentation and tests before code changes.
+**Documentation Standards:** Create design notes before implementation: `docs/notes/<YYYYMMDD-HHMM-topic>.md` (≤100 lines). Use Doxygen-compatible comments with required tags: @brief, @struct, @input, @output. Update documentation and tests before code changes.

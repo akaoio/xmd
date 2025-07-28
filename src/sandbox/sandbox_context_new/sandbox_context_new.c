@@ -18,5 +18,6 @@ SandboxContext* sandbox_context_new(SandboxConfig* config) {
     if (!ctx) return NULL;
     
     ctx->config = config;
+    ctx->last_error = NULL;
     return ctx;
 }

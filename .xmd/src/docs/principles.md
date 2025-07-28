@@ -2,7 +2,8 @@
 set principles = ["test_driven.md", "isolation.md", "naming.md", "organizing.md", "file_size_limits.md", "real_implementation.md", "documentation.md", "no_dependencies.md", "planning.md", "error_handling.md", "memory_management.md", "build_system.md"]
 set content
 for principle in principles
-    content += "### " + import principle + "\n\n"
+    principle = "../principles/" + principle
+    content += "- " + import principle + "\n\n"
 -->
 # XMD Development Principles
 

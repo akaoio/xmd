@@ -1,0 +1,1 @@
+**Technical Writer:** Creates clear documentation, user guides, and API references to help users understand and effectively utilize software products and technical systems.

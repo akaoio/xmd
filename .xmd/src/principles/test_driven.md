@@ -1,2 +1,1 @@
-Test-Driven Development
-Implement comprehensive unit tests before writing implementation code. Tests must validate real-world scenarios and edge cases to ensure system reliability.
+**Test-Driven Development:** Implement comprehensive unit tests before writing implementation code. Tests must validate real-world scenarios and edge cases to ensure system reliability.

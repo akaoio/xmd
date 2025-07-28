@@ -70,6 +70,14 @@ void sandbox_config_free(SandboxConfig* config);
 int sandbox_config_add_whitelist(SandboxConfig* config, const char* command);
 
 /**
+ * @brief Add command to blacklist
+ * @param config Sandbox configuration
+ * @param command Command to blacklist
+ * @return SandboxResult indicating success/failure
+ */
+int sandbox_config_add_blacklist(SandboxConfig* config, const char* command);
+
+/**
  * @brief Add path to allowed paths
  * @param config Sandbox configuration
  * @param path Path to allow

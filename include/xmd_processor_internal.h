@@ -13,6 +13,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include "sandbox_internal.h"
 #include "store.h"
 #include "xmd.h"
 #include "loop.h"
@@ -23,7 +24,7 @@ extern "C" {
 
 #define MAX_IF_DEPTH 32
 #define MAX_LOOP_DEPTH 8
-#define MAX_LOOP_ITERATIONS 1000
+#define MAX_LOOP_ITERATIONS 2000
 
 /**
  * @struct if_stack_entry
@@ -47,6 +48,7 @@ typedef struct {
     int total_iterations;                   /**< Total iterations across all loops */
     bool currently_executing;               /**< Current execution state */
     char* source_file_path;                 /**< Path to currently processed source file */
+    SandboxContext* sandbox_ctx;            /**< Sandbox security context */
 } processor_context;
 
 /* Context functions */
@@ -65,7 +67,7 @@ char* substitute_variables(const char* text, store* variables);
 bool evaluate_condition(const char* condition, store* variables);
 bool is_multiline_directive(const char* comment_content);
 void process_multiline_directive(const char* directive_content, store* variables);
-void process_multiline_directive_enhanced(const char* directive_content, store* variables);
+void process_multiline_directive_enhanced(const char* directive_content, store* variables, processor_context* ctx);
 char* process_multiline_block(const char* content, store* variables);
 int parse_range(const char* range_str, store* variables, char*** items, int* count);
 int parse_collection(const char* collection_name, store* variables, char*** items, int* count);

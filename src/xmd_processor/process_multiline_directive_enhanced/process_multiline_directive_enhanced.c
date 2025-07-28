@@ -17,9 +17,10 @@
  * @brief Check if multiline directive content contains script-like syntax
  */
 static int contains_script_syntax(const char* directive_content) {
-    // Look for for loops, += operators, or array literals
+    // Look for for loops, += operators, + concatenation, or array literals
     return (strstr(directive_content, "for ") && strstr(directive_content, " in ")) ||
            strstr(directive_content, "+=") ||
+           strstr(directive_content, " + ") ||  // String concatenation with +
            (strstr(directive_content, "[\"") && strstr(directive_content, "\"]"));
 }
 
@@ -27,20 +28,25 @@ static int contains_script_syntax(const char* directive_content) {
  * @brief Enhanced multiline directive processor supporting all XMD directives
  * @param directive_content Content of the multiline directive
  * @param variables Variable store for processing
+ * @param ctx Processor context for maintaining state (if NULL, creates temporary context)
  */
-void process_multiline_directive_enhanced(const char* directive_content, store* variables) {
+void process_multiline_directive_enhanced(const char* directive_content, store* variables, processor_context* ctx) {
+    bool created_context = false;
+    if (!ctx) {
+        ctx = create_context(variables);
+        created_context = true;
+    }
+    
     // Check if this contains advanced script syntax
     if (contains_script_syntax(directive_content)) {
         // Use the script block processor for complex syntax
         process_script_block(directive_content, variables);
+        if (created_context) destroy_context(ctx);
         return;
     }
     
     char* content_copy = strdup(directive_content);
     char* line = strtok(content_copy, "\n\r");
-    
-    // Create a single context that persists throughout all directive processing
-    processor_context ctx = { .variables = variables, .if_stack_size = 0 };
     
     // Clear any previous multiline output
     variable* empty_var = variable_create_string("");
@@ -58,7 +64,33 @@ void process_multiline_directive_enhanced(const char* directive_content, store* 
         char* trimmed = trim_whitespace(line);
         
         if (strncmp(trimmed, "xmd:", 4) == 0) {
-            // Skip initial "xmd:" line
+            // Process XMD directive directly (single-line format)
+            snprintf(output_buffer, sizeof(output_buffer), "%s", trimmed);
+            
+            // Use larger buffer for directive results
+            size_t directive_buffer_size = 1024 * 1024;
+            char* directive_result = malloc(directive_buffer_size);
+            if (!directive_result) {
+                line = strtok(NULL, "\n\r");
+                continue;
+            }
+            
+            int result = process_directive(output_buffer, ctx, directive_result, directive_buffer_size);
+            
+            // Accumulate any output from directives
+            if (result == 0 && strlen(directive_result) > 0) {
+                size_t result_len = strlen(directive_result);
+                if (accumulated_output_len + result_len + 2 < 8192) {
+                    if (accumulated_output_len > 0) {
+                        strcat(accumulated_output, "\n");
+                        accumulated_output_len++;
+                    }
+                    strcat(accumulated_output, directive_result);
+                    accumulated_output_len += result_len;
+                }
+            }
+            
+            free(directive_result);
         } else if (strlen(trimmed) > 0) {
             // Process any XMD directive (not just 'set')
             snprintf(output_buffer, sizeof(output_buffer), "xmd:%s", trimmed);
@@ -70,7 +102,7 @@ void process_multiline_directive_enhanced(const char* directive_content, store* 
                 continue;
             }
             
-            int result = process_directive(output_buffer, &ctx, directive_result, directive_buffer_size);
+            int result = process_directive(output_buffer, ctx, directive_result, directive_buffer_size);
             
             // Accumulate any output from directives
             if (result == 0 && strlen(directive_result) > 0) {
@@ -114,4 +146,8 @@ void process_multiline_directive_enhanced(const char* directive_content, store* 
     
     free(accumulated_output);
     free(content_copy);
+    
+    if (created_context) {
+        destroy_context(ctx);
+    }
 }

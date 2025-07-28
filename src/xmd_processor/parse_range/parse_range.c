@@ -12,7 +12,7 @@
 #include "../../../include/xmd_processor_internal.h"
 #include "../../../include/variable.h"
 
-#define MAX_RANGE_SIZE 1000
+#define MAX_RANGE_SIZE 1001
 
 /**
  * @brief Parse range syntax (start..end) and expand to array

@@ -45,7 +45,7 @@ void test_documentation_generation_pipeline(void) {
         "set sections = [\"test_integration/docs/intro.md\", \"test_integration/docs/features.md\", \"test_integration/docs/examples.md\"]\n"
         "set toc = \"# Table of Contents\\n\\n\"\n"
         "set content = \"\"\n"
-        "set counter = 0\n"
+        "set counter = \"\"\n"
         "for section in sections\n"
         "    counter += \"x\"\n"
         "    toc += \"- Section \" + counter + \"\\n\"\n"

@@ -348,3 +348,4 @@ set(CPACK_PACKAGE_DESCRIPTION "eXtended MarkDown - Programmable markdown process
 set(CPACK_PACKAGE_CONTACT "dev@xmd.io")
 
 include(CPack)
+

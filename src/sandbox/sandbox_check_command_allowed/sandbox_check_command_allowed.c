@@ -13,32 +13,52 @@
  * @return SandboxResult indicating allowed/denied
  */
 int sandbox_check_command_allowed(SandboxContext* ctx, const char* command) {
-    if (!ctx || !ctx->config || !command) return SANDBOX_ERROR;
+    if (!ctx || !ctx->config || !command) return 0; // Error treated as denied (false)
     
     char cmd_name[256];
+    // Initialize buffer to ensure it's null-terminated
+    memset(cmd_name, 0, sizeof(cmd_name));
+    
     if (extract_command_name(command, cmd_name, sizeof(cmd_name)) != 0) {
-        return SANDBOX_ERROR;
+        return 0; // Error treated as denied (false)
+    }
+    
+    // Ensure cmd_name is valid for comparison
+    if (strlen(cmd_name) == 0) {
+        return 0; // Error treated as denied (false)
     }
     
     // Check whitelist first
-    for (size_t i = 0; i < ctx->config->whitelist_count; i++) {
-        if (strcmp(ctx->config->command_whitelist[i], cmd_name) == 0) {
-            return SANDBOX_SUCCESS; // Allowed
+    if (ctx->config->command_whitelist != NULL) {
+        for (size_t i = 0; i < ctx->config->whitelist_count; i++) {
+            if (ctx->config->command_whitelist[i] != NULL) {
+                // Additional defensive check before strlen
+                const char* whitelist_cmd = ctx->config->command_whitelist[i];
+                if (whitelist_cmd != NULL && strlen(whitelist_cmd) > 0) {
+                    if (strcmp(whitelist_cmd, cmd_name) == 0) {
+                        return 1; // Allowed (true)
+                    }
+                }
+            }
         }
     }
     
     // Check blacklist
-    for (size_t i = 0; i < ctx->config->blacklist_count; i++) {
-        if (strcmp(ctx->config->command_blacklist[i], cmd_name) == 0) {
-            return SANDBOX_PERMISSION_DENIED; // Denied
+    if (ctx->config->command_blacklist != NULL) {
+        for (size_t i = 0; i < ctx->config->blacklist_count; i++) {
+            if (ctx->config->command_blacklist[i] != NULL &&
+                strlen(ctx->config->command_blacklist[i]) > 0 &&
+                strcmp(ctx->config->command_blacklist[i], cmd_name) == 0) {
+                return 0; // Denied (false)
+            }
         }
     }
     
     // If not in whitelist and whitelist exists, deny
     if (ctx->config->whitelist_count > 0) {
-        return SANDBOX_PERMISSION_DENIED; // Denied - not in whitelist
+        return 0; // Denied - not in whitelist (false)
     }
     
     // Default: allow if no whitelist is configured
-    return SANDBOX_SUCCESS;
+    return 1; // Allowed (true)
 }

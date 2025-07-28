@@ -12,6 +12,12 @@
  */
 void sandbox_context_free(SandboxContext* ctx) {
     if (ctx) {
+        if (ctx->config) {
+            sandbox_config_free(ctx->config);
+        }
+        if (ctx->last_error) {
+            free(ctx->last_error);
+        }
         free(ctx);
     }
 }

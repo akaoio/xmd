@@ -16,6 +16,7 @@
  * @return Processing result (must be freed with xmd_result_free)
  */
 xmd_result* xmd_process_file(void* handle, const char* input_path, const char* output_path) {
+    printf("DEBUG: 3-param xmd_process_file called with path: %s\n", input_path ? input_path : "NULL");
     if (!handle || !input_path) {
         return NULL; // Return NULL for invalid parameters
     }

@@ -5,6 +5,7 @@
  * @date 2025-07-27
  */
 
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,7 +20,7 @@
 void test_direct_exec_large_output() {
     printf("Testing direct exec with large output...\n");
     
-    const char* input = "<!-- xmd:\nexec find /usr -name '*.h' 2>/dev/null | head -1000\n-->";
+    const char* input = "<!-- xmd:exec find /usr -name '*.h' 2>/dev/null | head -1000 -->";
     store* vars = store_create();
     
     char* result = process_xmd_content(input, vars);
@@ -48,7 +49,7 @@ void test_direct_exec_large_output() {
 void test_set_var_exec_large_output() {
     printf("Testing set var from exec with large output...\n");
     
-    const char* input = "<!-- xmd:\nset files = exec find /usr -name '*.h' 2>/dev/null | head -1000\n-->\n{{files}}";
+    const char* input = "<!-- xmd:set files = exec find /usr -name '*.h' 2>/dev/null | head -1000 -->\n{{files}}";
     store* vars = store_create();
     
     char* result = process_xmd_content(input, vars);
@@ -83,7 +84,7 @@ void test_set_var_exec_large_output() {
 void test_print_large_variable() {
     printf("Testing print function with large variable...\n");
     
-    const char* input = "<!-- xmd:\nset data = exec find /usr -name '*.h' 2>/dev/null | head -1000\nprint(data)\n-->";
+    const char* input = "<!-- xmd:set data = exec find /usr -name '*.h' 2>/dev/null | head -1000 --><!-- xmd:print(data) -->";
     store* vars = store_create();
     
     char* result = process_xmd_content(input, vars);

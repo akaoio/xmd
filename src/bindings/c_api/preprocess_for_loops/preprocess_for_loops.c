@@ -188,7 +188,14 @@ int preprocess_for_loops(const char* input, size_t input_length, store* var_stor
                     // Get collection variable from store
                     variable* collection = store_get(var_store, range_or_collection);
                     if (collection) {
-                        collection_str = variable_to_string(collection);
+                        const char* var_value = variable_to_string(collection);
+                        if (var_value && strchr(var_value, ',')) {
+                            // Convert comma-separated string to array format
+                            snprintf(converted_array, sizeof(converted_array) - 1, "[%s]", var_value);
+                            collection_str = converted_array;
+                        } else {
+                            collection_str = var_value;
+                        }
                     }
                 }
                 

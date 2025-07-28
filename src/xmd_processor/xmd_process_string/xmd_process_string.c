@@ -34,8 +34,8 @@ xmd_result* xmd_process_string(xmd_processor* processor, const char* content, si
     // Treat processor as store for now
     store* variables = (store*)processor;
     
-    // Process with unified parser
-    char* processed_output = process_xmd_content(content, variables);
+    // Process with enhanced parser that includes for loop support
+    char* processed_output = process_xmd_content_enhanced(content, variables);
     
     // Create result
     xmd_result* result = malloc(sizeof(xmd_result));

@@ -5,6 +5,7 @@
  * @date 2025-07-28
  */
 
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -112,8 +113,18 @@ static int check_for_updates(const char* current_version, char* latest_version, 
         return -1;
     }
     
+    // Clear the buffer first
+    latest_version[0] = '\0';
+    
     // Read the version tag
     if (fgets(latest_version, version_size, fp) == NULL) {
+        pclose(fp);
+        // If command failed or no output, return error
+        return -1;
+    }
+    
+    // Check if we actually got data
+    if (strlen(latest_version) == 0) {
         pclose(fp);
         return -1;
     }

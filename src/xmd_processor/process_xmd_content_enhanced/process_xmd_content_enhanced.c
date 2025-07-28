@@ -14,7 +14,6 @@
 #include "../../../include/variable.h"
 
 #define MAX_LOOP_DEPTH 8
-#define MAX_LOOP_ITERATIONS 1000
 
 typedef struct {
     char** items;
@@ -220,10 +219,10 @@ char* process_xmd_content_enhanced(const char* input, store* variables) {
                     free(args_copy);
                 }
             } else {
-                // Handle other directives normally
-                if (is_multiline_directive(comment_content)) {
+                // Handle other directives normally - always process as multiline in enhanced mode
+                if (true) { // All XMD directives treated as multiline in enhanced mode
                     // Process multiline directive and capture output
-                    process_multiline_directive_enhanced(comment_content, variables);
+                    process_multiline_directive_enhanced(comment_content, variables, ctx);
                     
                     // Get accumulated output from multiline processing
                     variable* output_var = store_get(variables, "_multiline_output");

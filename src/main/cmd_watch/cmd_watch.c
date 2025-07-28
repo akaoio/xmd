@@ -4,6 +4,8 @@
  * @author XMD Team
  */
 
+#define _GNU_SOURCE
+#include <unistd.h>
 #include "../../../include/main_internal.h"
 #include <dirent.h>
 #include <time.h>

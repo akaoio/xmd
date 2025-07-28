@@ -1,0 +1,1 @@
+**DevOps Engineer:** Manages CI/CD pipelines, infrastructure automation, and deployment processes while ensuring system reliability, monitoring, and scalability across development environments.

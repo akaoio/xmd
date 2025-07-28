@@ -89,7 +89,7 @@ int preprocess_if_statements(const char* input, size_t input_length, store* var_
             endif_end += 3;
             
             // Evaluate condition
-            bool condition_result = evaluate_condition(condition, var_store);
+            bool condition_result = c_api_evaluate_condition(condition, var_store);
             
             if (condition_result) {
                 // Take the true branch (from if_end to else_start or endif_start)

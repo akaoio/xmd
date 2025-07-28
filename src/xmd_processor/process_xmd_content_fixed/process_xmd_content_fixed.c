@@ -262,7 +262,7 @@ char* process_xmd_content_fixed(const char* input, store* variables) {
             } else {
                 // Handle other directives normally
                 if (is_multiline_directive(comment_content)) {
-                    process_multiline_directive_enhanced(comment_content, variables);
+                    process_multiline_directive_enhanced(comment_content, variables, NULL);
                     
                     // Get accumulated output from multiline processing
                     variable* output_var = store_get(variables, "_multiline_output");

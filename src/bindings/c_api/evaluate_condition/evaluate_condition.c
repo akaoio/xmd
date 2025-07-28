@@ -13,7 +13,7 @@
  * @param var_store Variable store
  * @return true if condition is true, false otherwise
  */
-bool evaluate_condition(const char* condition, store* var_store) {
+bool c_api_evaluate_condition(const char* condition, store* var_store) {
     if (!condition || !var_store) {
         return false;
     }
@@ -38,10 +38,14 @@ bool evaluate_condition(const char* condition, store* var_store) {
         variable* var = store_get(var_store, var_name);
         const char* var_value = var ? variable_to_string(var) : "";
         
+        // Check if value is also a variable
+        variable* value_var = store_get(var_store, value);
+        const char* value_str = value_var ? variable_to_string(value_var) : value;
+        
         if (strcmp(operator, "==") == 0) {
-            return strcmp(var_value, value) == 0;
+            return strcmp(var_value, value_str) == 0;
         } else if (strcmp(operator, "!=") == 0) {
-            return strcmp(var_value, value) != 0;
+            return strcmp(var_value, value_str) != 0;
         }
     }
     

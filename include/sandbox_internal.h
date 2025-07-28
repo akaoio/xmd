@@ -19,6 +19,7 @@ int extract_command_name(const char* command, char* cmd_name, size_t cmd_name_si
 SandboxConfig* sandbox_config_new(void);
 void sandbox_config_free(SandboxConfig* config);
 int sandbox_config_add_whitelist(SandboxConfig* config, const char* command);
+int sandbox_config_add_blacklist(SandboxConfig* config, const char* command);
 int sandbox_config_add_allowed_path(SandboxConfig* config, const char* path);
 SandboxContext* sandbox_context_new(SandboxConfig* config);
 void sandbox_context_free(SandboxContext* ctx);

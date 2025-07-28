@@ -23,7 +23,7 @@ void test_multiline_directive_basic(void) {
     
     // Test basic multiline processing
     const char* basic_multiline = "set name = \"Test\"\nset value = 42\nprint(name)\nprint(value)";
-    process_multiline_directive_enhanced(basic_multiline, variables);
+    process_multiline_directive_enhanced(basic_multiline, variables, NULL);
     
     variable* name_var = store_get(variables, "name");
     assert(name_var != NULL);
@@ -46,7 +46,7 @@ void test_multiline_output_accumulation(void) {
     
     // Test output accumulation
     const char* output_test = "print(\"Line 1\")\nprint(\"Line 2\")\nprint(\"Line 3\")";
-    process_multiline_directive_enhanced(output_test, variables);
+    process_multiline_directive_enhanced(output_test, variables, NULL);
     
     variable* output_var = store_get(variables, "_multiline_output");
     assert(output_var != NULL);
@@ -66,7 +66,7 @@ void test_script_block_vs_regular_directives(void) {
     
     // Test regular directives (should not use script processor)
     const char* regular_directives = "set simple = \"value\"\nprint(simple)";
-    process_multiline_directive_enhanced(regular_directives, variables);
+    process_multiline_directive_enhanced(regular_directives, variables, NULL);
     
     variable* simple_var = store_get(variables, "simple");
     assert(simple_var != NULL);
@@ -74,7 +74,7 @@ void test_script_block_vs_regular_directives(void) {
     
     // Test script block (should use script processor)
     const char* script_block = "set arr = [\"a\", \"b\"]\nset result = \"\"\nfor item in arr\n    result += item";
-    process_multiline_directive_enhanced(script_block, variables);
+    process_multiline_directive_enhanced(script_block, variables, NULL);
     
     variable* result_var = store_get(variables, "result");
     assert(result_var != NULL);
@@ -111,7 +111,7 @@ void test_complex_multiline_scenario(void) {
         "print(\"Processing complete\")\n"
         "print(document)";
     
-    process_multiline_directive_enhanced(complex_multiline, variables);
+    process_multiline_directive_enhanced(complex_multiline, variables, NULL);
     
     variable* title_var = store_get(variables, "title");
     assert(title_var != NULL);
@@ -144,7 +144,7 @@ void test_multiline_error_handling(void) {
     
     // Test malformed script blocks
     const char* malformed_script = "set arr = [\"incomplete\nfor item in arr\n    result += item";
-    process_multiline_directive_enhanced(malformed_script, variables);
+    process_multiline_directive_enhanced(malformed_script, variables, NULL);
     
     // Should handle gracefully without crashing
     variable* arr_var = store_get(variables, "arr");
@@ -152,7 +152,7 @@ void test_multiline_error_handling(void) {
     
     // Test undefined variable reference
     const char* undefined_ref = "set result = undefined_var + \"suffix\"";
-    process_multiline_directive_enhanced(undefined_ref, variables);
+    process_multiline_directive_enhanced(undefined_ref, variables, NULL);
     
     // Should handle undefined variables gracefully
     variable* result_var = store_get(variables, "result");
@@ -174,7 +174,7 @@ void test_multiline_performance(void) {
         "for item in items\n"
         "    result += \"Processing \" + item + \"\\n\"";
     
-    process_multiline_directive_enhanced(large_script, variables);
+    process_multiline_directive_enhanced(large_script, variables, NULL);
     
     variable* result_var = store_get(variables, "result");
     assert(result_var != NULL);
@@ -210,7 +210,7 @@ void test_multiline_nested_structures(void) {
         "    for i in inner\n"
         "        result += \"  Inner: \" + i + \"\\n\"";
     
-    process_multiline_directive_enhanced(nested_script, variables);
+    process_multiline_directive_enhanced(nested_script, variables, NULL);
     
     variable* result_var = store_get(variables, "result");
     assert(result_var != NULL);
@@ -238,7 +238,7 @@ void test_multiline_memory_management(void) {
             "for item in data\n"
             "    output += \"Item: \" + item + \"\\n\"";
         
-        process_multiline_directive_enhanced(memory_test, variables);
+        process_multiline_directive_enhanced(memory_test, variables, NULL);
         
         variable* output_var = store_get(variables, "output");
         assert(output_var != NULL);

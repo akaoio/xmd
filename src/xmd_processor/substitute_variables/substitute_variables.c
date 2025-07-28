@@ -24,6 +24,7 @@ char* substitute_variables(const char* text, store* variables) {
     size_t text_len = strlen(text);
     size_t output_capacity = text_len * 2;
     char* output = malloc(output_capacity);
+    if (!output) return NULL;
     size_t output_pos = 0;
     
     const char* ptr = text;
@@ -42,7 +43,14 @@ char* substitute_variables(const char* text, store* variables) {
                 
                 if (output_pos + value_len >= output_capacity) {
                     output_capacity = (output_pos + value_len + 1000) * 2;
-                    output = realloc(output, output_capacity);
+                    char* new_output = realloc(output, output_capacity);
+                    if (!new_output) {
+                        free(output);
+                        free(var_value);
+                        free(var_name);
+                        return NULL;
+                    }
+                    output = new_output;
                 }
                 
                 memcpy(output + output_pos, var_value, value_len);
@@ -57,7 +65,12 @@ char* substitute_variables(const char* text, store* variables) {
         
         if (output_pos >= output_capacity - 1) {
             output_capacity *= 2;
-            output = realloc(output, output_capacity);
+            char* new_output = realloc(output, output_capacity);
+            if (!new_output) {
+                free(output);
+                return NULL;
+            }
+            output = new_output;
         }
         
         output[output_pos++] = *ptr++;

@@ -19,11 +19,11 @@
  */
 char* variable_to_string(const variable* var) {
     if (var == NULL) {
-        char* result = malloc(5);
+        char* result = malloc(1);
         if (result == NULL) {
             return NULL;
         }
-        strcpy(result, "null");
+        result[0] = '\0';
         return result;
     }
     

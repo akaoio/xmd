@@ -5,6 +5,7 @@
  * @date 2025-07-26
  */
 
+#define _GNU_SOURCE
 #include "../../../include/xmd_processor_internal.h"
 
 /**
@@ -36,6 +37,13 @@ int process_exec(const char* args, processor_context* ctx, char* output, size_t 
         return -1;
     }
     
+    // Check sandbox permissions before executing command
+    if (ctx->sandbox_ctx && !sandbox_check_command_allowed(ctx->sandbox_ctx, expanded)) {
+        snprintf(output, output_size, "[Error: Command blocked by sandbox security policy]");
+        free(expanded);
+        return -1;
+    }
+    
     int result = execute_command(expanded, output, output_size);
     free(expanded);
     return result;
@@ -61,6 +69,12 @@ char* process_exec_dynamic(const char* args, processor_context* ctx) {
     char* expanded = substitute_variables(args, ctx->variables);
     if (!expanded) {
         return NULL;
+    }
+    
+    // Check sandbox permissions before executing command
+    if (ctx->sandbox_ctx && !sandbox_check_command_allowed(ctx->sandbox_ctx, expanded)) {
+        free(expanded);
+        return strdup("[Error: Command blocked by sandbox security policy]");
     }
     
     char* result = execute_command_dynamic(expanded, NULL);

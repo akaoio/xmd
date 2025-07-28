@@ -21,7 +21,7 @@
  * @return true on success, false on failure
  */
 bool variable_array_add(variable* array_var, variable* item) {
-    if (!array_var || array_var->type != VAR_ARRAY || !array_var->value.array_value) {
+    if (!array_var || array_var->type != VAR_ARRAY || !array_var->value.array_value || !item) {
         return false;
     }
     

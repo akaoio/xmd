@@ -46,19 +46,31 @@ int process_print_function(const char* function_call, processor_context* ctx, ch
     // Trim whitespace from variable name
     char* trimmed_name = trim_whitespace(var_name);
     
-    // Get variable value
-    variable* var = store_get(ctx->variables, trimmed_name);
-    if (var) {
-        const char* var_value = variable_to_string(var);
-        if (var_value) {
-            snprintf(output, output_size, "%s", var_value);
-        } else {
-            output[0] = '\0';
-        }
+    // Check if it's a string literal (starts and ends with quotes)
+    if (strlen(trimmed_name) >= 2 && 
+        ((trimmed_name[0] == '"' && trimmed_name[strlen(trimmed_name)-1] == '"') ||
+         (trimmed_name[0] == '\'' && trimmed_name[strlen(trimmed_name)-1] == '\''))) {
+        // String literal - remove quotes and use directly
+        char* literal = strdup(trimmed_name + 1);
+        literal[strlen(literal) - 1] = '\0';
+        snprintf(output, output_size, "%s", literal);
+        free(literal);
     } else {
-        snprintf(output, output_size, "[Error: Variable '%s' not found]", trimmed_name);
-        free(var_name);
-        return -1;
+        // Variable name - look up variable
+        variable* var = store_get(ctx->variables, trimmed_name);
+        if (var) {
+            char* var_value = variable_to_string(var);
+            if (var_value) {
+                snprintf(output, output_size, "%s", var_value);
+                free(var_value);
+            } else {
+                output[0] = '\0';
+            }
+        } else {
+            snprintf(output, output_size, "[Error: Variable '%s' not found]", trimmed_name);
+            free(var_name);
+            return -1;
+        }
     }
     
     free(var_name);

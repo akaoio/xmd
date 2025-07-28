@@ -44,9 +44,34 @@ static char* evaluate_import_expression(const char* expr, processor_context* ctx
  * @param ctx Processor context
  * @return Concatenated string (caller must free)
  */
+/**
+ * @brief Safely append string to result with bounds checking
+ */
+static int safe_append(char** result, size_t* result_len, size_t* result_capacity, const char* str) {
+    if (!str) return 0;
+    
+    size_t str_len = strlen(str);
+    size_t needed = *result_len + str_len + 1;
+    
+    if (needed > *result_capacity) {
+        size_t new_capacity = needed * 2;
+        char* new_result = realloc(*result, new_capacity);
+        if (!new_result) return -1;
+        *result = new_result;
+        *result_capacity = new_capacity;
+    }
+    
+    strcpy(*result + *result_len, str);
+    *result_len += str_len;
+    return 0;
+}
+
 static char* evaluate_concatenation_expression(const char* expr, processor_context* ctx) {
-    char* result = malloc(4096);
+    size_t result_capacity = 4096;
+    char* result = malloc(result_capacity);
+    if (!result) return NULL;
     result[0] = '\0';
+    size_t result_len = 0;
     
     const char* p = expr;
     
@@ -92,18 +117,32 @@ static char* evaluate_concatenation_expression(const char* expr, processor_conte
                 }
             }
             *dst = '\0';
-            strcat(result, processed);
+            if (safe_append(&result, &result_len, &result_capacity, processed) == -1) {
+                free(processed);
+                free(result);
+                free(token);
+                return NULL;
+            }
             free(processed);
         } else if (strncmp(trimmed, "import ", 7) == 0) {
             // Import expression
             char* import_result = evaluate_import_expression(trimmed, ctx);
-            strcat(result, import_result);
+            if (safe_append(&result, &result_len, &result_capacity, import_result) == -1) {
+                free(import_result);
+                free(result);
+                free(token);
+                return NULL;
+            }
             free(import_result);
         } else {
             // Variable name
             variable* var = store_get(ctx->variables, trimmed);
             if (var && var->type == VAR_STRING) {
-                strcat(result, var->value.string_value);
+                if (safe_append(&result, &result_len, &result_capacity, var->value.string_value) == -1) {
+                    free(result);
+                    free(token);
+                    return NULL;
+                }
             }
         }
         
@@ -174,9 +213,12 @@ static int process_for_loop_script(const char* line, char** lines, int line_coun
             for (int line_idx = body_start; line_idx < body_end; line_idx++) {
                 char* body_line = trim_whitespace(lines[line_idx]);
                 
-                // Process assignment with concatenation
-                if (strstr(body_line, "+=")) {
-                    // Make a copy to avoid modifying the original line
+                // Check for nested for loop
+                if (strncmp(body_line, "for ", 4) == 0) {
+                    // Process nested for loop recursively
+                    process_for_loop_script(body_line, lines, line_count, &line_idx, ctx);
+                } else if (strstr(body_line, "+=")) {
+                    // Process assignment with concatenation
                     char* line_copy = strdup(body_line);
                     char* eq_pos = strstr(line_copy, "+=");
                     *eq_pos = '\0';
@@ -243,12 +285,101 @@ void process_script_block(const char* directive_content, store* variables) {
         char* trimmed = trim_whitespace(lines[i]);
         
         if (strncmp(trimmed, "set ", 4) == 0) {
-            // Handle set directive
-            char output[1024];
-            process_set(trimmed + 4, ctx, output, sizeof(output));
+            // Handle set directive - check if it contains concatenation
+            char* set_args = trimmed + 4;
+            if (strstr(set_args, " + ")) {
+                // Handle concatenation expression
+                char* args_copy = strdup(set_args);
+                char* equals_pos = strstr(args_copy, " = ");
+                if (equals_pos) {
+                    *equals_pos = '\0';
+                    char* var_name = trim_whitespace(args_copy);
+                    char* expr = trim_whitespace(equals_pos + 3);
+                    
+                    // Evaluate the concatenation expression
+                    char* result = evaluate_concatenation_expression(expr, ctx);
+                    if (result) {
+                        variable* var = variable_create_string(result);
+                        if (var) {
+                            store_set(ctx->variables, var_name, var);
+                            variable_unref(var);
+                        }
+                        free(result);
+                    }
+                }
+                free(args_copy);
+            } else {
+                // Handle regular set directive
+                char output[1024];
+                process_set(set_args, ctx, output, sizeof(output));
+            }
         } else if (strncmp(trimmed, "for ", 4) == 0) {
             // Handle for loop
             process_for_loop_script(trimmed, lines, line_count, &i, ctx);
+        } else if (strstr(trimmed, "+=")) {
+            // Handle standalone += assignment with expression evaluation
+            char* line_copy = strdup(trimmed);
+            char* eq_pos = strstr(line_copy, "+=");
+            if (eq_pos) {
+                *eq_pos = '\0';
+                char* target_var = trim_whitespace(line_copy);
+                char* expr = trim_whitespace(eq_pos + 2);
+                
+                // Check if expression contains concatenation
+                if (strstr(expr, " + ")) {
+                    // Evaluate the concatenation expression
+                    char* new_value = evaluate_concatenation_expression(expr, ctx);
+                    
+                    // Get existing value and concatenate
+                    variable* existing = store_get(ctx->variables, target_var);
+                    if (existing && existing->type == VAR_STRING) {
+                        size_t total_len = strlen(existing->value.string_value) + strlen(new_value) + 1;
+                        char* combined = malloc(total_len);
+                        snprintf(combined, total_len, "%s%s", existing->value.string_value, new_value);
+                        
+                        variable* combined_var = variable_create_string(combined);
+                        store_set(ctx->variables, target_var, combined_var);
+                        variable_unref(combined_var);
+                        free(combined);
+                    } else {
+                        // If variable doesn't exist or isn't a string, create it
+                        variable* new_var = variable_create_string(new_value);
+                        store_set(ctx->variables, target_var, new_var);
+                        variable_unref(new_var);
+                    }
+                    
+                    free(new_value);
+                } else {
+                    // Simple += without concatenation expression, use process_set
+                    char output[1024];
+                    process_set(trimmed, ctx, output, sizeof(output));
+                }
+            }
+            free(line_copy);
+        } else if (strncmp(trimmed, "print(", 6) == 0) {
+            // Handle print function
+            char output[4096];
+            process_print_function(trimmed, ctx, output, sizeof(output));
+            
+            // Accumulate print output
+            variable* output_var = store_get(ctx->variables, "_multiline_output");
+            if (output_var && output_var->type == VAR_STRING) {
+                size_t new_len = strlen(output_var->value.string_value) + strlen(output) + 2;
+                char* new_output = malloc(new_len);
+                if (strlen(output_var->value.string_value) > 0) {
+                    snprintf(new_output, new_len, "%s\n%s", output_var->value.string_value, output);
+                } else {
+                    snprintf(new_output, new_len, "%s", output);
+                }
+                variable* new_var = variable_create_string(new_output);
+                store_set(ctx->variables, "_multiline_output", new_var);
+                variable_unref(new_var);
+                free(new_output);
+            } else {
+                variable* new_var = variable_create_string(output);
+                store_set(ctx->variables, "_multiline_output", new_var);
+                variable_unref(new_var);
+            }
         }
     }
     

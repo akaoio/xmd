@@ -11,6 +11,7 @@
 #include <time.h>
 #include "../../../../include/cli.h"
 #include "../../../../include/store.h"
+#include "../../../../include/c_api_internal.h"
 
 // Forward declaration of XMD processor function
 char* process_xmd_content_enhanced(const char* input, store* variables);
@@ -60,22 +61,11 @@ xmd_result* xmd_process_string(void* handle, const char* input, size_t input_len
     memcpy(input_str, input, input_length);
     input_str[input_length] = '\0';
     
-    // Process the content using the real XMD processor
-    char* processed_output = process_xmd_content_enhanced(input_str, variables);
-    
-    // Clean up input string
+    // Use the proper API that includes preprocessing
     free(input_str);
     store_destroy(variables);
-    
-    if (!processed_output) {
-        result->error_code = -1;
-        result->error_message = strdup("XMD processing failed");
-        result->output = strdup("");
-        result->output_length = 0;
-    } else {
-        result->output = processed_output;
-        result->output_length = strlen(processed_output);
-    }
+    xmd_result_free(result);
+    return xmd_process_string_api(handle, input, input_length);
     
     // Calculate processing time
     clock_t end_time = clock();

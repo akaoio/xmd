@@ -13,27 +13,35 @@
  * @return SandboxResult indicating allowed/denied
  */
 int sandbox_check_path_allowed(SandboxContext* ctx, const char* path) {
-    if (!ctx || !ctx->config || !path) return SANDBOX_ERROR;
+    if (!ctx || !ctx->config || !path) return 0; // Error treated as denied (false)
     
     // Check blocked paths first
-    for (size_t i = 0; i < ctx->config->blocked_path_count; i++) {
-        if (strstr(path, ctx->config->blocked_paths[i]) != NULL) {
-            return SANDBOX_PERMISSION_DENIED; // Denied
+    if (ctx->config->blocked_paths != NULL) {
+        for (size_t i = 0; i < ctx->config->blocked_path_count; i++) {
+            if (ctx->config->blocked_paths[i] != NULL &&
+                strlen(ctx->config->blocked_paths[i]) > 0 &&
+                strstr(path, ctx->config->blocked_paths[i]) != NULL) {
+                return 0; // Denied (false)
+            }
         }
     }
     
     // Check allowed paths
-    for (size_t i = 0; i < ctx->config->allowed_path_count; i++) {
-        if (strstr(path, ctx->config->allowed_paths[i]) != NULL) {
-            return SANDBOX_SUCCESS; // Allowed
+    if (ctx->config->allowed_paths != NULL) {
+        for (size_t i = 0; i < ctx->config->allowed_path_count; i++) {
+            if (ctx->config->allowed_paths[i] != NULL &&
+                strlen(ctx->config->allowed_paths[i]) > 0 &&
+                strstr(path, ctx->config->allowed_paths[i]) != NULL) {
+                return 1; // Allowed (true)
+            }
         }
     }
     
     // If allowed paths are configured but path not found, deny
     if (ctx->config->allowed_path_count > 0) {
-        return SANDBOX_PERMISSION_DENIED; // Denied - not in allowed paths
+        return 0; // Denied - not in allowed paths (false)
     }
     
     // Default: allow if no path restrictions configured
-    return SANDBOX_SUCCESS;
+    return 1; // Allowed (true)
 }

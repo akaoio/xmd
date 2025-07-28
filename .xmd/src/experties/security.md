@@ -1,0 +1,1 @@
+**Security Expert:** Identifies vulnerabilities, implements secure coding practices, and conducts security assessments. Ensures applications are protected against threats and comply with security standards.

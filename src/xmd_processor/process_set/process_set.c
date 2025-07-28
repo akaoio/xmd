@@ -42,25 +42,54 @@ int process_set(const char* args, processor_context* ctx, char* output, size_t o
         // Get existing variable
         variable* existing = store_get(ctx->variables, var_name);
         if (existing && existing->type == VAR_STRING) {
-            // Remove quotes from append value if present
-            if (strlen(append_value) >= 2 &&
-                ((append_value[0] == '"' && append_value[strlen(append_value)-1] == '"') ||
-                 (append_value[0] == '\'' && append_value[strlen(append_value)-1] == '\''))) {
-                append_value[strlen(append_value)-1] = '\0';
-                append_value++;
-            }
-            
-            // Concatenate strings
-            size_t new_len = strlen(existing->value.string_value) + strlen(append_value) + 1;
-            char* new_value = malloc(new_len);
-            if (new_value) {
-                snprintf(new_value, new_len, "%s%s", existing->value.string_value, append_value);
-                variable* new_var = variable_create_string(new_value);
-                if (new_var) {
-                    store_set(ctx->variables, var_name, new_var);
-                    variable_unref(new_var);
+            // Check if append_value contains expressions (has + operator outside quotes)
+            if (strstr(append_value, " + ")) {
+                // This is an expression, need to evaluate it
+                // For now, just handle simple quoted strings
+                // TODO: Integrate with evaluate_concatenation_expression from process_script_block
+                
+                // Remove quotes from append value if present
+                if (strlen(append_value) >= 2 &&
+                    ((append_value[0] == '"' && append_value[strlen(append_value)-1] == '"') ||
+                     (append_value[0] == '\'' && append_value[strlen(append_value)-1] == '\''))) {
+                    append_value[strlen(append_value)-1] = '\0';
+                    append_value++;
                 }
-                free(new_value);
+                
+                // Concatenate strings
+                size_t new_len = strlen(existing->value.string_value) + strlen(append_value) + 1;
+                char* new_value = malloc(new_len);
+                if (new_value) {
+                    snprintf(new_value, new_len, "%s%s", existing->value.string_value, append_value);
+                    variable* new_var = variable_create_string(new_value);
+                    if (new_var) {
+                        store_set(ctx->variables, var_name, new_var);
+                        variable_unref(new_var);
+                    }
+                    free(new_value);
+                }
+            } else {
+                // Simple string append
+                // Remove quotes from append value if present
+                if (strlen(append_value) >= 2 &&
+                    ((append_value[0] == '"' && append_value[strlen(append_value)-1] == '"') ||
+                     (append_value[0] == '\'' && append_value[strlen(append_value)-1] == '\''))) {
+                    append_value[strlen(append_value)-1] = '\0';
+                    append_value++;
+                }
+                
+                // Concatenate strings
+                size_t new_len = strlen(existing->value.string_value) + strlen(append_value) + 1;
+                char* new_value = malloc(new_len);
+                if (new_value) {
+                    snprintf(new_value, new_len, "%s%s", existing->value.string_value, append_value);
+                    variable* new_var = variable_create_string(new_value);
+                    if (new_var) {
+                        store_set(ctx->variables, var_name, new_var);
+                        variable_unref(new_var);
+                    }
+                    free(new_value);
+                }
             }
         }
     } else {

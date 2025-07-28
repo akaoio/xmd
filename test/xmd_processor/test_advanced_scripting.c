@@ -11,6 +11,7 @@
 #include <assert.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <errno.h>
 
 #include "../../include/xmd_processor_internal.h"
 #include "../../include/variable.h"
@@ -65,7 +66,7 @@ void test_script_block_detection(void) {
     
     // Test array literal detection
     const char* array_content = "set items = [\"a\", \"b\", \"c\"]";
-    process_multiline_directive_enhanced(array_content, variables);
+    process_multiline_directive_enhanced(array_content, variables, NULL);
     
     variable* items_var = store_get(variables, "items");
     assert(items_var != NULL);
@@ -74,7 +75,7 @@ void test_script_block_detection(void) {
     
     // Test for loop detection
     const char* loop_content = "set arr = [\"x\", \"y\"]\nset result = \"\"\nfor item in arr\n    result += item";
-    process_multiline_directive_enhanced(loop_content, variables);
+    process_multiline_directive_enhanced(loop_content, variables, NULL);
     
     variable* result_var = store_get(variables, "result");
     assert(result_var != NULL);
@@ -92,7 +93,7 @@ void test_for_loop_iteration(void) {
     
     // Test basic for loop iteration
     const char* simple_loop = "set numbers = [\"1\", \"2\", \"3\"]\nset count = \"\"\nfor num in numbers\n    count += \"x\"";
-    process_multiline_directive_enhanced(simple_loop, variables);
+    process_multiline_directive_enhanced(simple_loop, variables, NULL);
     
     variable* count_var = store_get(variables, "count");
     assert(count_var != NULL);
@@ -101,7 +102,7 @@ void test_for_loop_iteration(void) {
     
     // Test loop with string concatenation
     const char* concat_loop = "set items = [\"apple\", \"banana\"]\nset list = \"\"\nfor item in items\n    list += \"- \" + item + \"\\n\"";
-    process_multiline_directive_enhanced(concat_loop, variables);
+    process_multiline_directive_enhanced(concat_loop, variables, NULL);
     
     variable* list_var = store_get(variables, "list");
     assert(list_var != NULL);
@@ -119,7 +120,7 @@ void test_string_concatenation(void) {
     
     // Test basic string concatenation
     const char* basic_concat = "set prefix = \"Hello\"\nset suffix = \"World\"\nset result = prefix + \" \" + suffix";
-    process_multiline_directive_enhanced(basic_concat, variables);
+    process_multiline_directive_enhanced(basic_concat, variables, NULL);
     
     variable* result_var = store_get(variables, "result");
     assert(result_var != NULL);
@@ -128,7 +129,7 @@ void test_string_concatenation(void) {
     
     // Test concatenation with escape sequences
     const char* escape_concat = "set text = \"Line1\" + \"\\n\" + \"Line2\"";
-    process_multiline_directive_enhanced(escape_concat, variables);
+    process_multiline_directive_enhanced(escape_concat, variables, NULL);
     
     variable* text_var = store_get(variables, "text");
     assert(text_var != NULL);
@@ -145,7 +146,7 @@ void test_compound_assignment(void) {
     
     // Test basic += operator
     const char* compound_test = "set result = \"Start\"\nresult += \" Middle\"\nresult += \" End\"";
-    process_multiline_directive_enhanced(compound_test, variables);
+    process_multiline_directive_enhanced(compound_test, variables, NULL);
     
     variable* result_var = store_get(variables, "result");
     assert(result_var != NULL);
@@ -154,7 +155,7 @@ void test_compound_assignment(void) {
     
     // Test += with empty initialization
     const char* empty_init = "set content\ncontent += \"First\"\ncontent += \" Second\"";
-    process_multiline_directive_enhanced(empty_init, variables);
+    process_multiline_directive_enhanced(empty_init, variables, NULL);
     
     variable* content_var = store_get(variables, "content");
     assert(content_var != NULL);
@@ -182,7 +183,7 @@ void test_dynamic_imports(void) {
     
     // Test dynamic import
     const char* dynamic_import = "set files = [\"test_imports/file1.md\", \"test_imports/file2.md\"]\nset content = \"\"\nfor file in files\n    content += import file + \"\\n\"";
-    process_multiline_directive_enhanced(dynamic_import, variables);
+    process_multiline_directive_enhanced(dynamic_import, variables, NULL);
     
     variable* content_var = store_get(variables, "content");
     assert(content_var != NULL);
@@ -227,17 +228,26 @@ void test_complex_integration_scenario(void) {
     printf("Testing complex integration scenario...\n");
     
     // Create test documentation files
+    // Remove test_docs if it exists as a file to avoid conflicts
+    struct stat st;
+    if (stat("test_docs", &st) == 0 && !S_ISDIR(st.st_mode)) {
+        unlink("test_docs");
+    }
+    
     mkdir("test_docs", 0755);
     
     FILE* intro = fopen("test_docs/intro.md", "w");
+    assert(intro != NULL);
     fprintf(intro, "Introduction Section");
     fclose(intro);
     
     FILE* setup = fopen("test_docs/setup.md", "w");
+    assert(setup != NULL);
     fprintf(setup, "Setup Instructions");
     fclose(setup);
     
     FILE* usage = fopen("test_docs/usage.md", "w");
+    assert(usage != NULL);
     fprintf(usage, "Usage Examples");
     fclose(usage);
     
@@ -253,7 +263,7 @@ void test_complex_integration_scenario(void) {
         "    documentation += \"## Section \" + counter + \"\\n\\n\"\n"
         "    documentation += import section + \"\\n\\n\"";
     
-    process_multiline_directive_enhanced(complex_script, variables);
+    process_multiline_directive_enhanced(complex_script, variables, NULL);
     
     variable* doc_var = store_get(variables, "documentation");
     assert(doc_var != NULL);
@@ -294,7 +304,7 @@ void test_edge_cases(void) {
     
     // Test empty for loop
     const char* empty_for = "set empty_arr = []\nset result = \"start\"\nfor item in empty_arr\n    result += item\nresult += \"end\"";
-    process_multiline_directive_enhanced(empty_for, variables);
+    process_multiline_directive_enhanced(empty_for, variables, NULL);
     
     variable* result_var = store_get(variables, "result");
     assert(result_var != NULL);
@@ -302,7 +312,7 @@ void test_edge_cases(void) {
     
     // Test import of non-existent file (should handle gracefully)
     const char* bad_import = "set files = [\"nonexistent.md\"]\nset content = \"\"\nfor file in files\n    content += import file";
-    process_multiline_directive_enhanced(bad_import, variables);
+    process_multiline_directive_enhanced(bad_import, variables, NULL);
     
     variable* content_var = store_get(variables, "content");
     assert(content_var != NULL);

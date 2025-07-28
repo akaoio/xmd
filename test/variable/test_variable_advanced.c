@@ -164,7 +164,7 @@ void test_variable_type_conversions(void) {
     variable* null_var = variable_create_null();
     const char* null_str = variable_to_string(null_var);
     assert(null_str != NULL);
-    assert(strlen(null_str) == 0); // Should be empty string
+    assert(strcmp(null_str, "null") == 0); // Should be "null" string
     
     variable_unref(str_var);
     variable_unref(num_var);

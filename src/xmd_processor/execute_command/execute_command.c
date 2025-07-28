@@ -32,7 +32,12 @@ int execute_command(const char* command, char* output, size_t output_size) {
         return -1;
     }
     
-    FILE* pipe = popen(command, "r");
+    // Redirect stderr to stdout to capture error messages too
+    char* full_command = malloc(strlen(command) + 8); // +8 for " 2>&1" + null
+    sprintf(full_command, "%s 2>&1", command);
+    
+    FILE* pipe = popen(full_command, "r");
+    free(full_command);
     if (!pipe) {
         snprintf(output, output_size, "[Error: Failed to execute command]");
         return -1;

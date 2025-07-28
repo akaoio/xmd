@@ -40,7 +40,7 @@ int preprocess_variables(const char* input, size_t input_length, store* var_stor
                         char* output, size_t output_size);
 int preprocess_for_loops(const char* input, size_t input_length, store* var_store, 
                         char* output, size_t output_size);
-bool evaluate_condition(const char* condition, store* var_store);
+bool c_api_evaluate_condition(const char* condition, store* var_store);
 int preprocess_if_statements(const char* input, size_t input_length, store* var_store, 
                             char* output, size_t output_size);
 void* xmd_init(const char* config_path);
