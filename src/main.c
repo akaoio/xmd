@@ -6,6 +6,7 @@
 #include "main_internal.h"
 #include "xmd.h"
 #include "variable.h"
+#include "version_info.h"
 
 
 
@@ -42,6 +43,8 @@ int main(int argc, char* argv[]) {
         return cmd_validate(argc, argv);
     } else if (strcmp(command, "watch") == 0) {
         return cmd_watch(argc, argv);
+    } else if (strcmp(command, "upgrade") == 0) {
+        return cmd_upgrade(argc, argv);
     } else if (strcmp(command, "version") == 0) {
         print_version();
         return 0;

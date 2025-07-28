@@ -7,13 +7,15 @@
 
 #include <stdio.h>
 
-#define XMD_VERSION "1.0.0"
+// External function to get version
+extern const char* xmd_get_version(void);
+
 #define XMD_BUILD_DATE __DATE__
 
 /**
  * @brief Show CLI version
  */
 void cli_show_version(void) {
-    printf("XMD version %s\n", XMD_VERSION);
+    printf("XMD version %s\n", xmd_get_version());
     printf("Built on %s\n", XMD_BUILD_DATE);
 }

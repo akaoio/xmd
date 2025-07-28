@@ -1,6 +1,47 @@
 cmake_minimum_required(VERSION 3.21)  # Minimum for reliable C17 support
 project(xmd VERSION 0.0.2 LANGUAGES C)
 
+# Version information
+set(XMD_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(XMD_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(XMD_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+set(XMD_VERSION_STRING "${PROJECT_VERSION}")
+
+# Get git information
+execute_process(
+    COMMAND git rev-parse --short HEAD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE XMD_GIT_COMMIT
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+)
+
+execute_process(
+    COMMAND git describe --tags --exact-match
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE XMD_GIT_TAG
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+)
+
+execute_process(
+    COMMAND git rev-parse --abbrev-ref HEAD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE XMD_GIT_BRANCH
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+)
+
+# Get build date
+string(TIMESTAMP XMD_BUILD_DATE "%Y-%m-%d %H:%M:%S")
+
+# Generate version header
+configure_file(
+    "${CMAKE_SOURCE_DIR}/include/version_info.h.in"
+    "${CMAKE_BINARY_DIR}/include/version_info.h"
+    @ONLY
+)
+
 # Set C standard - C17 is the minimum required standard
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -50,6 +91,7 @@ endif()
 # Include directories
 include_directories(include)
 include_directories(src)
+include_directories(${CMAKE_BINARY_DIR}/include)  # For generated headers
 
 # XMD Library Sources - dynamically find all C files
 file(GLOB_RECURSE XMD_LIB_SOURCES "src/*.c")
@@ -181,6 +223,9 @@ xmd_target_link_libraries(test_real_performance)
 add_executable(test_cli test/cli/test_cli.c)
 xmd_target_link_libraries(test_cli)
 
+add_executable(test_upgrade_version test/cli/test_upgrade_version.c)
+xmd_target_link_libraries(test_upgrade_version)
+
 add_executable(test_docs test/docs/test_docs.c)
 xmd_target_link_libraries(test_docs)
 
@@ -254,6 +299,7 @@ add_test(NAME security_tests COMMAND test_security)
 add_test(NAME performance_tests COMMAND test_performance)
 add_test(NAME real_performance_tests COMMAND test_real_performance)
 add_test(NAME cli_tests COMMAND test_cli)
+add_test(NAME upgrade_version_tests COMMAND test_upgrade_version)
 add_test(NAME docs_tests COMMAND test_docs)
 add_test(NAME devtools_tests COMMAND test_devtools)
 add_test(NAME xmd_processor_tests COMMAND test_xmd_processor)
@@ -282,7 +328,7 @@ add_test(NAME sandbox_tests COMMAND test_sandbox)
 # Custom target to run all tests
 add_custom_target(test_all
     COMMAND ${CMAKE_CTEST_COMMAND} --verbose
-    DEPENDS test_token_simple test_lexer test_string_duplicate test_string_extract test_memory_allocate test_memory_free_safe test_variable test_store test_template test_conditional test_loop test_flow test_error test_executor test_long_output test_output test_resource test_module test_import_export test_dependency test_security test_performance test_cli test_docs test_devtools test_xmd_processor test_truncate_fix test_advanced_scripting test_variable_advanced test_multiline_enhanced test_advanced_integration test_brutal_nesting test_resource_exhaustion test_c_api_integration test_cli_e2e test_sandbox
+    DEPENDS test_token_simple test_lexer test_string_duplicate test_string_extract test_memory_allocate test_memory_free_safe test_variable test_store test_template test_conditional test_loop test_flow test_error test_executor test_long_output test_output test_resource test_module test_import_export test_dependency test_security test_performance test_cli test_upgrade_version test_docs test_devtools test_xmd_processor test_truncate_fix test_advanced_scripting test_variable_advanced test_multiline_enhanced test_advanced_integration test_brutal_nesting test_resource_exhaustion test_c_api_integration test_cli_e2e test_sandbox
 )
 
 # Coverage (optional)

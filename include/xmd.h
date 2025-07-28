@@ -18,10 +18,10 @@ extern "C" {
 #endif
 
 /* Version information */
-#define XMD_VERSION_MAJOR 1
+#define XMD_VERSION_MAJOR 0
 #define XMD_VERSION_MINOR 0
-#define XMD_VERSION_PATCH 0
-#define XMD_VERSION_STRING "1.0.0"
+#define XMD_VERSION_PATCH 2
+#define XMD_VERSION_STRING "0.0.2"
 
 /* Error codes */
 typedef enum {

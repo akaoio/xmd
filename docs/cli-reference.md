@@ -17,25 +17,41 @@ xmd document.md -o output.md
 xmd template.md -v env=production -v version=1.2.0
 ```
 
-### `xmd watch <dir> [options]`
+### `xmd watch <source_dir> <output_dir> [options]`
 
-Watch directory for changes and auto-process files.
+Watch source directory for changes and auto-process files to output directory.
 
 ```bash
-# Watch directory
-xmd watch docs/
+# Watch source directory and output to dist/
+xmd watch src/ dist/
 
-# Watch with output directory
-xmd watch docs/ dist/
+# Watch with file patterns
+xmd watch docs/ build/ --pattern "*.md"
+
+# Watch with custom file monitoring
+xmd watch .xmd/src/ .xmd/dist/
 ```
 
-### `xmd --version`
+### `xmd version`
 
-Display version information.
+Display version information with build details.
 
 ```bash
-xmd --version
-# Output: XMD v1.0.0
+xmd version
+# Output: XMD version 0.0.2
+#         Built on Jul 28 2025
+```
+
+### `xmd upgrade`
+
+Upgrade XMD to the latest release from GitHub.
+
+```bash
+# Check for updates and upgrade if available
+xmd upgrade
+
+# Show help for upgrade command
+xmd upgrade --help
 ```
 
 ### `xmd --help`
@@ -100,6 +116,27 @@ xmd document.md
 xmd document.md -o output.md
 ```
 
+### Advanced Scripting
+
+```bash
+# Template with array processing
+cat > template.md << 'EOF'
+<!-- xmd:
+set technologies = ["C", "JavaScript", "Go"]
+set content = ""
+for tech in technologies
+    content += "- " + tech + " support\n"
+-->
+{{content}}
+EOF
+
+xmd template.md
+# Output: 
+# - C support
+# - JavaScript support  
+# - Go support
+```
+
 ### With Variables
 
 ```bash
@@ -111,24 +148,35 @@ xmd template.md -v name="World"
 # Output: # Hello World!
 ```
 
-### Different Formats
+### Watch Mode for Development
 
 ```bash
-# HTML output
-xmd doc.md --format html > output.html
+# Watch source directory for real-time updates
+xmd watch src/ dist/
 
-# JSON output
-xmd doc.md --format json > output.json
+# Watch with automatic reload
+xmd watch .xmd/src/ .xmd/dist/
+
+# Combined with web server for live development
+xmd watch docs/ build/ &
+cd build && python -m http.server 8000
 ```
 
-### Watch Mode
+### Dynamic Documentation
 
 ```bash
-# Watch single file
-xmd doc.md --watch
+# Multi-file documentation generation
+cat > docs.md << 'EOF'
+<!-- xmd:
+set sections = ["intro.md", "api.md", "examples.md"] 
+set guide = "# Complete Guide\n\n"
+for section in sections
+    guide += import section + "\n\n"
+-->
+{{guide}}
+EOF
 
-# Watch directory
-xmd watch docs/ dist/
+xmd docs.md -o complete-guide.md
 ```
 
 ## Exit Codes

@@ -3,11 +3,21 @@
 ## Installation
 
 ```bash
-# One-line install
+# One-line install (downloads latest release)
 curl -fsSL https://raw.githubusercontent.com/akaoio/xmd/main/install.sh | bash
 
 # Verify installation
-xmd --version
+xmd version
+```
+
+## Updating XMD
+
+```bash
+# Upgrade to latest release
+xmd upgrade
+
+# Check current version
+xmd version
 ```
 
 ## Basic Usage
@@ -39,6 +49,9 @@ xmd example.md
 # Save to file
 xmd example.md -o output.md
 
+# Watch mode for real-time updates
+xmd watch src/ dist/
+
 # Use with variables
 xmd example.md -v name="Alice"
 ```
@@ -50,6 +63,40 @@ xmd example.md -v name="Alice"
 <!-- xmd: set user = "John" -->
 <!-- xmd: set count = 42 -->
 <!-- xmd: set active = true -->
+```
+
+### Advanced Scripting Features
+
+#### Array Literals and Iteration
+```markdown
+<!-- xmd:
+set technologies = ["C", "JavaScript", "Python", "Go"]
+set content = ""
+for tech in technologies
+    content += "- **" + tech + "** programming language\n"
+-->
+{{content}}
+```
+
+#### Dynamic Imports
+```markdown
+<!-- xmd:
+set sections = ["intro.md", "setup.md", "usage.md"]
+set documentation = ""
+for section in sections
+    documentation += import section + "\n\n"
+-->
+{{documentation}}
+```
+
+#### String Concatenation
+```markdown
+<!-- xmd:
+set title = "XMD Guide"
+set version = "v2.0"
+set header = "# " + title + " " + version
+-->
+{{header}}
 ```
 
 ### Command Execution
@@ -68,16 +115,15 @@ print(data)
 <!-- xmd: cmd("echo 'Hello from cmd!'") -->
 ```
 
-### Multiline Blocks
+### Complex Multiline Scripts
 ```markdown
 <!-- xmd:
-set name = "Project"
-set version = "1.0.0"
-set author = exec git config user.name
-print(name)
-print(version)
-print(author)
+set project_files = ["README.md", "CHANGELOG.md", "LICENSE.md"]
+set toc = "# Table of Contents\n\n"
+for file in project_files
+    toc += "- [" + file + "](" + file + ")\n"
 -->
+{{toc}}
 ```
 
 ## Next Steps

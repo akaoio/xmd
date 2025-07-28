@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # XMD Installation Script
-# This script installs XMD (eXtended MarkDown) on your system
+# This script installs XMD (eXtended MarkDown) from the latest GitHub release
 
 set -e
 
@@ -100,95 +100,189 @@ check_permissions() {
     fi
 }
 
-# Check build dependencies
+# Check installation dependencies
 check_dependencies() {
     local missing_deps=()
     
-    if ! command -v git >/dev/null 2>&1; then
-        missing_deps+=("git")
+    if ! command -v curl >/dev/null 2>&1 && ! command -v wget >/dev/null 2>&1; then
+        missing_deps+=("curl or wget")
     fi
     
-    if ! command -v cmake >/dev/null 2>&1; then
-        missing_deps+=("cmake")
-    fi
-    
-    if ! command -v gcc >/dev/null 2>&1 && ! command -v clang >/dev/null 2>&1; then
-        missing_deps+=("gcc or clang")
-    fi
-    
-    if ! command -v make >/dev/null 2>&1; then
-        missing_deps+=("make")
+    if ! command -v tar >/dev/null 2>&1; then
+        missing_deps+=("tar")
     fi
     
     if [ ${#missing_deps[@]} -gt 0 ]; then
         print_error "Missing required dependencies: ${missing_deps[*]}
         
 Install them first:
-  Termux: pkg install git cmake clang make
-  Ubuntu/Debian: apt install git cmake gcc make
-  CentOS/RHEL: yum install git cmake gcc make
-  macOS: brew install git cmake gcc make"
+  Termux: pkg install curl tar
+  Ubuntu/Debian: apt install curl tar
+  CentOS/RHEL: yum install curl tar
+  macOS: brew install curl tar"
     fi
 }
 
-# Build and install XMD from source
+# Get latest release info from GitHub API
+get_latest_release() {
+    local api_response
+    local download_tool
+    
+    # Determine which tool to use for download
+    if command -v curl >/dev/null 2>&1; then
+        download_tool="curl"
+    elif command -v wget >/dev/null 2>&1; then
+        download_tool="wget"
+    else
+        print_error "Either curl or wget is required for installation"
+    fi
+    
+    print_step "Fetching latest release information..."
+    
+    if [ "$download_tool" = "curl" ]; then
+        api_response=$(curl -s "https://api.github.com/repos/$GITHUB_REPO/releases/latest" 2>/dev/null)
+    else
+        api_response=$(wget -qO- "https://api.github.com/repos/$GITHUB_REPO/releases/latest" 2>/dev/null)
+    fi
+    
+    if [ $? -ne 0 ] || [ -z "$api_response" ]; then
+        print_error "Failed to fetch release information from GitHub API"
+    fi
+    
+    # Extract tag name (version) from JSON response
+    LATEST_VERSION=$(echo "$api_response" | grep '"tag_name"' | head -1 | cut -d'"' -f4)
+    if [ -z "$LATEST_VERSION" ]; then
+        print_error "Could not parse version from GitHub API response"
+    fi
+    
+    print_success "Latest version found: $LATEST_VERSION"
+}
+
+# Download and install XMD from latest release
 install_xmd() {
-    print_step "Building XMD from source for $PLATFORM..."
+    print_step "Installing XMD from latest release for $PLATFORM..."
+    
+    # Get latest release information
+    get_latest_release
     
     # Create temporary directory
     local tmp_dir=$(mktemp -d)
     cd "$tmp_dir"
     
-    # Clone repository
-    print_step "Cloning XMD repository..."
-    if command -v git >/dev/null 2>&1; then
-        git clone --depth 1 "https://github.com/$GITHUB_REPO.git" xmd-source
+    # Construct download URL for the release tarball
+    local download_url="https://github.com/$GITHUB_REPO/archive/refs/tags/$LATEST_VERSION.tar.gz"
+    local tarball_name="xmd-$LATEST_VERSION.tar.gz"
+    
+    print_step "Downloading release $LATEST_VERSION..."
+    
+    # Download the release
+    local download_tool
+    if command -v curl >/dev/null 2>&1; then
+        download_tool="curl"
+        if ! curl -L -o "$tarball_name" "$download_url"; then
+            print_error "Failed to download release from $download_url"
+        fi
+    elif command -v wget >/dev/null 2>&1; then
+        download_tool="wget"
+        if ! wget -O "$tarball_name" "$download_url"; then
+            print_error "Failed to download release from $download_url"
+        fi
     else
-        print_error "git is required to clone the repository"
+        print_error "Either curl or wget is required for installation"
     fi
     
-    cd xmd-source
-    
-    # Build
-    print_step "Building XMD..."
-    mkdir -p build
-    cd build
-    
-    if ! cmake -DCMAKE_BUILD_TYPE=Release ..; then
-        print_error "CMake configuration failed"
+    # Extract the tarball
+    print_step "Extracting release..."
+    if ! tar -xzf "$tarball_name"; then
+        print_error "Failed to extract release archive"
     fi
     
-    make -j$(nproc 2>/dev/null || echo 4)
-    make_exit_code=$?
-    
-    # Check if the main binary was built successfully
-    if [ $make_exit_code -ne 0 ] || [ ! -f "xmd" ]; then
-        print_error "Build failed - exit code: $make_exit_code"
+    # Find the extracted directory (should be xmd-<version>)
+    local extracted_dir=$(find . -maxdepth 1 -type d -name "xmd-*" | head -1)
+    if [ -z "$extracted_dir" ]; then
+        print_error "Could not find extracted directory"
     fi
     
-    # Test the build
-    print_step "Running tests..."
-    if ! ctest --output-on-failure; then
-        print_warning "Some tests failed, but continuing with installation"
+    cd "$extracted_dir"
+    
+    # Check for pre-built binary first
+    if [ -f "bin/xmd" ] || [ -f "xmd" ]; then
+        print_step "Using pre-built binary..."
+        local binary_path
+        if [ -f "bin/xmd" ]; then
+            binary_path="bin/xmd"
+        else
+            binary_path="xmd"
+        fi
+        
+        # Install the binary
+        print_step "Installing to $INSTALL_DIR..."
+        if ! $SUDO cp "$binary_path" "$INSTALL_DIR/"; then
+            print_error "Failed to install to $INSTALL_DIR"
+        fi
+    else
+        # Build from source as fallback
+        print_step "No pre-built binary found, building from source..."
+        
+        # Check for build dependencies
+        local missing_deps=()
+        if ! command -v cmake >/dev/null 2>&1; then
+            missing_deps+=("cmake")
+        fi
+        if ! command -v gcc >/dev/null 2>&1 && ! command -v clang >/dev/null 2>&1; then
+            missing_deps+=("gcc or clang")
+        fi
+        if ! command -v make >/dev/null 2>&1; then
+            missing_deps+=("make")
+        fi
+        
+        if [ ${#missing_deps[@]} -gt 0 ]; then
+            print_error "Missing build dependencies: ${missing_deps[*]}
+            
+Install them first:
+  Termux: pkg install cmake clang make
+  Ubuntu/Debian: apt install cmake gcc make
+  CentOS/RHEL: yum install cmake gcc make
+  macOS: brew install cmake gcc make"
+        fi
+        
+        # Build
+        mkdir -p build
+        cd build
+        
+        if ! cmake -DCMAKE_BUILD_TYPE=Release ..; then
+            print_error "CMake configuration failed"
+        fi
+        
+        make -j$(nproc 2>/dev/null || echo 4)
+        make_exit_code=$?
+        
+        # Check if the main binary was built successfully
+        if [ $make_exit_code -ne 0 ] || [ ! -f "xmd" ]; then
+            print_error "Build failed - exit code: $make_exit_code"
+        fi
+        
+        # Install to system
+        print_step "Installing to $INSTALL_DIR..."
+        if ! $SUDO cp xmd "$INSTALL_DIR/"; then
+            print_error "Failed to install to $INSTALL_DIR"
+        fi
     fi
     
-    # Install to system
-    print_step "Installing to $INSTALL_DIR..."
-    if ! $SUDO cp xmd "$INSTALL_DIR/"; then
-        print_error "Failed to install to $INSTALL_DIR"
-    fi
+    # Make executable
+    $SUDO chmod +x "$INSTALL_DIR/xmd"
     
     # Cleanup
     cd - >/dev/null
     rm -rf "$tmp_dir"
     
-    print_success "XMD built and installed successfully!"
+    print_success "XMD installed successfully from release $LATEST_VERSION!"
 }
 
 # Verify installation
 verify_installation() {
     if command -v xmd >/dev/null 2>&1; then
-        local version=$(xmd --version 2>/dev/null || echo "unknown")
+        local version=$(xmd version 2>/dev/null | head -1 || echo "unknown")
         print_success "XMD is ready! Version: $version"
         
         cat << EOF
@@ -220,7 +314,7 @@ EOF
 # Check for existing installation
 check_existing() {
     if command -v xmd >/dev/null 2>&1; then
-        local current_version=$(xmd --version 2>/dev/null | head -1 || echo "unknown")
+        local current_version=$(xmd version 2>/dev/null | head -1 || echo "unknown")
         print_warning "XMD is already installed: $current_version"
         
         read -p "Do you want to reinstall/update? (y/N): " -r

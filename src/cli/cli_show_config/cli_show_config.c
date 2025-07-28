@@ -8,7 +8,8 @@
 #include <stdio.h>
 #include <sys/stat.h>
 
-#define XMD_VERSION "1.0.0"
+// External function to get version
+extern const char* xmd_get_version(void);
 #define XMD_BUILD_DATE __DATE__
 
 /**
@@ -19,7 +20,7 @@
 int cli_show_config(const char* config_file) {
     printf("XMD Configuration:\n");
     printf("=================\n");
-    printf("Version: %s\n", XMD_VERSION);
+    printf("Version: %s\n", xmd_get_version());
     printf("Build Date: %s\n", XMD_BUILD_DATE);
     
     if (config_file) {

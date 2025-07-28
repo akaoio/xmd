@@ -500,7 +500,7 @@ The focus on community, open source principles, and universal accessibility posi
 
 ### Next Steps
 
-1. Finalize v1.0 feature set based on community feedback
+1. Plan future major release feature set based on community feedback
 2. Establish community governance structure
 3. Launch contributor onboarding program
 4. Create comprehensive tutorial series

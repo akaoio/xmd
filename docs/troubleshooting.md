@@ -2,13 +2,13 @@
 
 Common issues and solutions for XMD processing.
 
-## Fixed Issues (v1.0.0)
+## Fixed Issues (v0.0.2)
 
 ### ✅ Segmentation Fault with --no-exec
 
 **Issue:** Using `--no-exec` option caused segmentation fault.
 
-**Solution:** Fixed in v1.0.0 with proper memory allocation and NULL checks.
+**Solution:** Fixed in v0.0.2 with proper memory allocation and NULL checks.
 
 ```bash
 # Now works correctly
@@ -19,7 +19,7 @@ xmd process document.md --no-exec
 
 **Issue:** Variables set with `-v` option were not being used in document processing.
 
-**Solution:** Fixed in v1.0.0 with proper variable storage and propagation.
+**Solution:** Fixed in v0.0.2 with proper variable storage and propagation.
 
 ```bash
 # Now works correctly
@@ -32,7 +32,7 @@ xmd process template.md -v name="Alice" -v env="production"
 
 **Issue:** `--config` option accepted non-existent files without error.
 
-**Solution:** Fixed in v1.0.0 with file existence validation.
+**Solution:** Fixed in v0.0.2 with file existence validation.
 
 ```bash
 # Now properly validates config file exists
@@ -44,7 +44,7 @@ xmd process doc.md --config missing.conf
 
 **Issue:** All `--format` options produced identical output.
 
-**Solution:** Fixed in v1.0.0 with proper format-specific processing.
+**Solution:** Fixed in v0.0.2 with proper format-specific processing.
 
 ```bash
 # Now produces different outputs
@@ -57,7 +57,7 @@ xmd process doc.md --format markdown # Plain markdown (default)
 
 **Issue:** `--trace` option was parsed but did nothing.
 
-**Solution:** Fixed in v1.0.0 with integration to debugger trace system.
+**Solution:** Fixed in v0.0.2 with integration to debugger trace system.
 
 ```bash
 # Now generates detailed trace files
