@@ -94,6 +94,10 @@ variable* parse_array_literal(const char* input);
 /* Script processing functions */
 void process_script_block(const char* directive_content, store* variables);
 
+/* Version functions */
+char* get_version(void);
+char* get_version_detailed(void);
+
 /* Core processing functions */
 char* process_xmd_content(const char* input, store* variables);
 char* process_xmd_content_enhanced(const char* input, store* variables);

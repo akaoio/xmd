@@ -132,8 +132,10 @@ char* process_xmd_content_enhanced(const char* input, store* variables) {
         
         // Check if this is an XMD directive
         char* trimmed = trim_whitespace(comment_content);
+        bool is_xmd_directive = (strncmp(trimmed, "xmd:", 4) == 0);
+        bool is_multiline = is_xmd_directive && is_multiline_directive(comment_content);
         
-        if (strncmp(trimmed, "xmd:", 4) == 0) {
+        if (is_xmd_directive) {
             char* directive = trim_whitespace(trimmed + 4);
             
             // Handle for loops specially
@@ -307,6 +309,24 @@ char* process_xmd_content_enhanced(const char* input, store* variables) {
         
         free(comment_content);
         ptr = comment_end + 3;
+        
+        // If this was a multiline directive that didn't produce output,
+        // and it was at the start of a line, skip any trailing newline
+        // to avoid creating empty lines
+        if (is_multiline) {
+            // Check if the directive was at the beginning of a line
+            bool at_line_start = (comment_start == input || *(comment_start - 1) == '\n');
+            
+            // Check if no output was produced
+            variable* output_var = store_get(variables, "_multiline_output");
+            bool no_output = (!output_var || !output_var->value.string_value || 
+                            strlen(output_var->value.string_value) == 0);
+            
+            // If at line start and no output, skip trailing newline
+            if (at_line_start && no_output && *ptr == '\n') {
+                ptr++;
+            }
+        }
     }
     
     output[output_pos] = '\0';

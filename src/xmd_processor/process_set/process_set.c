@@ -31,15 +31,56 @@ int process_set(const char* args, processor_context* ctx, char* output, size_t o
     }
     
     char* assignment = strdup(args);
-    char* equals = strchr(assignment, '=');
+    char* plus_equals = strstr(assignment, "+=");
     
-    if (equals) {
+    if (plus_equals) {
+        // Handle += operator (string concatenation)
+        *plus_equals = '\0';
+        char* var_name = trim_whitespace(assignment);
+        char* append_value = trim_whitespace(plus_equals + 2);
+        
+        // Get existing variable
+        variable* existing = store_get(ctx->variables, var_name);
+        if (existing && existing->type == VAR_STRING) {
+            // Remove quotes from append value if present
+            if (strlen(append_value) >= 2 &&
+                ((append_value[0] == '"' && append_value[strlen(append_value)-1] == '"') ||
+                 (append_value[0] == '\'' && append_value[strlen(append_value)-1] == '\''))) {
+                append_value[strlen(append_value)-1] = '\0';
+                append_value++;
+            }
+            
+            // Concatenate strings
+            size_t new_len = strlen(existing->value.string_value) + strlen(append_value) + 1;
+            char* new_value = malloc(new_len);
+            if (new_value) {
+                snprintf(new_value, new_len, "%s%s", existing->value.string_value, append_value);
+                variable* new_var = variable_create_string(new_value);
+                if (new_var) {
+                    store_set(ctx->variables, var_name, new_var);
+                    variable_unref(new_var);
+                }
+                free(new_value);
+            }
+        }
+    } else {
+        char* equals = strchr(assignment, '=');
+        if (equals) {
+        // Handle = operator (assignment)
         *equals = '\0';
         char* var_name = trim_whitespace(assignment);
         char* var_value = trim_whitespace(equals + 1);
         
+        // Check for array literal
+        if (var_value[0] == '[') {
+            variable* array = parse_array_literal(var_value);
+            if (array) {
+                store_set(ctx->variables, var_name, array);
+                variable_unref(array);
+            }
+        }
         // Check if the value is an exec command
-        if (strncmp(var_value, "exec ", 5) == 0) {
+        else if (strncmp(var_value, "exec ", 5) == 0) {
             // Execute the command and store its output
             char* command = trim_whitespace(var_value + 5);
             char* command_output = execute_command_dynamic(command, NULL);
@@ -69,6 +110,15 @@ int process_set(const char* args, processor_context* ctx, char* output, size_t o
             }
             
             variable* var = variable_create_string(var_value);
+            if (var) {
+                store_set(ctx->variables, var_name, var);
+                variable_unref(var);
+            }
+        }
+        } else {
+            // Variable initialization without assignment (set varname)
+            char* var_name = trim_whitespace(assignment);
+            variable* var = variable_create_string("");
             if (var) {
                 store_set(ctx->variables, var_name, var);
                 variable_unref(var);

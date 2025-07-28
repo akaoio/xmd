@@ -1,6 +1,6 @@
 # Multiline Directives
 
-XMD supports clean multiline syntax for complex operations.
+XMD supports clean multiline syntax for complex operations, including advanced scripting features like array literals, for loops with bodies, and dynamic imports.
 
 ## Basic Syntax
 
@@ -10,6 +10,20 @@ directive1
 directive2
 directive3
 -->
+```
+
+## Advanced Script Blocks
+
+XMD now supports script-like syntax with arrays, loops, and string concatenation:
+
+```markdown
+<!-- xmd:
+set items = ["file1.md", "file2.md", "file3.md"]
+set content = ""
+for item in items
+    content += "### " + import item + "\n\n"
+-->
+{{content}}
 ```
 
 ## Examples
@@ -68,21 +82,29 @@ Debug output disabled
 <!-- xmd: endif -->
 ```
 
-### Loops with Functions
+### Advanced Array Processing
 
 ```markdown
 <!-- xmd:
-set services = ["nginx", "mysql", "redis"]
+set services = ["nginx", "mysql", "redis", "postgresql"]
+set report = "# Service Status Report\n\n"
+for service in services
+    set status = exec systemctl is-active service 2>/dev/null || echo "inactive"
+    report += "- **" + service + "**: " + status + "\n"
 -->
+{{report}}
+```
 
-<!-- xmd: for service in services -->
+### Dynamic Documentation Generation
+
+```markdown
 <!-- xmd:
-set status = exec systemctl is-active {{service}} 2>/dev/null || echo "inactive"
-print(service)
-print(": ")
-print(status)
+set chapters = ["introduction.md", "setup.md", "usage.md", "api.md"]
+set documentation = "# Complete Guide\n\n"
+for chapter in chapters
+    documentation += import chapter + "\n\n---\n\n"
 -->
-<!-- xmd: endfor -->
+{{documentation}}
 ```
 
 ## Advanced Examples
@@ -133,14 +155,32 @@ set config = {
 3. **Combine with Loops**: Multiline blocks inside loops for complex iterations
 4. **Clear Variable Names**: Use descriptive names for better readability
 
-## Supported Directives
+## Supported Features
 
-All XMD directives work in multiline blocks:
-
-- `set` - Variable assignment
-- `exec` - Command execution  
+### Core Directives
+- `set` - Variable assignment with array literals
+- `exec` - Command execution with dynamic buffer allocation
 - `if/elif/else/endif` - Conditionals
-- `for/endfor` - Loops
 - `print()` - Output function
 - `cmd()` - Command function
-- `import` - Module imports
+- `import` - Module imports with variable support
+
+### Advanced Scripting Features
+- **Array Literals**: `["item1", "item2", "item3"]`
+- **For Loops with Bodies**: Multi-line loop bodies with indentation
+- **String Concatenation**: Use `+` operator to combine strings
+- **Dynamic Imports**: `import variable_name` where variable contains filename
+- **Variable Initialization**: `set varname` without assignment
+- **Compound Assignment**: `variable += "additional content"`
+
+### Script Block Detection
+XMD automatically detects advanced script syntax and uses the enhanced processor when:
+- Array literals are present: `["item1", "item2"]`
+- For loops with bodies are used: `for item in array`
+- Compound assignment operators are used: `+=`
+
+### Expression Evaluation
+- String literals with escape sequences: `"Hello\nWorld"`
+- Variable references in expressions
+- Import calls within concatenation: `"### " + import filename + "\n"`
+- Complex expressions: `result += prefix + import file + suffix`

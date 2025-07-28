@@ -769,7 +769,196 @@
 │   ├── token_list_get
 │   │   └── token_list_get.c
 │   ├── token_list_length
+│   │   └── token_list_length.c
+│   ├── token_list_reverse
+│   │   └── token_list_reverse.c
+│   ├── token_set_value
+│   │   └── token_set_value.c
+│   ├── token_to_string
+│   │   └── token_to_string.c
+│   ├── token_type_is_valid
+│   │   └── token_type_is_valid.c
+│   └── token_type_to_string
+│       └── token_type_to_string.c
+├── utils
+│   ├── memory
+│   │   ├── memory_allocate
+│   │   │   └── memory_allocate.c
+│   │   └── memory_free_safe
+│   │       └── memory_free_safe.c
+│   ├── string
+│   │   ├── string_duplicate
+│   │   │   └── string_duplicate.c
+│   │   └── string_extract
+│   │       └── string_extract.c
+│   ├── utils.c
+│   ├── xmd_calloc
+│   │   └── xmd_calloc.c
+│   ├── xmd_check_null
+│   │   └── xmd_check_null.c
+│   ├── xmd_expand_array
+│   │   └── xmd_expand_array.c
+│   ├── xmd_hash_key
+│   │   └── xmd_hash_key.c
+│   ├── xmd_malloc
+│   │   └── xmd_malloc.c
+│   ├── xmd_malloc_safe
+│   │   └── xmd_malloc_safe.c
+│   ├── xmd_realloc
+│   │   └── xmd_realloc.c
+│   ├── xmd_strdup
+│   │   └── xmd_strdup.c
+│   ├── xmd_variable_equals
+│   │   └── xmd_variable_equals.c
+│   └── xmd_variable_to_number
+│       └── xmd_variable_to_number.c
+├── variable
+│   ├── variable_array_add
+│   │   └── variable_array_add.c
+│   ├── variable_array_free
+│   │   └── variable_array_free.c
+│   ├── variable_array_get
+│   │   └── variable_array_get.c
+│   ├── variable_array_length
+│   │   └── variable_array_length.c
+│   ├── variable_array_set
+│   │   └── variable_array_set.c
+│   ├── variable_array_size
+│   │   └── variable_array_size.c
+│   ├── variable_convert
+│   │   └── variable_convert.c
+│   ├── variable_copy
+│   │   └── variable_copy.c
+│   ├── variable_create_array
+│   │   └── variable_create_array.c
+│   ├── variable_create_boolean
+│   │   └── variable_create_boolean.c
+│   ├── variable_create_null
+│   │   └── variable_create_null.c
+│   ├── variable_create_number
+│   │   └── variable_create_number.c
+│   ├── variable_create_object
+│   │   └── variable_create_object.c
+│   ├── variable_create_string
+│   │   └── variable_create_string.c
+│   ├── variable_equals
+│   │   └── variable_equals.c
+│   ├── variable_extended
+│   │   ├── variable_extended.c
+│   │   ├── variable_get_boolean
+│   │   │   └── variable_get_boolean.c
+│   │   ├── variable_get_number
+│   │   │   └── variable_get_number.c
+│   │   └── variable_get_string
+│   │       └── variable_get_string.c
+│   ├── variable_get_type
+│   │   └── variable_get_type.c
+│   ├── variable_new_array
+│   │   └── variable_new_array.c
+│   ├── variable_object_find_key
+│   │   └── variable_object_find_key.c
+│   ├── variable_object_free
+│   │   └── variable_object_free.c
+│   ├── variable_object_get
+│   │   └── variable_object_get.c
+│   ├── variable_object_keys
+│   │   └── variable_object_keys.c
+│   ├── variable_object_remove
+│   │   └── variable_object_remove.c
+│   ├── variable_object_set
+│   │   └── variable_object_set.c
+│   ├── variable_object_size
+│   │   └── variable_object_size.c
+│   ├── variable_ref
+│   │   └── variable_ref.c
+│   ├── variable_to_boolean
+│   │   └── variable_to_boolean.c
+│   ├── variable_to_number
+│   │   └── variable_to_number.c
+│   ├── variable_to_string
+│   │   └── variable_to_string.c
+│   ├── variable_unref
+│   │   └── variable_unref.c
+│   └── variable_unref_single
+│       └── variable_unref.c
+└── xmd_processor
+    ├── backup_variable_scope
+    │   └── backup_variable_scope.c
+    ├── build
+    ├── create_context
+    │   └── create_context.c
+    ├── evaluate_condition
+    │   └── evaluate_condition.c
+    ├── execute_command
+    │   └── execute_command.c
+    ├── find_matching_endfor
+    │   └── find_matching_endfor.c
+    ├── is_multiline_directive
+    │   └── is_multiline_directive.c
+    ├── parse_array_literal
+    │   └── parse_array_literal.c
+    ├── parse_collection
+    │   └── parse_collection.c
+    ├── parse_range
+    │   └── parse_range.c
+    ├── process_cmd_function
+    │   └── process_cmd_function.c
+    ├── process_directive
+    │   └── process_directive.c
+    ├── process_elif
+    │   └── process_elif.c
+    ├── process_else
+    │   └── process_else.c
+    ├── process_endif
+    │   └── process_endif.c
+    ├── process_exec
+    │   └── process_exec.c
+    ├── process_for
+    │   └── process_for.c
+    ├── process_if
+    │   └── process_if.c
+    ├── process_import
+    │   └── process_import.c
+    ├── process_loop_body
+    │   └── process_loop_body.c
+    ├── process_multiline_block
+    │   └── process_multiline_block.c
+    ├── process_multiline_directive
+    │   └── process_multiline_directive.c
+    ├── process_multiline_directive_enhanced
+    │   └── process_multiline_directive_enhanced.c
+    ├── process_print_function
+    │   └── process_print_function.c
+    ├── process_script_block
+    │   └── process_script_block.c
+    ├── process_set
+    │   └── process_set.c
+    ├── process_text_with_directives
+    │   └── process_text_with_directives.c
+    ├── process_xmd_content
+    │   └── process_xmd_content.c
+    ├── process_xmd_content_enhanced
+    │   └── process_xmd_content_enhanced.c
+    ├── process_xmd_content_fixed
+    │   └── process_xmd_content_fixed.c
+    ├── process_xmd_directive
+    │   └── process_xmd_directive.c
+    ├── restore_variable_scope
+    │   └── restore_variable_scope.c
+    ├── should_execute_block
+    │   └── should_execute_block.c
+    ├── substitute_variables
+    │   └── substitute_variables.c
+    ├── trim_whitespace
+    │   └── trim_whitespace.c
+    ├── xmd_error_string
+    │   └── xmd_error_string.c
+    ├── xmd_process_string
+    │   └── xmd_process_string.c
+    └── xmd_validate_syntax
+        └── xmd_validate_syntax.c
 
+492 directories, 465 files
 
 ---
 
@@ -1672,6 +1861,8 @@ And this is another way to use it, with set var, and it just works:
     │   └── find_matching_endfor.c
     ├── is_multiline_directive
     │   └── is_multiline_directive.c
+    ├── parse_array_literal
+    │   └── parse_array_literal.c
     ├── parse_collection
     │   └── parse_collection.c
     ├── parse_range
@@ -1704,6 +1895,8 @@ And this is another way to use it, with set var, and it just works:
     │   └── process_multiline_directive_enhanced.c
     ├── process_print_function
     │   └── process_print_function.c
+    ├── process_script_block
+    │   └── process_script_block.c
     ├── process_set
     │   └── process_set.c
     ├── process_text_with_directives
@@ -1731,7 +1924,7 @@ And this is another way to use it, with set var, and it just works:
     └── xmd_validate_syntax
         └── xmd_validate_syntax.c
 
-490 directories, 463 files
+492 directories, 465 files
 
 ---
 
@@ -2508,4 +2701,193 @@ And this should also work too:
 │   ├── token_list_get
 │   │   └── token_list_get.c
 │   ├── token_list_length
-│   │   └── toke
+│   │   └── token_list_length.c
+│   ├── token_list_reverse
+│   │   └── token_list_reverse.c
+│   ├── token_set_value
+│   │   └── token_set_value.c
+│   ├── token_to_string
+│   │   └── token_to_string.c
+│   ├── token_type_is_valid
+│   │   └── token_type_is_valid.c
+│   └── token_type_to_string
+│       └── token_type_to_string.c
+├── utils
+│   ├── memory
+│   │   ├── memory_allocate
+│   │   │   └── memory_allocate.c
+│   │   └── memory_free_safe
+│   │       └── memory_free_safe.c
+│   ├── string
+│   │   ├── string_duplicate
+│   │   │   └── string_duplicate.c
+│   │   └── string_extract
+│   │       └── string_extract.c
+│   ├── utils.c
+│   ├── xmd_calloc
+│   │   └── xmd_calloc.c
+│   ├── xmd_check_null
+│   │   └── xmd_check_null.c
+│   ├── xmd_expand_array
+│   │   └── xmd_expand_array.c
+│   ├── xmd_hash_key
+│   │   └── xmd_hash_key.c
+│   ├── xmd_malloc
+│   │   └── xmd_malloc.c
+│   ├── xmd_malloc_safe
+│   │   └── xmd_malloc_safe.c
+│   ├── xmd_realloc
+│   │   └── xmd_realloc.c
+│   ├── xmd_strdup
+│   │   └── xmd_strdup.c
+│   ├── xmd_variable_equals
+│   │   └── xmd_variable_equals.c
+│   └── xmd_variable_to_number
+│       └── xmd_variable_to_number.c
+├── variable
+│   ├── variable_array_add
+│   │   └── variable_array_add.c
+│   ├── variable_array_free
+│   │   └── variable_array_free.c
+│   ├── variable_array_get
+│   │   └── variable_array_get.c
+│   ├── variable_array_length
+│   │   └── variable_array_length.c
+│   ├── variable_array_set
+│   │   └── variable_array_set.c
+│   ├── variable_array_size
+│   │   └── variable_array_size.c
+│   ├── variable_convert
+│   │   └── variable_convert.c
+│   ├── variable_copy
+│   │   └── variable_copy.c
+│   ├── variable_create_array
+│   │   └── variable_create_array.c
+│   ├── variable_create_boolean
+│   │   └── variable_create_boolean.c
+│   ├── variable_create_null
+│   │   └── variable_create_null.c
+│   ├── variable_create_number
+│   │   └── variable_create_number.c
+│   ├── variable_create_object
+│   │   └── variable_create_object.c
+│   ├── variable_create_string
+│   │   └── variable_create_string.c
+│   ├── variable_equals
+│   │   └── variable_equals.c
+│   ├── variable_extended
+│   │   ├── variable_extended.c
+│   │   ├── variable_get_boolean
+│   │   │   └── variable_get_boolean.c
+│   │   ├── variable_get_number
+│   │   │   └── variable_get_number.c
+│   │   └── variable_get_string
+│   │       └── variable_get_string.c
+│   ├── variable_get_type
+│   │   └── variable_get_type.c
+│   ├── variable_new_array
+│   │   └── variable_new_array.c
+│   ├── variable_object_find_key
+│   │   └── variable_object_find_key.c
+│   ├── variable_object_free
+│   │   └── variable_object_free.c
+│   ├── variable_object_get
+│   │   └── variable_object_get.c
+│   ├── variable_object_keys
+│   │   └── variable_object_keys.c
+│   ├── variable_object_remove
+│   │   └── variable_object_remove.c
+│   ├── variable_object_set
+│   │   └── variable_object_set.c
+│   ├── variable_object_size
+│   │   └── variable_object_size.c
+│   ├── variable_ref
+│   │   └── variable_ref.c
+│   ├── variable_to_boolean
+│   │   └── variable_to_boolean.c
+│   ├── variable_to_number
+│   │   └── variable_to_number.c
+│   ├── variable_to_string
+│   │   └── variable_to_string.c
+│   ├── variable_unref
+│   │   └── variable_unref.c
+│   └── variable_unref_single
+│       └── variable_unref.c
+└── xmd_processor
+    ├── backup_variable_scope
+    │   └── backup_variable_scope.c
+    ├── build
+    ├── create_context
+    │   └── create_context.c
+    ├── evaluate_condition
+    │   └── evaluate_condition.c
+    ├── execute_command
+    │   └── execute_command.c
+    ├── find_matching_endfor
+    │   └── find_matching_endfor.c
+    ├── is_multiline_directive
+    │   └── is_multiline_directive.c
+    ├── parse_array_literal
+    │   └── parse_array_literal.c
+    ├── parse_collection
+    │   └── parse_collection.c
+    ├── parse_range
+    │   └── parse_range.c
+    ├── process_cmd_function
+    │   └── process_cmd_function.c
+    ├── process_directive
+    │   └── process_directive.c
+    ├── process_elif
+    │   └── process_elif.c
+    ├── process_else
+    │   └── process_else.c
+    ├── process_endif
+    │   └── process_endif.c
+    ├── process_exec
+    │   └── process_exec.c
+    ├── process_for
+    │   └── process_for.c
+    ├── process_if
+    │   └── process_if.c
+    ├── process_import
+    │   └── process_import.c
+    ├── process_loop_body
+    │   └── process_loop_body.c
+    ├── process_multiline_block
+    │   └── process_multiline_block.c
+    ├── process_multiline_directive
+    │   └── process_multiline_directive.c
+    ├── process_multiline_directive_enhanced
+    │   └── process_multiline_directive_enhanced.c
+    ├── process_print_function
+    │   └── process_print_function.c
+    ├── process_script_block
+    │   └── process_script_block.c
+    ├── process_set
+    │   └── process_set.c
+    ├── process_text_with_directives
+    │   └── process_text_with_directives.c
+    ├── process_xmd_content
+    │   └── process_xmd_content.c
+    ├── process_xmd_content_enhanced
+    │   └── process_xmd_content_enhanced.c
+    ├── process_xmd_content_fixed
+    │   └── process_xmd_content_fixed.c
+    ├── process_xmd_directive
+    │   └── process_xmd_directive.c
+    ├── restore_variable_scope
+    │   └── restore_variable_scope.c
+    ├── should_execute_block
+    │   └── should_execute_block.c
+    ├── substitute_variables
+    │   └── substitute_variables.c
+    ├── trim_whitespace
+    │   └── trim_whitespace.c
+    ├── xmd_error_string
+    │   └── xmd_error_string.c
+    ├── xmd_process_string
+    │   └── xmd_process_string.c
+    └── xmd_validate_syntax
+        └── xmd_validate_syntax.c
+
+492 directories, 465 files

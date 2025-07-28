@@ -14,11 +14,28 @@
 #include "../../../include/variable.h"
 
 /**
+ * @brief Check if multiline directive content contains script-like syntax
+ */
+static int contains_script_syntax(const char* directive_content) {
+    // Look for for loops, += operators, or array literals
+    return (strstr(directive_content, "for ") && strstr(directive_content, " in ")) ||
+           strstr(directive_content, "+=") ||
+           (strstr(directive_content, "[\"") && strstr(directive_content, "\"]"));
+}
+
+/**
  * @brief Enhanced multiline directive processor supporting all XMD directives
  * @param directive_content Content of the multiline directive
  * @param variables Variable store for processing
  */
 void process_multiline_directive_enhanced(const char* directive_content, store* variables) {
+    // Check if this contains advanced script syntax
+    if (contains_script_syntax(directive_content)) {
+        // Use the script block processor for complex syntax
+        process_script_block(directive_content, variables);
+        return;
+    }
+    
     char* content_copy = strdup(directive_content);
     char* line = strtok(content_copy, "\n\r");
     

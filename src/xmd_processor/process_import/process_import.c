@@ -8,6 +8,7 @@
 #define _GNU_SOURCE
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "../../../include/xmd_processor_internal.h"
 
@@ -37,11 +38,66 @@ int process_import(const char* args, processor_context* ctx, char* output, size_
         trimmed_filename++;
     }
     
+    // Resolve relative path if needed
+    char* resolved_path = NULL;
+    if (trimmed_filename[0] != '/') {
+        // Try multiple resolution strategies for relative paths
+        
+        // Strategy 1: Use source_file_path if available
+        if (ctx->source_file_path) {
+            char* source_dir = strdup(ctx->source_file_path);
+            char* last_slash = strrchr(source_dir, '/');
+            if (last_slash) {
+                *last_slash = '\0'; // Remove filename, keep directory
+                
+                // Build resolved path: source_dir + "/" + trimmed_filename
+                size_t resolved_len = strlen(source_dir) + strlen(trimmed_filename) + 2;
+                resolved_path = malloc(resolved_len);
+                if (resolved_path) {
+                    snprintf(resolved_path, resolved_len, "%s/%s", source_dir, trimmed_filename);
+                }
+            }
+            free(source_dir);
+        }
+        
+        // Strategy 2: If source_file_path not available, try common patterns
+        if (!resolved_path) {
+            // Try looking for files in typical XMD project structure
+            const char* common_paths[] = {
+                ".xmd/src/principles/",
+                "./",
+                "../",
+                NULL
+            };
+            
+            for (int i = 0; common_paths[i] && !resolved_path; i++) {
+                size_t resolved_len = strlen(common_paths[i]) + strlen(trimmed_filename) + 1;
+                char* test_path = malloc(resolved_len);
+                if (test_path) {
+                    snprintf(test_path, resolved_len, "%s%s", common_paths[i], trimmed_filename);
+                    
+                    // Check if file exists
+                    FILE* test_file = fopen(test_path, "r");
+                    if (test_file) {
+                        fclose(test_file);
+                        resolved_path = test_path; // File found!
+                    } else {
+                        free(test_path);
+                    }
+                }
+            }
+        }
+    }
+    
+    // Use resolved path if available, otherwise use original
+    const char* import_path = resolved_path ? resolved_path : trimmed_filename;
+    
     // Read and process the imported file
-    FILE* file = fopen(trimmed_filename, "r");
+    FILE* file = fopen(import_path, "r");
     if (!file) {
-        snprintf(output, output_size, "<!-- Error: Could not import file '%s' -->", trimmed_filename);
+        snprintf(output, output_size, "<!-- Error: Could not import file '%s' -->", import_path);
         free(filename);
+        if (resolved_path) free(resolved_path);
         return 0;
     }
     
@@ -67,5 +123,6 @@ int process_import(const char* args, processor_context* ctx, char* output, size_
     
     fclose(file);
     free(filename);
+    if (resolved_path) free(resolved_path);
     return 0;
 }

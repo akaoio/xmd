@@ -22,6 +22,7 @@ void print_usage(const char* program_name) {
     printf("  process            Process XMD input from stdin (when piped)\n");
     printf("  watch <input_dir> [output_dir]  Watch directory for changes and auto-process\n");
     printf("  validate <file>    Validate XMD syntax without processing\n");
+    printf("  upgrade            Upgrade XMD to the latest version\n");
     printf("  version           Show version information\n");
     printf("  help              Show this help message\n\n");
     printf("Options:\n");

@@ -43,6 +43,7 @@ int format_output(const char* content, const char* format, char* formatted_outpu
 int cmd_process(int argc, char* argv[]);
 int cmd_validate(int argc, char* argv[]);
 int cmd_watch(int argc, char* argv[]);
+int cmd_upgrade(int argc, char* argv[]);
 bool looks_like_file_path(const char* arg);
 int convert_shorthand_to_process(int argc, char* argv[], int* new_argc, char*** new_argv);
 void free_converted_argv(int argc, char** argv);
