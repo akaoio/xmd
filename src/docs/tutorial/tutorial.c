@@ -89,7 +89,7 @@ int tutorial_generate(const char* source_dir, const char* output_dir) {
             fprintf(tutorial_file, "## Step-by-Step Explanation\n\n");
             fprintf(tutorial_file, "1. This example shows XMD syntax in action\n");
             fprintf(tutorial_file, "2. Try modifying the variables and directives\n");
-            fprintf(tutorial_file, "3. Run the example with: `xmd_cli process %s`\n\n", xmd_get_filename(entry));
+            fprintf(tutorial_file, "3. Run the example with: `xmd process %s`\n\n", xmd_get_filename(entry));
             fprintf(tutorial_file, "## What You Learned\n\n");
             fprintf(tutorial_file, "- XMD syntax and directives\n");
             fprintf(tutorial_file, "- Variable interpolation\n");

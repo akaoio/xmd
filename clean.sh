@@ -304,7 +304,6 @@ safe_remove "test_*" "test executables"
 
 # Remove main executables
 safe_remove "xmd" "main XMD executable"
-safe_remove "xmd_cli" "CLI executable"
 
 # Remove library files
 safe_remove "*.a" "static library files"

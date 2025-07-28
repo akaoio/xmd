@@ -82,7 +82,7 @@ int examples_generate(const char* source_dir, const char* output_dir) {
             fprintf(example_file, "Category: General\n");
             fprintf(example_file, "Difficulty: Beginner\n");
             fprintf(example_file, "Features: Variables, Directives\n");
-            fprintf(example_file, "Usage: xmd_cli process %s\n", entry->d_name);
+            fprintf(example_file, "Usage: xmd process %s\n", entry->d_name);
             fprintf(example_file, "-->\n\n");
             
             // Copy source content
@@ -93,7 +93,7 @@ int examples_generate(const char* source_dir, const char* output_dir) {
             
             // Add example footer
             fprintf(example_file, "\n\n<!-- Example End -->\n");
-            fprintf(example_file, "<!-- Run with: xmd_cli process %s -->\n", entry->d_name);
+            fprintf(example_file, "<!-- Run with: xmd process %s -->\n", entry->d_name);
             
             fclose(source_file);
             fclose(example_file);
@@ -101,7 +101,7 @@ int examples_generate(const char* source_dir, const char* output_dir) {
             // Add to index
             fprintf(index_file, "### %s\n\n", entry->d_name);
             fprintf(index_file, "- **File**: [%s](%s)\n", entry->d_name, entry->d_name);
-            fprintf(index_file, "- **Usage**: `xmd_cli process %s`\n", entry->d_name);
+            fprintf(index_file, "- **Usage**: `xmd process %s`\n", entry->d_name);
             fprintf(index_file, "- **Features**: Basic XMD syntax demonstration\n\n");
             
             example_count++;
@@ -110,14 +110,14 @@ int examples_generate(const char* source_dir, const char* output_dir) {
     
     fprintf(index_file, "## How to Run Examples\n\n");
     fprintf(index_file, "1. Navigate to this directory\n");
-    fprintf(index_file, "2. Run any example: `xmd_cli process <example.md>`\n");
+    fprintf(index_file, "2. Run any example: `xmd process <example.md>`\n");
     fprintf(index_file, "3. View the processed output\n");
     fprintf(index_file, "4. Modify examples to experiment\n\n");
     fprintf(index_file, "## Creating New Examples\n\n");
     fprintf(index_file, "1. Create a new `.md` file\n");
     fprintf(index_file, "2. Add XMD directives and content\n");
-    fprintf(index_file, "3. Test with `xmd_cli validate <file.md>`\n");
-    fprintf(index_file, "4. Process with `xmd_cli process <file.md>`\n\n");
+    fprintf(index_file, "3. Test with `xmd validate <file.md>`\n");
+    fprintf(index_file, "4. Process with `xmd process <file.md>`\n\n");
     fprintf(index_file, "Total examples: %d\n", example_count);
     
     fclose(index_file);

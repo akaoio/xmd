@@ -184,7 +184,7 @@ static void test_version_consistency(void) {
     assert(c_version != NULL);
     
     // Get version from command line  
-    const char* temp_file = "./xmd_cli_version.txt";
+    const char* temp_file = "./xmd_version.txt";
     
     // Determine xmd path (reuse logic from previous test)
     const char* xmd_path = "./xmd";

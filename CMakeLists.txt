@@ -133,10 +133,6 @@ macro(xmd_target_link_libraries target_name)
     endif()
 endmacro()
 
-# Main CLI executable
-add_executable(xmd_cli src/main_cli/main_cli.c)
-target_link_libraries(xmd_cli xmd_lib)
-
 # Main executable
 add_executable(xmd src/main.c)
 target_link_libraries(xmd xmd_lib)
