@@ -84,6 +84,10 @@ static int process_for_loop_script(const char* line, char** lines, int line_coun
                     
                     // Evaluate the expression
                     char* new_value = ast_evaluate_concatenation_expression(expr, ctx);
+                    if (!new_value) {
+                        free(line_copy);
+                        continue;
+                    }
                     
                     // Get existing value and concatenate
                     variable* existing = store_get(ctx->variables, target_var);
@@ -186,6 +190,10 @@ void process_script_block(const char* directive_content, store* variables) {
                 if (strstr(expr, " + ")) {
                     // Evaluate the concatenation expression
                     char* new_value = ast_evaluate_concatenation_expression(expr, ctx);
+                    if (!new_value) {
+                        free(line_copy);
+                        continue;
+                    }
                     
                     // Get existing value and concatenate
                     variable* existing = store_get(ctx->variables, target_var);

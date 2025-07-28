@@ -16,19 +16,26 @@
 /**
  * @brief AST evaluation result value
  */
-typedef struct {
+typedef struct ast_value ast_value;
+
+struct ast_value {
     enum { 
         AST_VAL_STRING, 
         AST_VAL_NUMBER, 
         AST_VAL_BOOLEAN,
+        AST_VAL_ARRAY,
         AST_VAL_NULL
     } type;
     union {
         char* string_value;
         double number_value;
         bool boolean_value;
+        struct {
+            ast_value** elements;
+            size_t element_count;
+        } array_value;
     } value;
-} ast_value;
+};
 
 /**
  * @brief AST evaluator context

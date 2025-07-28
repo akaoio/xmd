@@ -32,6 +32,10 @@ ast_value* ast_value_create(int type) {
         case AST_VAL_BOOLEAN:
             value->value.boolean_value = false;
             break;
+        case AST_VAL_ARRAY:
+            value->value.array_value.elements = NULL;
+            value->value.array_value.element_count = 0;
+            break;
         case AST_VAL_NULL:
         default:
             break;

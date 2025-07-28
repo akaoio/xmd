@@ -90,7 +90,7 @@ ast_node* ast_parse_primary(parser_state* state) {
                         return NULL;
                     }
                     
-                    if (!ast_add_element(array, element)) {
+                    if (ast_add_element(array, element) != 0) {
                         ast_free(element);
                         ast_free(array);
                         return NULL;

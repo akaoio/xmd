@@ -137,6 +137,33 @@ ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
         case AST_FUNCTION_CALL:
             return ast_evaluate_function_call(node, evaluator);
             
+        case AST_ARRAY_LITERAL: {
+            ast_value* array_val = ast_value_create(AST_VAL_ARRAY);
+            if (!array_val) {
+                return NULL;
+            }
+            
+            size_t element_count = node->data.array_literal.element_count;
+            if (element_count > 0) {
+                array_val->value.array_value.elements = malloc(element_count * sizeof(ast_value*));
+                if (!array_val->value.array_value.elements) {
+                    ast_value_free(array_val);
+                    return NULL;
+                }
+                
+                array_val->value.array_value.element_count = 0;
+                
+                for (size_t i = 0; i < element_count; i++) {
+                    ast_value* elem_val = ast_evaluate(node->data.array_literal.elements[i], evaluator);
+                    if (elem_val) {
+                        array_val->value.array_value.elements[array_val->value.array_value.element_count++] = elem_val;
+                    }
+                }
+            }
+            
+            return array_val;
+        }
+            
         default:
             return NULL;
     }

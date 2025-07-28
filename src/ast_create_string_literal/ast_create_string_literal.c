@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../../include/ast_node.h"
+#include "../../include/utils.h"
 
 /**
  * @brief Create AST string literal node
@@ -31,7 +32,7 @@ ast_node* ast_create_string_literal(const char* value, source_location loc) {
     node->location = loc;
     
     node->data.literal.type = LITERAL_STRING;
-    node->data.literal.value.string_value = strdup(value);
+    node->data.literal.value.string_value = process_escape_sequences(value);
     if (!node->data.literal.value.string_value) {
         free(node);
         return NULL;

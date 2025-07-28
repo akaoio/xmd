@@ -139,4 +139,11 @@ void* xmd_malloc_safe(size_t size, const char* error_msg);
         if (!(ptr)) return (retval); \
     } while(0)
 
+/**
+ * @brief Process escape sequences in string literals
+ * @param input Input string with potential escape sequences
+ * @return New string with processed escape sequences (caller must free) or NULL on error
+ */
+char* process_escape_sequences(const char* input);
+
 #endif /* XMD_UTILS_H */
