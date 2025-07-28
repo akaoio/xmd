@@ -178,7 +178,7 @@ static int download_release(const char* version, const char* temp_path) {
     // Build download URL
     char url[512];
     snprintf(url, sizeof(url), 
-             "https://github.com/akaoio/xmd/releases/download/v%s/xmd-%s-%s",
+             "https://github.com/akaoio/xmd/releases/download/%s/xmd-%s-%s",
              version, platform, arch);
     
     // Download using curl
