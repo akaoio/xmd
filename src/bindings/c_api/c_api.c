@@ -160,7 +160,7 @@ xmd_result* xmd_process_string_api(void* handle, const char* input, size_t input
         if (last_line > 0 && tok->line > last_line) {
             // Add newlines for the line difference
             size_t line_diff = tok->line - last_line;
-            for (size_t i = 0; i < line_diff && output_pos < input_length * 2 + 998; i++) {
+            for (size_t i = 0; i < line_diff && output_pos < preprocessed_len * 2 + 999; i++) {
                 output[output_pos++] = '\n';
             }
         }
@@ -171,7 +171,7 @@ xmd_result* xmd_process_string_api(void* handle, const char* input, size_t input
                 // Copy text content directly
                 if (tok->value) {
                     size_t text_len = strlen(tok->value);
-                    if (output_pos + text_len < input_length * 2 + 999) {
+                    if (output_pos + text_len < preprocessed_len * 2 + 999) {
                         strcpy(output + output_pos, tok->value);
                         output_pos += text_len;
                     }
@@ -198,7 +198,7 @@ xmd_result* xmd_process_string_api(void* handle, const char* input, size_t input
                     variable* var = store_get(var_store, clean_name);
                     const char* var_value = var ? variable_to_string(var) : "";
                     
-                    if (output_pos + strlen(var_value) < input_length * 2 + 999) {
+                    if (output_pos + strlen(var_value) < preprocessed_len * 2 + 999) {
                         strcpy(output + output_pos, var_value);
                         output_pos += strlen(var_value);
                     }
