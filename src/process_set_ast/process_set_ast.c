@@ -8,6 +8,7 @@
 #define _GNU_SOURCE
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "../../include/ast_evaluator.h"
 #include "../../include/ast_parser.h"
 #include "../../include/lexer_enhanced.h"
