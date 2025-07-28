@@ -6,6 +6,7 @@
  */
 
 #include "../../../include/xmd_processor_internal.h"
+#include "../../../include/ast_evaluator.h"
 
 /**
  * @brief Process elif directive
@@ -25,7 +26,7 @@ int process_elif(const char* args, processor_context* ctx, char* output, size_t 
     
     // Only evaluate elif if no previous branch was executed
     if (!entry->branch_executed) {
-        bool condition_result = evaluate_condition(args, ctx->variables);
+        bool condition_result = ast_evaluate_condition(args, ctx->variables);
         entry->condition_met = condition_result;
         if (condition_result) {
             entry->branch_executed = true;

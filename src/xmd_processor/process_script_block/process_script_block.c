@@ -11,153 +11,10 @@
 #include <ctype.h>
 
 #include "../../../include/xmd_processor_internal.h"
+#include "../../../include/ast_evaluator.h"
 #include "../../../include/variable.h"
 
-/**
- * @brief Evaluate import expression within a string
- * @param expr Expression like "import varname"
- * @param ctx Processor context
- * @return Imported content as string (caller must free)
- */
-static char* evaluate_import_expression(const char* expr, processor_context* ctx) {
-    // Check if it's "import varname"
-    if (strncmp(expr, "import ", 7) == 0) {
-        char* var_name = trim_whitespace((char*)(expr + 7));
-        
-        // Get the variable that contains the filename
-        variable* var = store_get(ctx->variables, var_name);
-        if (var && var->type == VAR_STRING) {
-            // Now import that file
-            char output[4096];
-            if (process_import(var->value.string_value, ctx, output, sizeof(output)) == 0) {
-                return strdup(output);
-            }
-        }
-    }
-    
-    return strdup(""); // Return empty string on error
-}
 
-/**
- * @brief Evaluate string concatenation expression
- * @param expr Expression like "\"### \" + import principle + \"\\n\\n\""
- * @param ctx Processor context
- * @return Concatenated string (caller must free)
- */
-/**
- * @brief Safely append string to result with bounds checking
- */
-static int safe_append(char** result, size_t* result_len, size_t* result_capacity, const char* str) {
-    if (!str) return 0;
-    
-    size_t str_len = strlen(str);
-    size_t needed = *result_len + str_len + 1;
-    
-    if (needed > *result_capacity) {
-        size_t new_capacity = needed * 2;
-        char* new_result = realloc(*result, new_capacity);
-        if (!new_result) return -1;
-        *result = new_result;
-        *result_capacity = new_capacity;
-    }
-    
-    strcpy(*result + *result_len, str);
-    *result_len += str_len;
-    return 0;
-}
-
-static char* evaluate_concatenation_expression(const char* expr, processor_context* ctx) {
-    size_t result_capacity = 4096;
-    char* result = malloc(result_capacity);
-    if (!result) return NULL;
-    result[0] = '\0';
-    size_t result_len = 0;
-    
-    const char* p = expr;
-    
-    while (*p) {
-        // Skip whitespace
-        while (isspace(*p)) p++;
-        if (!*p) break;
-        
-        // Find the next '+' that's not inside quotes
-        const char* token_start = p;
-        const char* token_end = p;
-        bool in_quotes = false;
-        
-        while (*token_end && (in_quotes || *token_end != '+')) {
-            if (*token_end == '"' && (token_end == expr || *(token_end-1) != '\\')) {
-                in_quotes = !in_quotes;
-            }
-            token_end++;
-        }
-        
-        // Extract the token
-        size_t token_len = token_end - token_start;
-        char* token = malloc(token_len + 1);
-        strncpy(token, token_start, token_len);
-        token[token_len] = '\0';
-        
-        // Trim whitespace from token
-        char* trimmed = trim_whitespace(token);
-        
-        if (trimmed[0] == '"' && trimmed[strlen(trimmed)-1] == '"') {
-            // String literal - remove quotes and add to result
-            trimmed[strlen(trimmed)-1] = '\0';
-            trimmed++;
-            // Handle escape sequences
-            char* processed = malloc(strlen(trimmed) + 1);
-            char* src = trimmed, *dst = processed;
-            while (*src) {
-                if (*src == '\\' && *(src+1) == 'n') {
-                    *dst++ = '\n';
-                    src += 2;
-                } else {
-                    *dst++ = *src++;
-                }
-            }
-            *dst = '\0';
-            if (safe_append(&result, &result_len, &result_capacity, processed) == -1) {
-                free(processed);
-                free(result);
-                free(token);
-                return NULL;
-            }
-            free(processed);
-        } else if (strncmp(trimmed, "import ", 7) == 0) {
-            // Import expression
-            char* import_result = evaluate_import_expression(trimmed, ctx);
-            if (safe_append(&result, &result_len, &result_capacity, import_result) == -1) {
-                free(import_result);
-                free(result);
-                free(token);
-                return NULL;
-            }
-            free(import_result);
-        } else {
-            // Variable name
-            variable* var = store_get(ctx->variables, trimmed);
-            if (var && var->type == VAR_STRING) {
-                if (safe_append(&result, &result_len, &result_capacity, var->value.string_value) == -1) {
-                    free(result);
-                    free(token);
-                    return NULL;
-                }
-            }
-        }
-        
-        free(token);
-        
-        // Move past the '+' if there is one
-        if (*token_end == '+') {
-            p = token_end + 1;
-        } else {
-            break;
-        }
-    }
-    
-    return result;
-}
 
 /**
  * @brief Process for loop with array iteration and body execution
@@ -226,7 +83,7 @@ static int process_for_loop_script(const char* line, char** lines, int line_coun
                     char* expr = trim_whitespace(eq_pos + 2);
                     
                     // Evaluate the expression
-                    char* new_value = evaluate_concatenation_expression(expr, ctx);
+                    char* new_value = ast_evaluate_concatenation_expression(expr, ctx);
                     
                     // Get existing value and concatenate
                     variable* existing = store_get(ctx->variables, target_var);
@@ -297,7 +154,7 @@ void process_script_block(const char* directive_content, store* variables) {
                     char* expr = trim_whitespace(equals_pos + 3);
                     
                     // Evaluate the concatenation expression
-                    char* result = evaluate_concatenation_expression(expr, ctx);
+                    char* result = ast_evaluate_concatenation_expression(expr, ctx);
                     if (result) {
                         variable* var = variable_create_string(result);
                         if (var) {
@@ -328,7 +185,7 @@ void process_script_block(const char* directive_content, store* variables) {
                 // Check if expression contains concatenation
                 if (strstr(expr, " + ")) {
                     // Evaluate the concatenation expression
-                    char* new_value = evaluate_concatenation_expression(expr, ctx);
+                    char* new_value = ast_evaluate_concatenation_expression(expr, ctx);
                     
                     // Get existing value and concatenate
                     variable* existing = store_get(ctx->variables, target_var);

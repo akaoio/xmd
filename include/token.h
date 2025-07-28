@@ -25,6 +25,20 @@ typedef enum {
     TOKEN_HTML_COMMENT,   /**< HTML comment (<!-- -->) */
     TOKEN_XMD_DIRECTIVE,  /**< XMD directive (<!-- xmd: -->) */
     TOKEN_VARIABLE_REF,   /**< Variable reference ({{var}}) */
+    
+    /* Enhanced tokens for AST parsing */
+    TOKEN_IDENTIFIER,     /**< Identifiers (variable names, function names) */
+    TOKEN_STRING,         /**< String literals */
+    TOKEN_NUMBER,         /**< Number literals */
+    TOKEN_BOOLEAN,        /**< Boolean literals (true/false) */
+    TOKEN_OPERATOR,       /**< Operators (+, -, ==, !=, etc.) */
+    TOKEN_LPAREN,         /**< Left parenthesis ( */
+    TOKEN_RPAREN,         /**< Right parenthesis ) */
+    TOKEN_LBRACKET,       /**< Left bracket [ */
+    TOKEN_RBRACKET,       /**< Right bracket ] */
+    TOKEN_COMMA,          /**< Comma , */
+    TOKEN_SEMICOLON,      /**< Semicolon ; */
+    
     TOKEN_EOF             /**< End of file marker */
 } token_type;
 

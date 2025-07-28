@@ -266,6 +266,16 @@ xmd_target_link_libraries(test_cli_e2e)
 add_executable(test_sandbox test/security/test_sandbox.c)
 xmd_target_link_libraries(test_sandbox)
 
+# AST system tests
+add_executable(test_ast_node test/test_ast_node.c)
+xmd_target_link_libraries(test_ast_node)
+
+add_executable(test_lexer_enhanced test/test_lexer_enhanced.c)
+xmd_target_link_libraries(test_lexer_enhanced)
+
+add_executable(test_ast_parser test/test_ast_parser.c)
+xmd_target_link_libraries(test_ast_parser)
+
 # Enable testing
 enable_testing()
 
@@ -320,6 +330,11 @@ add_test(NAME cli_e2e_tests COMMAND test_cli_e2e)
 
 # Security tests
 add_test(NAME sandbox_tests COMMAND test_sandbox)
+
+# AST system tests
+add_test(NAME ast_node_tests COMMAND test_ast_node)
+add_test(NAME lexer_enhanced_tests COMMAND test_lexer_enhanced)
+add_test(NAME ast_parser_tests COMMAND test_ast_parser)
 
 # Custom target to run all tests
 add_custom_target(test_all

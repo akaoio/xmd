@@ -64,7 +64,6 @@ char* execute_command_dynamic(const char* command, int* exit_status);
 /* Utility functions */
 char* trim_whitespace(char* str);
 char* substitute_variables(const char* text, store* variables);
-bool evaluate_condition(const char* condition, store* variables);
 bool is_multiline_directive(const char* comment_content);
 void process_multiline_directive(const char* directive_content, store* variables);
 void process_multiline_directive_enhanced(const char* directive_content, store* variables, processor_context* ctx);

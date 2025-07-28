@@ -6,6 +6,7 @@
  */
 
 #include "../../../include/xmd_processor_internal.h"
+#include "../../../include/ast_evaluator.h"
 
 /**
  * @brief Process if directive with enhanced logic
@@ -21,7 +22,7 @@ int process_if(const char* args, processor_context* ctx, char* output, size_t ou
         return -1;
     }
     
-    bool condition_result = evaluate_condition(args, ctx->variables);
+    bool condition_result = ast_evaluate_condition(args, ctx->variables);
     
     if_stack_entry* entry = &ctx->if_stack[ctx->if_stack_size];
     entry->condition_met = condition_result;
