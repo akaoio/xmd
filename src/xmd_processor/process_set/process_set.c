@@ -128,6 +128,30 @@ int process_set(const char* args, processor_context* ctx, char* output, size_t o
                 }
                 free(command_output);
             }
+        }
+        // Check if the value is an import function
+        else if (strncmp(var_value, "import ", 7) == 0) {
+            // Import the file and store its content
+            char* filename = trim_whitespace(var_value + 7);
+            
+            // Use a buffer to capture the import output
+            char import_output[65536] = {0};
+            int result = process_import(filename, ctx, import_output, sizeof(import_output));
+            
+            if (result == 0 && strlen(import_output) > 0) {
+                variable* var = variable_create_string(import_output);
+                if (var) {
+                    store_set(ctx->variables, var_name, var);
+                    variable_unref(var);
+                }
+            } else {
+                // Create empty variable on failure
+                variable* var = variable_create_string("");
+                if (var) {
+                    store_set(ctx->variables, var_name, var);
+                    variable_unref(var);
+                }
+            }
         } else {
             // Handle regular string assignment
             // Remove quotes if present

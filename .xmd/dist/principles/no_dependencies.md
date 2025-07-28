@@ -1,2 +1,1 @@
-Dependency Isolation
-Prohibit external dependencies. Use exclusively standard C library (C17) and self-contained implementations to ensure portability and reduce attack surface.
+**Dependency Isolation:** Prohibit external dependencies. Use exclusively standard C library (C17) and self-contained implementations to ensure portability and reduce attack surface.

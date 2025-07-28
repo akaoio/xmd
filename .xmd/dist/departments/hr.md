@@ -1,0 +1,1 @@
+**Human Resources:** The HR department manages the organization's most valuable asset - its people. They handle recruitment, employee relations, performance management, training and development, compensation and benefits, and ensure compliance with employment laws. HR fosters a positive workplace culture while supporting both employee growth and organizational objectives.

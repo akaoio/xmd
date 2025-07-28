@@ -1,0 +1,1 @@
+**Testing Expert:** Masters unit testing, integration testing, and test automation frameworks. Designs comprehensive test strategies and implements robust testing pipelines for reliable software delivery.

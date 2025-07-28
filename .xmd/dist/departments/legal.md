@@ -1,0 +1,1 @@
+**Legal:** The Legal department protects the organization's interests by managing legal compliance, contracts, intellectual property, and risk mitigation. They provide legal counsel on business decisions, handle litigation matters, ensure regulatory compliance, review agreements, and work proactively to prevent legal issues while supporting strategic business initiatives.

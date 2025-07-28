@@ -1,2 +1,1 @@
-Memory Management Discipline
-Enforce strict memory hygiene: validate all pointers before use, free all allocated memory, implement RAII patterns. Zero tolerance for memory leaks or undefined behavior.
+**Memory Management Discipline:** Enforce strict memory hygiene: validate all pointers before use, free all allocated memory, implement RAII patterns. Zero tolerance for memory leaks or undefined behavior.

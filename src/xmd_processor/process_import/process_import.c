@@ -60,13 +60,37 @@ int process_import(const char* args, processor_context* ctx, char* output, size_
             free(source_dir);
         }
         
-        // Strategy 2: If source_file_path not available, try common patterns
+        // Strategy 2: If source_file_path not available, try working directory relative paths
+        if (!resolved_path) {
+            // Get current working directory
+            char* cwd = getcwd(NULL, 0);
+            if (cwd) {
+                size_t resolved_len = strlen(cwd) + strlen(trimmed_filename) + 2;
+                resolved_path = malloc(resolved_len);
+                if (resolved_path) {
+                    snprintf(resolved_path, resolved_len, "%s/%s", cwd, trimmed_filename);
+                    
+                    // Check if file exists
+                    FILE* test_file = fopen(resolved_path, "r");
+                    if (!test_file) {
+                        free(resolved_path);
+                        resolved_path = NULL;
+                    } else {
+                        fclose(test_file);
+                    }
+                }
+                free(cwd);
+            }
+        }
+        
+        // Strategy 3: Try common project patterns if still not found
         if (!resolved_path) {
             // Try looking for files in typical XMD project structure
             const char* common_paths[] = {
+                "./tmp/",    // For tmp directory
+                "./",        // Current directory
+                "../",       // Parent directory
                 ".xmd/src/principles/",
-                "./",
-                "../",
                 NULL
             };
             

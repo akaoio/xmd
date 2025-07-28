@@ -1,0 +1,1 @@
+**Sales:** The Sales department drives revenue growth by building relationships with prospects and customers, identifying opportunities, and closing deals. They manage the sales pipeline, develop client relationships, negotiate contracts, and work collaboratively with marketing to convert leads into customers while achieving revenue targets and expanding market reach.
