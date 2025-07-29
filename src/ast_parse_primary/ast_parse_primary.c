@@ -23,6 +23,9 @@ ast_node* ast_parse_primary(parser_state* state) {
     }
     
     token* tok = parser_peek_token(state);
+    if (!tok) {
+        return NULL;
+    }
     source_location loc = {tok->line, tok->column, state->filename};
     
     switch (tok->type) {

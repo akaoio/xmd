@@ -11,6 +11,6 @@
  * @brief Get current memory usage using platform-specific method
  * @return Memory usage in bytes, or -1 on error
  */
-long get_memory_usage(void) {
+uint64_t get_memory_usage(void) {
     return xmd_get_memory_usage();
 }

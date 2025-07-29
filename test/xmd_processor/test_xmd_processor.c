@@ -13,7 +13,7 @@
 #include "../../include/variable.h"
 
 // External functions from unified processor
-char* process_xmd_content(const char* input, store* variables);
+char* ast_ast_process_xmd_content(const char* input, store* variables);
 int process_xmd_directive(const char* directive, store* var_store, char* output, size_t output_size);
 
 /**
@@ -29,7 +29,7 @@ void test_basic_variable_substitution(void) {
         "<!-- xmd:set name=\"World\" -->\n"
         "Hello {{name}}!\n";
     
-    char* result = process_xmd_content(input, vars);
+    char* result = ast_process_xmd_content(input, vars);
     assert(result != NULL);
     assert(strstr(result, "Hello World!") != NULL);
     assert(strstr(result, "xmd:set") == NULL); // Directive should be removed
@@ -59,7 +59,7 @@ void test_conditional_logic(void) {
         "Guest access\n"
         "<!-- xmd:endif -->\n";
     
-    char* result1 = process_xmd_content(input1, vars);
+    char* result1 = ast_process_xmd_content(input1, vars);
     assert(result1 != NULL);
     assert(strstr(result1, "Admin access granted") != NULL);
     assert(strstr(result1, "User access") == NULL);
@@ -78,7 +78,7 @@ void test_conditional_logic(void) {
         "Guest access\n"
         "<!-- xmd:endif -->\n";
     
-    char* result2 = process_xmd_content(input2, vars);
+    char* result2 = ast_process_xmd_content(input2, vars);
     assert(result2 != NULL);
     assert(strstr(result2, "Admin access granted") == NULL);
     assert(strstr(result2, "User access") != NULL);
@@ -97,7 +97,7 @@ void test_conditional_logic(void) {
         "Guest access\n"
         "<!-- xmd:endif -->\n";
     
-    char* result3 = process_xmd_content(input3, vars);
+    char* result3 = ast_process_xmd_content(input3, vars);
     assert(result3 != NULL);
     assert(strstr(result3, "Admin access granted") == NULL);
     assert(strstr(result3, "User access") == NULL);
@@ -126,7 +126,7 @@ void test_multiline_directives(void) {
         "Project: {{project}} v{{version}}\n"
         "Status: {{status}}\n";
     
-    char* result = process_xmd_content(input, vars);
+    char* result = ast_process_xmd_content(input, vars);
     assert(result != NULL);
     assert(strstr(result, "Project: XMD v1.0") != NULL);
     assert(strstr(result, "Status: unified") != NULL);
@@ -161,7 +161,7 @@ void test_nested_conditionals(void) {
         "Unknown Department\n"
         "<!-- xmd:endif -->\n";
     
-    char* result = process_xmd_content(input, vars);
+    char* result = ast_process_xmd_content(input, vars);
     assert(result != NULL);
     assert(strstr(result, "Engineering Department") != NULL);
     assert(strstr(result, "Senior Engineer") != NULL);
@@ -184,7 +184,7 @@ void test_command_execution(void) {
     
     const char* input = "<!-- xmd:exec echo \"Hello from command\" -->\n";
     
-    char* result = process_xmd_content(input, vars);
+    char* result = ast_process_xmd_content(input, vars);
     assert(result != NULL);
     assert(strstr(result, "Hello from command") != NULL);
     
@@ -204,7 +204,7 @@ void test_variable_edge_cases(void) {
     
     // Test undefined variable
     const char* input1 = "Hello {{undefined_var}}!";
-    char* result1 = process_xmd_content(input1, vars);
+    char* result1 = ast_process_xmd_content(input1, vars);
     assert(result1 != NULL);
     assert(strstr(result1, "Hello !") != NULL); // Should substitute with empty string
     
@@ -216,7 +216,7 @@ void test_variable_edge_cases(void) {
     variable_unref(special_var);
     
     const char* input2 = "Value: {{special}}";
-    char* result2 = process_xmd_content(input2, vars);
+    char* result2 = ast_process_xmd_content(input2, vars);
     assert(result2 != NULL);
     assert(strstr(result2, "test & <script>") != NULL);
     
@@ -236,7 +236,7 @@ void test_malformed_directives(void) {
     
     // Test unclosed comment
     const char* input1 = "<!-- xmd:set name=\"test\"\nHello {{name}}";
-    char* result1 = process_xmd_content(input1, vars);
+    char* result1 = ast_process_xmd_content(input1, vars);
     assert(result1 != NULL);
     // Should handle gracefully, copying the malformed comment as-is
     
@@ -247,7 +247,7 @@ void test_malformed_directives(void) {
         "<!-- xmd:if true -->\n"
         "This should appear\n"
         "No endif\n";
-    char* result2 = process_xmd_content(input2, vars);
+    char* result2 = ast_process_xmd_content(input2, vars);
     assert(result2 != NULL);
     // Should handle gracefully
     
@@ -286,7 +286,7 @@ void test_complete_workflow(void) {
         "<!-- xmd:endif -->\n\n"
         "Thank you for using {{project}}!\n";
     
-    char* result = process_xmd_content(input, vars);
+    char* result = ast_process_xmd_content(input, vars);
     assert(result != NULL);
     
     // Verify all expected content is present
@@ -326,7 +326,7 @@ void test_performance(void) {
         strcat(large_input, line);
     }
     
-    char* result = process_xmd_content(large_input, vars);
+    char* result = ast_process_xmd_content(large_input, vars);
     assert(result != NULL);
     assert(strlen(result) > 1000); // Should produce substantial output
     

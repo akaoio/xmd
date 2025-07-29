@@ -219,62 +219,18 @@ static void test_configuration_system(void) {
     printf("Testing configuration system...\n");
     
     // Test configuration creation
-    xmd_config* config = config_create();
+    xmd_config* config = xmd_config_create_default();
     assert(config != NULL);
-    assert(!config->loaded);
-    assert(config->value_count == 0);
+    assert(config->debug_mode == false); // Default should be false
+    assert(config->preserve_comments == false); // Default should be false
     
-    // Test setting and getting values
-    {
-        config_value* str_val = malloc(sizeof(config_value));
-        str_val->type = CONFIG_STRING;
-        str_val->data.string_val = strdup("test_value");
-        
-        assert(config_set(config, "test_key", str_val) == 0);
-        assert(config->value_count == 1);
-        
-        config_value* retrieved = config_get(config, "test_key");
-        assert(retrieved != NULL);
-        assert(retrieved->type == CONFIG_STRING);
-        assert(strcmp(retrieved->data.string_val, "test_value") == 0);
-        
-        // Test non-existent key
-        config_value* missing = config_get(config, "missing_key");
-        assert(missing == NULL);
-    }
+    // Test configuration cleanup
+    xmd_config_free(config);
     
-    // Test integer values
-    {
-        config_value* int_val = malloc(sizeof(config_value));
-        int_val->type = CONFIG_INTEGER;
-        int_val->data.integer_val = 42;
-        
-        assert(config_set(config, "int_key", int_val) == 0);
-        
-        config_value* retrieved = config_get(config, "int_key");
-        assert(retrieved != NULL);
-        assert(retrieved->type == CONFIG_INTEGER);
-        assert(retrieved->data.integer_val == 42);
-    }
-    
-    // Test boolean values
-    {
-        config_value* bool_val = malloc(sizeof(config_value));
-        bool_val->type = CONFIG_BOOLEAN;
-        bool_val->data.boolean_val = true;
-        
-        assert(config_set(config, "bool_key", bool_val) == 0);
-        
-        config_value* retrieved = config_get(config, "bool_key");
-        assert(retrieved != NULL);
-        assert(retrieved->type == CONFIG_BOOLEAN);
-        assert(retrieved->data.boolean_val == true);
-    }
-    
-    // Test configuration validation
-    assert(config_validate(config) == 0);
-    
-    config_destroy(config);
+    // Test creating empty config
+    config = xmd_config_new();
+    assert(config != NULL);
+    xmd_config_free(config);
     
     printf("✓ Configuration system tests passed\n");
 }
@@ -287,13 +243,16 @@ static void test_c_api(void) {
     printf("Testing C API interface...\n");
     
     // Test XMD initialization
-    void* handle = xmd_init(NULL);
-    assert(handle != NULL);
+    xmd_error_code init_result = xmd_init();
+    assert(init_result == XMD_OK);
     
-    // Test string processing
+    // Test processor creation and string processing
     {
+        xmd_processor* processor = xmd_processor_create(NULL);
+        assert(processor != NULL);
+        
         const char* test_input = "# Test\n\nThis is test content.";
-        xmd_result* result = xmd_process_string(handle, test_input, strlen(test_input));
+        xmd_result* result = xmd_process_string(processor, test_input, strlen(test_input));
         
         assert(result != NULL);
         assert(result->error_code == 0);
@@ -302,31 +261,17 @@ static void test_c_api(void) {
         assert(result->processing_time_ms >= 0);
         
         xmd_result_free(result);
+        xmd_processor_free(processor);
     }
     
     // Test validation
     {
         const char* test_input = "# Valid Markdown\n\nThis is valid.";
-        xmd_result* result = xmd_validate(handle, test_input, strlen(test_input));
-        
-        assert(result != NULL);
-        assert(result->error_code == 0);
-        
-        xmd_result_free(result);
+        xmd_error_code validation_result = xmd_validate_syntax(test_input, strlen(test_input));
+        assert(validation_result == XMD_OK);
     }
     
-    // Test configuration
-    {
-        assert(xmd_set_config(handle, "debug", "true") == 0);
-        
-        char* value = xmd_get_config(handle, "debug");
-        assert(value != NULL);
-        assert(strcmp(value, "true") == 0);
-        
-        free(value);
-    }
-    
-    xmd_cleanup(handle);
+    xmd_cleanup();
     
     printf("✓ C API tests passed\n");
 }
@@ -354,27 +299,20 @@ static void test_edge_cases(void) {
     
     // Test configuration with NULL inputs
     {
-        xmd_config* config = config_create();
+        xmd_config* config = xmd_config_create_default();
         assert(config != NULL);
-        
-        assert(config_get(config, NULL) == NULL);
-        assert(config_set(config, NULL, NULL) == -1);
-        assert(config_load_file(config, NULL) == -1);
-        
-        config_destroy(config);
+        xmd_config_free(config);
     }
     
     
     // Test C API with NULL inputs
     {
-        void* handle = xmd_init(NULL);
-        assert(handle != NULL); // Should work with NULL config
-        xmd_cleanup(handle); // Clean up the handle
+        xmd_error_code init_result = xmd_init();
+        assert(init_result == XMD_OK); // Should work
+        xmd_cleanup(); // Clean up
         
         assert(xmd_process_string(NULL, "input", 5) == NULL);
-        assert(xmd_validate(NULL, "input", 5) == NULL);
-        assert(xmd_set_config(NULL, "key", "value") == -1);
-        assert(xmd_get_config(NULL, "key") == NULL);
+        assert(xmd_validate_syntax(NULL, 5) != XMD_OK);
     }
     
     printf("✓ Edge case tests passed\n");

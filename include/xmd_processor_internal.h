@@ -65,13 +65,6 @@ char* execute_command_dynamic(const char* command, int* exit_status);
 /* Utility functions */
 char* trim_whitespace(char* str);
 char* substitute_variables(const char* text, store* variables);
-bool is_multiline_directive(const char* comment_content);
-void process_multiline_directive(const char* directive_content, store* variables);
-void process_multiline_directive_enhanced(const char* directive_content, store* variables, processor_context* ctx);
-char* process_multiline_block(const char* content, store* variables);
-int parse_range(const char* range_str, store* variables, char*** items, int* count);
-int parse_collection(const char* collection_name, store* variables, char*** items, int* count);
-const char* find_matching_endfor(const char* start, const char* input_end);
 store* backup_variable_scope(store* variables, const char* loop_var_name);
 void restore_variable_scope(store* variables, store* backup, const char* loop_var_name);
 int process_loop_body(const char* content, processor_context* ctx, LoopContext* loop_ctx);
@@ -79,8 +72,6 @@ int process_loop_body(const char* content, processor_context* ctx, LoopContext* 
 /* Directive processing functions */
 int process_exec(const char* args, processor_context* ctx, char* output, size_t output_size);
 char* process_exec_dynamic(const char* args, processor_context* ctx);
-int process_print_function(const char* function_call, processor_context* ctx, char* output, size_t output_size);
-int process_cmd_function(const char* function_call, processor_context* ctx, char* output, size_t output_size);
 int process_set(const char* args, processor_context* ctx, char* output, size_t output_size);
 int process_if(const char* args, processor_context* ctx, char* output, size_t output_size);
 int process_elif(const char* args, processor_context* ctx, char* output, size_t output_size);
@@ -88,26 +79,17 @@ int process_else(processor_context* ctx, char* output, size_t output_size);
 int process_endif(processor_context* ctx, char* output, size_t output_size);
 int process_import(const char* args, processor_context* ctx, char* output, size_t output_size);
 int process_for(const char* args, processor_context* ctx, char* output, size_t output_size);
-int process_directive(const char* directive, processor_context* ctx, char* output, size_t output_size);
 
 /* Helper functions */
 variable* parse_array_literal(const char* input);
 
-/* Script processing functions */
-void process_script_block(const char* directive_content, store* variables);
 
 /* Version functions */
 char* get_version(void);
 char* get_version_detailed(void);
 
-/* Core processing functions */
-char* process_xmd_content(const char* input, store* variables);
-char* process_xmd_content_enhanced(const char* input, store* variables);
-char* process_xmd_content_fixed(const char* input, store* variables);
-
-/* Public API functions */
-int process_xmd_directive(const char* directive, store* var_store, char* output, size_t output_size);
-int process_text_with_directives(const char* text, store* var_store, char* output, size_t output_size);
+/* AST processing functions (current implementation) */
+char* ast_process_xmd_content(const char* input, store* variables);
 
 /* Global import tracker functions (for watch mode) */
 void xmd_set_global_import_tracker(import_tracker_t* tracker);

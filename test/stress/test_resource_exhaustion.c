@@ -18,7 +18,7 @@
 #include "../../include/variable.h"
 
 // External functions
-char* process_xmd_content(const char* input, store* variables);
+char* ast_process_xmd_content(const char* input, store* variables);
 
 // Timeout handler
 static volatile int timeout_triggered = 0;
@@ -53,7 +53,7 @@ void test_infinite_loop_detection(void) {
     timeout_triggered = 0;
     
     clock_t start = clock();
-    char* result = process_xmd_content(infinite_loop_test, vars);
+    char* result = ast_process_xmd_content(infinite_loop_test, vars);
     clock_t end = clock();
     
     alarm(0); // Cancel alarm
@@ -130,7 +130,7 @@ void test_variable_explosion(void) {
     printf("Generated variable bomb: %zu bytes\n", strlen(bomb_input));
     
     clock_t start = clock();
-    char* result = process_xmd_content(bomb_input, vars);
+    char* result = ast_process_xmd_content(bomb_input, vars);
     clock_t end = clock();
     
     double cpu_time = ((double)(end - start)) / CLOCKS_PER_SEC;
@@ -188,7 +188,7 @@ void test_command_injection_stress(void) {
                 "# Command Injection Test %d\n\n%s\n\nTest completed.\n",
                 i + 1, injection_tests[i]);
         
-        char* result = process_xmd_content(test_input, vars);
+        char* result = ast_process_xmd_content(test_input, vars);
         
         if (result) {
             // Check if dangerous commands were blocked
@@ -254,7 +254,7 @@ void test_recursive_template_bomb(void) {
     alarm(3);
     timeout_triggered = 0;
     
-    char* result = process_xmd_content(recursive_bomb, vars);
+    char* result = ast_process_xmd_content(recursive_bomb, vars);
     alarm(0);
     
     if (timeout_triggered) {

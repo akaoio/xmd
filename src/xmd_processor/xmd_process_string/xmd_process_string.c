@@ -1,52 +1,52 @@
 /**
  * @file xmd_process_string.c
- * @brief Main XMD processor interface implementation
+ * @brief Main API string processor implementation
  * @author XMD Team
- * @date 2025-07-26
  */
 
-#define _GNU_SOURCE
-#include <string.h>
-#include <stdlib.h>
+#define _GNU_SOURCE  // For strdup - must be before includes
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "../../../include/xmd.h"
+#include "../../../include/cli.h"
+#include "../../../include/store.h"
 
-#include "../../../include/xmd_processor_internal.h"
-#include "../../../include/ast_evaluator.h"
+// Forward declaration for AST processor
+char* ast_process_xmd_content(const char* input, store* variables);
 
 /**
- * @brief Main XMD processor interface
- * @param processor XMD processor instance (currently unused)
- * @param content Input content to process
- * @param length Length of input content (currently unused - uses strlen)
- * @return Processing result structure (caller must free with xmd_result_free)
+ * @brief Process string through XMD main API
  */
-xmd_result* xmd_process_string(xmd_processor* processor, const char* content, size_t length) {
-    (void)length; // Unused parameter - using strlen instead
-    if (!processor || !content) {
-        xmd_result* result = malloc(sizeof(xmd_result));
-        result->error_code = XMD_ERROR_INVALID_ARGUMENT;
-        result->error_message = strdup("Invalid arguments");
-        result->output = NULL;
-        result->output_length = 0;
-        result->processing_time_ms = 0;
-        result->memory_used_bytes = 0;
-        return result;
+xmd_result* xmd_process_string(xmd_processor* processor, 
+                               const char* input, 
+                               size_t input_length) {
+    if (!processor || !input || input_length == 0) {
+        return NULL;
     }
     
-    // Treat processor as store for now
-    store* variables = (store*)processor;
-    
-    // Process with AST-based parser
-    char* processed_output = ast_process_xmd_content(content, variables);
-    
-    // Create result
+    // Create result structure
     xmd_result* result = malloc(sizeof(xmd_result));
-    result->error_code = XMD_SUCCESS;
+    if (!result) {
+        return NULL;
+    }
+    
+    // Initialize result
+    result->error_code = 0;
+    result->output = NULL;
     result->error_message = NULL;
-    result->output = processed_output;
-    result->output_length = processed_output ? strlen(processed_output) : 0;
-    result->processing_time_ms = 0;
-    result->memory_used_bytes = result->output_length + sizeof(xmd_result);
+    
+    // Process content using AST processor
+    // Cast processor back to store* as that's how it's implemented
+    store* variables = (store*)processor;
+    char* output = ast_process_xmd_content(input, variables);
+    if (output) {
+        result->output = output;
+        result->error_code = 0;
+    } else {
+        result->error_code = -1;
+        result->error_message = strdup("Processing failed");
+    }
     
     return result;
 }

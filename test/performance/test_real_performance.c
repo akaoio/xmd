@@ -157,8 +157,8 @@ char* generate_large_file(int size_kb) {
 void test_file_size_performance(void) {
     printf("Testing performance with various file sizes...\n");
     
-    void* handle = xmd_init(NULL);
-    assert(handle != NULL);
+    xmd_error_code init_result = xmd_init();
+    assert(init_result == XMD_OK);
     
     int sizes[] = {1, 1, 2, 2}; // KB - Very minimal sizes to ensure test passes
     double time_limits[] = {10, 15, 20, 25}; // milliseconds
@@ -200,7 +200,7 @@ void test_file_size_performance(void) {
         free(content);
     }
     
-    xmd_cleanup(handle);
+    xmd_cleanup();
     
     printf("✅ File size performance test completed\n");
 }
@@ -211,14 +211,14 @@ void test_file_size_performance(void) {
 void test_nested_performance(void) {
     printf("Testing performance with deeply nested structures...\n");
     
-    void* handle = xmd_init(NULL);
-    assert(handle != NULL);
+    xmd_error_code init_result = xmd_init();
+    assert(init_result == XMD_OK);
     
     // Generate deeply nested conditionals
     char* content = malloc(50000);
     if (!content) {
         printf("❌ Memory allocation failed for nested test\n");
-        xmd_cleanup(handle);
+        xmd_cleanup();
         return;
     }
     int pos = 0;
@@ -253,7 +253,7 @@ void test_nested_performance(void) {
     
     xmd_result_free(result);
     free(content);
-    xmd_cleanup(handle);
+    xmd_cleanup();
     
     printf("✅ Nested performance test passed\n");
 }
@@ -264,8 +264,8 @@ void test_nested_performance(void) {
 void test_loop_performance(void) {
     printf("Testing loop performance...\n");
     
-    void* handle = xmd_init(NULL);
-    assert(handle != NULL);
+    xmd_error_code init_result = xmd_init();
+    assert(init_result == XMD_OK);
     
     // Test with large loops
     const char* loop_test = 
@@ -308,7 +308,7 @@ void test_loop_performance(void) {
     printf("\n");
     
     xmd_result_free(result);
-    xmd_cleanup(handle);
+    xmd_cleanup();
     
     printf("✅ Loop performance test passed\n");
 }
@@ -319,14 +319,14 @@ void test_loop_performance(void) {
 void test_variable_performance(void) {
     printf("Testing variable substitution performance...\n");
     
-    void* handle = xmd_init(NULL);
-    assert(handle != NULL);
+    xmd_error_code init_result = xmd_init();
+    assert(init_result == XMD_OK);
     
     // Create content with many variables
     char* content = malloc(100000);
     if (!content) {
         printf("❌ Memory allocation failed for variable test\n");
-        xmd_cleanup(handle);
+        xmd_cleanup();
         return;
     }
     int pos = 0;
@@ -364,7 +364,7 @@ void test_variable_performance(void) {
     
     xmd_result_free(result);
     free(content);
-    xmd_cleanup(handle);
+    xmd_cleanup();
     
     printf("✅ Variable performance test passed\n");
 }

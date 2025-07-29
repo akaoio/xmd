@@ -1,0 +1,2 @@
+@set(test=Hello)
+@{test}

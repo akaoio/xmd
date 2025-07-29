@@ -12,3 +12,11 @@
  * 
  * Function prototypes remain in the parser_internal.h header file.
  */
+
+// Minimal content to satisfy build system
+#include <stddef.h>
+
+// This file serves as a module aggregator - actual functions are in separate files
+void parser_module_init(void) {
+    // Empty function to satisfy linker - functions are in individual files
+}

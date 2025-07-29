@@ -7,6 +7,7 @@
  */
 
 #include "../../../../include/c_api_internal.h"
+#include "../../../../include/store_internal.h"
 
 /**
  * @brief Create XMD processor
@@ -21,13 +22,12 @@ xmd_processor* c_api_xmd_processor_create(const xmd_config* config) {
         return NULL;
     }
     
-    // Create a dummy processor pointer with malloc so it can be freed
-    // In full implementation, would create actual processor context
-    xmd_processor* dummy_processor = malloc(sizeof(void*));
-    if (!dummy_processor) {
+    // Create a proper store as processor (matches expectation in xmd_process_string)
+    store* variable_store = store_create();
+    if (!variable_store) {
         return NULL;
     }
-    return dummy_processor;
+    return (xmd_processor*)variable_store;
 }
 
 /**

@@ -77,6 +77,7 @@ void print_usage(const char* program_name) {
     printf("Usage: %s <command> [options] [file]\n\n", program_name);
     printf("Commands:\n");
     printf("  process [file]     Process markdown file (default: stdin)\n");
+    printf("  watch <input> [output]  Watch files/directories for changes\n");
     printf("  validate <file>    Validate markdown file syntax\n");
     printf("  upgrade           Upgrade to latest version\n");
     printf("  version           Show version information\n");

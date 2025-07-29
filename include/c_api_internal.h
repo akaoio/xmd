@@ -36,16 +36,13 @@ typedef struct xmd_context_internal {
 } xmd_context_internal;
 
 // Function declarations
-int preprocess_variables(const char* input, size_t input_length, store* var_store, 
-                        char* output, size_t output_size);
-int preprocess_for_loops(const char* input, size_t input_length, store* var_store, 
-                        char* output, size_t output_size);
 bool c_api_evaluate_condition(const char* condition, store* var_store);
-int preprocess_if_statements(const char* input, size_t input_length, store* var_store, 
-                            char* output, size_t output_size);
 void* c_api_xmd_init(const char* config_path);
 xmd_result* c_api_create_result(int error_code, const char* output, const char* error_message);
+xmd_result* create_result(int error_code, const char* output, const char* error_message);
 xmd_result* c_api_xmd_process_string(void* handle, const char* input, size_t input_length);
+xmd_result* c_api_xmd_process_string_api(void* handle, const char* input, size_t input_length);
+xmd_result* xmd_process_string_api(void* handle, const char* input, size_t input_length);
 xmd_result* c_api_xmd_process_file(void* handle, const char* input_path, const char* output_path);
 xmd_result* c_api_xmd_validate(void* handle, const char* input, size_t input_length);
 int c_api_xmd_set_config(void* handle, const char* key, const char* value);

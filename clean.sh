@@ -156,14 +156,20 @@ safe_remove_dir() {
     local pattern="$1"
     local description="$2"
     local count=0
+    local skipped=0
     
     echo -e "${YELLOW}Checking for $description...${NC}"
     
     while IFS= read -r -d '' dir; do
         if [[ -d "$dir" ]]; then
-            echo "  Removing directory: $dir"
-            rm -rf "$dir"
-            ((count++))
+            if is_protected "$dir"; then
+                echo -e "${BLUE}  Protected (skipped): $dir${NC}"
+                ((skipped++))
+            else
+                echo "  Removing directory: $dir"
+                rm -rf "$dir"
+                ((count++))
+            fi
         fi
     done < <(find . -maxdepth 1 -name "$pattern" -type d -print0 2>/dev/null)
     
@@ -171,6 +177,10 @@ safe_remove_dir() {
         echo -e "${GREEN}  ✓ Removed $count directory(ies)${NC}"
     else
         echo -e "${GREEN}  ✓ No directories to remove${NC}"
+    fi
+    
+    if [[ $skipped -gt 0 ]]; then
+        echo -e "${BLUE}  ℹ  Protected $skipped directory(ies)${NC}"
     fi
     echo
 }
@@ -192,10 +202,28 @@ if [[ "${1:-}" == "--dry-run" || "${1:-}" == "-n" ]]; then
         done
     }
     
+    # Function to show directories that would be processed
+    show_dirs_for_removal() {
+        local pattern="$1"
+        find . -maxdepth 1 -name "$pattern" -type d 2>/dev/null | while read -r dir; do
+            if is_protected "$dir"; then
+                echo -e "${BLUE}  PROTECTED (skip): $dir${NC}"
+            else
+                echo -e "${RED}  REMOVE: $dir${NC}"
+            fi
+        done
+    }
+    
     # Show all file patterns that would be processed
-    echo -e "${YELLOW}Test files:${NC}"
+    echo -e "${YELLOW}Test files and directories:${NC}"
     show_files_for_removal "test*.md"
     show_files_for_removal "*test*.md"
+    show_files_for_removal "test_*"
+    show_dirs_for_removal "test_*"
+    
+    echo -e "${YELLOW}Temporary files and directories:${NC}"
+    show_files_for_removal "tmp_*"
+    show_dirs_for_removal "tmp_*"
     
     echo -e "${YELLOW}Debug files:${NC}"
     show_files_for_removal "debug*"
@@ -300,8 +328,13 @@ safe_remove "CPackConfig.cmake" "CPack configuration"
 safe_remove "CPackSourceConfig.cmake" "CPack source configuration"
 safe_remove "CTestTestfile.cmake" "CTest configuration"
 
-# Remove test executables (but preserve test/ source directory)
-safe_remove "test_*" "test executables"
+# Remove test_* files and directories (but preserve test/ source directory)
+safe_remove "test_*" "test executables and files"
+safe_remove_dir "test_*" "test_* directories"
+
+# Remove tmp_* files and directories (temporary files/folders)
+safe_remove "tmp_*" "tmp_* files"
+safe_remove_dir "tmp_*" "tmp_* directories"
 
 # Remove main executables
 safe_remove "xmd" "main XMD executable"

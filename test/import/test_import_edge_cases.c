@@ -50,7 +50,7 @@ static void test_direct_circular_import() {
         "@import(test_import_edge/a.md)\n"
         "Content from B\n");
     
-    XmdResult result = xmd_process_file("test_import_edge/a.md");
+    xmd_result* result = xmd_process_file(NULL, "test_import_edge/a.md");
     
     // The system should either:
     // 1. Detect and report the circular dependency
@@ -58,7 +58,7 @@ static void test_direct_circular_import() {
     // We'll accept either behavior as long as it doesn't crash
     
     // Clean up
-    xmd_free_result(&result);
+    xmd_result_free(result);
     remove_file("test_import_edge/a.md");
     remove_file("test_import_edge/b.md");
     rmdir("test_import_edge");
@@ -84,10 +84,10 @@ static void test_indirect_circular_import() {
         "@import(test_import_edge/a.md)\n"
         "Content C\n");
     
-    XmdResult result = xmd_process_file("test_import_edge/a.md");
+    xmd_result* result = xmd_process_file(NULL, "test_import_edge/a.md");
     
     // Should handle circular dependency gracefully
-    xmd_free_result(&result);
+    xmd_result_free(result);
     
     // Clean up
     remove_file("test_import_edge/a.md");
@@ -109,10 +109,10 @@ static void test_self_import() {
         "@import(test_import_edge/self.md)\n"
         "This file imports itself\n");
     
-    XmdResult result = xmd_process_file("test_import_edge/self.md");
+    xmd_result* result = xmd_process_file(NULL, "test_import_edge/self.md");
     
     // Should handle self-import gracefully
-    xmd_free_result(&result);
+    xmd_result_free(result);
     
     // Clean up
     remove_file("test_import_edge/self.md");
@@ -136,13 +136,13 @@ static void test_empty_file_import() {
         "@import(test_import_edge/empty.md)\n"
         "After import\n");
     
-    XmdResult result = xmd_process_file("test_import_edge/main.md");
+    xmd_result* result = xmd_process_file(NULL, "test_import_edge/main.md");
     
-    assert(result.success);
-    assert(strstr(result.output, "Before import") != NULL);
-    assert(strstr(result.output, "After import") != NULL);
+    assert(result && result->error_code == XMD_SUCCESS);
+    assert(strstr(result->output, "Before import") != NULL);
+    assert(strstr(result->output, "After import") != NULL);
     
-    xmd_free_result(&result);
+    xmd_result_free(result);
     
     // Clean up
     remove_file("test_import_edge/main.md");
@@ -175,10 +175,10 @@ static void test_malformed_import_paths() {
         
         write_file(filename, test_cases[i]);
         
-        XmdResult result = xmd_process_file(filename);
+        xmd_result* result = xmd_process_file(NULL, filename);
         
         // Should handle malformed imports gracefully (either fail or ignore)
-        xmd_free_result(&result);
+        xmd_result_free(result);
         
         remove_file(filename);
     }
@@ -216,21 +216,21 @@ static void test_many_imports_performance() {
     
     // Measure processing time
     clock_t start = clock();
-    XmdResult result = xmd_process_file("test_import_edge/main.md");
+    xmd_result* result = xmd_process_file(NULL, "test_import_edge/main.md");
     clock_t end = clock();
     
     double time_spent = ((double)(end - start)) / CLOCKS_PER_SEC;
     printf("  Processed %d imports in %.3f seconds\n", num_fragments, time_spent);
     
-    assert(result.success);
+    assert(result && result->error_code == XMD_SUCCESS);
     // Verify all fragments were imported
     for (int i = 0; i < num_fragments; i++) {
         char expected[256];
         snprintf(expected, sizeof(expected), "Fragment %d content", i);
-        assert(strstr(result.output, expected) != NULL);
+        assert(strstr(result->output, expected) != NULL);
     }
     
-    xmd_free_result(&result);
+    xmd_result_free(result);
     
     // Clean up
     remove_file("test_import_edge/main.md");
@@ -275,10 +275,10 @@ static void test_special_char_filenames() {
     }
     fclose(main);
     
-    XmdResult result = xmd_process_file("test_import_edge/main.md");
+    xmd_result* result = xmd_process_file(NULL, "test_import_edge/main.md");
     
     // Should handle special characters in filenames
-    xmd_free_result(&result);
+    xmd_result_free(result);
     
     // Clean up
     remove_file("test_import_edge/main.md");
@@ -315,10 +315,10 @@ static void test_import_depth_limit() {
     }
     
     // Process the top-level file
-    XmdResult result = xmd_process_file("test_import_edge/level0.md");
+    xmd_result* result = xmd_process_file(NULL, "test_import_edge/level0.md");
     
     // Should either process all levels or gracefully limit depth
-    xmd_free_result(&result);
+    xmd_result_free(result);
     
     // Clean up
     for (int i = 0; i <= max_depth; i++) {

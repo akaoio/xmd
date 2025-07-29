@@ -12,6 +12,7 @@
 
 #include "../../../include/xmd_processor_internal.h"
 #include "../../../include/ast_evaluator.h"
+#include "../../../include/sandbox.h"
 
 /**
  * @brief Process import directive
@@ -26,6 +27,11 @@ int process_import(const char* args, processor_context* ctx, char* output, size_
         output[0] = '\0';
         return 0;
     }
+    
+    #ifdef DEBUG_IMPORT
+    fprintf(stderr, "[DEBUG] process_import called with args: '%s'\n", args);
+    fprintf(stderr, "[DEBUG] source_file_path: '%s'\n", ctx->source_file_path ? ctx->source_file_path : "NULL");
+    #endif
     
     // Parse filename from args (remove quotes if present)
     char* filename = strdup(args);
@@ -42,26 +48,34 @@ int process_import(const char* args, processor_context* ctx, char* output, size_
     // Resolve relative path if needed
     char* resolved_path = NULL;
     if (trimmed_filename[0] != '/') {
-        // Try multiple resolution strategies for relative paths
-        
-        // Strategy 1: Use source_file_path if available
-        if (ctx->source_file_path) {
-            char* source_dir = strdup(ctx->source_file_path);
-            char* last_slash = strrchr(source_dir, '/');
-            if (last_slash) {
-                *last_slash = '\0'; // Remove filename, keep directory
-                
-                // Build resolved path: source_dir + "/" + trimmed_filename
-                size_t resolved_len = strlen(source_dir) + strlen(trimmed_filename) + 2;
-                resolved_path = malloc(resolved_len);
-                if (resolved_path) {
-                    snprintf(resolved_path, resolved_len, "%s/%s", source_dir, trimmed_filename);
+        // Strategy 1: Try as project-relative path first (common in test files)
+        FILE* test_file = fopen(trimmed_filename, "r");
+        if (test_file) {
+            fclose(test_file);
+            resolved_path = strdup(trimmed_filename);
+        } else {
+            // Strategy 2: Use source_file_path for truly relative imports
+            if (ctx->source_file_path) {
+                char* source_dir = strdup(ctx->source_file_path);
+                char* last_slash = strrchr(source_dir, '/');
+                if (last_slash) {
+                    *last_slash = '\0'; // Remove filename, keep directory
+                    
+                    // Build resolved path: source_dir + "/" + trimmed_filename
+                    size_t resolved_len = strlen(source_dir) + strlen(trimmed_filename) + 2;
+                    char* temp_path = malloc(resolved_len);
+                    if (temp_path) {
+                        snprintf(temp_path, resolved_len, "%s/%s", source_dir, trimmed_filename);
+                        // Normalize the path to resolve .. components
+                        resolved_path = normalize_path(temp_path);
+                        free(temp_path);
+                    }
                 }
+                free(source_dir);
             }
-            free(source_dir);
         }
         
-        // Strategy 2: If source_file_path not available, try working directory relative paths
+        // Strategy 3: If source_file_path not available, try working directory relative paths
         if (!resolved_path) {
             // Get current working directory
             char* cwd = getcwd(NULL, 0);
@@ -84,7 +98,7 @@ int process_import(const char* args, processor_context* ctx, char* output, size_
             }
         }
         
-        // Strategy 3: Try common project patterns if still not found
+        // Strategy 4: Try common project patterns if still not found
         if (!resolved_path) {
             // Try looking for files in typical XMD project structure
             const char* common_paths[] = {
@@ -128,6 +142,15 @@ int process_import(const char* args, processor_context* ctx, char* output, size_
         return 0;
     }
     
+    // Check for circular imports by comparing with current source file
+    if (ctx->source_file_path && strcmp(import_path, ctx->source_file_path) == 0) {
+        snprintf(output, output_size, "<!-- Circular import detected: %s imports itself -->", import_path);
+        fclose(file);
+        free(filename);
+        if (resolved_path) free(resolved_path);
+        return 0;
+    }
+    
     // Read file content
     fseek(file, 0, SEEK_END);
     long file_size = ftell(file);
@@ -138,8 +161,16 @@ int process_import(const char* args, processor_context* ctx, char* output, size_
         size_t read_size = fread(file_content, 1, file_size, file);
         file_content[read_size] = '\0';
         
+        // Save current source file and set new one for nested imports
+        char* prev_source_file = ctx->source_file_path;
+        ctx->source_file_path = strdup(import_path);
+        
         // Process the imported content recursively
         char* processed_content = ast_process_xmd_content(file_content, ctx->variables);
+        
+        // Restore previous source file
+        free(ctx->source_file_path);
+        ctx->source_file_path = prev_source_file;
         if (processed_content) {
             strncpy(output, processed_content, output_size - 1);
             output[output_size - 1] = '\0';

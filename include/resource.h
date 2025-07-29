@@ -159,7 +159,7 @@ void set_monitor_error(ResourceMonitor* monitor, const char* message);
  * @brief Get current memory usage using platform-specific method
  * @return Memory usage in bytes, or -1 on error
  */
-long get_memory_usage(void);
+uint64_t get_memory_usage(void);
 
 /**
  * @brief Count open file descriptors using platform-specific method

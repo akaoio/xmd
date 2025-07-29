@@ -17,7 +17,7 @@
 #include "../../include/variable.h"
 
 // External functions from unified processor
-char* process_xmd_content(const char* input, store* variables);
+char* ast_process_xmd_content(const char* input, store* variables);
 
 /**
  * @brief Generate deep nested for loops (50+ levels)
@@ -55,7 +55,7 @@ void test_infinite_depth_nested_loops(void) {
     
     // Measure processing time
     clock_t start = clock();
-    char* result = process_xmd_content(brutal_input, vars);
+    char* result = ast_process_xmd_content(brutal_input, vars);
     clock_t end = clock();
     
     double cpu_time = ((double)(end - start)) / CLOCKS_PER_SEC;
@@ -139,7 +139,7 @@ void test_mixed_brutal_nesting(void) {
         "\n✅ Mixed nesting completed!\n";
     
     clock_t start = clock();
-    char* result = process_xmd_content(mixed_brutal, vars);
+    char* result = ast_process_xmd_content(mixed_brutal, vars);
     clock_t end = clock();
     
     double cpu_time = ((double)(end - start)) / CLOCKS_PER_SEC;
@@ -211,7 +211,7 @@ void test_memory_stress_brutal(void) {
     getrusage(RUSAGE_SELF, &usage_start);
     
     clock_t start = clock();
-    char* result = process_xmd_content(memory_brutal, vars);
+    char* result = ast_process_xmd_content(memory_brutal, vars);
     clock_t end = clock();
     
     getrusage(RUSAGE_SELF, &usage_end);
@@ -275,7 +275,7 @@ void test_malformed_nesting_brutal(void) {
         
         "\nMalformed test completed.\n";
     
-    char* result = process_xmd_content(malformed_brutal, vars);
+    char* result = ast_process_xmd_content(malformed_brutal, vars);
     
     if (result) {
         printf("✅ Malformed nesting handled gracefully\n");
