@@ -152,9 +152,11 @@ static char* generate_output_path(const char* input_path, const char* input_dir,
     return output_path;
 }
 
-// Forward declaration
+// Forward declarations
 static int process_file_with_output(const char* filepath, const char* input_dir,
                                   const char* output_dir, const char* format, bool verbose);
+static int process_single_file_with_output(const char* input_file, const char* output_file,
+                                         const char* format, bool verbose);
 
 /**
  * @brief Process all files that import the changed file (recursive)
@@ -188,6 +190,98 @@ static void process_dependent_files(const char* changed_file, const char* input_
     }
 }
 
+// Forward declaration for @ syntax preprocessing
+static char* preprocess_at_syntax(const char* input);
+
+/**
+ * @brief Convert @ syntax to HTML comment directives (simplified version)
+ */
+static char* preprocess_at_syntax(const char* input) {
+    if (!input) {
+        return NULL;
+    }
+    
+    size_t input_len = strlen(input);
+    size_t output_capacity = input_len * 2 + 1; // Extra space for expansions  
+    char* output = malloc(output_capacity);
+    if (!output) {
+        return NULL;
+    }
+    
+    size_t output_pos = 0;
+    const char* ptr = input;
+    
+    while (*ptr) {
+        // Look for @ syntax at start of line or after whitespace
+        if (*ptr == '@' && (ptr == input || *(ptr-1) == '\n' || *(ptr-1) == ' ' || *(ptr-1) == '\t')) {
+            // Check for @import directive
+            if (strncmp(ptr, "@import(", 8) == 0) {
+                // Find closing parenthesis
+                const char* start = ptr + 8;
+                const char* end = strchr(start, ')');
+                if (end) {
+                    // Extract filename (remove quotes if present)
+                    size_t filename_len = end - start;
+                    char* filename = malloc(filename_len + 1);
+                    if (filename) {
+                        strncpy(filename, start, filename_len);
+                        filename[filename_len] = '\0';
+                        
+                        // Remove quotes if present
+                        char* clean_filename = filename;
+                        if (filename[0] == '"' && filename[filename_len-1] == '"') {
+                            filename[filename_len-1] = '\0';
+                            clean_filename = filename + 1;
+                        } else if (filename[0] == '\'' && filename[filename_len-1] == '\'') {
+                            filename[filename_len-1] = '\0';
+                            clean_filename = filename + 1;
+                        }
+                        
+                        // Ensure we have enough space
+                        size_t replacement_len = 15 + strlen(clean_filename) + 4; // "<!-- xmd: import " + filename + " -->"
+                        if (output_pos + replacement_len >= output_capacity) {
+                            output_capacity = (output_pos + replacement_len) * 2;
+                            char* new_output = realloc(output, output_capacity);
+                            if (!new_output) {
+                                free(filename);
+                                free(output);
+                                return NULL;
+                            }
+                            output = new_output;
+                        }
+                        
+                        // Write HTML comment replacement
+                        int written = snprintf(output + output_pos, output_capacity - output_pos, 
+                                             "<!-- xmd: import %s -->", clean_filename);
+                        if (written > 0) {
+                            output_pos += written;
+                        }
+                        
+                        free(filename);
+                        ptr = end + 1; // Skip past the closing parenthesis
+                        continue;
+                    }
+                }
+            }
+        }
+        
+        // Copy character as-is if not part of @ directive
+        if (output_pos >= output_capacity - 1) {
+            output_capacity *= 2;
+            char* new_output = realloc(output, output_capacity);
+            if (!new_output) {
+                free(output);
+                return NULL;
+            }
+            output = new_output;
+        }
+        output[output_pos++] = *ptr++;
+    }
+    
+    output[output_pos] = '\0';
+    return output;
+}
+
 /**
  * @brief Extract and track imports from a processed file
  */
@@ -216,11 +310,19 @@ static void track_file_imports(const char* filepath) {
     content[read_size] = '\0';
     fclose(file);
     
-    // Extract imports from content
+    // Preprocess @ syntax to HTML comments before extracting imports
+    char* processed_content = preprocess_at_syntax(content);
+    free(content);
+    
+    if (!processed_content) {
+        return;
+    }
+    
+    // Extract imports from processed content
     char** imports = NULL;
     int import_count = 0;
     
-    if (import_tracker_extract_imports(content, filepath, &imports, &import_count)) {
+    if (import_tracker_extract_imports(processed_content, filepath, &imports, &import_count)) {
         // Track each import dependency
         for (int i = 0; i < import_count; i++) {
             import_tracker_add_dependency(g_import_tracker, filepath, imports[i]);
@@ -229,7 +331,7 @@ static void track_file_imports(const char* filepath) {
         free(imports);
     }
     
-    free(content);
+    free(processed_content);
 }
 
 /**
@@ -293,6 +395,69 @@ static int process_file_with_output(const char* filepath, const char* input_dir,
             }
         } else {
             printf("❌ Error processing: %s\n", filepath);
+        }
+        
+        return result;
+    }
+}
+
+/**
+ * @brief Process a single file with direct output path (for file mode)
+ */
+static int process_single_file_with_output(const char* input_file, const char* output_file,
+                                         const char* format, bool verbose) {
+    if (verbose) {
+        printf("Processing: %s\n", input_file);
+    }
+    
+    if (output_file) {
+        // Create output directory if needed
+        char* output_dir_path = strdup(output_file);
+        char* last_slash = strrchr(output_dir_path, '/');
+        if (last_slash) {
+            *last_slash = '\0';
+            if (create_directory_recursive(output_dir_path) != 0) {
+                printf("❌ Failed to create output directory: %s\n", output_dir_path);
+                free(output_dir_path);
+                return 1;
+            }
+        }
+        free(output_dir_path);
+        
+        // Create process command arguments with direct output
+        char* process_argv[] = { "xmd", "process", (char*)input_file, "-o", (char*)output_file, "--format", (char*)format, NULL };
+        
+        int result = cmd_process(7, process_argv);
+        
+        if (result == 0) {
+            // Track imports for this file
+            track_file_imports(input_file);
+            
+            if (verbose) {
+                printf("✅ Successfully processed: %s → %s\n", input_file, output_file);
+            } else {
+                printf("✅ %s → %s\n", input_file, output_file);
+            }
+        } else {
+            printf("❌ Error processing: %s\n", input_file);
+        }
+        
+        return result;
+    } else {
+        // No output file - process to stdout
+        char* process_argv[] = { "xmd", "process", (char*)input_file, "--format", (char*)format, NULL };
+        
+        int result = cmd_process(5, process_argv);
+        
+        if (result == 0) {
+            // Track imports for this file
+            track_file_imports(input_file);
+            
+            if (verbose) {
+                printf("✅ Successfully processed: %s\n", input_file);
+            }
+        } else {
+            printf("❌ Error processing: %s\n", input_file);
         }
         
         return result;
@@ -437,37 +602,53 @@ static void free_file_arrays(char** files, time_t* mtimes, int count) {
  */
 int cmd_watch(int argc, char* argv[]) {
     if (argc < 3) {
-        fprintf(stderr, "Usage: %s watch <input_dir> [output_dir] [options]\n", argv[0]);
-        fprintf(stderr, "   or: %s watch <input_dir> --output-dir <output_dir> [options]\n", argv[0]);
+        fprintf(stderr, "Usage: %s watch <input> [output] [options]\n", argv[0]);
+        fprintf(stderr, "\nInput modes:\n");
+        fprintf(stderr, "  Directory: %s watch <input_dir> [output_dir] [options]\n", argv[0]);
+        fprintf(stderr, "  File:      %s watch <input_file.md> <output_file.html> [options]\n", argv[0]);
         fprintf(stderr, "\nOptions:\n");
-        fprintf(stderr, "  --output-dir, -o <dir>  Output directory\n");
+        fprintf(stderr, "  --output-dir, -o <dir>  Output directory (directory mode only)\n");
         fprintf(stderr, "  --format <fmt>          Output format: markdown, html, json (default: markdown)\n");
         fprintf(stderr, "  --verbose, -v           Verbose output\n");
         fprintf(stderr, "\nExamples:\n");
-        fprintf(stderr, "  %s watch src/ dist/                    # Shorthand\n", argv[0]);
-        fprintf(stderr, "  %s watch src/ --output-dir dist/       # Standard\n", argv[0]);
-        fprintf(stderr, "  %s watch src/ dist/ --format html      # With format\n", argv[0]);
+        fprintf(stderr, "  %s watch src/ dist/                        # Directory mode\n", argv[0]);
+        fprintf(stderr, "  %s watch src/file.md dist/file.html        # File mode\n", argv[0]);
+        fprintf(stderr, "  %s watch src/ --output-dir dist/ --format html  # With options\n", argv[0]);
         return 1;
     }
     
-    const char* watch_dir = argv[2];
-    const char* output_dir = NULL;
+    const char* input_path = argv[2];
+    const char* output_path = NULL;
     const char* format = "markdown";  // Default to markdown for watch
     bool verbose = false;
+    bool is_file_mode = false;
     
-    // Check for shorthand: xmd watch <input_dir> <output_dir>
+    // Detect input type: file vs directory
+    struct stat input_st;
+    if (stat(input_path, &input_st) != 0) {
+        fprintf(stderr, "Error: Input '%s' does not exist\n", input_path);
+        return 1;
+    }
+    
+    is_file_mode = S_ISREG(input_st.st_mode);
+    
+    // Check for shorthand: xmd watch <input> <output>
     if (argc >= 4 && argv[3][0] != '-') {
-        output_dir = argv[3];
+        output_path = argv[3];
     }
     
     // Parse options
-    for (int i = (output_dir ? 4 : 3); i < argc; i++) {
+    for (int i = (output_path ? 4 : 3); i < argc; i++) {
         if ((strcmp(argv[i], "--output-dir") == 0 || strcmp(argv[i], "-o") == 0) && i + 1 < argc) {
-            if (output_dir) {
-                fprintf(stderr, "Error: Output directory specified both as argument and option\n");
+            if (is_file_mode) {
+                fprintf(stderr, "Error: --output-dir option not valid in file mode. Use: xmd watch <input.md> <output.html>\n");
                 return 1;
             }
-            output_dir = argv[++i];
+            if (output_path) {
+                fprintf(stderr, "Error: Output specified both as argument and option\n");
+                return 1;
+            }
+            output_path = argv[++i];
         } else if (strcmp(argv[i], "--format") == 0 && i + 1 < argc) {
             format = argv[++i];
             // Validate format
@@ -483,11 +664,37 @@ int cmd_watch(int argc, char* argv[]) {
         }
     }
     
-    // Verify directory exists
-    struct stat st;
-    if (stat(watch_dir, &st) != 0 || !S_ISDIR(st.st_mode)) {
-        fprintf(stderr, "Error: Directory '%s' does not exist or is not a directory\n", watch_dir);
-        return 1;
+    // Validate input and output based on mode
+    if (is_file_mode) {
+        // File mode validation
+        if (!is_markdown_file(input_path)) {
+            fprintf(stderr, "Error: Input file '%s' must be a .md file\n", input_path);
+            return 1;
+        }
+        
+        if (!output_path) {
+            fprintf(stderr, "Error: File mode requires output file. Usage: xmd watch <input.md> <output.html>\n");
+            return 1;
+        }
+        
+        // Check if output directory exists and create if needed
+        char* output_dir_path = strdup(output_path);
+        char* last_slash = strrchr(output_dir_path, '/');
+        if (last_slash) {
+            *last_slash = '\0';
+            if (create_directory_recursive(output_dir_path) != 0) {
+                printf("❌ Failed to create output directory: %s\n", output_dir_path);
+                free(output_dir_path);
+                return 1;
+            }
+        }
+        free(output_dir_path);
+    } else {
+        // Directory mode validation
+        if (!S_ISDIR(input_st.st_mode)) {
+            fprintf(stderr, "Error: Input '%s' is not a directory\n", input_path);
+            return 1;
+        }
     }
     
     // Set up signal handling for graceful shutdown
@@ -502,20 +709,42 @@ int cmd_watch(int argc, char* argv[]) {
     }
     
     // Set global import tracker for watch mode
+    // Re-enabling after @ syntax implementation - should be safe now
     xmd_set_global_import_tracker(g_import_tracker);
     
-    printf("🔍 Watching directory: %s\n", watch_dir);
+    if (is_file_mode) {
+        printf("🔍 Watching file: %s\n", input_path);
+        if (output_path) {
+            printf("📁 Output file: %s\n", output_path);
+        }
+    } else {
+        printf("🔍 Watching directory: %s\n", input_path);
+    }
     printf("📝 Monitoring .md files for changes...\n");
     printf("Press Ctrl+C to stop\n\n");
     
-    // Initial scan
+    // Initial scan - different logic for file vs directory mode
     char** files = NULL;
     time_t* mtimes = NULL;
     int file_count = 0;
     
-    if (scan_directory(watch_dir, &files, &mtimes, &file_count) != 0) {
-        fprintf(stderr, "Error: Failed to scan directory\n");
-        return 1;
+    if (is_file_mode) {
+        // File mode: single file in array
+        file_count = 1;
+        files = malloc(sizeof(char*));
+        mtimes = malloc(sizeof(time_t));
+        if (!files || !mtimes) {
+            fprintf(stderr, "Error: Memory allocation failed\n");
+            return 1;
+        }
+        files[0] = strdup(input_path);
+        mtimes[0] = get_file_mtime(input_path);
+    } else {
+        // Directory mode: scan for all markdown files
+        if (scan_directory(input_path, &files, &mtimes, &file_count) != 0) {
+            fprintf(stderr, "Error: Failed to scan directory\n");
+            return 1;
+        }
     }
     
     if (verbose && file_count > 0) {
@@ -527,8 +756,10 @@ int cmd_watch(int argc, char* argv[]) {
     }
     
     // Show output configuration
-    if (output_dir) {
-        printf("📁 Output directory: %s\n", output_dir);
+    if (is_file_mode) {
+        printf("📄 Output format: %s\n\n", format);
+    } else if (output_path) {
+        printf("📁 Output directory: %s\n", output_path);
         printf("📄 Output format: %s\n", format);
         printf("\n");
     } else {
@@ -537,7 +768,13 @@ int cmd_watch(int argc, char* argv[]) {
     
     // Process all files initially
     for (int i = 0; i < file_count; i++) {
-        process_file_with_output(files[i], watch_dir, output_dir, format, verbose);
+        if (is_file_mode) {
+            // File mode: use direct output path
+            process_single_file_with_output(files[i], output_path, format, verbose);
+        } else {
+            // Directory mode: use directory-based processing
+            process_file_with_output(files[i], input_path, output_path, format, verbose);
+        }
     }
     
     if (file_count > 0) {
@@ -553,38 +790,56 @@ int cmd_watch(int argc, char* argv[]) {
             time_t current_mtime = get_file_mtime(files[i]);
             if (current_mtime > mtimes[i]) {
                 printf("📝 File changed: %s\n", files[i]);
-                process_file_with_output(files[i], watch_dir, output_dir, format, verbose);
                 
-                // Process all files that import this changed file
-                process_dependent_files(files[i], watch_dir, output_dir, format, verbose);
+                if (is_file_mode) {
+                    // File mode: process single file directly
+                    process_single_file_with_output(files[i], output_path, format, verbose);
+                    
+                    // Process all files that import this changed file (directory needs to be derived)
+                    char* file_dir = strdup(files[i]);
+                    char* last_slash = strrchr(file_dir, '/');
+                    if (last_slash) {
+                        *last_slash = '\0';
+                        process_dependent_files(files[i], file_dir, NULL, format, verbose);
+                    } else {
+                        process_dependent_files(files[i], ".", NULL, format, verbose);
+                    }
+                    free(file_dir);
+                } else {
+                    // Directory mode: use original logic
+                    process_file_with_output(files[i], input_path, output_path, format, verbose);
+                    process_dependent_files(files[i], input_path, output_path, format, verbose);
+                }
                 
                 mtimes[i] = current_mtime;
                 printf("\n");
             }
         }
         
-        // Check for new files (rescan directory periodically)
-        static int scan_counter = 0;
-        if (++scan_counter >= 10) { // Rescan every 5 seconds
-            scan_counter = 0;
-            
-            char** new_files = NULL;
-            time_t* new_mtimes = NULL;
-            int new_file_count = 0;
-            
-            if (scan_directory(watch_dir, &new_files, &new_mtimes, &new_file_count) == 0) {
-                if (new_file_count > file_count) {
-                    printf("📁 New files detected, rescanning...\n");
-                    free_file_arrays(files, mtimes, file_count);
-                    files = new_files;
-                    mtimes = new_mtimes;
-                    file_count = new_file_count;
-                    
-                    if (verbose) {
-                        printf("Now watching %d markdown file(s)\n\n", file_count);
+        // Check for new files (rescan directory periodically) - only in directory mode
+        if (!is_file_mode) {
+            static int scan_counter = 0;
+            if (++scan_counter >= 10) { // Rescan every 5 seconds
+                scan_counter = 0;
+                
+                char** new_files = NULL;
+                time_t* new_mtimes = NULL;
+                int new_file_count = 0;
+                
+                if (scan_directory(input_path, &new_files, &new_mtimes, &new_file_count) == 0) {
+                    if (new_file_count > file_count) {
+                        printf("📁 New files detected, rescanning...\n");
+                        free_file_arrays(files, mtimes, file_count);
+                        files = new_files;
+                        mtimes = new_mtimes;
+                        file_count = new_file_count;
+                        
+                        if (verbose) {
+                            printf("Now watching %d markdown file(s)\n\n", file_count);
+                        }
+                    } else {
+                        free_file_arrays(new_files, new_mtimes, new_file_count);
                     }
-                } else {
-                    free_file_arrays(new_files, new_mtimes, new_file_count);
                 }
             }
         }

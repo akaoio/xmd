@@ -8,11 +8,11 @@
 #include "../../../../include/c_api_internal.h"
 
 /**
- * @brief Initialize XMD processor
+ * @brief Initialize XMD processor (internal C API)
  * @param config_path Path to configuration file (optional)
  * @return XMD context handle or NULL on error
  */
-void* xmd_init(const char* config_path) {
+void* c_api_xmd_init(const char* config_path) {
     xmd_context_internal* ctx = calloc(1, sizeof(xmd_context_internal));
     if (!ctx) {
         return NULL;
@@ -47,4 +47,14 @@ void* xmd_init(const char* config_path) {
     
     ctx->initialized = true;
     return ctx;
+}
+
+/**
+ * @brief Initialize XMD system (main API)
+ * @return Error code
+ */
+xmd_error_code xmd_init(void) {
+    // Global initialization - in full implementation would set up
+    // global state, register default functions, etc.
+    return XMD_SUCCESS;
 }

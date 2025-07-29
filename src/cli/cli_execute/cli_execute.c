@@ -9,6 +9,9 @@
 #include <stdlib.h>
 #include "../../../include/cli.h"
 
+// Forward declaration
+int cmd_watch(int argc, char* argv[]);
+
 /**
  * @brief Execute CLI command
  * @param ctx CLI context
@@ -40,11 +43,30 @@ int cli_execute(cli_context* ctx) {
             return cli_process_file(ctx->args->input_file, ctx->args->output_file, ctx->args->verbose);
             
         case CLI_CMD_WATCH:
-            if (!ctx->args->watch_directory) {
-                fprintf(stderr, "Error: No directory specified for watching\n");
-                return 1;
+            // Route to the new cmd_watch function which supports both files and directories
+            // Convert CLI arguments to match cmd_watch expectations
+            {
+                char* watch_argv[8];
+                int watch_argc = 0;
+                
+                watch_argv[watch_argc++] = "xmd";
+                watch_argv[watch_argc++] = "watch";
+                
+                if (ctx->args->watch_directory) {
+                    watch_argv[watch_argc++] = ctx->args->watch_directory;
+                }
+                
+                if (ctx->args->output_file) {
+                    watch_argv[watch_argc++] = ctx->args->output_file;
+                }
+                
+                if (ctx->args->verbose) {
+                    watch_argv[watch_argc++] = "--verbose";
+                }
+                
+                // Call the new unified watch command
+                return cmd_watch(watch_argc, watch_argv);
             }
-            return cli_watch_directory(ctx->args->watch_directory, ctx->args->verbose);
             
         case CLI_CMD_VALIDATE:
             if (!ctx->args->input_file) {

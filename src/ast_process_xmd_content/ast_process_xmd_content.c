@@ -19,6 +19,114 @@ extern char* ast_substitute_variables(const char* text, store* variables);
 extern const char* xmd_get_current_file_path(void);
 
 /**
+ * @brief Convert @ syntax to HTML comment directives
+ * @param input Input content containing @ syntax
+ * @return New string with @ syntax converted to HTML comments (caller must free)
+ */
+static char* preprocess_at_syntax(const char* input);
+
+/**
+ * @brief Convert @ syntax to HTML comment directives
+ */
+static char* preprocess_at_syntax(const char* input) {
+    if (!input) {
+        return NULL;
+    }
+    
+    size_t input_len = strlen(input);
+    size_t output_capacity = input_len * 2 + 1; // Extra space for expansions  
+    char* output = malloc(output_capacity);
+    if (!output) {
+        return NULL;
+    }
+    
+    size_t output_pos = 0;
+    const char* ptr = input;
+    
+    while (*ptr) {
+        // Look for @ syntax at start of line or after whitespace
+        if (*ptr == '@' && (ptr == input || *(ptr-1) == '\n' || *(ptr-1) == ' ' || *(ptr-1) == '\t')) {
+            // Check for known @ directives
+            if (strncmp(ptr, "@import(", 8) == 0) {
+                // Find closing parenthesis
+                const char* start = ptr + 8;
+                const char* end = strchr(start, ')');
+                if (end) {
+                    // Extract filename (remove quotes if present)
+                    size_t filename_len = end - start;
+                    char* filename = malloc(filename_len + 1);
+                    if (filename) {
+                        strncpy(filename, start, filename_len);
+                        filename[filename_len] = '\0';
+                        
+                        // Remove quotes if present
+                        char* clean_filename = filename;
+                        if (filename[0] == '"' && filename[filename_len-1] == '"') {
+                            filename[filename_len-1] = '\0';
+                            clean_filename = filename + 1;
+                        } else if (filename[0] == '\'' && filename[filename_len-1] == '\'') {
+                            filename[filename_len-1] = '\0';
+                            clean_filename = filename + 1;
+                        }
+                        
+                        // Ensure we have enough space
+                        size_t replacement_len = 15 + strlen(clean_filename) + 4; // "<!-- xmd: import " + filename + " -->"
+                        if (output_pos + replacement_len >= output_capacity) {
+                            output_capacity = (output_pos + replacement_len) * 2;
+                            char* new_output = realloc(output, output_capacity);
+                            if (!new_output) {
+                                free(filename);
+                                free(output);
+                                return NULL;
+                            }
+                            output = new_output;
+                        }
+                        
+                        // Write HTML comment replacement
+                        int written = snprintf(output + output_pos, output_capacity - output_pos, 
+                                             "<!-- xmd: import %s -->", clean_filename);
+                        if (written > 0) {
+                            output_pos += written;
+                        }
+                        
+                        free(filename);
+                        ptr = end + 1; // Skip past the closing parenthesis
+                        continue;
+                    }
+                }
+            }
+            
+            // If we get here, @ wasn't a recognized directive, copy it as-is
+            if (output_pos >= output_capacity - 1) {
+                output_capacity *= 2;
+                char* new_output = realloc(output, output_capacity);
+                if (!new_output) {
+                    free(output);
+                    return NULL;
+                }
+                output = new_output;
+            }
+            output[output_pos++] = *ptr++;
+        } else {
+            // Copy regular character
+            if (output_pos >= output_capacity - 1) {
+                output_capacity *= 2;
+                char* new_output = realloc(output, output_capacity);
+                if (!new_output) {
+                    free(output);
+                    return NULL;
+                }
+                output = new_output;
+            }
+            output[output_pos++] = *ptr++;
+        }
+    }
+    
+    output[output_pos] = '\0';
+    return output;
+}
+
+/**
  * @brief Process XMD directive found in HTML comment
  * @param directive_content Content between <!-- xmd: and -->
  * @param ctx Processor context
@@ -455,9 +563,16 @@ char* ast_process_xmd_content(const char* input, store* variables) {
         return NULL;
     }
     
+    // Step 1: Apply @ syntax preprocessing FIRST
+    char* preprocessed_input = preprocess_at_syntax(input);
+    if (!preprocessed_input) {
+        return NULL;
+    }
+    
     // Create processor context
     processor_context* ctx = create_context(variables);
     if (!ctx) {
+        free(preprocessed_input);
         return NULL;
     }
     
@@ -467,16 +582,17 @@ char* ast_process_xmd_content(const char* input, store* variables) {
         set_context_source_file(ctx, current_file);
     }
     
-    size_t input_len = strlen(input);
+    size_t input_len = strlen(preprocessed_input);
     size_t output_capacity = input_len * 2 + 1;
     char* output = malloc(output_capacity);
     if (!output) {
         destroy_context(ctx);
+        free(preprocessed_input);
         return NULL;
     }
     
     size_t output_pos = 0;
-    const char* ptr = input;
+    const char* ptr = preprocessed_input;
     
     while (*ptr) {
         // Look for HTML comment start
@@ -667,6 +783,7 @@ char* ast_process_xmd_content(const char* input, store* variables) {
     // Perform variable substitution on the entire output
     char* substituted = ast_substitute_variables(output, variables);
     free(output);
+    free(preprocessed_input);
     
     destroy_context(ctx);
     return substituted ? substituted : strdup("");

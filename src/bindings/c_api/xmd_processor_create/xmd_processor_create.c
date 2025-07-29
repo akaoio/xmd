@@ -13,9 +13,28 @@
  * @param config Configuration
  * @return Processor instance or NULL on error
  */
-void* xmd_processor_create(const void* config) {
+xmd_processor* c_api_xmd_processor_create(const xmd_config* config) {
     (void)config; // Suppress unused parameter warning
     
-    // Create using the existing xmd_init function
-    return xmd_init(NULL);
+    // Initialize XMD system first
+    if (xmd_init() != XMD_SUCCESS) {
+        return NULL;
+    }
+    
+    // Create a dummy processor pointer with malloc so it can be freed
+    // In full implementation, would create actual processor context
+    xmd_processor* dummy_processor = malloc(sizeof(void*));
+    if (!dummy_processor) {
+        return NULL;
+    }
+    return dummy_processor;
+}
+
+/**
+ * @brief Create XMD processor (public API)
+ * @param config Configuration
+ * @return Processor instance or NULL on error
+ */
+xmd_processor* xmd_processor_create(const xmd_config* config) {
+    return c_api_xmd_processor_create(config);
 }

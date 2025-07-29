@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include "xmd.h"  // Include canonical XMD types
 
 #ifdef __cplusplus
 extern "C" {
@@ -93,16 +94,7 @@ typedef struct config_value {
     } data;
 } config_value;
 
-/**
- * @brief Configuration structure
- */
-typedef struct xmd_config {
-    char* config_file_path;
-    config_value* values;
-    size_t value_count;
-    bool loaded;
-} xmd_config;
-
+// xmd_config and xmd_result are now provided by xmd.h
 
 /**
  * @brief Language binding types
@@ -114,17 +106,6 @@ typedef enum {
     BINDING_GO = 3,
     BINDING_RUST = 4
 } binding_type;
-
-/**
- * @brief C API result structure
- */
-typedef struct xmd_result {
-    int error_code;
-    char* output;
-    char* error_message;
-    size_t output_length;
-    double processing_time_ms;
-} xmd_result;
 
 /**
  * @brief Plugin manager structure
@@ -278,39 +259,8 @@ void config_destroy(xmd_config* config);
 // C API Functions (for language bindings)
 // =============================================================================
 
-/**
- * @brief Initialize XMD processor
- * @param config_path Path to configuration file (optional)
- * @return XMD context handle or NULL on error
- */
-void* xmd_init(const char* config_path);
-
-/**
- * @brief Process markdown string
- * @param handle XMD context handle
- * @param input Input markdown string
- * @param input_length Input string length
- * @return Processing result (must be freed with xmd_result_free)
- */
-xmd_result* xmd_process_string(void* handle, const char* input, size_t input_length);
-
-/**
- * @brief Process markdown file
- * @param handle XMD context handle
- * @param input_path Input file path
- * @param output_path Output file path (optional)
- * @return Processing result (must be freed with xmd_result_free)
- */
-xmd_result* xmd_process_file(void* handle, const char* input_path, const char* output_path);
-
-/**
- * @brief Process markdown string
- * @param handle XMD context handle
- * @param input Input markdown string
- * @param input_length Input string length
- * @return Processing result (must be freed with xmd_result_free)
- */
-xmd_result* xmd_process_string(void* handle, const char* input, size_t input_length);
+// These functions are now defined in c_api_internal.h with c_api_ prefix
+// to avoid conflicts with the main XMD API in xmd.h
 
 /**
  * @brief Validate markdown syntax
@@ -344,11 +294,7 @@ char* xmd_get_config(void* handle, const char* key);
  */
 void xmd_result_free(xmd_result* result);
 
-/**
- * @brief Cleanup XMD processor
- * @param handle XMD context handle
- */
-void xmd_cleanup(void* handle);
+// CLI cleanup function is now c_api_xmd_cleanup in c_api_internal.h
 
 // =============================================================================
 // Utility Macros
@@ -386,17 +332,13 @@ void xmd_cleanup(void* handle);
         (val && val->type == CONFIG_BOOLEAN) ? val->data.boolean_val : default_val; \
     })
 
-/**
- * @brief Free XMD processor
- * @param processor Processor to free
- */
-void xmd_processor_free(void* processor);
+// XMD processor free function is provided by main XMD API in xmd.h
 
 /**
- * @brief Cleanup XMD processor context
+ * @brief Cleanup XMD processor context (CLI wrapper - duplicate removed)
  * @param handle XMD context handle
  */
-void xmd_cleanup(void* handle);
+// void cli_xmd_cleanup(void* handle); // Already defined above
 
 #ifdef __cplusplus
 }

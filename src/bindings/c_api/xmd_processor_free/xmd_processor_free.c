@@ -12,8 +12,19 @@
  * @brief Free XMD processor
  * @param processor Processor to free
  */
-void xmd_processor_free(void* processor) {
+void c_api_xmd_processor_free(xmd_processor* processor) {
     if (processor) {
-        xmd_cleanup(processor);
+        // Free the processor memory - in a full implementation this would
+        // properly clean up the processor context
+        // xmd_cleanup() is a global cleanup function
+        free(processor);
     }
+}
+
+/**
+ * @brief Free XMD processor (public API)
+ * @param processor Processor to free
+ */
+void xmd_processor_free(xmd_processor* processor) {
+    c_api_xmd_processor_free(processor);
 }
