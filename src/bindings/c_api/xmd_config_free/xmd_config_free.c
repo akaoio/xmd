@@ -12,8 +12,8 @@
  * @brief Free XMD configuration
  * @param config Configuration to free
  */
-void xmd_config_free(void* config) {
+void c_api_xmd_config_free(xmd_config* config) {
     if (config) {
-        config_destroy((xmd_config*)config);
+        config_destroy(config);
     }
 }

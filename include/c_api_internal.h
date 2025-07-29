@@ -43,17 +43,17 @@ int preprocess_for_loops(const char* input, size_t input_length, store* var_stor
 bool c_api_evaluate_condition(const char* condition, store* var_store);
 int preprocess_if_statements(const char* input, size_t input_length, store* var_store, 
                             char* output, size_t output_size);
-void* xmd_init(const char* config_path);
-xmd_result* create_result(int error_code, const char* output, const char* error_message);
-xmd_result* xmd_process_string_api(void* handle, const char* input, size_t input_length);
-xmd_result* xmd_process_file(void* handle, const char* input_path, const char* output_path);
-xmd_result* xmd_validate(void* handle, const char* input, size_t input_length);
-int xmd_set_config(void* handle, const char* key, const char* value);
-char* xmd_get_config(void* handle, const char* key);
-void xmd_result_free(xmd_result* result);
-void xmd_cleanup(void* handle);
-const char* xmd_get_version(void);
-int xmd_set_variable(void* processor, const char* key, const char* value);
-char* xmd_get_variable(void* processor, const char* key);
+void* c_api_xmd_init(const char* config_path);
+xmd_result* c_api_create_result(int error_code, const char* output, const char* error_message);
+xmd_result* c_api_xmd_process_string(void* handle, const char* input, size_t input_length);
+xmd_result* c_api_xmd_process_file(void* handle, const char* input_path, const char* output_path);
+xmd_result* c_api_xmd_validate(void* handle, const char* input, size_t input_length);
+int c_api_xmd_set_config(void* handle, const char* key, const char* value);
+char* c_api_xmd_get_config(void* handle, const char* key);
+void c_api_xmd_result_free(xmd_result* result);
+void c_api_xmd_cleanup(void* handle);
+const char* c_api_xmd_get_version(void);
+int c_api_xmd_set_variable(void* processor, const char* key, const char* value);
+char* c_api_xmd_get_variable(void* processor, const char* key);
 
 #endif /* C_API_INTERNAL_H */

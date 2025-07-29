@@ -15,7 +15,7 @@
  * @param output_path Output file path (optional)
  * @return Processing result (must be freed with xmd_result_free)
  */
-xmd_result* xmd_process_file(void* handle, const char* input_path, const char* output_path) {
+xmd_result* c_api_xmd_process_file(void* handle, const char* input_path, const char* output_path) {
     if (!handle || !input_path) {
         return NULL; // Return NULL for invalid parameters
     }

@@ -117,21 +117,7 @@ int process_import(const char* args, processor_context* ctx, char* output, size_
     // Use resolved path if available, otherwise use original
     const char* import_path = resolved_path ? resolved_path : trimmed_filename;
     
-    // Track import dependency if in watch mode
-    if (xmd_is_watch_mode()) {
-        import_tracker_t* tracker = xmd_get_global_import_tracker();
-        const char* current_file = xmd_get_current_file_path();
-        
-        // If no current file is set but we have a source_file_path in context, use that
-        if (!current_file && ctx && ctx->source_file_path) {
-            current_file = ctx->source_file_path;
-        }
-        
-        // Only track if we have valid tracker and current file
-        if (tracker && current_file && import_path) {
-            import_tracker_add_dependency(tracker, current_file, import_path);
-        }
-    }
+    // Tracking removed - now handled post-processing in watch command to avoid interference
     
     // Read and process the imported file
     FILE* file = fopen(import_path, "r");

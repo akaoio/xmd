@@ -58,18 +58,18 @@ static void test_simple_nested_import() {
         "Content from A\n");
     
     // Process file A
-    XmdResult result = xmd_process_file("test_import_nested/a.md");
+    xmd_result* result = xmd_process_file(NULL, "test_import_nested/a.md");
     
     // Verify the result contains content from all three files
-    assert(result.success);
-    assert(strstr(result.output, "File A") != NULL);
-    assert(strstr(result.output, "File B") != NULL);
-    assert(strstr(result.output, "File C") != NULL);
-    assert(strstr(result.output, "Content from A") != NULL);
-    assert(strstr(result.output, "Content from B") != NULL);
-    assert(strstr(result.output, "Content from C") != NULL);
+    assert(result && result->error_code == XMD_SUCCESS);
+    assert(strstr(result->output, "File A") != NULL);
+    assert(strstr(result->output, "File B") != NULL);
+    assert(strstr(result->output, "File C") != NULL);
+    assert(strstr(result->output, "Content from A") != NULL);
+    assert(strstr(result->output, "Content from B") != NULL);
+    assert(strstr(result->output, "Content from C") != NULL);
     
-    xmd_free_result(&result);
+    xmd_result_free(result);
     
     // Clean up
     remove_file("test_import_nested/a.md");
@@ -93,16 +93,16 @@ static void test_deep_nested_import() {
     write_file("test_import_nested/b.md", "@import(test_import_nested/c.md)\nLevel B\n");
     write_file("test_import_nested/a.md", "@import(test_import_nested/b.md)\nLevel A\n");
     
-    XmdResult result = xmd_process_file("test_import_nested/a.md");
+    xmd_result* result = xmd_process_file(NULL, "test_import_nested/a.md");
     
-    assert(result.success);
-    assert(strstr(result.output, "Level A") != NULL);
-    assert(strstr(result.output, "Level B") != NULL);
-    assert(strstr(result.output, "Level C") != NULL);
-    assert(strstr(result.output, "Level D") != NULL);
-    assert(strstr(result.output, "Level E") != NULL);
+    assert(result && result->error_code == XMD_SUCCESS);
+    assert(strstr(result->output, "Level A") != NULL);
+    assert(strstr(result->output, "Level B") != NULL);
+    assert(strstr(result->output, "Level C") != NULL);
+    assert(strstr(result->output, "Level D") != NULL);
+    assert(strstr(result->output, "Level E") != NULL);
     
-    xmd_free_result(&result);
+    xmd_result_free(result);
     
     // Clean up
     remove_file("test_import_nested/a.md");
@@ -138,16 +138,16 @@ static void test_diamond_import() {
         "@import(test_import_nested/c.md)\n"
         "Content from A\n");
     
-    XmdResult result = xmd_process_file("test_import_nested/a.md");
+    xmd_result* result = xmd_process_file(NULL, "test_import_nested/a.md");
     
-    assert(result.success);
-    assert(strstr(result.output, "Content from A") != NULL);
-    assert(strstr(result.output, "Content from B") != NULL);
-    assert(strstr(result.output, "Content from C") != NULL);
+    assert(result && result->error_code == XMD_SUCCESS);
+    assert(strstr(result->output, "Content from A") != NULL);
+    assert(strstr(result->output, "Content from B") != NULL);
+    assert(strstr(result->output, "Content from C") != NULL);
     // D should appear only once or twice, but the content should be there
-    assert(strstr(result.output, "Shared content from D") != NULL);
+    assert(strstr(result->output, "Shared content from D") != NULL);
     
-    xmd_free_result(&result);
+    xmd_result_free(result);
     
     // Clean up
     remove_file("test_import_nested/a.md");
@@ -181,14 +181,14 @@ static void test_relative_path_imports() {
         "@import(components/page.md)\n"
         "Main content\n");
     
-    XmdResult result = xmd_process_file("test_import_nested/main.md");
+    xmd_result* result = xmd_process_file(NULL, "test_import_nested/main.md");
     
-    assert(result.success);
-    assert(strstr(result.output, "Main content") != NULL);
-    assert(strstr(result.output, "Page content") != NULL);
-    assert(strstr(result.output, "Footer content") != NULL);
+    assert(result && result->error_code == XMD_SUCCESS);
+    assert(strstr(result->output, "Main content") != NULL);
+    assert(strstr(result->output, "Page content") != NULL);
+    assert(strstr(result->output, "Footer content") != NULL);
     
-    xmd_free_result(&result);
+    xmd_result_free(result);
     
     // Clean up
     remove_file("test_import_nested/main.md");
@@ -212,17 +212,17 @@ static void test_missing_file_import() {
         "@import(test_import_nested/nonexistent.md)\n"
         "This should fail\n");
     
-    XmdResult result = xmd_process_file("test_import_nested/broken.md");
+    xmd_result* result = xmd_process_file(NULL, "test_import_nested/broken.md");
     
     // The import should fail gracefully
     // Note: Behavior depends on implementation - adjust assertion as needed
-    if (!result.success) {
-        assert(result.error != NULL);
-        assert(strstr(result.error, "nonexistent.md") != NULL || 
-               strstr(result.error, "import") != NULL);
+    if (result && result->error_code != XMD_SUCCESS) {
+        assert(result->error_message != NULL);
+        assert(strstr(result->error_message, "nonexistent.md") != NULL || 
+               strstr(result->error_message, "import") != NULL);
     }
     
-    xmd_free_result(&result);
+    xmd_result_free(result);
     
     // Clean up
     remove_file("test_import_nested/broken.md");
@@ -249,19 +249,19 @@ static void test_import_dependency_tracking() {
         "Dashboard content\n");
     
     // Process dashboard initially
-    XmdResult result1 = xmd_process_file("test_import_nested/dashboard.md");
-    assert(result1.success);
-    assert(strstr(result1.output, "Original comment") != NULL);
-    xmd_free_result(&result1);
+    xmd_result* result1 = xmd_process_file(NULL, "test_import_nested/dashboard.md");
+    assert(result1 && result1->error_code == XMD_SUCCESS);
+    assert(strstr(result1->output, "Original comment") != NULL);
+    xmd_result_free(result1);
     
     // Simulate file change
     write_file("test_import_nested/core/comment.md", "Updated comment\n");
     
     // Process dashboard again - should reflect the change
-    XmdResult result2 = xmd_process_file("test_import_nested/dashboard.md");
-    assert(result2.success);
-    assert(strstr(result2.output, "Updated comment") != NULL);
-    xmd_free_result(&result2);
+    xmd_result* result2 = xmd_process_file(NULL, "test_import_nested/dashboard.md");
+    assert(result2 && result2->error_code == XMD_SUCCESS);
+    assert(strstr(result2->output, "Updated comment") != NULL);
+    xmd_result_free(result2);
     
     // Clean up
     remove_file("test_import_nested/dashboard.md");
@@ -311,15 +311,15 @@ static void test_complex_mixed_imports() {
         "@set(content, \"Welcome to the homepage!\")\n"
         "@import(layouts/main.md)\n");
     
-    XmdResult result = xmd_process_file("test_import_nested/index.md");
+    xmd_result* result = xmd_process_file(NULL, "test_import_nested/index.md");
     
-    assert(result.success);
-    assert(strstr(result.output, "My Site") != NULL);
-    assert(strstr(result.output, "Version: 1.0.0") != NULL);
-    assert(strstr(result.output, "[Home](/)") != NULL);
-    assert(strstr(result.output, "Welcome to the homepage!") != NULL);
+    assert(result && result->error_code == XMD_SUCCESS);
+    assert(strstr(result->output, "My Site") != NULL);
+    assert(strstr(result->output, "Version: 1.0.0") != NULL);
+    assert(strstr(result->output, "[Home](/)") != NULL);
+    assert(strstr(result->output, "Welcome to the homepage!") != NULL);
     
-    xmd_free_result(&result);
+    xmd_result_free(result);
     
     // Clean up
     remove_file("test_import_nested/index.md");

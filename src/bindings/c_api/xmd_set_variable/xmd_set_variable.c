@@ -15,7 +15,7 @@
  * @param value Variable value
  * @return 0 on success, -1 on error
  */
-int xmd_set_variable(void* processor, const char* key, const char* value) {
+int c_api_xmd_set_variable(void* processor, const char* key, const char* value) {
     if (!processor || !key || !value) {
         return -1;
     }

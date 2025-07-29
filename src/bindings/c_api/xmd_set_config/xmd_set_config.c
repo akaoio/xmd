@@ -20,7 +20,7 @@
  * @param value Configuration value
  * @return 0 on success, -1 on error
  */
-int xmd_set_config(void* handle, const char* key, const char* value) {
+int c_api_xmd_set_config(void* handle, const char* key, const char* value) {
     if (!handle || !key || !value) {
         return -1;
     }

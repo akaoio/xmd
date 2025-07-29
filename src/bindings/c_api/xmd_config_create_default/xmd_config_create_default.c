@@ -12,6 +12,6 @@
  * @brief Create default XMD configuration
  * @return Default configuration structure
  */
-void* xmd_config_create_default(void) {
+xmd_config* c_api_xmd_config_create_default(void) {
     return config_create();
 }

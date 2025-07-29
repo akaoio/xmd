@@ -10,6 +10,11 @@
 #include <string.h>
 #include "../../../include/cli.h"
 
+// External global storage (defined in config_set.c)
+extern char* g_stored_keys[100];
+extern config_value* g_stored_values[100];  
+extern size_t g_stored_count;
+
 /**
  * @brief Find configuration value by key
  * @param config Configuration structure
@@ -21,11 +26,10 @@ int find_config_value(xmd_config* config, const char* key) {
         return -1;
     }
     
-    for (size_t i = 0; i < config->value_count; i++) {
+    for (size_t i = 0; i < g_stored_count; i++) {
         // Search through configuration values
-        if (config->values[i].type == CONFIG_STRING) {
-            // Check if this value matches the requested key
-            // Implementation depends on specific config structure
+        if (g_stored_keys[i] && strcmp(g_stored_keys[i], key) == 0) {
+            return (int)i;
         }
     }
     

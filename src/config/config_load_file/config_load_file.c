@@ -61,8 +61,10 @@ int config_load_file(xmd_config* config, const char* file_path) {
     }
     
     fclose(file);
-    config->loaded = true;
-    config->config_file_path = strdup(file_path);
+    
+    // Mark configuration as successfully loaded
+    // In the current struct design, we don't track load state or file path
+    // The configuration values are already set in the struct members above
     
     return 0;
 }

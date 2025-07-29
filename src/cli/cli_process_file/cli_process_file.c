@@ -74,10 +74,18 @@ int cli_process_file(const char* input_file, const char* output_file, bool verbo
         return 1;
     }
     
-    // Process content through XMD pipeline
-    void* xmd_handle = xmd_init(NULL);
+    // Initialize XMD system
+    if (xmd_init() != XMD_SUCCESS) {
+        fprintf(stderr, "Error: Failed to initialize XMD system\n");
+        lexer_free(lex);
+        free(content);
+        return 1;
+    }
+    
+    // Create processor handle
+    void* xmd_handle = xmd_processor_create(NULL);
     if (!xmd_handle) {
-        fprintf(stderr, "Error: Failed to initialize XMD processor\n");
+        fprintf(stderr, "Error: Failed to create XMD processor\n");
         lexer_free(lex);
         free(content);
         return 1;

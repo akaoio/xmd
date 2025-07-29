@@ -1,5 +1,5 @@
 /**
- * @file xmd_process_string.c
+ * @file c_api_xmd_process_string.c
  * @brief Process string through XMD
  * @author XMD Implementation Team
  * @date 2025-07-27
@@ -23,7 +23,7 @@ char* ast_process_xmd_content(const char* input, store* variables);
  * @param input_length Length of input string
  * @return XMD result or NULL on error
  */
-xmd_result* xmd_process_string(void* handle, const char* input, size_t input_length) {
+xmd_result* c_api_xmd_process_string(void* handle, const char* input, size_t input_length) {
     if (!handle || !input || input_length == 0) {
         return NULL;
     }
@@ -36,5 +36,5 @@ xmd_result* xmd_process_string(void* handle, const char* input, size_t input_len
     
     // Clean up temporary result structure and use the proper API
     free(result);
-    return xmd_process_string_api(handle, input, input_length);
+    return c_api_xmd_process_string_api(handle, input, input_length);
 }

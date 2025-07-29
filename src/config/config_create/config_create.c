@@ -20,11 +20,18 @@ xmd_config* config_create(void) {
         return NULL;
     }
     
-    // Initialize configuration
-    config->config_file_path = NULL;
-    config->values = NULL;
-    config->value_count = 0;
-    config->loaded = false;
+    // Initialize configuration with defaults
+    config->sandbox = NULL;
+    config->max_recursion_depth = 100;
+    config->max_loop_iterations = 10000;
+    config->cache_max_memory = 64 * 1024 * 1024;
+    config->cache_default_ttl_ms = 3600000;
+    config->module_search_paths = NULL;
+    config->search_path_count = 0;
+    config->preserve_comments = false;
+    config->pretty_print = false;
+    config->output_format = NULL;
+    config->debug_mode = false;
     
     return config;
 }

@@ -10,7 +10,7 @@
  * @brief Free XMD result structure
  * @param result Result to free
  */
-void xmd_result_free(xmd_result* result) {
+void c_api_xmd_result_free(xmd_result* result) {
     if (!result) {
         return;
     }
@@ -18,4 +18,12 @@ void xmd_result_free(xmd_result* result) {
     free(result->output);
     free(result->error_message);
     free(result);
+}
+
+/**
+ * @brief Free XMD result structure (public API)
+ * @param result Result to free
+ */
+void xmd_result_free(xmd_result* result) {
+    c_api_xmd_result_free(result);
 }

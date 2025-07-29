@@ -33,7 +33,7 @@ xmd_result* xmd_process_string_api(void* handle, const char* input, size_t input
     
     xmd_context_internal* ctx = (xmd_context_internal*)handle;
     if (!ctx->initialized) {
-        return create_result(-1, NULL, "XMD context not initialized");
+        return c_api_create_result(-1, NULL, "XMD context not initialized");
     }
     
     // Record start time
@@ -42,7 +42,7 @@ xmd_result* xmd_process_string_api(void* handle, const char* input, size_t input
     // Create variable store for processing
     store* var_store = store_create();
     if (!var_store) {
-        return create_result(-1, NULL, "Failed to create variable store");
+        return c_api_create_result(-1, NULL, "Failed to create variable store");
     }
     
     // Copy global variables from context to processing store
@@ -77,7 +77,7 @@ xmd_result* xmd_process_string_api(void* handle, const char* input, size_t input
     clock_t end_time = clock();
     double processing_time = ((double)(end_time - start_time)) / CLOCKS_PER_SEC * 1000.0;
     
-    xmd_result* result = create_result(0, output, NULL);
+    xmd_result* result = c_api_create_result(0, output, NULL);
     if (result) {
         result->processing_time_ms = processing_time;
     }

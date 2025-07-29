@@ -30,9 +30,9 @@ void cli_cleanup(cli_context* ctx) {
     
     // Cleanup XMD context if initialized
     if (ctx->xmd) {
-        if (ctx->xmd) {
-            xmd_cleanup(ctx->xmd);
-        }
+        // Free the XMD context (xmd_cleanup() is global)
+        free(ctx->xmd);
+        ctx->xmd = NULL;
     }
     
     free(ctx);

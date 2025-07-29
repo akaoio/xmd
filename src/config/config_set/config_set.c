@@ -43,7 +43,6 @@ int config_set(xmd_config* config, const char* key, config_value* value) {
         g_stored_keys[g_stored_count] = strdup(key);
         g_stored_values[g_stored_count] = value;
         g_stored_count++;
-        config->value_count = g_stored_count;
         return 0;
     }
     

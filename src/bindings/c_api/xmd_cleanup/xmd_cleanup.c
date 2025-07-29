@@ -12,7 +12,7 @@
  * @brief Cleanup XMD processor
  * @param handle XMD context handle
  */
-void xmd_cleanup(void* handle) {
+void c_api_xmd_cleanup(void* handle) {
     if (!handle) {
         return;
     }

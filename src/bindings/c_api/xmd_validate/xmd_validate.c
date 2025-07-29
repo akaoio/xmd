@@ -15,7 +15,7 @@
  * @param input_length Input string length
  * @return Validation result (must be freed with xmd_result_free)
  */
-xmd_result* xmd_validate(void* handle, const char* input, size_t input_length) {
+xmd_result* c_api_xmd_validate(void* handle, const char* input, size_t input_length) {
     if (!handle || !input) {
         return NULL; // Return NULL for invalid parameters
     }

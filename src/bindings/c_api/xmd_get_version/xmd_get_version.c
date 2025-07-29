@@ -13,6 +13,14 @@ extern char* get_version(void);
  * @brief Get XMD library version
  * @return Version string
  */
-const char* xmd_get_version(void) {
+const char* c_api_xmd_get_version(void) {
     return get_version();
+}
+
+/**
+ * @brief Get XMD library version (public API)
+ * @return Version string
+ */
+const char* xmd_get_version(void) {
+    return c_api_xmd_get_version();
 }

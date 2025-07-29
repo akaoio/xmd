@@ -18,10 +18,21 @@ void config_destroy(xmd_config* config) {
         return;
     }
     
-    free(config->config_file_path);
+    // Free sandbox config if present
+    if (config->sandbox) {
+        free(config->sandbox);
+    }
     
-    // In a full implementation, we'd free all stored values
-    // For now, the simple implementation stores values statically
+    // Free module search paths
+    if (config->module_search_paths) {
+        for (size_t i = 0; i < config->search_path_count; i++) {
+            free(config->module_search_paths[i]);
+        }
+        free(config->module_search_paths);
+    }
+    
+    // Free output format string
+    free(config->output_format);
     
     free(config);
 }

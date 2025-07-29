@@ -19,7 +19,7 @@
  * @param key Configuration key
  * @return Configuration value or NULL if not found (must be freed)
  */
-char* xmd_get_config(void* handle, const char* key) {
+char* c_api_xmd_get_config(void* handle, const char* key) {
     if (!handle || !key) {
         return NULL;
     }
