@@ -29,12 +29,9 @@ Từ `/src/main.c` và `/src/main/convert_shorthand_to_process/`:
 ## Multiline Directive Questions
 
 ```html
-<!-- xmd:
-set var="value"
-if condition
--->
+
 content
-<!-- xmd:endif -->
+
 ```
 
 **Cần kiểm tra:**

@@ -7,6 +7,7 @@
 #define _GNU_SOURCE
 #include <unistd.h>
 #include "../../../include/main_internal.h"
+#include "../../../include/import_tracker.h"
 #include <dirent.h>
 #include <time.h>
 #include <sys/stat.h>
@@ -35,6 +36,11 @@ char* strdup(const char* s);
 #endif
 
 static volatile bool watch_running = true;
+static import_tracker_t* g_import_tracker = NULL;
+
+// Forward declarations
+static int process_file_with_output(const char* filepath, const char* input_dir,
+                                  const char* output_dir, const char* format, bool verbose);
 
 /**
  * @brief Signal handler for graceful shutdown
@@ -146,6 +152,86 @@ static char* generate_output_path(const char* input_path, const char* input_dir,
     return output_path;
 }
 
+// Forward declaration
+static int process_file_with_output(const char* filepath, const char* input_dir,
+                                  const char* output_dir, const char* format, bool verbose);
+
+/**
+ * @brief Process all files that import the changed file (recursive)
+ */
+static void process_dependent_files(const char* changed_file, const char* input_dir,
+                                  const char* output_dir, const char* format, bool verbose) {
+    if (!g_import_tracker || !changed_file) {
+        return;
+    }
+    
+    // Get all files that import the changed file
+    char** importers = NULL;
+    int importer_count = 0;
+    
+    if (import_tracker_get_importers(g_import_tracker, changed_file, &importers, &importer_count)) {
+        if (importer_count > 0 && verbose) {
+            printf("🔄 Found %d file(s) importing %s\n", importer_count, changed_file);
+        }
+        
+        // Process each importer
+        for (int i = 0; i < importer_count; i++) {
+            printf("🔄 Reprocessing dependent: %s\n", importers[i]);
+            process_file_with_output(importers[i], input_dir, output_dir, format, verbose);
+            
+            // Recursively process files that import this importer
+            process_dependent_files(importers[i], input_dir, output_dir, format, verbose);
+            
+            free(importers[i]);
+        }
+        free(importers);
+    }
+}
+
+/**
+ * @brief Extract and track imports from a processed file
+ */
+static void track_file_imports(const char* filepath) {
+    if (!g_import_tracker || !filepath) {
+        return;
+    }
+    
+    // Read the file content
+    FILE* file = fopen(filepath, "r");
+    if (!file) {
+        return;
+    }
+    
+    fseek(file, 0, SEEK_END);
+    long file_size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    
+    char* content = malloc(file_size + 1);
+    if (!content) {
+        fclose(file);
+        return;
+    }
+    
+    size_t read_size = fread(content, 1, file_size, file);
+    content[read_size] = '\0';
+    fclose(file);
+    
+    // Extract imports from content
+    char** imports = NULL;
+    int import_count = 0;
+    
+    if (import_tracker_extract_imports(content, filepath, &imports, &import_count)) {
+        // Track each import dependency
+        for (int i = 0; i < import_count; i++) {
+            import_tracker_add_dependency(g_import_tracker, filepath, imports[i]);
+            free(imports[i]);
+        }
+        free(imports);
+    }
+    
+    free(content);
+}
+
 /**
  * @brief Process a single file with output directory support
  */
@@ -178,6 +264,9 @@ static int process_file_with_output(const char* filepath, const char* input_dir,
         int result = cmd_process(7, process_argv);
         
         if (result == 0) {
+            // Track imports for this file
+            track_file_imports(filepath);
+            
             if (verbose) {
                 printf("✅ Successfully processed: %s → %s\n", filepath, output_path);
             } else {
@@ -195,9 +284,14 @@ static int process_file_with_output(const char* filepath, const char* input_dir,
         
         int result = cmd_process(5, process_argv);
         
-        if (result == 0 && verbose) {
-            printf("✅ Successfully processed: %s\n", filepath);
-        } else if (result != 0) {
+        if (result == 0) {
+            // Track imports for this file
+            track_file_imports(filepath);
+            
+            if (verbose) {
+                printf("✅ Successfully processed: %s\n", filepath);
+            }
+        } else {
             printf("❌ Error processing: %s\n", filepath);
         }
         
@@ -400,6 +494,16 @@ int cmd_watch(int argc, char* argv[]) {
     signal(SIGINT, signal_handler);
     signal(SIGTERM, signal_handler);
     
+    // Initialize import tracker
+    g_import_tracker = import_tracker_create();
+    if (!g_import_tracker) {
+        fprintf(stderr, "Error: Failed to create import tracker\n");
+        return 1;
+    }
+    
+    // Set global import tracker for watch mode
+    xmd_set_global_import_tracker(g_import_tracker);
+    
     printf("🔍 Watching directory: %s\n", watch_dir);
     printf("📝 Monitoring .md files for changes...\n");
     printf("Press Ctrl+C to stop\n\n");
@@ -450,6 +554,10 @@ int cmd_watch(int argc, char* argv[]) {
             if (current_mtime > mtimes[i]) {
                 printf("📝 File changed: %s\n", files[i]);
                 process_file_with_output(files[i], watch_dir, output_dir, format, verbose);
+                
+                // Process all files that import this changed file
+                process_dependent_files(files[i], watch_dir, output_dir, format, verbose);
+                
                 mtimes[i] = current_mtime;
                 printf("\n");
             }
@@ -484,6 +592,11 @@ int cmd_watch(int argc, char* argv[]) {
     
     // Cleanup
     free_file_arrays(files, mtimes, file_count);
+    if (g_import_tracker) {
+        xmd_set_global_import_tracker(NULL); // Clear global tracker
+        import_tracker_free(g_import_tracker);
+        g_import_tracker = NULL;
+    }
     printf("Watch stopped.\n");
     return 0;
 }

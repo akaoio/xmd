@@ -1,0 +1,9 @@
+#/usr/bin/bash
+rm -rf build
+mkdir build
+cd build
+cmake ..
+make
+make test
+mv xmd ../xmd
+cd ..

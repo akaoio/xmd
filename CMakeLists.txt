@@ -202,6 +202,12 @@ xmd_target_link_libraries(test_module)
 add_executable(test_import_export test/import_export/test_import_export.c)
 xmd_target_link_libraries(test_import_export)
 
+add_executable(test_import_xmd_nested test/import/test_import_xmd_nested.c)
+xmd_target_link_libraries(test_import_xmd_nested)
+
+add_executable(test_import_edge_cases test/import/test_import_edge_cases.c)
+xmd_target_link_libraries(test_import_edge_cases)
+
 add_executable(test_dependency test/dependency/test_dependency.c)
 xmd_target_link_libraries(test_dependency)
 
@@ -308,6 +314,8 @@ add_test(NAME output_tests COMMAND test_output)
 add_test(NAME resource_tests COMMAND test_resource)
 add_test(NAME module_tests COMMAND test_module)
 add_test(NAME import_export_tests COMMAND test_import_export)
+add_test(NAME import_xmd_nested_tests COMMAND test_import_xmd_nested)
+add_test(NAME import_edge_cases_tests COMMAND test_import_edge_cases)
 add_test(NAME dependency_tests COMMAND test_dependency)
 # Re-enabled previously failing tests
 add_test(NAME security_tests COMMAND test_security)

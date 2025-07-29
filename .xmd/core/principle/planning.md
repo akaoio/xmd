@@ -1,0 +1,1 @@
+**Implementation Planning:** Mandatory comprehensive planning workflow: create design notes in `docs/notes/<YYYYMMDD-HHMM-topic>.md` (≤100 lines) before any implementation. Structure work using `docs/plans/<YYYYMMDD-HHMM-plan>/<phase>/phase-instructions.md` with phases decomposed into dedicated documentation. Update documentation and tests before code implementation.

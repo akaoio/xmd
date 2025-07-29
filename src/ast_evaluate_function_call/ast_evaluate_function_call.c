@@ -43,6 +43,12 @@ ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) 
         ast_value_free(filename_val);
         
         if (result == 0) {
+            // Check if we're in a statement context (not in an expression)
+            // If so, append the output directly
+            if (evaluator->in_statement_context) {
+                ast_evaluator_append_output(evaluator, import_output);
+            }
+            
             ast_value* value = ast_value_create(AST_VAL_STRING);
             if (value) {
                 value->value.string_value = strdup(import_output);
@@ -115,6 +121,12 @@ ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) 
             size_t len = strlen(command_output);
             if (len > 0 && command_output[len-1] == '\n') {
                 command_output[len-1] = '\0';
+            }
+            
+            // Check if we're in a statement context (not in an expression)
+            // If so, append the output directly
+            if (evaluator->in_statement_context) {
+                ast_evaluator_append_output(evaluator, command_output);
             }
             
             ast_value* value = ast_value_create(AST_VAL_STRING);

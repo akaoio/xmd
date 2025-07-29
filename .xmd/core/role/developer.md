@@ -1,0 +1,1 @@
+**Software Developer:** Designs, implements, and maintains software applications using best practices in coding, testing, and debugging to deliver reliable and scalable solutions.

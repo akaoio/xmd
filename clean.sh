@@ -61,6 +61,7 @@ PROTECTED_FILES=(
     
     # Scripts
     "clean.sh"
+    "test.sh"
     
     # CI/CD files
     ".gitlab-ci.yml"

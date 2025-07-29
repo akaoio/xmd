@@ -11,9 +11,9 @@ The conditional tests expect logical operators (&&, ||, !) but they aren't imple
 ## Test Requirements
 From test_conditional_simple.c:45-47:
 ```c
-assert(condition_evaluate(ctx, "{{is_true}} && {{number}}", s) == CONDITION_TRUE);
-assert(condition_evaluate(ctx, "{{is_false}} || {{number}}", s) == CONDITION_TRUE);  
-assert(condition_evaluate(ctx, "!{{is_false}}", s) == CONDITION_TRUE);
+assert(condition_evaluate(ctx, " && ", s) == CONDITION_TRUE);
+assert(condition_evaluate(ctx, " || ", s) == CONDITION_TRUE);  
+assert(condition_evaluate(ctx, "!", s) == CONDITION_TRUE);
 ```
 
 ## Implementation Plan

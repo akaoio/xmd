@@ -1,0 +1,1 @@
+**Marketing:** The Marketing department builds brand awareness and drives customer engagement through strategic campaigns, market research, and promotional activities. They develop marketing strategies, manage digital and traditional advertising, analyze consumer behavior, and work closely with sales teams to generate leads and support revenue growth.

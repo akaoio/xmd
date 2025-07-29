@@ -31,6 +31,7 @@ ast_evaluator* ast_evaluator_create(store* variables, processor_context* ctx) {
     evaluator->output_size = 0;
     evaluator->has_error = false;
     evaluator->error_message = NULL;
+    evaluator->in_statement_context = false;
     
     return evaluator;
 }

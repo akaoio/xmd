@@ -47,6 +47,7 @@ typedef struct {
     size_t output_size;           /**< Buffer size */
     bool has_error;               /**< Error flag */
     char* error_message;          /**< Error details */
+    bool in_statement_context;    /**< True when evaluating a statement (not expression) */
 } ast_evaluator;
 
 /* Main evaluation functions */
@@ -98,6 +99,14 @@ ast_evaluator* ast_evaluator_create(store* variables, processor_context* ctx);
  * @param evaluator Evaluator to free
  */
 void ast_evaluator_free(ast_evaluator* evaluator);
+
+/**
+ * @brief Append output to evaluator buffer
+ * @param evaluator Evaluator context
+ * @param text Text to append
+ * @return 0 on success, -1 on error
+ */
+int ast_evaluator_append_output(ast_evaluator* evaluator, const char* text);
 
 /* Value management */
 

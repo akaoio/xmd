@@ -17,6 +17,7 @@
 #include "store.h"
 #include "xmd.h"
 #include "loop.h"
+#include "import_tracker.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -107,6 +108,11 @@ char* process_xmd_content_fixed(const char* input, store* variables);
 /* Public API functions */
 int process_xmd_directive(const char* directive, store* var_store, char* output, size_t output_size);
 int process_text_with_directives(const char* text, store* var_store, char* output, size_t output_size);
+
+/* Global import tracker functions (for watch mode) */
+void xmd_set_global_import_tracker(import_tracker_t* tracker);
+import_tracker_t* xmd_get_global_import_tracker(void);
+bool xmd_is_watch_mode(void);
 
 #ifdef __cplusplus
 }

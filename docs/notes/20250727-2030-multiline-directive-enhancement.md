@@ -56,18 +56,7 @@
 
 ## Expected Behavior
 ```markdown
-<!-- xmd:
-set name="Alice"
-exec date
-if name == "Alice"
-    set greeting="Hello Admin"
-else  
-    set greeting="Hello User"
-endif
-for i in range(1,3)
-    exec echo "Item {{i}}"
-endfor
--->
+
 ```
 
 Should work identically to equivalent single-line directives.

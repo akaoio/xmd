@@ -38,7 +38,7 @@ function add(a, b) {
 - **Handle**: `(name)`, `(a, b)`, `(x, y, z)`
 
 ## Function Definition Directive
-- **Syntax**: `<!-- xmd:function name(params) { body } -->`
+- **Syntax**: ``
 - **Processor**: `src/xmd_processor/process_function_def/process_function_def.c`
 - **Integration**: Add to `process_directive.c`
 

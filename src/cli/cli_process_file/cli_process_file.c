@@ -83,7 +83,16 @@ int cli_process_file(const char* input_file, const char* output_file, bool verbo
         return 1;
     }
     
+    // Set the file path for import resolution
+    extern void xmd_set_current_file_path(const char* path);
+    extern void xmd_clear_current_file_path(void);
+    xmd_set_current_file_path(input_file);
+    
     xmd_result* result = xmd_process_string(xmd_handle, content, read_size);
+    
+    // Clear the file path after processing
+    xmd_clear_current_file_path();
+    
     if (!result || !result->output) {
         fprintf(stderr, "Error: XMD processing failed\n");
         xmd_processor_free(xmd_handle);
