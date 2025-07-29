@@ -60,6 +60,8 @@ src
 │   └── ast_add_element.c
 ├── ast_add_statement
 │   └── ast_add_statement.c
+├── ast_create_array_access
+│   └── ast_create_array_access.c
 ├── ast_create_array_literal
 │   └── ast_create_array_literal.c
 ├── ast_create_assignment
@@ -7163,10 +7165,13 @@ src
 │       │   │   │   └── memory-server
 │       │   │   ├── Rules
 │       │   │   └── Workflows
+│       │   ├── DO NOT DELETE
+│       │   │   └── github-recovery-codes.txt
 │       │   ├── Hiện nay hệ thống đã tích.txt
 │       │   ├── make the code base compatible.txt
 │       │   └── The code base folder structure.txt
 │       ├── Downloads
+│       │   └── github-recovery-codes.txt
 │       ├── go
 │       │   ├── api
 │       │   │   ├── except.txt
@@ -12218,6 +12223,4 @@ src
 │       │   │   │   │   │   │   │   │       │   ├── test_fuzz_err_deadlock.txt
 │       │   │   │   │   │   │   │   │       │   ├── test_fuzz_fuzztime.txt
 │       │   │   │   │   │   │   │   │       │   ├── test_fuzz_io_error.txt
-│       │   │   │   │   │   │   │   │       │   ├── test_fuzz_limit_dup_entry.txt
-│       │   │   │   │   │   │   │   │       │   ├── test_fuzz_match.txt
-│ 
+│    

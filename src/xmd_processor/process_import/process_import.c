@@ -11,6 +11,7 @@
 #include <unistd.h>
 
 #include "../../../include/xmd_processor_internal.h"
+#include "../../../include/ast_evaluator.h"
 
 /**
  * @brief Process import directive
@@ -136,7 +137,7 @@ int process_import(const char* args, processor_context* ctx, char* output, size_
         file_content[read_size] = '\0';
         
         // Process the imported content recursively
-        char* processed_content = process_xmd_content(file_content, ctx->variables);
+        char* processed_content = ast_process_xmd_content(file_content, ctx->variables);
         if (processed_content) {
             strncpy(output, processed_content, output_size - 1);
             output[output_size - 1] = '\0';

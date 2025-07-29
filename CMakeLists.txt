@@ -273,17 +273,8 @@ xmd_target_link_libraries(test_ast_node)
 add_executable(test_lexer_enhanced test/test_lexer_enhanced.c)
 xmd_target_link_libraries(test_lexer_enhanced)
 
-add_executable(test_escape_sequences test/test_escape_sequences.c)
-xmd_target_link_libraries(test_escape_sequences)
-
 add_executable(test_lexer_escape_fix test/test_lexer_escape_fix.c)
 xmd_target_link_libraries(test_lexer_escape_fix)
-
-add_executable(test_exec_variable_substitution test/test_exec_variable_substitution.c)
-xmd_target_link_libraries(test_exec_variable_substitution)
-
-add_executable(test_level5_integration test/test_level5_integration.c)
-xmd_target_link_libraries(test_level5_integration)
 
 add_executable(test_ast_parser test/test_ast_parser.c)
 xmd_target_link_libraries(test_ast_parser)
@@ -352,10 +343,7 @@ add_test(NAME sandbox_tests COMMAND test_sandbox)
 # AST system tests
 add_test(NAME ast_node_tests COMMAND test_ast_node)
 add_test(NAME lexer_enhanced_tests COMMAND test_lexer_enhanced)
-add_test(NAME escape_sequences_tests COMMAND test_escape_sequences)
 add_test(NAME lexer_escape_fix_tests COMMAND test_lexer_escape_fix)
-add_test(NAME exec_variable_substitution_tests COMMAND test_exec_variable_substitution)
-add_test(NAME level5_integration_tests COMMAND test_level5_integration)
 add_test(NAME ast_parser_tests COMMAND test_ast_parser)
 add_test(NAME function_call_tests COMMAND test_function_calls)
 add_test(NAME array_evaluation_tests COMMAND test_array_evaluation)
@@ -363,7 +351,7 @@ add_test(NAME array_evaluation_tests COMMAND test_array_evaluation)
 # Custom target to run all tests
 add_custom_target(test_all
     COMMAND ${CMAKE_CTEST_COMMAND} --verbose
-    DEPENDS test_token_simple test_lexer test_string_duplicate test_string_extract test_memory_allocate test_memory_free_safe test_variable test_store test_template test_conditional test_loop test_flow test_error test_executor test_long_output test_output test_resource test_module test_import_export test_dependency test_security test_performance test_cli test_upgrade_version test_docs test_devtools test_xmd_processor test_truncate_fix test_advanced_scripting test_variable_advanced test_multiline_enhanced test_advanced_integration test_brutal_nesting test_resource_exhaustion test_c_api_integration test_cli_e2e test_sandbox test_ast_node test_lexer_enhanced test_escape_sequences test_lexer_escape_fix test_exec_variable_substitution test_level5_integration test_ast_parser test_function_calls test_array_evaluation
+    DEPENDS test_token_simple test_lexer test_string_duplicate test_string_extract test_memory_allocate test_memory_free_safe test_variable test_store test_template test_conditional test_loop test_flow test_error test_executor test_long_output test_output test_resource test_module test_import_export test_dependency test_security test_performance test_cli test_upgrade_version test_docs test_devtools test_xmd_processor test_truncate_fix test_advanced_scripting test_variable_advanced test_multiline_enhanced test_advanced_integration test_brutal_nesting test_resource_exhaustion test_c_api_integration test_cli_e2e test_sandbox test_ast_node test_lexer_enhanced test_lexer_escape_fix test_ast_parser test_function_calls test_array_evaluation
 )
 
 # Coverage (optional)

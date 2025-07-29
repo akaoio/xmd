@@ -6,7 +6,11 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include "../../include/ast_evaluator.h"
+
+// Function declarations
+extern variable* ast_split_comma_string(const char* str);
 
 /**
  * @brief Evaluate assignment statement
@@ -27,6 +31,25 @@ int ast_evaluate_assignment(ast_node* node, ast_evaluator* evaluator) {
     
     // Convert AST value to variable
     variable* var = ast_value_to_variable(value);
+    
+    // Check if we should convert comma-separated string to array
+    if (value && value->type == AST_VAL_STRING && value->value.string_value) {
+        // Check if string contains commas and isn't an array literal
+        if (strchr(value->value.string_value, ',') && 
+            value->value.string_value[0] != '[') {
+            // Try to split into array
+            variable* array_var = ast_split_comma_string(value->value.string_value);
+            if (array_var && array_var->value.array_value->count > 1) {
+                // Use array instead of string
+                if (var) variable_unref(var);
+                var = array_var;
+            } else {
+                // Keep original string
+                if (array_var) variable_unref(array_var);
+            }
+        }
+    }
+    
     ast_value_free(value);
     
     if (!var) {

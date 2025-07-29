@@ -172,4 +172,12 @@ int ast_process_for(const char* args, processor_context* ctx, char* output, size
  */
 char* ast_substitute_variables(const char* text, store* variables);
 
+/**
+ * @brief AST-based XMD content processor (replaces all string-based processors)
+ * @param input Input content containing XMD directives in HTML comments
+ * @param variables Variable store for processing
+ * @return Processed content (caller must free) or NULL on error
+ */
+char* ast_process_xmd_content(const char* input, store* variables);
+
 #endif /* XMD_AST_EVALUATOR_H */

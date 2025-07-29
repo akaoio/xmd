@@ -14,7 +14,7 @@
 #include "../../../../include/c_api_internal.h"
 
 // Forward declaration of XMD processor function
-char* process_xmd_content_enhanced(const char* input, store* variables);
+char* ast_process_xmd_content(const char* input, store* variables);
 
 /**
  * @brief Process string through XMD

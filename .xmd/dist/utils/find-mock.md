@@ -2,6 +2,7 @@ These files are found containing these keywords:
 
 src/bindings/c_api/xmd_get_variable/xmd_get_variable.c
 src/bindings/c_api/xmd_process_file/xmd_process_file.c
+src/ast_evaluate/ast_evaluate.c
 src/ast_process_for/ast_process_for.c
 src/variable/variable_to_string/variable_to_string.c
 src/variable/variable_equals/variable_equals.c

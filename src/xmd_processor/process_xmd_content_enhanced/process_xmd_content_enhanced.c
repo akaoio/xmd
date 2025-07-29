@@ -12,6 +12,7 @@
 #include <ctype.h>
 #include "../../../include/xmd_processor_internal.h"
 #include "../../../include/variable.h"
+#include "../../../include/ast_evaluator.h"
 
 #define MAX_LOOP_DEPTH 8
 
@@ -52,7 +53,7 @@ static char* process_loop_content(enhanced_context* ectx, const char* content_st
     temp_input[content_len] = '\0';
     
     // Process the loop content recursively
-    char* result = process_xmd_content(temp_input, ectx->ctx->variables);
+    char* result = ast_process_xmd_content(temp_input, ectx->ctx->variables);
     
     free(temp_input);
     return result;

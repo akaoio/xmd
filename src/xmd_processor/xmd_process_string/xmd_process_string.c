@@ -10,6 +10,7 @@
 #include <stdlib.h>
 
 #include "../../../include/xmd_processor_internal.h"
+#include "../../../include/ast_evaluator.h"
 
 /**
  * @brief Main XMD processor interface
@@ -34,8 +35,8 @@ xmd_result* xmd_process_string(xmd_processor* processor, const char* content, si
     // Treat processor as store for now
     store* variables = (store*)processor;
     
-    // Process with enhanced parser that includes for loop support
-    char* processed_output = process_xmd_content_enhanced(content, variables);
+    // Process with AST-based parser
+    char* processed_output = ast_process_xmd_content(content, variables);
     
     // Create result
     xmd_result* result = malloc(sizeof(xmd_result));

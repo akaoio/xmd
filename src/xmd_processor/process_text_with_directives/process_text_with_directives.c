@@ -6,6 +6,7 @@
  */
 
 #include "../../../include/xmd_processor_internal.h"
+#include "../../../include/ast_evaluator.h"
 
 /**
  * @brief Process text with directives (for backward compatibility)
@@ -16,7 +17,7 @@
  * @return Length of output on success, -1 on error
  */
 int process_text_with_directives(const char* text, store* var_store, char* output, size_t output_size) {
-    char* result = process_xmd_content(text, var_store);
+    char* result = ast_process_xmd_content(text, var_store);
     if (!result) {
         output[0] = '\0';
         return -1;
