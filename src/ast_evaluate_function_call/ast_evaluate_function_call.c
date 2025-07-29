@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../../include/ast_evaluator.h"
+#include "../../include/security.h"
 
 /**
  * @brief Evaluate function call
@@ -66,6 +67,39 @@ ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) 
         // Substitute variables in command string
         char* substituted_command = ast_substitute_variables(command_val->value.string_value, evaluator->ctx->variables);
         const char* final_command = substituted_command ? substituted_command : command_val->value.string_value;
+        
+        // Validate command for security
+        security_result validation = security_validate_command(final_command);
+        if (validation != SECURITY_VALID) {
+            const char* error_msg = NULL;
+            switch (validation) {
+                case SECURITY_INJECTION_DETECTED:
+                    error_msg = "[Error: Command injection detected]";
+                    break;
+                case SECURITY_PERMISSION_DENIED:
+                    error_msg = "[Error: Permission denied - dangerous command blocked]";
+                    break;
+                case SECURITY_INVALID_INPUT:
+                    error_msg = "[Error: Invalid command]";
+                    break;
+                default:
+                    error_msg = "[Error: Command validation failed]";
+                    break;
+            }
+            
+            // Clean up
+            if (substituted_command) {
+                free(substituted_command);
+            }
+            ast_value_free(command_val);
+            
+            // Return error message
+            ast_value* value = ast_value_create(AST_VAL_STRING);
+            if (value) {
+                value->value.string_value = strdup(error_msg);
+            }
+            return value;
+        }
         
         // Execute command and get output
         char* command_output = execute_command_dynamic(final_command, NULL);

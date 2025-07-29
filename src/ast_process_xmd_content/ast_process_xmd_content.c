@@ -471,8 +471,13 @@ char* ast_process_xmd_content(const char* input, store* variables) {
                             for (size_t i = 0; i < array_size; i++) {
                                 variable* item = collection->value.array_value->items[i];
                                 if (item) {
-                                    // Set loop variable
-                                    store_set(ctx->variables, var_name, item);
+                                    // Create a copy of the item for the loop variable
+                                    variable* loop_var = variable_copy(item);
+                                    if (loop_var) {
+                                        // Set loop variable
+                                        store_set(ctx->variables, var_name, loop_var);
+                                        variable_unref(loop_var);
+                                    }
                                     
                                     // Process loop body recursively
                                     char* iteration_result = ast_process_xmd_content(loop_body, ctx->variables);
