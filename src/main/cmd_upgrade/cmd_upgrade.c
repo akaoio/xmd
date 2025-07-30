@@ -168,7 +168,7 @@ static int download_release(const char* version, const char* temp_path) {
 #ifdef __linux__
     strcpy(platform, "linux");
 #elif __APPLE__
-    strcpy(platform, "darwin");
+    strcpy(platform, "macos");
 #elif _WIN32
     strcpy(platform, "windows");
 #else
@@ -178,7 +178,7 @@ static int download_release(const char* version, const char* temp_path) {
     // Determine architecture
     char arch[32];
 #ifdef __x86_64__
-    strcpy(arch, "amd64");
+    strcpy(arch, "x64");
 #elif __aarch64__
     strcpy(arch, "arm64");
 #elif __arm__
@@ -199,15 +199,66 @@ static int download_release(const char* version, const char* temp_path) {
     
     int result = system(command);
     if (result != 0) {
-        // If binary download fails, inform user about building from source
-        fprintf(stderr, "\nBinary not available for %s-%s\n", platform, arch);
-        fprintf(stderr, "Please build from source:\n");
-        fprintf(stderr, "  git clone https://github.com/akaoio/xmd.git\n");
-        fprintf(stderr, "  cd xmd\n");
-        fprintf(stderr, "  git checkout %s\n", version);
-        fprintf(stderr, "  make\n");
-        fprintf(stderr, "  sudo make install\n");
-        return -1;
+        // If binary download fails, try to build from source
+        printf("Pre-built binary not available for %s-%s\n", platform, arch);
+        printf("Attempting to build from source...\n\n");
+        
+        // Create a temporary directory for building
+        char build_dir[256];
+        snprintf(build_dir, sizeof(build_dir), "%s/xmd-build-%s", 
+                 temp_path[0] == '.' ? "." : "/tmp", version);
+        
+        // Remove old build directory if exists
+        char rm_cmd[512];
+        snprintf(rm_cmd, sizeof(rm_cmd), "rm -rf %s", build_dir);
+        system(rm_cmd);
+        
+        // Clone and build
+        char build_cmds[2048];
+        snprintf(build_cmds, sizeof(build_cmds),
+                "mkdir -p %s && "
+                "cd %s && "
+                "curl -L -o source.tar.gz https://github.com/akaoio/xmd/archive/refs/tags/%s.tar.gz && "
+                "tar -xzf source.tar.gz && "
+                "cd xmd-%s && "
+                "mkdir -p build && "
+                "cd build && "
+                "cmake .. >/dev/null 2>&1 && "
+                "make xmd >/dev/null 2>&1",
+                build_dir, build_dir, version, version);
+        
+        printf("Downloading source code...\n");
+        result = system(build_cmds);
+        
+        if (result != 0) {
+            fprintf(stderr, "\nError: Failed to build from source\n");
+            fprintf(stderr, "This might be due to missing build dependencies:\n");
+            fprintf(stderr, "  - cmake\n");
+            fprintf(stderr, "  - gcc or clang\n");
+            fprintf(stderr, "  - make\n\n");
+            fprintf(stderr, "Install them and try again, or build manually:\n");
+            fprintf(stderr, "  git clone https://github.com/akaoio/xmd.git\n");
+            fprintf(stderr, "  cd xmd && git checkout %s\n", version);
+            fprintf(stderr, "  mkdir build && cd build\n");
+            fprintf(stderr, "  cmake .. && make\n");
+            fprintf(stderr, "  sudo make install\n");
+            return -1;
+        }
+        
+        // Copy the built binary to temp_path
+        char cp_cmd[512];
+        snprintf(cp_cmd, sizeof(cp_cmd), "cp %s/xmd-%s/build/xmd %s", 
+                 build_dir, version, temp_path);
+        
+        if (system(cp_cmd) != 0) {
+            fprintf(stderr, "Error: Failed to copy built binary\n");
+            return -1;
+        }
+        
+        // Clean up build directory
+        system(rm_cmd);
+        
+        printf("✓ Successfully built from source\n");
     }
     
     // Make the downloaded file executable

@@ -1,5 +1,23 @@
 cmake_minimum_required(VERSION 3.21)  # Minimum for reliable C17 support
-project(xmd VERSION 0.0.4 LANGUAGES C)
+
+# Get version from git tag
+execute_process(
+    COMMAND git describe --tags --abbrev=0
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE XMD_VERSION
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+)
+
+# Default if no tags
+if(NOT XMD_VERSION)
+    set(XMD_VERSION "0.0.0")
+endif()
+
+# Remove 'v' prefix if present
+string(REPLACE "v" "" XMD_VERSION "${XMD_VERSION}")
+
+project(xmd VERSION ${XMD_VERSION} LANGUAGES C)
 
 # Version information
 set(XMD_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})

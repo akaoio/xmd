@@ -169,60 +169,73 @@ install_xmd() {
     local tmp_dir=$(mktemp -d)
     cd "$tmp_dir"
     
-    # Construct download URL for the release tarball
-    local download_url="https://github.com/$GITHUB_REPO/archive/refs/tags/$LATEST_VERSION.tar.gz"
-    local tarball_name="xmd-$LATEST_VERSION.tar.gz"
+    # Try to download pre-built binary first
+    local binary_name="xmd-$PLATFORM"
+    local binary_url="https://github.com/$GITHUB_REPO/releases/download/$LATEST_VERSION/$binary_name"
     
-    print_step "Downloading release $LATEST_VERSION..."
+    print_step "Attempting to download pre-built binary for $PLATFORM..."
     
-    # Download the release
-    local download_tool
+    local download_success=false
     if command -v curl >/dev/null 2>&1; then
-        download_tool="curl"
-        if ! curl -L -o "$tarball_name" "$download_url"; then
-            print_error "Failed to download release from $download_url"
+        if curl -f -L -o "$BINARY_NAME" "$binary_url" 2>/dev/null; then
+            download_success=true
         fi
     elif command -v wget >/dev/null 2>&1; then
-        download_tool="wget"
-        if ! wget -O "$tarball_name" "$download_url"; then
-            print_error "Failed to download release from $download_url"
+        if wget -q -O "$BINARY_NAME" "$binary_url" 2>/dev/null; then
+            download_success=true
         fi
-    else
-        print_error "Either curl or wget is required for installation"
     fi
     
-    # Extract the tarball
-    print_step "Extracting release..."
-    if ! tar -xzf "$tarball_name"; then
-        print_error "Failed to extract release archive"
-    fi
-    
-    # Find the extracted directory (should be xmd-<version>)
-    local extracted_dir=$(find . -maxdepth 1 -type d -name "xmd-*" | head -1)
-    if [ -z "$extracted_dir" ]; then
-        print_error "Could not find extracted directory"
-    fi
-    
-    cd "$extracted_dir"
-    
-    # Check for pre-built binary first
-    if [ -f "bin/xmd" ] || [ -f "xmd" ]; then
-        print_step "Using pre-built binary..."
-        local binary_path
-        if [ -f "bin/xmd" ]; then
-            binary_path="bin/xmd"
-        else
-            binary_path="xmd"
-        fi
+    if [ "$download_success" = true ] && [ -f "$BINARY_NAME" ]; then
+        print_success "Downloaded pre-built binary successfully!"
         
         # Install the binary
         print_step "Installing to $INSTALL_DIR..."
-        if ! $SUDO cp "$binary_path" "$INSTALL_DIR/"; then
+        if ! $SUDO cp "$BINARY_NAME" "$INSTALL_DIR/xmd"; then
             print_error "Failed to install to $INSTALL_DIR"
         fi
+        
+        # Make executable
+        $SUDO chmod +x "$INSTALL_DIR/xmd"
     else
-        # Build from source as fallback
-        print_step "No pre-built binary found, building from source..."
+        # Fall back to building from source
+        print_warning "Pre-built binary not available for $PLATFORM, building from source..."
+        
+        # Construct download URL for the release tarball
+        local download_url="https://github.com/$GITHUB_REPO/archive/refs/tags/$LATEST_VERSION.tar.gz"
+        local tarball_name="xmd-$LATEST_VERSION.tar.gz"
+        
+        print_step "Downloading source release $LATEST_VERSION..."
+        
+        # Download the release
+        if command -v curl >/dev/null 2>&1; then
+            if ! curl -L -o "$tarball_name" "$download_url"; then
+                print_error "Failed to download release from $download_url"
+            fi
+        elif command -v wget >/dev/null 2>&1; then
+            if ! wget -O "$tarball_name" "$download_url"; then
+                print_error "Failed to download release from $download_url"
+            fi
+        else
+            print_error "Either curl or wget is required for installation"
+        fi
+        
+        # Extract the tarball
+        print_step "Extracting release..."
+        if ! tar -xzf "$tarball_name"; then
+            print_error "Failed to extract release archive"
+        fi
+        
+        # Find the extracted directory (should be xmd-<version>)
+        local extracted_dir=$(find . -maxdepth 1 -type d -name "xmd-*" | head -1)
+        if [ -z "$extracted_dir" ]; then
+            print_error "Could not find extracted directory"
+        fi
+        
+        cd "$extracted_dir"
+        
+        # Build from source
+        print_step "Building from source..."
         
         # Check for build dependencies
         local missing_deps=()

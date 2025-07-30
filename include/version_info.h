@@ -12,12 +12,12 @@
 
 #define XMD_VERSION_MAJOR 0
 #define XMD_VERSION_MINOR 0
-#define XMD_VERSION_PATCH 4
-#define XMD_VERSION_STRING "0.0.4"
-#define XMD_GIT_COMMIT "df6926a"
-#define XMD_GIT_TAG "0.0.4"
+#define XMD_VERSION_PATCH 5
+#define XMD_VERSION_STRING "0.0.5"
+#define XMD_GIT_COMMIT "df76177"
+#define XMD_GIT_TAG "0.0.5"
 #define XMD_GIT_BRANCH "main"
-#define XMD_BUILD_DATE "2025-07-30 17:33:24"
-#define XMD_BUILD_TYPE "RelWithDebInfo"
+#define XMD_BUILD_DATE "2025-07-30 19:42:00"
+#define XMD_BUILD_TYPE "Release"
 
 #endif /* XMD_VERSION_INFO_H */
