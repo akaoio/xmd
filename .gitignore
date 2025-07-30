@@ -78,4 +78,4 @@ cppcheck.xml
 config.yaml
 config.json
 !config.example.yaml
-!config.example.json
+!config.example.jsoninclude/version_info.h
