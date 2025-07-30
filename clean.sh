@@ -59,6 +59,9 @@ PROTECTED_FILES=(
     "COMPATIBILITY.md"
     "quick_demo.md"
     
+    # Teamwork files
+    "teamwork.md"
+    
     # Scripts
     "clean.sh"
     "test.sh"
@@ -86,6 +89,7 @@ PROTECTED_DIRS=(
     "assets"
     "static"
     "public"
+    "teamwork"
     # Note: tmp/ is not protected to allow cleaning temporary files
 )
 
@@ -398,6 +402,7 @@ echo "  ✓ docs/ - Documentation"
 echo "  ✓ examples/ - Example files"
 echo "  ✓ test/ - Unit tests"
 echo "  ✓ build/ - Build directory"
+echo "  ✓ teamwork/ - Team collaboration files"
 echo "  ✓ .git/ - Git repository"
 echo
 echo -e "${BLUE}📋 To see what would be removed without actually removing:${NC}"

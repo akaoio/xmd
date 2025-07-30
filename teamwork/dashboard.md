@@ -1,6 +1,8 @@
 # C Development Team Dashboard
 **Last Updated:** <!-- xmd:exec date '+%Y-%m-%d %H:%M:%S' -->
 
+**Join Team:** Create teamwork/update/<role>.md →  Update teamwork/dashboard.md → Watch teamwork.md live updates
+
 ## Development Principles
 
 <!-- xmd:import ../.xmd/core/principle/memory_management.md -->
@@ -30,19 +32,30 @@
 <!-- xmd:import ../.xmd/core/principle/real_implementation.md -->
 
 ## Team Expertise
+
 <!-- xmd:import ../.xmd/core/experty/c.md -->
 
 ## Team Members
 
 <!-- xmd:import update/genesis.md -->
+
 ---
+
 <!-- xmd:import update/backend.md -->
+
 ---
+
 <!-- xmd:import update/frontend.md -->
+
 ---
+
 <!-- xmd:import update/tester.md -->
+
 ---
+
 <!-- xmd:import update/coordinator.md -->
+
+---
 
 ## Quick Stats
 **Active Members:** <!-- xmd:exec ls update/*.md | wc -l | tr -d ' ' -->  
