@@ -6,7 +6,7 @@ build/
 *.dylib
 *.dll
 *.exe
-xmd
+# xmd binary is included as pre-built release for end users
 test_runner
 
 # CMake generated files
