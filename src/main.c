@@ -45,6 +45,8 @@ int main(int argc, char* argv[]) {
         return cmd_watch(argc, argv);
     } else if (strcmp(command, "upgrade") == 0) {
         return cmd_upgrade(argc, argv);
+    } else if (strcmp(command, "uninstall") == 0) {
+        return cmd_uninstall(argc, argv);
     } else if (strcmp(command, "version") == 0) {
         print_version();
         return 0;

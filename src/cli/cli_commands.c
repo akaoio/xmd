@@ -80,6 +80,7 @@ void print_usage(const char* program_name) {
     printf("  watch <input> [output]  Watch files/directories for changes\n");
     printf("  validate <file>    Validate markdown file syntax\n");
     printf("  upgrade           Upgrade to latest version\n");
+    printf("  uninstall         Uninstall XMD from the system\n");
     printf("  version           Show version information\n");
     printf("  help              Show this help message\n\n");
     printf("Options:\n");
@@ -107,8 +108,9 @@ int convert_shorthand_to_process(int argc, char* argv[], int* new_argc, char*** 
     
     // Check if it's a known command
     if (strcmp(arg1, "process") == 0 || strcmp(arg1, "validate") == 0 || 
-        strcmp(arg1, "upgrade") == 0 || strcmp(arg1, "version") == 0 || 
-        strcmp(arg1, "help") == 0 || strcmp(arg1, "--help") == 0) {
+        strcmp(arg1, "upgrade") == 0 || strcmp(arg1, "uninstall") == 0 ||
+        strcmp(arg1, "version") == 0 || strcmp(arg1, "help") == 0 || 
+        strcmp(arg1, "--help") == 0) {
         return -1; // Not shorthand
     }
     

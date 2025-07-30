@@ -6,7 +6,8 @@ build/
 *.dylib
 *.dll
 *.exe
-# xmd binary is included as pre-built release for end users
+# Compiled binaries
+xmd
 test_runner
 
 # CMake generated files
@@ -78,4 +79,7 @@ cppcheck.xml
 config.yaml
 config.json
 !config.example.yaml
-!config.example.jsoninclude/version_info.h
+!config.example.json
+
+# Generated version header
+include/version_info.h
