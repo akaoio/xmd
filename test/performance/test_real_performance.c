@@ -160,6 +160,11 @@ void test_file_size_performance(void) {
     xmd_error_code init_result = xmd_init();
     assert(init_result == XMD_OK);
     
+    xmd_config* config = xmd_config_create_default();
+    assert(config != NULL);
+    xmd_processor* processor = xmd_processor_create(config);
+    assert(processor != NULL);
+    
     int sizes[] = {1, 1, 2, 2}; // KB - Very minimal sizes to ensure test passes
     double time_limits[] = {10, 15, 20, 25}; // milliseconds
     
@@ -175,7 +180,7 @@ void test_file_size_performance(void) {
         size_t content_len = strlen(content);
         
         double start = get_time_ms();
-        xmd_result* result = xmd_process_string(handle, content, content_len);
+        xmd_result* result = xmd_process_string(processor, content, content_len);
         double end = get_time_ms();
         double elapsed = end - start;
         
@@ -200,6 +205,8 @@ void test_file_size_performance(void) {
         free(content);
     }
     
+    xmd_processor_free(processor);
+    xmd_config_free(config);
     xmd_cleanup();
     
     printf("✅ File size performance test completed\n");
@@ -267,6 +274,11 @@ void test_loop_performance(void) {
     xmd_error_code init_result = xmd_init();
     assert(init_result == XMD_OK);
     
+    xmd_config* config = xmd_config_create_default();
+    assert(config != NULL);
+    xmd_processor* processor = xmd_processor_create(config);
+    assert(processor != NULL);
+    
     // Test with large loops
     const char* loop_test = 
         "# Loop Performance Test\n"
@@ -275,7 +287,7 @@ void test_loop_performance(void) {
         "<!-- xmd:endfor -->\n";
     
     double start = get_time_ms();
-    xmd_result* result = xmd_process_string(handle, loop_test, strlen(loop_test));
+    xmd_result* result = xmd_process_string(processor, loop_test, strlen(loop_test));
     double end = get_time_ms();
     
     assert(result != NULL);
@@ -308,6 +320,8 @@ void test_loop_performance(void) {
     printf("\n");
     
     xmd_result_free(result);
+    xmd_processor_free(processor);
+    xmd_config_free(config);
     xmd_cleanup();
     
     printf("✅ Loop performance test passed\n");
