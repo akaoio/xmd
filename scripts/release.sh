@@ -110,8 +110,10 @@ fi
 # Cleanup
 rm -rf release-artifacts/
 
-# Restore version_info.h if it was modified
-git checkout include/version_info.h 2>/dev/null || true
+# Clean up generated files
+echo "Cleaning up generated files..."
+rm -f xmd
+rm -f include/version_info.h
 
 echo ""
 echo "🎉 Release $VERSION complete!"
