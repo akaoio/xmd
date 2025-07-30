@@ -5,7 +5,7 @@
  * @date 2025-07-30
  */
 
-#include "../../include/dependency.h"
+#include "dependency.h"
 
 /**
  * Check for circular dependencies starting from a specific module

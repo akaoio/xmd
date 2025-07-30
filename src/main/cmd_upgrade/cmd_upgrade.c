@@ -60,7 +60,19 @@ int cmd_upgrade(int argc, char* argv[]) {
     
     // Create temporary file for download
     char temp_path[256];
-    snprintf(temp_path, sizeof(temp_path), "/tmp/xmd-upgrade-%s", latest_version);
+    // Use TMPDIR environment variable if available, otherwise use current directory
+    const char* tmp_dir = getenv("TMPDIR");
+    if (!tmp_dir) {
+        tmp_dir = getenv("TMP");
+    }
+    if (!tmp_dir) {
+        tmp_dir = getenv("TEMP");
+    }
+    if (!tmp_dir) {
+        // In Termux or restricted environments, use current directory
+        tmp_dir = ".";
+    }
+    snprintf(temp_path, sizeof(temp_path), "%s/xmd-upgrade-%s", tmp_dir, latest_version);
     
     // Download the new version
     if (download_release(latest_version, temp_path) != 0) {
@@ -181,12 +193,20 @@ static int download_release(const char* version, const char* temp_path) {
              "https://github.com/akaoio/xmd/releases/download/%s/xmd-%s-%s",
              version, platform, arch);
     
-    // Download using curl
+    // Download using curl with better error handling
     char command[1024];
-    snprintf(command, sizeof(command), "curl -L -o %s %s", temp_path, url);
+    snprintf(command, sizeof(command), "curl -L -f -o %s %s 2>/dev/null", temp_path, url);
     
     int result = system(command);
     if (result != 0) {
+        // If binary download fails, inform user about building from source
+        fprintf(stderr, "\nBinary not available for %s-%s\n", platform, arch);
+        fprintf(stderr, "Please build from source:\n");
+        fprintf(stderr, "  git clone https://github.com/akaoio/xmd.git\n");
+        fprintf(stderr, "  cd xmd\n");
+        fprintf(stderr, "  git checkout %s\n", version);
+        fprintf(stderr, "  make\n");
+        fprintf(stderr, "  sudo make install\n");
         return -1;
     }
     

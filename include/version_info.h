@@ -14,10 +14,10 @@
 #define XMD_VERSION_MINOR 0
 #define XMD_VERSION_PATCH 2
 #define XMD_VERSION_STRING "0.0.2"
-#define XMD_GIT_COMMIT "d6659b3"
-#define XMD_GIT_TAG ""
+#define XMD_GIT_COMMIT "b140c28"
+#define XMD_GIT_TAG "0.0.3"
 #define XMD_GIT_BRANCH "main"
-#define XMD_BUILD_DATE "2025-07-30 01:34:21"
-#define XMD_BUILD_TYPE "Release"
+#define XMD_BUILD_DATE "2025-07-30 17:04:44"
+#define XMD_BUILD_TYPE "RelWithDebInfo"
 
 #endif /* XMD_VERSION_INFO_H */
