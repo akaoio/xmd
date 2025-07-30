@@ -38,6 +38,9 @@ git tag -a "$VERSION" -m "Release $VERSION"
 
 # Step 3: Build with the new tag
 echo "Building with version $VERSION..."
+# Force clean build to pick up new tag
+rm -rf build/
+rm -f include/version_info.h
 # Use build.sh to build in build/ directory
 ./build.sh
 
