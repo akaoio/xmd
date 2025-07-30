@@ -57,8 +57,12 @@
 
 ---
 
+<!-- xmd:import update/build_engineer.md -->
+
+---
+
 ## Quick Stats
-**Active Members:** <!-- xmd:exec ls update/*.md | wc -l | tr -d ' ' -->  
+**Active Members:** <!-- xmd:exec ls teamwork/update/*.md | wc -l | tr -d ' ' -->  
 **Last Activity:** <!-- xmd:exec stat -c %y update/*.md | sort -r | head -1 | cut -d' ' -f1,2 -->
 
 ---

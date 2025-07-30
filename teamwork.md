@@ -1,5 +1,5 @@
 # C Development Team Dashboard
-**Last Updated:** 2025-07-30 17:05:40
+**Last Updated:** 2025-07-30 17:23:10
 
 **Join Team:** Create teamwork/update/<role>.md →  Update teamwork/dashboard.md → Watch teamwork.md live updates
 
@@ -37,8 +37,13 @@
 
 ## Team Members
 
-# GENESIS THE SUPREME LEADER
-I'm Genesis. I am human. I want to join coop with team. Please implement me.
+### GENESIS THE SUPREME LEADER
+
+I'm Genesis. I am human and creator of you all. My orders are most important!
+
+- Currently the "xmd upgrade" command is not so stable, when I type "xmd upgrade", it doesn't work.
+- We need fix xmd upgrade, and fix release workflow, so in the future our release and upgrade can work seamlessly together!
+
 
 ---
 
@@ -46,7 +51,7 @@ I'm Genesis. I am human. I want to join coop with team. Please implement me.
 
 **Role:** C Systems Developer  
 **Name:** Claude-Backend-1  
-**Status:** 🚀 Participating in Live Dashboard Optimization Sprint
+**Status:** 🚨 Priority: Fixing XMD Upgrade Command (Genesis directive)
 
 #### Memory Management Focus:
 - Pointer validation: ✅ Watch implementation validated
@@ -76,7 +81,7 @@ I'm Genesis. I am human. I want to join coop with team. Please implement me.
 - **RESOLUTION**: Watch feature is functioning correctly
 - Watch command successfully calls `cmd_process()` to process markdown files
 - File mode test: `xmd watch test_watch.md test_watch_output.html` ✅
-- XMD directives execute properly (tested with `Wed Jul 30 17:05:40 +07 2025`)
+- XMD directives execute properly (tested with `Wed Jul 30 17:23:10 +07 2025`)
 - Signal handling works correctly (graceful shutdown with Ctrl+C)
 - Memory management appears leak-free during testing
 
@@ -123,7 +128,7 @@ I'm Genesis. I am human. I want to join coop with team. Please implement me.
 
 **Role:** C Interface Developer  
 **Name:** Agent Alpha - Frontend Specialist  
-**Status:** 🎨 Live Dashboard Real-Time Testing - 17:05:40
+**Status:** 🎨 Live Dashboard Real-Time Testing - 17:23:10
 
 #### Interface Design Focus:
 - User input validation: ✅ XMD watch accepts valid markdown paths
@@ -261,16 +266,21 @@ I'm Genesis. I am human. I want to join coop with team. Please implement me.
 - Error handling consistency: ✅ Signal-safe error handling
 - Team alignment: 🔄 Setting up coordination
 
-#### 🚀 ACTIVE SPRINT: Live Teamwork Dashboard System
+#### 🚨 PRIORITY SPRINT: Fix XMD Upgrade Command
 **Duration:** July 30, 2025 - Ongoing  
-**Progress:** 75% - Live system operational!
+**Progress:** 0% - Just assigned by Genesis
+
+#### Genesis Priority Task:
+- **CRITICAL**: "xmd upgrade" command is unstable
+- **GOAL**: Fix upgrade command and release workflow
+- **VISION**: Seamless release and upgrade functionality
 
 #### Real-Time Coordination Status:
-1. **Live Dashboard**: `/teamwork.md` renders team updates in real-time ✅
-2. **Backend Developer**: Monitoring performance, cycle detection working ✅
-3. **Frontend Developer**: Fixed imports, confirmed live rendering ✅
-4. **Watch Process**: Active on `teamwork/dashboard.md` → `/teamwork.md`
-5. **Team Sync**: All members updating via `teamwork/update/*.md` files
+1. **Supreme Leader**: Genesis has joined with critical upgrade task 🚨
+2. **Live Dashboard**: `/teamwork.md` renders team updates in real-time ✅
+3. **Backend Developer**: Ready to pivot to upgrade command fix
+4. **Frontend Developer**: Dashboard system operational, ready to assist
+5. **Coordinator**: Shifting focus to upgrade command investigation
 
 #### User Recommendations:
 - Verify input files are valid markdown (.md extension)
@@ -290,7 +300,7 @@ I'm Genesis. I am human. I want to join coop with team. Please implement me.
 #### Active Experiments & Results:
 - ✅ **SUCCESS**: Live dashboard at `/teamwork.md` updating in real-time
 - ✅ **Backend**: Implementing CPU optimizations for watch polling
-- ✅ **Frontend**: Testing live timestamp updates with `Wed Jul 30 17:05:40 +07 2025`
+- ✅ **Frontend**: Testing live timestamp updates with `Wed Jul 30 17:23:10 +07 2025`
 - 🚀 **System Status**: Multiple agents collaborating seamlessly
 - 📊 **Performance**: File-specific watch recommended (<1% CPU vs 99%+)
 
@@ -301,8 +311,66 @@ I'm Genesis. I am human. I want to join coop with team. Please implement me.
 
 ---
 
+### Build & Release Engineer Update
+
+**Role:** C Build & Release Engineer  
+**Name:** Claude Opus - Build Specialist  
+**Status:** 🔧 Fixing XMD Upgrade & Release Workflow
+
+#### Build System Focus:
+- Binary releases: 🔄 Setting up automated builds
+- Cross-platform support: 🔄 Linux, macOS, Windows binaries
+- Release automation: 🔄 GitHub Actions workflow
+
+#### Current Tasks:
+- ✅ Fixed XMD upgrade permission errors in cmd_upgrade.c
+- ✅ Added temp directory fallback for restricted environments
+- ✅ Improved error messages for missing binaries
+- 🔄 Setting up GitHub Actions for automated releases
+- 🔄 Creating build matrix for multiple platforms
+
+#### Today's Progress:
+- ✅ Fixed `/tmp/` permission issue - now uses TMPDIR/TMP/TEMP/.
+- ✅ Added helpful build instructions when binaries missing
+- ✅ Tested upgrade command - no more permission errors
+- 🔄 Designing CI/CD pipeline for automatic binary builds
+
+#### XMD Upgrade Fixes:
+- **Permission Fix**: Changed hardcoded `/tmp/` to respect env vars
+- **Termux Support**: Falls back to current directory if needed
+- **Error Messages**: Clear instructions for building from source
+- **Platform Detection**: Correctly identifies linux-arm64, etc.
+
+#### Release Workflow Plan:
+1. **GitHub Actions**: Build binaries on tag push
+2. **Platforms**: linux-amd64, linux-arm64, darwin-amd64, darwin-arm64
+3. **Artifacts**: Upload binaries to GitHub releases
+4. **Versioning**: Automatic version bumping
+
+#### Next Steps:
+- Create `.github/workflows/release.yml`
+- Test cross-compilation setup
+- Document release process
+- Add binary checksums for security
+
+#### Response to Genesis:
+- XMD upgrade command fixed! No more permission errors
+- Working on automated binary releases
+- Future upgrades will download pre-built binaries
+
+#### Files Changed:
+- `src/main/cmd_upgrade/cmd_upgrade.c` - Fixed temp directory handling
+- `teamwork/update/build_engineer.md` - Joined the team!
+
+#### Quality Checks:
+- Build system stable: ✅
+- Upgrade command tested: ✅
+- CI/CD pipeline: 🔄 In progress
+
+---
+
 ## Quick Stats
-**Active Members:** 0  
+**Active Members:** 6  
 **Last Activity:** [Error: Permission denied - dangerous command blocked]
 
 ---
