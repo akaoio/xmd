@@ -155,12 +155,37 @@ endmacro()
 # Main executable
 add_executable(xmd src/main.c)
 
-# Create mostly static binary (static stdlib, dynamic system libs)
-if(NOT ANDROID)
-    set_target_properties(xmd PROPERTIES LINK_FLAGS "-static-libgcc -static")
+# Create portable binary with static linking where possible
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    # Static link as much as possible for portability
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+    set(BUILD_SHARED_LIBS OFF)
+    
+    if(APPLE)
+        # macOS: static libgcc only
+        set_target_properties(xmd PROPERTIES LINK_FLAGS "-static-libgcc")
+    elseif(ANDROID)
+        # Android: static libgcc and strip for smaller size
+        set_target_properties(xmd PROPERTIES 
+            LINK_FLAGS "-static-libgcc -s"
+        )
+    else()
+        # Linux: fully static binary
+        set_target_properties(xmd PROPERTIES 
+            LINK_FLAGS "-static -static-libgcc"
+        )
+    endif()
+    
+    # Strip debug symbols for smaller binary
+    add_custom_command(TARGET xmd POST_BUILD
+        COMMAND strip $<TARGET_FILE:xmd>
+        COMMENT "Stripping debug symbols from xmd"
+    )
 else()
-    # For Android/Termux, use partial static linking
-    set_target_properties(xmd PROPERTIES LINK_FLAGS "-static-libgcc")
+    # Debug builds: keep dynamic linking for easier debugging
+    if(NOT ANDROID)
+        set_target_properties(xmd PROPERTIES LINK_FLAGS "-static-libgcc")
+    endif()
 endif()
 target_link_libraries(xmd xmd_lib)
 

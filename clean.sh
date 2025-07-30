@@ -35,7 +35,6 @@ PROTECTED_FILES=(
     
     # Build system files
     "CMakeLists.txt"
-    "Makefile"
     "configure"
     "configure.ac"
     "Makefile.am"
@@ -331,6 +330,7 @@ safe_remove "cmake_install.cmake" "CMake install script"
 safe_remove "CPackConfig.cmake" "CPack configuration"
 safe_remove "CPackSourceConfig.cmake" "CPack source configuration"
 safe_remove "CTestTestfile.cmake" "CTest configuration"
+safe_remove "Makefile" "CMake generated Makefile"
 
 # Remove test_* files and directories (but preserve test/ source directory)
 safe_remove "test_*" "test executables and files"

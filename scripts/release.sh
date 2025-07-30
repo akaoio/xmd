@@ -38,17 +38,11 @@ git tag -a "$VERSION" -m "Release $VERSION"
 
 # Step 3: Build with the new tag
 echo "Building with version $VERSION..."
-# Clean everything
-make clean 2>/dev/null || true
-rm -rf CMakeCache.txt CMakeFiles/
-rm -f xmd
-
-# Reconfigure and build
-cmake -DCMAKE_BUILD_TYPE=Release .
-make -j$(nproc)
+# Use build.sh to build in build/ directory
+./build.sh
 
 # Verify version
-BUILT_VERSION=$(./xmd version | head -1 | awk '{print $3}')
+BUILT_VERSION=$(./build/xmd version | head -1 | awk '{print $3}')
 # Handle dev suffix if present
 BUILT_VERSION=$(echo "$BUILT_VERSION" | cut -d'-' -f1)
 if [ "$BUILT_VERSION" != "$VERSION" ]; then
@@ -63,7 +57,10 @@ fi
 
 # Step 4: Create release artifacts
 mkdir -p release-artifacts
-cp xmd "release-artifacts/$BINARY_NAME"
+cp build/xmd "release-artifacts/$BINARY_NAME"
+# Strip the binary for smaller size
+strip "release-artifacts/$BINARY_NAME"
+echo "Binary stripped to $(ls -lh "release-artifacts/$BINARY_NAME" | awk '{print $5}')"
 
 # Create quick install script
 cat > release-artifacts/install.sh << 'EOF'
@@ -109,11 +106,7 @@ fi
 
 # Cleanup
 rm -rf release-artifacts/
-
-# Clean up generated files
-echo "Cleaning up generated files..."
-rm -f xmd
-rm -f include/version_info.h
+rm -rf build/
 
 echo ""
 echo "🎉 Release $VERSION complete!"
