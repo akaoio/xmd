@@ -1,1 +1,0 @@
-**Research and Development:** The R&D department drives innovation by conducting research, developing new products and technologies, and improving existing solutions. They collaborate across teams to transform ideas into viable products while analyzing market trends to maintain competitive advantage.

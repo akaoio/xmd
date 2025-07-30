@@ -1,1 +1,0 @@
-Only one function is allowed per file. Only one file is allowed per directory.

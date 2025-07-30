@@ -1,1 +1,0 @@
-Function name = file name = directory name. For example "parent/child/child.c" for function child().

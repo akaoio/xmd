@@ -1,1 +1,0 @@
-**QA Engineer:** Develops and executes test plans, identifies software defects, and ensures product quality through automated and manual testing methodologies.

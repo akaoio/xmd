@@ -48,7 +48,9 @@ static int process_file_with_output(const char* filepath, const char* input_dir,
 static void signal_handler(int sig) {
     (void)sig; // Suppress unused parameter warning
     watch_running = false;
-    printf("\nStopping watch...\n");
+    // Use async-signal-safe write() instead of printf()
+    const char* msg = "\nStopping watch...\n";
+    write(STDOUT_FILENO, msg, strlen(msg));
 }
 
 /**
@@ -158,14 +160,68 @@ static int process_file_with_output(const char* filepath, const char* input_dir,
 static int process_single_file_with_output(const char* input_file, const char* output_file,
                                          const char* format, bool verbose);
 
-/**
- * @brief Process all files that import the changed file (recursive)
- */
-static void process_dependent_files(const char* changed_file, const char* input_dir,
-                                  const char* output_dir, const char* format, bool verbose) {
-    if (!g_import_tracker || !changed_file) {
+// Structure to track visited files during recursive processing
+typedef struct visited_file {
+    char* filepath;
+    struct visited_file* next;
+} visited_file_t;
+
+// Helper function to check if a file has been visited
+static bool is_file_visited(visited_file_t* visited_files, const char* filepath) {
+    visited_file_t* current = visited_files;
+    while (current) {
+        if (strcmp(current->filepath, filepath) == 0) {
+            return true;
+        }
+        current = current->next;
+    }
+    return false;
+}
+
+// Helper function to add a file to visited list
+static visited_file_t* add_visited_file(visited_file_t* visited_files, const char* filepath) {
+    visited_file_t* new_visited = malloc(sizeof(visited_file_t));
+    if (!new_visited) return visited_files;
+    
+    new_visited->filepath = strdup(filepath);
+    if (!new_visited->filepath) {
+        free(new_visited);
+        return visited_files;
+    }
+    
+    new_visited->next = visited_files;
+    return new_visited;
+}
+
+// Helper function to free visited files list
+static void free_visited_files(visited_file_t* visited_files) {
+    while (visited_files) {
+        visited_file_t* current = visited_files;
+        visited_files = visited_files->next;
+        free(current->filepath);
+        free(current);
+    }
+}
+
+// Internal recursive function with cycle detection
+static void process_dependent_files_internal(const char* changed_file, const char* input_dir,
+                                           const char* output_dir, const char* format, 
+                                           bool verbose, visited_file_t** visited_files,
+                                           int depth) {
+    if (!g_import_tracker || !changed_file || depth > 10) { // Prevent excessive recursion
         return;
     }
+    
+    // Check if we've already processed this file to prevent cycles
+    if (is_file_visited(*visited_files, changed_file)) {
+        if (verbose && depth > 0) {
+            printf("🔄 Skipping already processed: %s (cycle prevention)\n", changed_file);
+        }
+        return;
+    }
+    
+    // Add to visited list
+    *visited_files = add_visited_file(*visited_files, changed_file);
     
     // Get all files that import the changed file
     char** importers = NULL;
@@ -173,7 +229,7 @@ static void process_dependent_files(const char* changed_file, const char* input_
     
     if (import_tracker_get_importers(g_import_tracker, changed_file, &importers, &importer_count)) {
         if (importer_count > 0 && verbose) {
-            printf("🔄 Found %d file(s) importing %s\n", importer_count, changed_file);
+            printf("🔄 Found %d file(s) importing %s (depth %d)\n", importer_count, changed_file, depth);
         }
         
         // Process each importer
@@ -182,12 +238,28 @@ static void process_dependent_files(const char* changed_file, const char* input_
             process_file_with_output(importers[i], input_dir, output_dir, format, verbose);
             
             // Recursively process files that import this importer
-            process_dependent_files(importers[i], input_dir, output_dir, format, verbose);
+            process_dependent_files_internal(importers[i], input_dir, output_dir, format, 
+                                           verbose, visited_files, depth + 1);
             
             free(importers[i]);
         }
         free(importers);
     }
+}
+
+/**
+ * @brief Process all files that import the changed file (recursive with cycle detection)
+ */
+static void process_dependent_files(const char* changed_file, const char* input_dir,
+                                  const char* output_dir, const char* format, bool verbose) {
+    if (!g_import_tracker || !changed_file) {
+        return;
+    }
+    
+    visited_file_t* visited_files = NULL;
+    process_dependent_files_internal(changed_file, input_dir, output_dir, format, 
+                                   verbose, &visited_files, 0);
+    free_visited_files(visited_files);
 }
 
 // Forward declaration for @ syntax preprocessing
@@ -783,7 +855,11 @@ int cmd_watch(int argc, char* argv[]) {
     
     // Watch loop
     while (watch_running) {
-        usleep(500000); // 500ms delay
+        // Handle interrupted system calls properly
+        if (usleep(500000) == -1 && errno == EINTR) {
+            // Signal was received, check if we should continue
+            if (!watch_running) break;
+        }
         
         // Check existing files for changes
         for (int i = 0; i < file_count; i++) {
@@ -815,6 +891,9 @@ int cmd_watch(int argc, char* argv[]) {
                 printf("\n");
             }
         }
+        
+        // Check if we should stop after processing files
+        if (!watch_running) break;
         
         // Check for new files (rescan directory periodically) - only in directory mode
         if (!is_file_mode) {

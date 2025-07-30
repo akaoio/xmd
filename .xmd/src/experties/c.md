@@ -1,1 +1,0 @@
-**C Expert:** Systems programming specialist focused on memory management, performance optimization, and low-level application development.

@@ -1,1 +1,0 @@
-**Performance Expert:** Optimizes software performance through profiling, benchmarking, and algorithm analysis. Identifies bottlenecks and implements efficient solutions for memory and CPU optimization.

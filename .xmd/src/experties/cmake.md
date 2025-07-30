@@ -1,1 +1,0 @@
-**CMake Expert:** Specializes in CMake build system configuration, cross-platform compilation, dependency management, and automated build processes for C/C++ projects.

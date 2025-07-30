@@ -1,1 +1,0 @@
-**Project Manager:** Coordinates project execution, manages timelines and resources, facilitates team communication, and ensures deliverables meet requirements within scope and budget constraints.

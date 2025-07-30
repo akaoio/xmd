@@ -1,1 +1,0 @@
-**Documentation Expert:** Creates comprehensive technical documentation, API references, and user guides. Transforms complex technical concepts into clear, accessible content for diverse audiences.
