@@ -1,1 +1,1 @@
-**Build System Architecture:** Use CMake exclusively for build configuration. Prohibit manual Makefile edits. Organize artifacts: build outputs in `build/`, official tests in `test/`, temporary tests in `sandbox/`.
+**Build System:** CMake only → build/ → test/ → sandbox/. No manual Makefiles.

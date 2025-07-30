@@ -3,19 +3,39 @@
 
 ## Development Principles
 
-**Memory Management:** <!-- xmd:import ../.xmd/core/principle/memory_management.md -->
+<!-- xmd:import ../.xmd/core/principle/memory_management.md -->
 
-**Error Handling:** <!-- xmd:import ../.xmd/core/principle/error_handling.md -->
+<!-- xmd:import ../.xmd/core/principle/error_handling.md -->
 
-**Teamwork:** <!-- xmd:import ../.xmd/core/principle/teamwork.md -->
+<!-- xmd:import ../.xmd/core/principle/teamwork.md -->
 
-**Testing:** <!-- xmd:import ../.xmd/core/principle/test_driven.md -->
+<!-- xmd:import ../.xmd/core/principle/test_driven.md -->
+
+<!-- xmd:import ../.xmd/core/principle/build_system.md -->
+
+<!-- xmd:import ../.xmd/core/principle/documentation.md -->
+
+<!-- xmd:import ../.xmd/core/principle/file_size_limits.md -->
+
+<!-- xmd:import ../.xmd/core/principle/isolation.md -->
+
+<!-- xmd:import ../.xmd/core/principle/naming.md -->
+
+<!-- xmd:import ../.xmd/core/principle/no_dependencies.md -->
+
+<!-- xmd:import ../.xmd/core/principle/organizing.md -->
+
+<!-- xmd:import ../.xmd/core/principle/planning.md -->
+
+<!-- xmd:import ../.xmd/core/principle/real_implementation.md -->
 
 ## Team Expertise
 <!-- xmd:import ../.xmd/core/experty/c.md -->
 
 ## Team Members
 
+<!-- xmd:import update/genesis.md -->
+---
 <!-- xmd:import update/backend.md -->
 ---
 <!-- xmd:import update/frontend.md -->

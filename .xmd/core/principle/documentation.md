@@ -1,1 +1,1 @@
-**Documentation Standards:** Use Doxygen-compatible comments with required tags: @brief, @struct, @param, @return for all functions. Maintain comprehensive inline documentation to support code understanding and maintenance.
+**Documentation:** Function → @brief → @param → @return → Inline docs. Doxygen format.

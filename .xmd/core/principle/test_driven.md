@@ -1,1 +1,1 @@
-**Test-Driven Development: IMPORTANT!** Write comprehensive test suites before implementation. Create tests in `test/` directory following the module structure. All tests must pass before code merges. Tests should cover normal operations, edge cases, error conditions, and performance scenarios. Use descriptive test names and clear assertions. Validate real-world usage patterns, not just theoretical functionality.
+**Testing:** Design → Write tests → Code → Run tests → Pass? → Merge. test/ first.

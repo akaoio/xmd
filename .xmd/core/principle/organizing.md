@@ -1,1 +1,1 @@
-**Code Organization:** Place all reusable components in `src/common/` hierarchy. Eliminate code duplication by centralizing shared functionality. Example: `src/common/group/child/child.c`.
+**Organization:** Reusable → src/common/ → No duplication → Centralized.
