@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)  # Minimum for reliable C17 support
-project(xmd VERSION 0.0.2 LANGUAGES C)
+project(xmd VERSION 0.0.4 LANGUAGES C)
 
 # Version information
 set(XMD_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})

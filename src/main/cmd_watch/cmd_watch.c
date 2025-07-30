@@ -801,7 +801,7 @@ int cmd_watch(int argc, char* argv[]) {
     int file_count = 0;
     
     if (is_file_mode) {
-        // File mode: single file in array
+        // File mode: start with single file, but will add imported files after processing
         file_count = 1;
         files = malloc(sizeof(char*));
         mtimes = malloc(sizeof(time_t));
@@ -853,6 +853,59 @@ int cmd_watch(int argc, char* argv[]) {
         printf("\n✅ Initial processing complete. Watching for changes...\n\n");
     }
     
+    // In file mode, extract imported files and add them to the watch list
+    if (is_file_mode) {
+        // Read the main file to extract imports
+        FILE* file = fopen(input_path, "r");
+        if (file) {
+            fseek(file, 0, SEEK_END);
+            long file_size = ftell(file);
+            fseek(file, 0, SEEK_SET);
+            
+            char* content = malloc(file_size + 1);
+            if (content) {
+                size_t read_size = fread(content, 1, file_size, file);
+                content[read_size] = '\0';
+                
+                // Extract imports
+                char** imports = NULL;
+                int import_count = 0;
+                
+                if (import_tracker_extract_imports(content, input_path, &imports, &import_count)) {
+                    if (import_count > 0) {
+                        printf("📚 Found %d imported file(s) to watch:\n", import_count);
+                        
+                        // Resize arrays to include imported files
+                        char** new_files = realloc(files, (file_count + import_count) * sizeof(char*));
+                        time_t* new_mtimes = realloc(mtimes, (file_count + import_count) * sizeof(time_t));
+                        
+                        if (new_files && new_mtimes) {
+                            files = new_files;
+                            mtimes = new_mtimes;
+                            
+                            // Add imported files to watch list
+                            for (int i = 0; i < import_count; i++) {
+                                // Check if file exists
+                                struct stat st;
+                                if (stat(imports[i], &st) == 0 && S_ISREG(st.st_mode)) {
+                                    files[file_count] = strdup(imports[i]);
+                                    mtimes[file_count] = st.st_mtime;
+                                    printf("  ➕ %s\n", imports[i]);
+                                    file_count++;
+                                }
+                                free(imports[i]);
+                            }
+                            printf("\n");
+                        }
+                        free(imports);
+                    }
+                }
+                free(content);
+            }
+            fclose(file);
+        }
+    }
+    
     // Watch loop
     while (watch_running) {
         // Handle interrupted system calls properly
@@ -868,8 +921,16 @@ int cmd_watch(int argc, char* argv[]) {
                 printf("📝 File changed: %s\n", files[i]);
                 
                 if (is_file_mode) {
-                    // File mode: process single file directly
-                    process_single_file_with_output(files[i], output_path, format, verbose);
+                    // In file mode, always reprocess the main file (files[0])
+                    // This ensures that when an imported file changes, the main file is reprocessed
+                    if (i == 0) {
+                        // Main file changed - process it directly
+                        process_single_file_with_output(files[0], output_path, format, verbose);
+                    } else {
+                        // Imported file changed - reprocess the main file
+                        printf("   ↻ Reprocessing main file: %s\n", files[0]);
+                        process_single_file_with_output(files[0], output_path, format, verbose);
+                    }
                     
                     // Process all files that import this changed file (directory needs to be derived)
                     char* file_dir = strdup(files[i]);
