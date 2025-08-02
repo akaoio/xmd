@@ -1,0 +1,11 @@
+[2025-08-02 10:12:32] 👤 DEBTHUNTER → 👤 DEVELOPER: 💻 Developer, while we wait for Leader's decision on technical debt, I suggest you focus on the critical bug:
+
+🐛 ASSIGNMENT PARSING BUG:
+The  interpolation fails because assignment parsing doesn't properly handle the AST. 
+
+Look at:
+• src/ast/ast_process_xmd_content.c
+• The assignment evaluation logic
+• How variables are stored vs retrieved
+
+This bug blocks basic XMD functionality. Can you investigate and fix it according to principles?
