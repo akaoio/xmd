@@ -10,6 +10,6 @@ void set_monitor_error(ResourceMonitor* monitor, const char* message) {
     if (!monitor || !message) {
         return;
     }
-    free(monitor->last_error);
+    XMD_FREE_SAFE(monitor->last_error);
     monitor->last_error = xmd_strdup(message);
 }

@@ -15,15 +15,14 @@
 #include "utils.h"
 #include <string.h>
 #include "error.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Convert AST value to string
  * @param value AST value
  * @return String representation or NULL on error
  */
 char* ast_value_to_string(ast_value* value) {
-    if (!value) {
-        return NULL;
-    }
+    XMD_NULL_CHECK(value, NULL);
     
     switch (value->type) {
         case AST_VAL_STRING:
@@ -47,9 +46,7 @@ char* ast_value_to_string(ast_value* value) {
             // Calculate total size needed
             size_t total_size = 3; // "[]\0"
             char** element_strings = xmd_malloc(sizeof(char*) * value->value.array_value.element_count);
-            if (!element_strings) {
-                return NULL;
-            }
+            XMD_NULL_CHECK(element_strings, NULL);
             
             // Convert each element to string
             for (size_t i = 0; i < value->value.array_value.element_count; i++) {
@@ -57,9 +54,9 @@ char* ast_value_to_string(ast_value* value) {
                 if (!element_strings[i]) {
                     // Clean up on error
                     for (size_t j = 0; j < i; j++) {
-                        free(element_strings[j]);
+                        XMD_FREE_SAFE(element_strings[j]);
                     }
-                    free(element_strings);
+                    XMD_FREE_SAFE(element_strings);
                     return NULL;
                 }
                 total_size += strlen(element_strings[i]);
@@ -70,9 +67,9 @@ char* ast_value_to_string(ast_value* value) {
             char* result = xmd_malloc(total_size);
             if (!result) {
                 for (size_t i = 0; i < value->value.array_value.element_count; i++) {
-                    free(element_strings[i]);
+                    XMD_FREE_SAFE(element_strings[i]);
                 }
-                free(element_strings);
+                XMD_FREE_SAFE(element_strings);
                 return NULL;
             }
             
@@ -80,10 +77,10 @@ char* ast_value_to_string(ast_value* value) {
             for (size_t i = 0; i < value->value.array_value.element_count; i++) {
                 if (i > 0) strcat(result, ", ");
                 strcat(result, element_strings[i]);
-                free(element_strings[i]);
+                XMD_FREE_SAFE(element_strings[i]);
             }
             strcat(result, "]");
-            free(element_strings);
+            XMD_FREE_SAFE(element_strings);
             return result;
         }
         

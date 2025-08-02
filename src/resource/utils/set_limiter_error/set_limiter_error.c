@@ -10,6 +10,6 @@ void set_limiter_error(ResourceLimiter* limiter, const char* error) {
     if (!limiter || !error) {
         return;
     }
-    free(limiter->last_error);
+    XMD_FREE_SAFE(limiter->last_error);
     limiter->last_error = xmd_strdup(error);
 }

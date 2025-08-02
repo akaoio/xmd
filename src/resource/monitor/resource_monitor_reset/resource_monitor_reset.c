@@ -11,7 +11,7 @@ int resource_monitor_reset(ResourceMonitor* monitor) {
     if (!monitor) return -1;
     memset(&monitor->start_time, 0, sizeof(xmd_time_t));
     monitor->is_monitoring = 0;
-    free(monitor->last_error);
+    XMD_FREE_SAFE(monitor->last_error);
     monitor->last_error = NULL;
     return 0;
 }

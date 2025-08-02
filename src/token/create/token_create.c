@@ -13,6 +13,7 @@
 #include "token.h"
 #include "utils.h"
 #include "variable.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Create a new token
  * @param type Token type
@@ -22,10 +23,8 @@
  * @return New token or NULL on failure
  */
 token* token_create(token_type type, const char* value, size_t line, size_t column) {
-    token* t = xmd_malloc(sizeof(token));
-    if (t == NULL) {
-        return NULL;
-    }
+    token* t;
+    XMD_MALLOC_CHECK(t, sizeof(token));
     
     t->type = type;
     t->line = line;
@@ -33,11 +32,7 @@ token* token_create(token_type type, const char* value, size_t line, size_t colu
     t->next = NULL;
     // Copy value if provided
     if (value != NULL) {
-        t->value = xmd_strdup(value);
-        if (t->value == NULL) {
-            xmd_free(t);
-            return NULL;
-        }
+        XMD_STRDUP_CHECK(t->value, value);
     } else {
         t->value = NULL;
     }

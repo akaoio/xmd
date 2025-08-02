@@ -1,0 +1,8 @@
+set x 42
+print "x = {{x}}"
+
+set name "Alice"
+print "Hello {{name}}"
+
+set pi 3.14
+print "Pi = {{pi}}"

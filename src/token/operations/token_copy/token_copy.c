@@ -12,20 +12,17 @@
 #include "token.h"
 #include "utils.h"
 #include "variable.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Copy token data (shallow copy - reuses value pointer)
  * @param t Source token
  * @return New token copy or NULL on error
  */
 token* token_copy(const token* t) {
-    if (t == NULL) {
-        return NULL;
-    }
+    XMD_NULL_CHECK(t, NULL);
     
     token* copy = xmd_malloc(sizeof(token));
-    if (copy == NULL) {
-        return NULL;
-    }
+    XMD_NULL_CHECK(copy, NULL);
     
     copy->type = t->type;
     copy->line = t->line;
@@ -35,7 +32,7 @@ token* token_copy(const token* t) {
     if (t->value != NULL) {
         copy->value = xmd_strdup(t->value);
         if (copy->value == NULL) {
-            free(copy);
+            XMD_FREE_SAFE(copy);
             return NULL;
         }
     } else {

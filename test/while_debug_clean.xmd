@@ -1,0 +1,5 @@
+set count 0
+while count < 2
+    print count
+    set count count + 1
+print "Done"

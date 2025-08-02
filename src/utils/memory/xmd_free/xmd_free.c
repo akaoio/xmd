@@ -13,8 +13,8 @@
  * @brief Safe free wrapper
  * @param ptr Pointer to free
  */
-void xmd_free(void* ptr) {
+void ast_value_free(void* ptr) {
     if (ptr) {
-        free(ptr);
+        XMD_FREE_SAFE(ptr);
     }
 }

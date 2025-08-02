@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include "variable.h"
 #include "variable_internal.h"
+#include "utils.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Create a new array variable
@@ -18,14 +20,12 @@
  */
 variable* variable_create_array(void) {
     variable* var = xmd_malloc(sizeof(variable));
-    if (var == NULL) {
-        return NULL;
-    }
+    XMD_NULL_CHECK(var, NULL);
     
     var->type = VAR_ARRAY;
-    var->value.array_value = malloc(sizeof(variable_array));
+    var->value.array_value = xmd_malloc(sizeof(variable_array));
     if (!var->value.array_value) {
-        free(var);
+        XMD_FREE_SAFE(var);
         return NULL;
     }
     var->value.array_value->items = NULL;

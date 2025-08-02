@@ -2,7 +2,15 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](build.sh)
-[![Version](https://img.shields.io/badge/version-0.0.6-orange.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.0.0--consolidation-orange.svg)](CHANGELOG.md)
+
+---
+
+## 📖 **MANDATORY FIRST READING**
+
+**🚨 BEFORE ANY WORK: Read `blueprint/idea.md` - The complete XMD specification! 🚨**
+
+This contains the vision, syntax, features, and examples of XMD - "the most beautiful programming language"
 
 ---
 
@@ -19,26 +27,92 @@
 
 ---
 
+## 🧠 **Memory System - Project Soul Recovery**
+
+> ⚡ **CRITICAL FOR DEVELOPERS:** XMD's `memory/` directory contains the **SOUL** of the entire system. 
+> Any IDE, AI, or new team member can **INSTANTLY RESTORE** full project context from memory files.
+
+### 🔄 **Quick Memory Recovery**:
+```bash
+# Read your role's memory to restore context
+cat memory/<your-role>/memory.md
+
+# Available roles: leader, systems, debthunter, developer, tester, designer
+# Example:
+cat memory/leader/memory.md      # Project coordination & decisions
+cat memory/systems/memory.md     # Code optimization & technical debt  
+cat memory/developer/memory.md   # Implementation status & functions
+```
+
+### 🎯 **Memory Contains**:
+- ✅ **ACTUAL progress** (evidence-based, not estimates)
+- ✅ **Real metrics** (verified duplication levels, build status)  
+- ✅ **Working tools** (scripts, measurement tools)
+- ✅ **Critical lessons** (what actually works vs claims)
+- ✅ **Next priorities** (realistic roadmap from real baseline)
+
+**→ No more lost context. No more starting from scratch. Memory = Immortal continuity.**
+
+---
+
+## 🏗️ **CRITICAL BUILD RULE - SEPARATE BUILD DIRECTORIES**
+
+> 🚨 **MANDATORY**: Each team member MUST use their own build directory to prevent conflicts!
+> 
+> **GENESIS DIRECTIVE**: "anh em phải có riêng mỗi người 1 thư mục build riêng, build thư mục riêng thì mới ko dẫm lên nhau"
+
+### 📁 **Required Build Directory Structure**:
+```bash
+# Each team member creates and uses ONLY their own build directory:
+build-leader/     # Leader's build directory  
+build-systems/    # Systems's build directory
+build-debthunter/ # Debthunter's build directory
+build-developer/  # Developer's build directory
+build-tester/     # Tester's build directory
+build-designer/   # Designer's build directory
+
+# NEVER use shared 'build/' directory - it causes conflicts!
+```
+
+### ⚡ **Build Command for Each Role**:
+```bash
+# Create your personal build directory
+mkdir -p build-<your-role>
+
+# Configure using modern CMake syntax
+cmake -B build-<your-role> -S .
+
+# Build in your isolated directory
+cd build-<your-role> && make -j4
+
+# Example for leader:
+cmake -B build-leader -S . && cd build-leader && make -j4
+```
+
+**❌ NEVER**: `mkdir build && cmake -B build -S .` (shared directory causes conflicts)  
+**✅ ALWAYS**: `cmake -B build-<your-role> -S .` (isolated builds)
+
+---
+
 ## 🤝 **Development Team Workflow**
 
-The XMD project uses a **custom coordination system** (`chat.js`) that enables seamless collaboration between team members (including AI agents) across different development environments. This is a development tool, not part of the XMD language itself.
+The XMD project uses a **custom coordination system** (`chat.js`) + **memory persistence** that enables seamless collaboration between team members (including AI agents) across different development environments.
 
 ### 🗣️ **Real-Time Team Communication**
 
-The `chat.js` system provides structured communication for mixed human/AI teams:
+The `chat.js` system provides structured communication for the XMD development team:
 
 ```bash
-# Human developer working in VS Code
-node chat.js @alice: @ai_agent "Can you implement the user authentication module?"
+# Check recent messages
+node chat.js
 
-# AI agent responds from any environment 
-node chat.js @ai_agent: @alice "✅ Auth module complete. Added OAuth2 and session management. Ready for review."
+# Send message to specific role
+node chat.js @your-role: @recipient "message"
 
-# Another human from Vim
-node chat.js @bob: @all "Running integration tests now"
-
-# AI agent provides real-time analysis
-node chat.js @ai_agent: @bob "⚠️ Test failure in auth.test.js line 42. Null pointer in session validation."
+# Examples:
+node chat.js @developer: @leader "Feature implementation complete"
+node chat.js @systems: @all "Build optimization finished - 15% faster"
+node chat.js @leader: @all "Sprint planning meeting at 3pm"
 ```
 
 ### 🔧 **Cross-IDE Workflow Example**
@@ -326,12 +400,13 @@ To contribute to XMD development:
 4. Submit pull requests for review
 
 
-### 📊 **Development Standards**
-- **Modular Architecture** - Every function isolated in its own directory
-- **Pure C Implementation** - Self-contained and portable (except JSON/YAML libs)
-- **Production Quality** - No placeholder code, only working implementations
-- **Memory Safety** - Validate, use, free - the essential pattern
-- **Clear Error Handling** - Handle all failure paths explicitly
+### 📊 **Development Standards - The 6 Sacred Principles**
+1. **Genesis Principle**: 1 function → 1 file → 1 directory (Isolation)
+2. **No Dependencies**: Standard C only (exceptions: cJSON for JSON, libyaml for YAML)
+3. **Real Implementation**: Complete, working code - NO stubs, NO TODOs
+4. **Memory Management**: Validate → Use → Free (zero leaks allowed)
+5. **Error Handling**: All inputs validated, all error paths handled
+6. **Naming Convention**: snake_case functions, UPPER_CASE macros
 
 ---
 

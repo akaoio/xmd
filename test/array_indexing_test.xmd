@@ -1,0 +1,35 @@
+// XMD Array Indexing Comprehensive Test Suite
+// Developer task: Validate complete array[index] functionality
+
+// Test 1: Basic array creation and access
+set scores 95, 98, 100, 88, 92
+print "Test 1 - Basic Array Access:"
+print "First score: " + scores[0] + " (expected: 95)"
+print "Third score: " + scores[2] + " (expected: 100)"
+print "Last score: " + scores[4] + " (expected: 92)"
+
+// Test 2: String arrays
+set names "Alice", "Bob", "Charlie", "Diana"
+print "Test 2 - String Arrays:"
+print "First name: " + names[0] + " (expected: Alice)"
+print "Second name: " + names[1] + " (expected: Bob)"
+print "Fourth name: " + names[3] + " (expected: Diana)"
+
+// Test 3: Mixed expressions with array access
+print "Test 3 - Mixed Expressions:"
+print "Score report: " + names[0] + " scored " + scores[0]
+print "Average of first two: " + (scores[0] + scores[1]) / 2
+
+// Test 4: Variable indices
+set index 1
+print "Test 4 - Variable Index:"
+print "scores[" + index + "] = " + scores[index] + " (expected: 98)"
+
+// Test 5: Bounds checking (should show errors)
+print "Test 5 - Bounds Checking:"
+print "Invalid access: " + scores[10] + " (should be empty/error)"
+print "Negative index: " + scores[-1] + " (should be empty/error)"
+
+// Test 6: Nested expressions
+print "Test 6 - Complex Expressions:"
+print "Complex: Score " + (index + 1) + " is " + scores[index + 1]

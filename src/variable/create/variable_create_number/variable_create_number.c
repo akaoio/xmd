@@ -11,16 +11,16 @@
 #include <stdlib.h>
 #include "variable.h"
 #include "variable_internal.h"
+#include "utils.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Create a new number variable
  * @return New number variable or NULL on failure
  */
 variable* variable_create_number(double value) {
-    variable* var = xmd_malloc(sizeof(variable));
-    if (var == NULL) {
-        return NULL;
-    }
+    variable* var;
+    XMD_MALLOC_CHECK(var, sizeof(variable));
     
     var->type = VAR_NUMBER;
     var->value.number_value = value;

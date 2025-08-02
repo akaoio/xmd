@@ -32,7 +32,7 @@ ast_node* ast_parse_if_block(const char** pos) {
     while (end > condition_text && isspace(*end)) *end-- = '\0';
     // Parse condition
     ast_node* condition_expr = ast_parse_comparison_expression(condition_text);
-    free(condition_text);
+    XMD_FREE_SAFE(condition_text);
     if (!condition_expr) return NULL;
     // Create conditional node
     source_location loc = {1, 1, "input"};

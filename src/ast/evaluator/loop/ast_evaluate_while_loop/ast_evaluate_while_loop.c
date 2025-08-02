@@ -17,6 +17,7 @@
 #include "error.h"
 #include "store.h"
 #include "variable.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Evaluate while loop node
  * @param node While loop node (marked as AST_WHILE_LOOP)
@@ -24,7 +25,8 @@
  * @return Empty string value
  */
 ast_value* ast_evaluate_while_loop(ast_node* node, ast_evaluator* evaluator) {
-    if (!node || !evaluator || node->type != AST_WHILE_LOOP) {
+    XMD_VALIDATE_PTRS(NULL, node, evaluator);
+    if (node->type != AST_WHILE_LOOP) {
         return NULL;
     }
     
@@ -57,7 +59,7 @@ ast_value* ast_evaluate_while_loop(ast_node* node, ast_evaluator* evaluator) {
                       strlen(condition_result->value.string_value) > 0);
         }
         
-        ast_value_free(condition_result);
+        XMD_FREE_SAFE(condition_result);
         if (!is_true) {
             break; // Exit while loop
         }
@@ -66,7 +68,7 @@ ast_value* ast_evaluate_while_loop(ast_node* node, ast_evaluator* evaluator) {
         if (node->data.loop.body) {
             ast_value* body_result = ast_evaluate(node->data.loop.body, evaluator);
             if (body_result) {
-                ast_value_free(body_result);
+                XMD_FREE_SAFE(body_result);
             }
         } else {
             // FALLBACK: Old auto-increment behavior (remove this once body parsing is confirmed working)

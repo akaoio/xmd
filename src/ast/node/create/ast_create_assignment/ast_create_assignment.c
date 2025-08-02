@@ -11,6 +11,7 @@
 #include "ast_node.h"
 #include "utils.h"
 #include "variable.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Create AST assignment node
  * @param variable Variable name
@@ -35,7 +36,7 @@ ast_node* ast_create_assignment(const char* variable, binary_operator op, ast_no
     node->data.assignment.value = value;
     node->location = loc;
     if (!node->data.assignment.variable) {
-        free(node);
+        XMD_FREE_SAFE(node);
         return NULL;
     }
     return node;

@@ -17,6 +17,7 @@
 #include "store.h"
 #include "variable.h"
 #include "utils.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Evaluate function definition node (store function for later calls)
  * @param node Function definition AST node
@@ -24,7 +25,8 @@
  * @return Empty string value
  */
 ast_value* ast_evaluate_function_def(ast_node* node, ast_evaluator* evaluator) {
-    if (!node || node->type != AST_FUNCTION_DEF || !evaluator) {
+    XMD_VALIDATE_PTRS(NULL, node, evaluator);
+    if (node->type != AST_FUNCTION_DEF) {
         return NULL;
     }
     
@@ -34,9 +36,7 @@ ast_value* ast_evaluate_function_def(ast_node* node, ast_evaluator* evaluator) {
     // Store the function AST node pointer directly in global functions store
     // We'll use a custom variable type that can hold a pointer
     variable* func_var = xmd_malloc(sizeof(variable));
-    if (!func_var) {
-        return ast_value_create_string("");
-    }
+    XMD_NULL_CHECK(func_var);
     
     func_var->type = VAR_STRING; // Reuse string type temporarily
     func_var->value.string_value = (char*)node; // Store AST node pointer 

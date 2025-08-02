@@ -1,0 +1,28 @@
+2025-08-02T17:20:21.046Z|👤 LEADER|👤 SYSTEMS|Systems team: Are you understanding your assigned goal correctly?
+
+Your task is NOT to create new files or new systems.
+
+Your task IS to REFACTOR existing code to use macros:
+
+❌ WRONG APPROACH:
+- Creating new functionality
+- Building new modules
+- Writing new features
+
+✅ CORRECT APPROACH:
+1. Find existing files with duplicated code like:
+   
+
+2. Replace with macro:
+   
+
+3. Add include: #include "../../utils/common/common_macros.h"
+
+EXAMPLE TARGET FILES:
+- src/ast/evaluator/expression/*.c
+- src/ast/evaluator/function/*.c  
+- src/utils/memory/*.c
+
+Do you understand this is REFACTORING, not new development?
+
+- Leader

@@ -87,7 +87,7 @@ static char* yaml_stringify_variable(variable* var, int indent) {
                             }
                             strcpy(result + pos, elem_str);
                             pos += elem_len;
-                            free(elem_str);
+                            XMD_FREE_SAFE(elem_str);
                         }
                     }
                 }
@@ -125,13 +125,13 @@ static char* yaml_stringify_variable(variable* var, int indent) {
                                     }
                                     strcpy(result + pos, val_str);
                                     pos += val_len;
-                                    free(val_str);
+                                    XMD_FREE_SAFE(val_str);
                                 }
                             }
-                            free(keys[i]);
+                            XMD_FREE_SAFE(keys[i]);
                         }
                     }
-                    free(keys);
+                    XMD_FREE_SAFE(keys);
                 }
             }
             break;
@@ -198,7 +198,7 @@ static variable* yaml_parse_simple(const char* yaml) {
             // Parse item (simplified - just strings for now)
             variable* item = variable_create_string(item_str);
             variable_array_add(arr, item);
-            free(item_str);
+            XMD_FREE_SAFE(item_str);
             
             // Move to next line
             yaml = line_end;
@@ -253,8 +253,8 @@ static variable* yaml_parse_simple(const char* yaml) {
             variable* val = variable_create_string(val_str);
             variable_object_set(obj, key, val);
             
-            free(key);
-            free(val_str);
+            XMD_FREE_SAFE(key);
+            XMD_FREE_SAFE(val_str);
             
             // Move to next line
             yaml = line_end;
@@ -287,7 +287,7 @@ static variable* yaml_parse_simple(const char* yaml) {
     }
     
     variable* result = variable_create_string(str);
-    free(str);
+    XMD_FREE_SAFE(str);
     return result;
 }
 
@@ -311,7 +311,7 @@ ast_value* ast_yaml_stringify(ast_node** args, size_t arg_count, ast_evaluator* 
     
     // Convert to variable
     variable* var = ast_value_to_variable(arg_val);
-    ast_value_free(arg_val);
+    XMD_FREE_SAFE(arg_val);
     
     if (!var) {
         return ast_value_create_string("");
@@ -327,7 +327,7 @@ ast_value* ast_yaml_stringify(ast_node** args, size_t arg_count, ast_evaluator* 
     
     // Create result
     ast_value* result = ast_value_create_string(yaml);
-    free(yaml);
+    XMD_FREE_SAFE(yaml);
     return result;
 }
 
@@ -346,13 +346,13 @@ ast_value* ast_yaml_parse(ast_node** args, size_t arg_count, ast_evaluator* eval
     // Evaluate the argument
     ast_value* arg_val = ast_evaluate(args[0], evaluator);
     if (!arg_val || arg_val->type != AST_VAL_STRING) {
-        if (arg_val) ast_value_free(arg_val);
+        if (arg_val) XMD_FREE_SAFE(arg_val);
         return ast_value_create_string("");
     }
     
     // Parse YAML
     variable* var = yaml_parse_simple(arg_val->value.string_value);
-    ast_value_free(arg_val);
+    XMD_FREE_SAFE(arg_val);
     
     if (!var) {
         return ast_value_create_string("");

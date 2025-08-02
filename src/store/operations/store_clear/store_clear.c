@@ -25,9 +25,9 @@ void store_clear(store* s) {
         store_entry* entry = s->buckets[i];
         while (entry) {
             store_entry* next = entry->next;
-            free(entry->key);
+            XMD_FREE_SAFE(entry->key);
             variable_unref(entry->value);
-            free(entry);
+            XMD_FREE_SAFE(entry);
             entry = next;
         }
         s->buckets[i] = NULL;

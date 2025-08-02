@@ -14,31 +14,31 @@
  * @param config Configuration to free
   * /
  */
-void xmd_config_free(xmd_config* config) {
+void xmd_config_XMD_FREE_SAFE(xmd_config* config) {
     if (!config) return;
     
     xmd_internal_config* internal = (xmd_internal_config*)config;
     
     // Free path strings
-    free(internal->paths.proc_status_path);
-    free(internal->paths.proc_fd_path);
-    free(internal->paths.temp_dir);
+    XMD_FREE_SAFE(internal->paths.proc_status_path);
+    XMD_FREE_SAFE(internal->paths.proc_fd_path);
+    XMD_FREE_SAFE(internal->paths.temp_dir);
     
     // Free module search paths if they exist
     if (internal->paths.module_search_paths) {
         for (size_t i = 0; i < internal->paths.module_search_path_count; i++) {
-            free(internal->paths.module_search_paths[i]);
+            XMD_FREE_SAFE(internal->paths.module_search_paths[i]);
         }
-        free(internal->paths.module_search_paths);
+        XMD_FREE_SAFE(internal->paths.module_search_paths);
     }
     
     // Free security exec whitelist
     if (internal->security.exec_whitelist) {
         for (size_t i = 0; i < internal->security.exec_whitelist_count; i++) {
-            free(internal->security.exec_whitelist[i]);
+            XMD_FREE_SAFE(internal->security.exec_whitelist[i]);
         }
-        free(internal->security.exec_whitelist);
+        XMD_FREE_SAFE(internal->security.exec_whitelist);
     }
     
-    free(config);
+    XMD_FREE_SAFE(config);
 }

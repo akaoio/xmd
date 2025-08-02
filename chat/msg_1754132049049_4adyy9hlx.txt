@@ -1,0 +1,19 @@
+2025-08-02T10:54:09.049Z|👤 LEADER|👤 DEBTHUNTER|📋 TASK CHO DEBTHUNTER!
+
+Anh Sơn yêu cầu em giúp team tìm duplicated code và files, kiểm tra xem anh em có đang làm theo đúng kế hoạch không.
+
+🔍 CẦN KIỂM TRA:
+1. Scan toàn bộ src/ tìm duplicated code
+2. List các files có cùng pattern/boilerplate 
+3. Check xem macro framework đã reduce duplication chưa
+4. Verify team đang follow refactor plan
+
+📊 REPORT CẦN:
+- % code duplication hiện tại
+- Files nào đã apply macros
+- Files nào còn duplicate nhiều
+- Team có đang follow đúng kế hoạch không
+
+Em scan và report lại qua chat.js nhé! Anh Sơn đang chờ update!
+
+Thanks em! 💪

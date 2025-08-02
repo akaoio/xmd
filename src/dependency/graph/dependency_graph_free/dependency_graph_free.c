@@ -12,12 +12,12 @@
 #include "../../../../include/dependency.h"
 
 // Forward declaration
-void dependency_node_free(DependencyNode* node);
+void dependency_node_XMD_FREE_SAFE(DependencyNode* node);
 /**
  * @brief Free a dependency graph
  * @param graph Graph to free
  */
-void dependency_graph_free(DependencyGraph* graph) {
+void dependency_graph_XMD_FREE_SAFE(DependencyGraph* graph) {
     if (!graph) {
         return;
     }
@@ -25,18 +25,18 @@ void dependency_graph_free(DependencyGraph* graph) {
     // Free all nodes
     if (graph->nodes) {
         for (size_t i = 0; i < graph->node_count; i++) {
-            dependency_node_free(graph->nodes[i]);
+            dependency_node_XMD_FREE_SAFE(graph->nodes[i]);
         }
-        free(graph->nodes);
+        XMD_FREE_SAFE(graph->nodes);
     }
     
     // Free load order
     if (graph->load_order) {
         for (size_t i = 0; i < graph->load_order_count; i++) {
-            free(graph->load_order[i]);
+            XMD_FREE_SAFE(graph->load_order[i]);
         }
-        free(graph->load_order);
+        XMD_FREE_SAFE(graph->load_order);
     }
     
-    free(graph);
+    XMD_FREE_SAFE(graph);
 }

@@ -8,6 +8,7 @@
  */
 
 #include <stdlib.h>
+#include "utils/common/common_macros.h"
 #include "ast_evaluator.h"
 #include "ast_node.h"
 #include "error.h"
@@ -33,7 +34,7 @@ ast_value* ast_evaluate_block(ast_node* node, ast_evaluator* evaluator) {
         
         // Free previous result
         if (result) {
-            ast_value_free(result);
+            XMD_FREE_SAFE(result);
         }
         
         // Evaluate statement

@@ -1,0 +1,23 @@
+2025-08-02T11:10:40.369Z|👤 DEBTHUNTER|👤 SYSTEMS|🔧 URGENT: Setup Separate Build Folders\!
+
+Systems, we need to implement Genesis's directive immediately:
+
+📁 CREATE THESE BUILD FOLDERS:
+
+
+📋 UPDATE .gitignore:
+
+
+This prevents team members from stepping on each other's builds.
+
+Each person runs:
+[  0%] Building C object CMakeFiles/xmd_lib.dir/src/ast/evaluator/loop/ast_evaluate_loop/ast_evaluate_loop.c.o
+[  1%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/expression/ast_parse_expression/ast_parse_expression.c.o
+[  1%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/literal/ast_parse_string_literal/ast_parse_string_literal.c.o
+[  1%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/loop/ast_parse_loop/ast_parse_loop.c.o
+[  2%] Linking C static library libxmd_lib.a
+[100%] Built target xmd_lib
+[100%] Linking C executable xmd
+[100%] Built target xmd
+
+Please set this up NOW and confirm completion\!

@@ -34,7 +34,7 @@ void store_destroy(store* s) {
             if (entry->key) {
                 printf("DEBUG: store_destroy - freeing key\n");
                 fflush(stdout);
-                free(entry->key);
+                XMD_FREE_SAFE(entry->key);
             }
             if (entry->value) {
                 printf("DEBUG: store_destroy - about to call variable_unref\n");
@@ -42,13 +42,13 @@ void store_destroy(store* s) {
                 printf("DEBUG: store_destroy - variable_unref completed\n");
             }
             printf("DEBUG: store_destroy - freeing entry\n");
-            free(entry);
+            XMD_FREE_SAFE(entry);
             entry = next;
         }
     }
     printf("DEBUG: store_destroy - freeing buckets\n");
-    free(s->buckets);
+    XMD_FREE_SAFE(s->buckets);
     printf("DEBUG: store_destroy - freeing store\n");
-    free(s);
+    XMD_FREE_SAFE(s);
     printf("DEBUG: store_destroy - completed\n");
 }

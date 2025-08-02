@@ -14,6 +14,7 @@
 #include "store_internal.h"
 #include "utils.h"
 #include "variable.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Set value in store
@@ -23,9 +24,9 @@
  * @return true on success, false on error
  */
 bool store_set(store* s, const char* key, variable* value) {
-    if (!s || !key || !value) {
-        return false;
-    }
+    XMD_NULL_CHECK_RETURN(s, false);
+    XMD_NULL_CHECK_RETURN(key, false);
+    XMD_NULL_CHECK_RETURN(value, false);
     
     unsigned int index = xmd_hash_key(key, s->capacity);
     store_entry* entry = s->buckets[index];
@@ -42,13 +43,11 @@ bool store_set(store* s, const char* key, variable* value) {
     
     // Create new entry
     entry = xmd_malloc(sizeof(store_entry));
-    if (!entry) {
-        return false;
-    }
+    XMD_NULL_CHECK_RETURN(entry, false);
     
     entry->key = xmd_strdup(key);
     if (!entry->key) {
-        xmd_free(entry);
+        XMD_FREE_SAFE(entry);
         return false;
     }
     

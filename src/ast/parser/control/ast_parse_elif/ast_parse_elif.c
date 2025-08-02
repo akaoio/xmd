@@ -61,7 +61,7 @@ ast_node* ast_parse_elif(const char** pos) {
         condition_node = ast_parse_expression(&expr_pos);
     }
     
-    free(condition_str);
+    XMD_FREE_SAFE(condition_str);
     if (!condition_node) {
         return NULL;
     }

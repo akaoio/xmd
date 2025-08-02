@@ -1,0 +1,6 @@
+EVIDENCE-BASED DUPLICATION ANALYSIS
+Timestamp: Sun Aug  3 00:20:57 +07 2025
+Total Lines: 13896
+Duplicated Lines: 8018
+Duplication Percentage: 57.7%
+Macro Uses: 547

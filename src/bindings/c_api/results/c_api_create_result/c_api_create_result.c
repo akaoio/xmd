@@ -34,7 +34,7 @@ xmd_result* c_api_create_result(int error_code, const char* output, const char* 
         if (result->output) {
             strcpy(result->output, output);
         } else {
-            free(result);
+            XMD_FREE_SAFE(result);
             return NULL;
         }
     } else {
@@ -47,8 +47,8 @@ xmd_result* c_api_create_result(int error_code, const char* output, const char* 
         if (result->error_message) {
             strcpy(result->error_message, error_message);
         } else {
-            free(result->output);
-            free(result);
+            XMD_FREE_SAFE(result->output);
+            XMD_FREE_SAFE(result);
             return NULL;
         }
     } else {

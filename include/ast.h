@@ -306,6 +306,7 @@ int ast_add_method(ast_node* class_def, ast_node* method);
 int ast_add_parameter(ast_node* function, const char* parameter);
 int ast_add_statement(ast_node* block, ast_node* statement);
 ast_node*ast_create_array_access(ast_node* array_expr, ast_node* index_expr, source_location loc);
+ast_node*ast_create_array_access_from_strings(const char* array_name, const char* index_str, source_location loc);
 ast_node*ast_create_array_literal(source_location loc);
 ast_node*ast_create_assignment(const char* variable, binary_operator op, ast_node* value, source_location loc);
 ast_node*ast_create_binary_op(binary_operator op, ast_node* left, ast_node* right, source_location loc);
@@ -334,6 +335,7 @@ ast_value*ast_evaluate_file_write(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_function_def(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_identifier(ast_node* node, ast_evaluator* evaluator);
+ast_value*ast_evaluate_array_access(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_loop(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_program_node(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_while_loop(ast_node* node, ast_evaluator* evaluator);
@@ -347,6 +349,7 @@ ast_node*ast_parse_comparison_expression(const char* expr);
 ast_node*ast_parse_elif(const char** pos);
 ast_node*ast_parse_else(const char** pos);
 ast_node*ast_parse_expression(const char** pos);
+ast_node*ast_parse_identifier_or_array(const char* identifier_str, source_location loc);
 ast_node*ast_parse_function(const char** pos);
 ast_node*ast_parse_if_block(const char** pos);
 ast_node*ast_parse_if_then(const char** pos);
@@ -393,5 +396,65 @@ ast_value* ast_value_create_string(const char* str);
 
 /* Global stores for functions and other global state */
 extern store* global_functions;
+
+/**
+ * @brief Mass consolidation macros for duplication reduction
+ */
+#define XMD_NULL_CHECK(ptr) \
+    do { if (!(ptr)) return NULL; } while(0)
+
+#define XMD_NULL_CHECK_PARAM(ptr, param) \
+    do { if (!(ptr) || !(param)) return NULL; } while(0)
+
+#define XMD_ERROR_RETURN_NULL(condition) \
+    do { if (condition) return NULL; } while(0)
+
+#define XMD_MALLOC_CHECK(ptr, size) \
+    do { \
+        (ptr) = xmd_malloc(size); \
+        if (!(ptr)) return NULL; \
+    } while(0)
+
+#define XMD_CALLOC_CHECK(ptr, count, size) \
+    do { \
+        (ptr) = xmd_calloc(count, size); \
+        if (!(ptr)) return NULL; \
+    } while(0)
+
+#define XMD_STRDUP_CHECK(dest, src) \
+    do { \
+        (dest) = xmd_strdup(src); \
+        if (!(dest)) return NULL; \
+    } while(0)
+
+#define XMD_EVAL_NULL_GUARD(evaluator, node) \
+    do { \
+        if (!(evaluator) || !(node)) return NULL; \
+    } while(0)
+
+#define XMD_PARSER_NULL_GUARD(state) \
+    do { \
+        if (!(state) || !(state)->current_token) return NULL; \
+    } while(0)
+
+#define XMD_TOKEN_TYPE_CHECK(token, expected_type) \
+    do { \
+        if (!(token) || (token)->type != (expected_type)) return NULL; \
+    } while(0)
+
+#define XMD_VALUE_NULL_CHECK(value) \
+    do { \
+        if (!(value)) return NULL; \
+    } while(0)
+
+#define XMD_STANDARD_NULL_CHECKS(param1, param2) \
+    do { \
+        if (!(param1) || !(param2)) return NULL; \
+    } while(0)
+
+#define XMD_TRIPLE_NULL_CHECK(p1, p2, p3) \
+    do { \
+        if (!(p1) || !(p2) || !(p3)) return NULL; \
+    } while(0)
 
 #endif /* XMD_AST_H */

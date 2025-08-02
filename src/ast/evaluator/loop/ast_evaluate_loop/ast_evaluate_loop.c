@@ -15,6 +15,7 @@
 #include "ast_node.h"
 #include "store.h"
 #include "variable.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Evaluate loop node (for variable in iterable)
  * @param node Loop AST node
@@ -22,7 +23,8 @@
  * @return AST value result or NULL on error
  */
 ast_value* ast_evaluate_loop(ast_node* node, ast_evaluator* evaluator) {
-    if (!node || node->type != AST_LOOP || !evaluator) {
+    XMD_VALIDATE_PTRS(NULL, node, evaluator);
+    if (node->type != AST_LOOP) {
         return NULL;
     }
     
@@ -62,7 +64,7 @@ ast_value* ast_evaluate_loop(ast_node* node, ast_evaluator* evaluator) {
             variable_unref(loop_var_obj); // store_set takes ownership
         }
         
-        ast_value_free(element_value);
+        XMD_FREE_SAFE(element_value);
         // Execute loop body if it exists
         if (node->data.loop.body) {
             // Execute loop body
@@ -70,7 +72,7 @@ ast_value* ast_evaluate_loop(ast_node* node, ast_evaluator* evaluator) {
             if (body_result) {
                 // The body result represents the output of all statements in the loop body
                 // Individual print statements handle their own output
-                ast_value_free(body_result);
+                XMD_FREE_SAFE(body_result);
             }
         }
         // Loop iteration completed

@@ -11,23 +11,21 @@
 #include <stdlib.h>
 #include "../../../../include/dependency.h"
 #include "../../../../include/utils.h"
+#include "../../../../src/utils/common/common_macros.h"
 /**
  * @brief Create a new dependency detector
  * @param graph Dependency graph to attach
  * @return New dependency detector or NULL on error
  */
 DependencyDetector* dependency_detector_new(DependencyGraph* graph) {
-    DependencyDetector* detector = xmd_malloc(sizeof(DependencyDetector));
-    if (!detector) {
-        return NULL;
-    }
+    XMD_MALLOC_SAFE(DependencyDetector, detector);
     
     detector->graph = graph;
     detector->cycle_path = NULL;
     detector->cycle_path_count = 0;
     
     if (!detector->graph) {
-        free(detector);
+        XMD_FREE_SAFE(detector);
         return NULL;
     }
     

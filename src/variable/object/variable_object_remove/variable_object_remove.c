@@ -28,7 +28,7 @@ bool variable_object_remove(variable* object_var, const char* key) {
     size_t index = variable_object_find_key(object_var, key);
     if (index == SIZE_MAX) {
     // Free the key and unreference the value
-    free(obj->pairs[index].key);
+    XMD_FREE_SAFE(obj->pairs[index].key);
     variable_unref(obj->pairs[index].value);
     // Shift remaining pairs down
     for (size_t i = index; i < obj->count - 1; i++) {

@@ -7,6 +7,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include "utils/common/common_macros.h"
 #include "../../../../include/ast_evaluator.h"
 #include "../../../../include/utils.h"
 

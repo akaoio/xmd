@@ -47,7 +47,7 @@ int ast_add_parameter(ast_node* function, const char* parameter) {
     if (!param_copy) {
         // Free the new array if strdup fails
         if (*count_ptr == 0) {
-            free(new_parameters);
+            XMD_FREE_SAFE(new_parameters);
         }
         return -1;
     }

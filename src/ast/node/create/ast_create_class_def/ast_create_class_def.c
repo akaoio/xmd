@@ -13,6 +13,7 @@
 #include <stdbool.h>
 #include "ast.h"
 #include "utils.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Create AST class definition node
  * @param name Class name
@@ -38,12 +39,12 @@ ast_node* ast_create_class_def(const char* name, const char* parent_class, sourc
     node->data.class_def.method_count = 0;
     node->location = loc;
     if (!node->data.class_def.name) {
-        free(node);
+        XMD_FREE_SAFE(node);
         return NULL;
     }
     if (parent_class && !node->data.class_def.parent_class) {
-        free(node->data.class_def.name);
-        free(node);
+        XMD_FREE_SAFE(node->data.class_def.name);
+        XMD_FREE_SAFE(node);
         return NULL;
     }
     return node;

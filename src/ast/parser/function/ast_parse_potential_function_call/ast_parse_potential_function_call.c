@@ -80,7 +80,7 @@ ast_node* ast_parse_potential_function_call(const char** pos) {
         // Regular function call
         func_call = ast_create_function_call(func_name, loc);
     }
-    free(func_name);
+    XMD_FREE_SAFE(func_name);
     if (!func_call) {
         return NULL;
     }
@@ -119,7 +119,7 @@ ast_node* ast_parse_potential_function_call(const char** pos) {
                     } else {
                         func_call->data.file_io.file_path = xmd_strdup(arg_str);
                     }
-                    free(arg_str);
+                    XMD_FREE_SAFE(arg_str);
                 }
             }
             // For File.write, parse second argument as content
@@ -154,14 +154,14 @@ ast_node* ast_parse_potential_function_call(const char** pos) {
                                     str_val[content_len - 2] = '\0';
                                     source_location loc = {1, 1, "input"};
                                     func_call->data.file_io.content = ast_create_string_literal(str_val, loc);
-                                    free(str_val);
+                                    XMD_FREE_SAFE(str_val);
                                 }
                             } else {
                                 // Variable reference or other content
                                 source_location loc = {1, 1, "input"};
                                 func_call->data.file_io.content = ast_create_identifier(content_str, loc);
                             }
-                            free(content_str);
+                            XMD_FREE_SAFE(content_str);
                         }
                     }
                 } else {

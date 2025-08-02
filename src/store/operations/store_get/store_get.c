@@ -12,6 +12,7 @@
 #include "store_internal.h"
 #include "variable.h"
 #include "utils.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Get value from store
@@ -20,9 +21,8 @@
  * @return Value or NULL if not found
  */
 variable* store_get(store* s, const char* key) {
-    if (!s || !key) {
-        return NULL;
-    }
+    XMD_NULL_CHECK(s, NULL);
+    XMD_NULL_CHECK(key, NULL);
     
     unsigned int index = xmd_hash_key(key, s->capacity);
     store_entry* entry = s->buckets[index];

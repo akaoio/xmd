@@ -10,6 +10,7 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+#include "utils/common/common_macros.h"
 #include "ast_evaluator.h"
 #include "ast_node.h"
 #include "error.h"

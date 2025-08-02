@@ -47,7 +47,7 @@ ast_node* ast_parse_single_value(const char** pos) {
             id_str[id_len] = '\0';
             source_location loc = {1, 1, "input"};
             ast_node* result = ast_create_identifier(id_str, loc);
-            free(id_str);
+            XMD_FREE_SAFE(id_str);
             *pos = start;
             return result;
         }

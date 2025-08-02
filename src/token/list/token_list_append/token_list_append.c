@@ -9,6 +9,8 @@
 
 #include "performance.h"
 #include "token.h"
+#include "utils.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Append token to token list
  * @param head Head of the token list
@@ -16,9 +18,7 @@
  * @return Updated head of the list
  */
 token* token_list_append(token* head, token* t) {
-    if (t == NULL) {
-        return head;
-    }
+    XMD_NULL_CHECK_RETURN(t, head);
     
     t->next = NULL;
     if (head == NULL) {

@@ -9,7 +9,7 @@ void benchmark_suite_destroy(benchmark_suite* suite) {
     if (!suite) {
         return;
     }
-    free(suite->suite_name);
-    free(suite->results);
-    free(suite);
+    XMD_FREE_SAFE(suite->suite_name);
+    XMD_FREE_SAFE(suite->results);
+    XMD_FREE_SAFE(suite);
 }

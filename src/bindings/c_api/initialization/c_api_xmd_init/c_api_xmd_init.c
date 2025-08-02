@@ -25,13 +25,13 @@ void* c_api_xmd_init(const char* config_path) {
     
     ctx->config = config_create();
     if (!ctx->config) { 
-        free(ctx); 
+        XMD_FREE_SAFE(ctx); 
         return NULL; 
     }
     
     if (config_path && config_load_file(ctx->config, config_path) != 0) {
         config_destroy(ctx->config); 
-        free(ctx); 
+        XMD_FREE_SAFE(ctx); 
         return NULL;
     }
     
@@ -39,7 +39,7 @@ void* c_api_xmd_init(const char* config_path) {
     ctx->global_variables = store_create();
     if (!ctx->global_variables) { 
         config_destroy(ctx->config); 
-        free(ctx); 
+        XMD_FREE_SAFE(ctx); 
         return NULL; 
     }
     

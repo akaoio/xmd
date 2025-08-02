@@ -30,14 +30,14 @@ static variable* parse_json_value(const char* json) {
         if (!end) return NULL;
         
         size_t len = end - json;
-        char* str_value = malloc(len + 1);
+        char* str_value = xmd_malloc(len + 1);
         if (!str_value) return NULL;
         
         strncpy(str_value, json, len);
         str_value[len] = '\0';
         
         variable* result = variable_create_string(str_value);
-        free(str_value);
+        XMD_FREE_SAFE(str_value);
         return result;
     } else if (isdigit(*json) || *json == '-') {
         // Number value

@@ -46,6 +46,6 @@ xmd_result* xmd_process_file(xmd_processor* processor, const char* filename) {
     fclose(file);
     // Process content using existing function
     xmd_result* result = xmd_process_string(processor, content, size);
-    free(content);
+    XMD_FREE_SAFE(content);
     return result;
 }

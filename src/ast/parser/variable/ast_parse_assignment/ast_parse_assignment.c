@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include "../../../../../include/ast.h"
 #include "../../../../../include/utils.h"
+#include "../../../../../src/utils/common/common_macros.h"
 
 /**
  * @brief Parse assignment statement: set var value
@@ -17,15 +18,13 @@
  * @return Assignment AST node or NULL
  */
 ast_node* ast_parse_assignment(const char** pos) {
-    if (!pos || !*pos) {
-        return NULL;
-    }
+    XMD_ENTRY_VALIDATE(pos, *pos);
     
     const char* start = *pos;
     
     // Skip "set "
     if (strncmp(start, "set ", 4) != 0) {
-        return NULL;
+        XMD_ERROR_RETURN(NULL, "Expected 'set' keyword in assignment");
     }
     start += 4;
     
@@ -39,13 +38,13 @@ ast_node* ast_parse_assignment(const char** pos) {
     }
     
     if (start == var_start) {
-        return NULL; // No variable name
+        XMD_ERROR_RETURN(NULL, "Missing variable name after 'set'");
     }
     
     size_t var_len = start - var_start;
     char* var_name = xmd_malloc(var_len + 1);
     if (!var_name) {
-        return NULL;
+        XMD_ERROR_RETURN(NULL, "Memory allocation failed for variable name");
     }
     strncpy(var_name, var_start, var_len);
     var_name[var_len] = '\0';
@@ -87,7 +86,7 @@ ast_node* ast_parse_assignment(const char** pos) {
             strncpy(value_str, value_start, value_len);
             value_str[value_len] = '\0';
             value = ast_create_string_literal(value_str, loc);
-            free(value_str);
+            XMD_FREE_SAFE(value_str);
         }
     }
     
@@ -104,7 +103,7 @@ ast_node* ast_parse_assignment(const char** pos) {
     }
     
     *pos = start;
-    free(var_name);
+    XMD_FREE_SAFE(var_name);
     
     return assignment;
 }

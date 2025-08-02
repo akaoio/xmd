@@ -21,10 +21,8 @@
  * @return New literal node or NULL on error
  */
 ast_node* ast_create_literal(literal_type type, literal_value value, source_location loc) {
-    ast_node* node = xmd_malloc(sizeof(ast_node));
-    if (!node) {
-        return NULL;
-    }
+    ast_node* node;
+    XMD_MALLOC_CHECK(node, sizeof(ast_node));
     
     node->type = AST_LITERAL;
     node->data.literal.type = type;
@@ -33,14 +31,10 @@ ast_node* ast_create_literal(literal_type type, literal_value value, source_loca
     switch (type) {
         case LITERAL_STRING:
             if (!value.string_value) {
-                xmd_free(node);
+                XMD_FREE_SAFE(node);
                 return NULL;
             }
-            node->data.literal.value.string_value = xmd_strdup(value.string_value);
-            if (!node->data.literal.value.string_value) {
-                xmd_free(node);
-                return NULL;
-            }
+            XMD_STRDUP_CHECK(node->data.literal.value.string_value, value.string_value);
             break;
         case LITERAL_NUMBER:
             node->data.literal.value.number_value = value.number_value;
@@ -49,7 +43,7 @@ ast_node* ast_create_literal(literal_type type, literal_value value, source_loca
             node->data.literal.value.boolean_value = value.boolean_value;
             break;
         default:
-            xmd_free(node);
+            XMD_FREE_SAFE(node);
             return NULL;
     }
     

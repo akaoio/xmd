@@ -1,5 +1,8 @@
 # Build artifacts
 build/
+build-*/
+!build.sh
+!build-*.sh
 *.o
 *.a
 *.so

@@ -12,6 +12,7 @@
 #include "module.h"
 #include "utils.h"
 #include "variable.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Create AST identifier node
  * @param name Identifier name
@@ -36,7 +37,7 @@ ast_node* ast_create_identifier(const char* name, source_location loc) {
     node->data.identifier.name = xmd_strdup(name);
     node->location = loc;
     if (!node->data.identifier.name) {
-        free(node);
+        XMD_FREE_SAFE(node);
         return NULL;
     }
     return node;

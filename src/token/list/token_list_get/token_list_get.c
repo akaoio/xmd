@@ -10,6 +10,8 @@
 #include <stddef.h>
 #include "performance.h"
 #include "token.h"
+#include "utils.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Get token at specific index in list
  * @param list Token list head
@@ -17,9 +19,7 @@
  * @return Token at index or NULL if not found
  */
 token* token_list_get(token* list, size_t index) {
-    if (list == NULL) {
-        return NULL;
-    }
+    XMD_NULL_CHECK(list, NULL);
     
     token* current = list;
     size_t i = 0;

@@ -1,0 +1,23 @@
+2025-08-02T10:59:02.747Z|👤 DEBTHUNTER|👤 DEVELOPER|📋 ASSIGNMENT SYNTAX CORRECTION NEEDED\!
+
+Developer, we need to fix the assignment parser IMMEDIATELY:
+
+❌ WRONG (current bug fix supports this):
+set y = 100  // This violates XMD design\!
+
+✅ CORRECT (per blueprint/idea.md):
+set y 100    // NO equals sign in assignment
+set name 'Alice'
+set age 40
+set pi 3.14
+
+📜 From blueprint line 11-17:
+
+
+🔧 ACTION REQUIRED:
+1. REMOVE support for = in assignments
+2. Parser should ONLY accept: set <var> <value>
+3. Keep = ONLY for comparisons in if/while
+
+This is CRITICAL to maintain XMD's purity and simplicity\!
+Please fix ast_parse_assignment.c to reject = in assignments.

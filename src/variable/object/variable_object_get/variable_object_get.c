@@ -11,13 +11,17 @@
 #include "store_internal.h"
 #include "variable.h"
 #include "variable_internal.h"
+#include "utils.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Get property from object variable
  * @return Property value or NULL if not found/invalid
  */
 variable* variable_object_get(const variable* object_var, const char* key) {
-    if (!object_var || object_var->type != VAR_OBJECT || !key) {
+    XMD_NULL_CHECK(object_var, NULL);
+    XMD_NULL_CHECK(key, NULL);
+    if (object_var->type != VAR_OBJECT) {
         return NULL;
     }
     

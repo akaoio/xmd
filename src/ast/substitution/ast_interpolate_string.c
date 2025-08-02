@@ -79,14 +79,14 @@ char* ast_interpolate_string(const char* str, ast_evaluator* evaluator) {
                     printf("DEBUG: Variable value: '%s'\n", var_value ? var_value : "(null)");
                     if (var_value) {
                         total_size += strlen(var_value);
-                        free(var_value);
+                        XMD_FREE_SAFE(var_value);
                     }
                 } else {
                     // Keep original ${var} if not found
                     total_size += var_len + 3; // ${}
                 }
                 
-                free(var_name);
+                XMD_FREE_SAFE(var_name);
                 pos = var_end + 1;
             } else {
                 // No closing }, treat as regular text
@@ -120,7 +120,7 @@ char* ast_interpolate_string(const char* str, ast_evaluator* evaluator) {
                 size_t var_len = var_end - var_start;
                 char* var_name = xmd_malloc(var_len + 1);
                 if (!var_name) {
-                    free(result);
+                    XMD_FREE_SAFE(result);
                     return xmd_strdup(str);
                 }
                 strncpy(var_name, var_start, var_len);
@@ -133,7 +133,7 @@ char* ast_interpolate_string(const char* str, ast_evaluator* evaluator) {
                     if (var_value) {
                         strcpy(out, var_value);
                         out += strlen(var_value);
-                        free(var_value);
+                        XMD_FREE_SAFE(var_value);
                     }
                 } else {
                     // Keep original ${var} if not found
@@ -141,7 +141,7 @@ char* ast_interpolate_string(const char* str, ast_evaluator* evaluator) {
                     out += var_len + 3;
                 }
                 
-                free(var_name);
+                XMD_FREE_SAFE(var_name);
                 pos = var_end + 1;
             } else {
                 // No closing }, treat as regular text

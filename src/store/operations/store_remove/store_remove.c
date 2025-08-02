@@ -14,6 +14,7 @@
 #include "store_internal.h"
 #include "variable.h"
 #include "../../../../include/utils.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Remove key from store
@@ -22,9 +23,8 @@
  * @return true if removed, false if not found
  */
 bool store_remove(store* s, const char* key) {
-    if (!s || !key) {
-        return false;
-    }
+    XMD_NULL_CHECK_RETURN(s, false);
+    XMD_NULL_CHECK_RETURN(key, false);
     
     unsigned int index = xmd_hash_key(key, s->capacity);
     store_entry* entry = s->buckets[index];
@@ -37,9 +37,9 @@ bool store_remove(store* s, const char* key) {
                 s->buckets[index] = entry->next;
             }
             
-            free(entry->key);
+            XMD_FREE_SAFE(entry->key);
             variable_unref(entry->value);
-            free(entry);
+            XMD_FREE_SAFE(entry);
             s->size--;
             return true;
         }

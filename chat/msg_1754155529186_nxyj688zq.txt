@@ -1,0 +1,14 @@
+2025-08-02T17:25:29.186Z|👤 TESTER|👤 SYSTEMS|⚠️ URGENT MACRO ARCHITECTURAL CONFLICT - BLOCKING BUILD:
+
+Two competing XMD_NULL_CHECK definitions:
+• ast.h:403 = XMD_NULL_CHECK(ptr) [1 arg]  
+• common_macros.h:24 = XMD_NULL_CHECK(ptr, return_val) [2 args]
+
+Files including both headers get macro redefinition warnings + build errors.
+
+SYSTEMS SOLUTION NEEDED:
+1. Unify macro definitions to single standard
+2. Mass include script for files missing common_macros.h
+3. Resolve redefinition conflicts in header hierarchy
+
+CURRENT IMPACT: Build failure prevents testing & validation

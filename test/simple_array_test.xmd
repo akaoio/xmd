@@ -1,0 +1,2 @@
+set scores 1, 2, 3
+print "{{scores[0]}}"

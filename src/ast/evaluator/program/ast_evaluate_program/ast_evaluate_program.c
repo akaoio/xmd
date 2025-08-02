@@ -6,6 +6,7 @@
  */
 
 #include <stdlib.h>
+#include "utils/common/common_macros.h"
 #include "../../../../../include/ast.h"
 #include "../../../../../include/utils.h"
 
@@ -27,7 +28,7 @@ char* ast_evaluate_program(ast_node* program, ast_evaluator* evaluator) {
     char* output = NULL;
     if (result) {
         output = ast_value_to_string(result);
-        ast_value_free(result);
+        XMD_FREE_SAFE(result);
     } else {
         output = xmd_strdup("");
     }

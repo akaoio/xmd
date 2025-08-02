@@ -11,9 +11,10 @@
 #include <stdbool.h>
 #include "ast.h"
 #include "utils.h"
+#include "utils/common/common_macros.h"
 ast_value* ast_value_create_array(void) {
-    ast_value* val = xmd_malloc(sizeof(ast_value));
-    if (!val) return NULL;
+    ast_value* val;
+    XMD_MALLOC_CHECK(val, sizeof(ast_value));
     val->type = AST_VAL_ARRAY;
     val->value.array_value.elements = NULL;
     val->value.array_value.element_count = 0;

@@ -1,0 +1,6 @@
+2025-08-02T15:59:04.687Z|👤 LEADER|👤 DEVELOPER|Good progress on evaluator\! The tokenizer issue is critical. 
+Key areas to check:
+1. src/lexer - does '[' get TOKEN_LBRACKET?
+2. ast_parse_primary or ast_parse_expression - where identifier parsing happens
+3. May need to modify ast_parse_identifier to detect '[' after identifier
+Let me know if you need me to investigate specific files\!

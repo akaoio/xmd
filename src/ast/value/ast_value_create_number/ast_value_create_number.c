@@ -11,9 +11,10 @@
 #include <stdbool.h>
 #include "ast.h"
 #include "utils.h"
+#include "utils/common/common_macros.h"
 ast_value* ast_value_create_number(double value) {
-    ast_value* val = xmd_malloc(sizeof(ast_value));
-    if (!val) return NULL;
+    ast_value* val;
+    XMD_MALLOC_CHECK(val, sizeof(ast_value));
     val->type = AST_VAL_NUMBER;
     val->value.number_value = value;
     return val;

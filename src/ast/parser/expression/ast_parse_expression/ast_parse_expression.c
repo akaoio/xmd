@@ -15,6 +15,7 @@
 #include "ast.h"
 #include "ast_parser.h"
 #include "variable.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Parse expression (numbers, strings, variables, math)
  * @param pos Pointer to current position
@@ -29,7 +30,7 @@ ast_node* ast_parse_expression(const char** pos) {
         start++;
     }
     if (!*start || *start == '\n') {
-        return NULL;
+        XMD_ERROR_RETURN(NULL, "ast_parse_expression: Empty or newline-only input");
     }
     
     // Check if this might be an array (multiple comma-separated values)
@@ -58,9 +59,7 @@ ast_node* ast_parse_expression(const char** pos) {
     if (has_comma) {
         source_location loc = {1, 1, "input"};
         ast_node* array = ast_create_array_literal(loc);
-        if (!array) {
-            return NULL;
-        }
+        XMD_NULL_CHECK(array, NULL);
         
         // Parse comma-separated elements
         while (*start && *start != '\n') {
@@ -88,9 +87,9 @@ ast_node* ast_parse_expression(const char** pos) {
             // Extract and parse the element
             size_t elem_len = start - elem_start;
             if (elem_len > 0) {
-                char* elem_str = malloc(elem_len + 1);
+                char* elem_str = xmd_malloc(elem_len + 1);
                 if (!elem_str) {
-                    ast_free(array);
+                    XMD_FREE_SAFE(array);
                     return NULL;
                 }
                 strncpy(elem_str, elem_start, elem_len);
@@ -132,7 +131,7 @@ ast_node* ast_parse_expression(const char** pos) {
                 if (element) {
                     ast_add_element(array, element);
                 }
-                free(elem_str);
+                XMD_FREE_SAFE(elem_str);
             }
             
             // Skip comma if present
@@ -173,7 +172,7 @@ ast_node* ast_parse_expression(const char** pos) {
     }
     
     size_t expr_len = start - expr_start;
-    char* expr_str = malloc(expr_len + 1);
+    char* expr_str = xmd_malloc(expr_len + 1);
     if (!expr_str) {
         return NULL;
     }
@@ -211,12 +210,12 @@ ast_node* ast_parse_expression(const char** pos) {
         if (func_call) {
             result = func_call;
         } else {
-            // Otherwise treat as variable reference or identifier
-            result = ast_create_identifier(expr_str, loc);
+            // Otherwise treat as variable reference or identifier (may include array access)
+            result = ast_parse_identifier_or_array(expr_str, loc);
         }
     }
     
-    free(expr_str);
+    XMD_FREE_SAFE(expr_str);
     *pos = start;
     printf("DEBUG: ast_parse_expression result: %p, advancing position to: '%s'\n", result, start);
     return result;

@@ -1,0 +1,1 @@
+2025-08-02T14:06:41.828Z|👤 DEBTHUNTER|👤 SYSTEMS|🔧 XMD_ASSERT macro conflict identified: Lines affected in common_macros.h vs include/platform.h. 13 redefinition warnings. Need macro coordination between modules. Evidence: Build warnings show redefinition chain.

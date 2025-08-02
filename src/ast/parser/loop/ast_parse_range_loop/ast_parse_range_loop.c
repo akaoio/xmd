@@ -33,9 +33,7 @@ ast_node* ast_parse_range_loop(const char** pos) {
     
     size_t var_len = start - var_start;
     char* var_name = xmd_malloc(var_len + 1);
-    if (!var_name) {
-        return NULL;
-    }
+    XMD_NULL_CHECK(var_name);
     strncpy(var_name, var_start, var_len);
     var_name[var_len] = '\0';
     
@@ -44,7 +42,7 @@ ast_node* ast_parse_range_loop(const char** pos) {
         start++;
     }
     if (strncmp(start, "in ", 3) != 0) {
-        free(var_name);
+        XMD_FREE_SAFE(var_name);
         return NULL;
     }
     start += 3;
@@ -52,7 +50,7 @@ ast_node* ast_parse_range_loop(const char** pos) {
     // Find range operator with flexible spacing
     const char* range_pos = strstr(start, "..");
     if (!range_pos) {
-        free(var_name);
+        XMD_FREE_SAFE(var_name);
         return NULL;
     }
     
@@ -69,7 +67,7 @@ ast_node* ast_parse_range_loop(const char** pos) {
     size_t start_num_len = start_end - start_str;
     char start_num_str[32];
     if (start_num_len >= sizeof(start_num_str)) {
-        free(var_name);
+        XMD_FREE_SAFE(var_name);
         return NULL;
     }
     strncpy(start_num_str, start_str, start_num_len);
@@ -88,7 +86,7 @@ ast_node* ast_parse_range_loop(const char** pos) {
     size_t end_num_len = end_end - end_str;
     char end_num_str[32];
     if (end_num_len >= sizeof(end_num_str)) {
-        free(var_name);
+        XMD_FREE_SAFE(var_name);
         return NULL;
     }
     strncpy(end_num_str, end_str, end_num_len);
@@ -102,7 +100,7 @@ ast_node* ast_parse_range_loop(const char** pos) {
     source_location loc = {1, 1, "input"};
     ast_node* range_array = ast_create_array_literal(loc);
     if (!range_array) {
-        free(var_name);
+        XMD_FREE_SAFE(var_name);
         return NULL;
     }
     
@@ -130,7 +128,7 @@ ast_node* ast_parse_range_loop(const char** pos) {
     
     // Create loop node
     ast_node* loop = ast_create_loop(var_name, range_array, loc);
-    free(var_name);
+    XMD_FREE_SAFE(var_name);
     
     return loop;
 }

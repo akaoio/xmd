@@ -1,0 +1,6 @@
+set scores 95, 98, 100
+set user name "Developer", age 25
+
+print "Testing arrays and objects:"
+print "Scores: " + scores
+print "User: " + user

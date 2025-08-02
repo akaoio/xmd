@@ -47,6 +47,6 @@ xmd_result* xmd_process_string_api(void* handle, const char* input, size_t input
         result->processing_time_ms = processing_time;
     }
     
-    free(output);
+    XMD_FREE_SAFE(output);
     return result;
 }

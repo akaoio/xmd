@@ -15,6 +15,7 @@
 #include "error.h"
 #include "module.h"
 #include "variable.h"
+#include "utils/common/common_macros.h"
 
 // Forward declaration for string interpolation
 extern char* ast_interpolate_string(const char* str, ast_evaluator* evaluator);
@@ -26,9 +27,7 @@ extern char* ast_interpolate_string(const char* str, ast_evaluator* evaluator);
  * @return Result value or NULL on error
  */
 ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
-    if (!node || !evaluator) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, node, evaluator);
     
     switch (node->type) {
         case AST_PROGRAM:
@@ -43,9 +42,7 @@ ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
             
             // Use the existing assignment evaluation which handles everything
             int result = ast_evaluate_assignment(node, evaluator);
-            if (result != 0) {
-                return NULL;
-            }
+            XMD_ERROR_RETURN_NULL(result != 0);
             
             // Re-evaluate to get the return value (for now, could be optimized later)
             ast_value* assigned_value = ast_evaluate(node->data.assignment.value, evaluator);
@@ -67,7 +64,7 @@ ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
                     char* interpolated = ast_interpolate_string(node->data.literal.value.string_value, evaluator);
                     if (interpolated) {
                         ast_value* result = ast_value_create_string(interpolated);
-                        free(interpolated);
+                        XMD_FREE_SAFE(interpolated);
                         return result;
                     } else {
                         return ast_value_create_string(node->data.literal.value.string_value);
@@ -145,9 +142,7 @@ ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
             printf("DEBUG: Evaluating array literal with %zu elements\n", node->data.array_literal.element_count);
             // Create array value
             ast_value* array_val = ast_value_create_array();
-            if (!array_val) {
-                return NULL;
-            }
+            XMD_NULL_CHECK(array_val);
             
             // Evaluate each element and add to array
             for (size_t i = 0; i < node->data.array_literal.element_count; i++) {
@@ -155,21 +150,21 @@ ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
                 if (!elem_val) {
                     // Clean up on error
                     for (size_t j = 0; j < array_val->value.array_value.element_count; j++) {
-                        ast_value_free(array_val->value.array_value.elements[j]);
+                        XMD_FREE_SAFE(array_val->value.array_value.elements[j]);
                     }
-                    free(array_val->value.array_value.elements);
-                    free(array_val);
+                    XMD_FREE_SAFE(array_val->value.array_value.elements);
+                    XMD_FREE_SAFE(array_val);
                     return NULL;
                 }
                 
                 if (ast_value_array_add(array_val, elem_val) != 0) {
                     // Clean up on error
-                    ast_value_free(elem_val);
+                    XMD_FREE_SAFE(elem_val);
                     for (size_t j = 0; j < array_val->value.array_value.element_count; j++) {
-                        ast_value_free(array_val->value.array_value.elements[j]);
+                        XMD_FREE_SAFE(array_val->value.array_value.elements[j]);
                     }
-                    free(array_val->value.array_value.elements);
-                    free(array_val);
+                    XMD_FREE_SAFE(array_val->value.array_value.elements);
+                    XMD_FREE_SAFE(array_val);
                     return NULL;
                 }
             }

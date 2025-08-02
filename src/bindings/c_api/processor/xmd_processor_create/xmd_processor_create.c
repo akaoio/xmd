@@ -25,7 +25,7 @@ xmd_processor* xmd_processor_create(const xmd_config* config) {
     // Initialize variable store
     processor->variables = store_create();
     if (!processor->variables) {
-        free(processor);
+        XMD_FREE_SAFE(processor);
         return NULL;
     }
     
@@ -41,8 +41,8 @@ xmd_processor* xmd_processor_create(const xmd_config* config) {
     processor->modules = store_create();
     if (!processor->modules) {
         store_destroy(processor->variables);
-        free(processor->config);
-        free(processor);
+        XMD_FREE_SAFE(processor->config);
+        XMD_FREE_SAFE(processor);
         return NULL;
     }
     
@@ -50,8 +50,8 @@ xmd_processor* xmd_processor_create(const xmd_config* config) {
     if (!processor->functions) {
         store_destroy(processor->modules);
         store_destroy(processor->variables);
-        free(processor->config);
-        free(processor);
+        XMD_FREE_SAFE(processor->config);
+        XMD_FREE_SAFE(processor);
         return NULL;
     }
     
@@ -60,12 +60,12 @@ xmd_processor* xmd_processor_create(const xmd_config* config) {
         store_destroy(processor->functions);
         store_destroy(processor->modules);
         store_destroy(processor->variables);
-        free(processor->config);
-        free(processor);
+        XMD_FREE_SAFE(processor->config);
+        XMD_FREE_SAFE(processor);
         return NULL;
     }
     
     processor->initialized = true;
-    processor->current_file = NULL; // Initialize to NULL for safe free()
+    processor->current_file = NULL; // Initialize to NULL for safe XMD_FREE_SAFE()
     return processor;
 }

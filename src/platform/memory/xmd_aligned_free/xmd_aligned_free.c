@@ -9,11 +9,11 @@
  * @brief Free aligned memory
  * @param ptr Memory to free
  */
-void xmd_aligned_free(void* ptr) {
+void xmd_aligned_XMD_FREE_SAFE(void* ptr) {
     if (!ptr) return;
 #ifdef XMD_PLATFORM_WINDOWS
-    _aligned_free(ptr);
+    _aligned_XMD_FREE_SAFE(ptr);
 #else
-    free(ptr);
+    XMD_FREE_SAFE(ptr);
 #endif
 }

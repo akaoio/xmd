@@ -23,6 +23,7 @@
  */
 ast_node* ast_parse_primary(parser_state* parser) {
     if (!parser || !parser->current_token) {
+        printf("[ERROR] ast_parse_primary: NULL parser or token\n");
         return NULL;
     }
     
@@ -46,6 +47,7 @@ ast_node* ast_parse_primary(parser_state* parser) {
             return ast_create_identifier(tok->value, loc);
         }
         default:
+            printf("[ERROR] ast_parse_primary: Unexpected token type %d\n", tok->type);
             return NULL;
     }
 }

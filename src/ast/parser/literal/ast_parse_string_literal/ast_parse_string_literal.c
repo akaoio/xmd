@@ -13,6 +13,7 @@
 #include <string.h>
 #include "ast_node.h"
 #include "ast_parser.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Parse string literal "value"
  * @param start Pointer to starting position
@@ -20,7 +21,11 @@
  * @return String literal AST node or NULL  
  */
 ast_node* ast_parse_string_literal(const char** start, const char** pos) {
-    if (**start != '"') return NULL;
+    XMD_ENTRY_VALIDATE(start, pos);
+    
+    if (**start != '"') {
+        XMD_ERROR_RETURN(NULL, "Expected opening quote in string literal");
+    }
     
     (*start)++; // Skip opening quote
     const char* value_start = *start;
@@ -29,18 +34,20 @@ ast_node* ast_parse_string_literal(const char** start, const char** pos) {
         (*start)++;
     }
     if (**start != '"') {
-        return NULL; // Unterminated string
+        XMD_ERROR_RETURN(NULL, "Unterminated string literal");
     }
     
     size_t value_len = *start - value_start;
     char* string_value = xmd_malloc(value_len + 1);
-    if (!string_value) return NULL;
+    if (!string_value) {
+        XMD_ERROR_RETURN(NULL, "Memory allocation failed for string literal");
+    }
     strncpy(string_value, value_start, value_len);
     string_value[value_len] = '\0';
     (*start)++; // Skip closing quote
     *pos = *start;
     source_location loc = {1, 1, "input"};
     ast_node* result = ast_create_string_literal(string_value, loc);
-    free(string_value);
+    XMD_FREE_SAFE(string_value);
     return result;
 }

@@ -59,7 +59,7 @@ ast_node* ast_parse_comparison_expression(const char* expr) {
         op_len = 3;
     } else {
         // No comparison operator found
-        free(expr_copy);
+        XMD_FREE_SAFE(expr_copy);
         return NULL;
     }
     
@@ -91,7 +91,7 @@ ast_node* ast_parse_comparison_expression(const char* expr) {
                 strncpy(string_val, left_str + 1, len - 2);
                 string_val[len - 2] = '\0';
                 left = ast_create_string_literal(string_val, loc);
-                free(string_val);
+                XMD_FREE_SAFE(string_val);
             }
         }
     } else if (isdigit(*left_str) || *left_str == '-') {
@@ -111,7 +111,7 @@ ast_node* ast_parse_comparison_expression(const char* expr) {
                 strncpy(string_val, right_str + 1, len - 2);
                 string_val[len - 2] = '\0';
                 right = ast_create_string_literal(string_val, loc);
-                free(string_val);
+                XMD_FREE_SAFE(string_val);
             }
         }
     } else if (isdigit(*right_str) || *right_str == '-') {
@@ -137,10 +137,10 @@ ast_node* ast_parse_comparison_expression(const char* expr) {
         }
         printf("DEBUG: Created comparison node: %s %s %s\n", left_str, op_name, right_str);
     } else {
-        if (left) ast_free(left);
-        if (right) ast_free(right);
+        if (left) XMD_FREE_SAFE(left);
+        if (right) XMD_FREE_SAFE(right);
     }
     
-    free(expr_copy);
+    XMD_FREE_SAFE(expr_copy);
     return result;
 }

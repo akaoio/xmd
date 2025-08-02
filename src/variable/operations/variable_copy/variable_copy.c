@@ -11,15 +11,15 @@
 #include "store_internal.h"
 #include "variable.h"
 #include "variable_internal.h"
+#include "utils.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Create a deep copy of a variable
  * @return Copy of variable or NULL on failure
  */
 variable* variable_copy(const variable* var) {
-    if (!var) {
-        return NULL;
-    }
+    XMD_NULL_CHECK(var, NULL);
     
     switch (var->type) {
         case VAR_NULL:
@@ -33,11 +33,12 @@ variable* variable_copy(const variable* var) {
             return variable_create_string(var->value.string_value);
         case VAR_ARRAY: {
             variable* copy = variable_create_array();
-            if (!copy) return NULL;
+            XMD_NULL_CHECK(copy, NULL);
             if (var->value.array_value) {
                 for (size_t i = 0; i < var->value.array_value->count; i++) {
                     variable* item_copy = variable_copy(var->value.array_value->items[i]);
                     if (!item_copy || !variable_array_add(copy, item_copy)) {
+                        printf("[ERROR] variable_copy: Failed to copy array item %zu\n", i);
                         variable_unref(item_copy);
                         variable_unref(copy);
                         return NULL;

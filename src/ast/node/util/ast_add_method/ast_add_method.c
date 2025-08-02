@@ -32,7 +32,7 @@ int ast_add_method(ast_node* class_def, ast_node* method) {
         strcmp(method->data.method_def.name, "constructor") == 0) {
         // Set as constructor
         if (class_def->data.class_def.constructor) {
-            ast_free(class_def->data.class_def.constructor);
+            XMD_FREE_SAFE(class_def->data.class_def.constructor);
         }
         class_def->data.class_def.constructor = method;
         return 0;

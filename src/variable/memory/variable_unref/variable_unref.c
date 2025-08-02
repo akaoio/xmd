@@ -28,7 +28,7 @@ void variable_unref(variable* var) {
         // Clean up based on type
         switch (var->type) {
             case VAR_STRING:
-                free(var->value.string_value);
+                XMD_FREE_SAFE(var->value.string_value);
                 break;
                 
             case VAR_ARRAY:
@@ -36,19 +36,19 @@ void variable_unref(variable* var) {
                     for (size_t i = 0; i < var->value.array_value->count; i++) {
                         variable_unref(var->value.array_value->items[i]);
                     }
-                    free(var->value.array_value->items);
-                    free(var->value.array_value);
+                    XMD_FREE_SAFE(var->value.array_value->items);
+                    XMD_FREE_SAFE(var->value.array_value);
                 }
                 break;
                 
             case VAR_OBJECT:
                 if (var->value.object_value) {
                     for (size_t i = 0; i < var->value.object_value->count; i++) {
-                        free(var->value.object_value->pairs[i].key);
+                        XMD_FREE_SAFE(var->value.object_value->pairs[i].key);
                         variable_unref(var->value.object_value->pairs[i].value);
                     }
-                    free(var->value.object_value->pairs);
-                    free(var->value.object_value);
+                    XMD_FREE_SAFE(var->value.object_value->pairs);
+                    XMD_FREE_SAFE(var->value.object_value);
                 }
                 break;
                 
@@ -57,6 +57,6 @@ void variable_unref(variable* var) {
                 break;
         }
         
-        free(var);
+        XMD_FREE_SAFE(var);
     }
 }

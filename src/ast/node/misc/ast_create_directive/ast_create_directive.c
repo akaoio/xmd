@@ -36,7 +36,7 @@ ast_node* ast_create_directive(const char* command, source_location loc) {
     node->location = loc;
     
     if (!node->data.directive.command) {
-        free(node);
+        XMD_FREE_SAFE(node);
         return NULL;
     }
     

@@ -47,7 +47,7 @@ ast_node* ast_parse_if_then(const char** pos) {
     
     // Parse condition
     ast_node* condition_expr = ast_parse_comparison_expression(condition_text);
-    free(condition_text);
+    XMD_FREE_SAFE(condition_text);
     
     if (!condition_expr) {
         return NULL;
@@ -69,7 +69,7 @@ ast_node* ast_parse_if_then(const char** pos) {
     if (conditional) {
         conditional->data.conditional.then_block = then_stmt;
     } else if (then_stmt) {
-        ast_free(then_stmt);
+        XMD_FREE_SAFE(then_stmt);
     }
     
     *pos = start;

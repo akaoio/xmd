@@ -14,6 +14,7 @@
 #include "ast_node.h"
 #include "error.h"
 #include "variable.h"
+#include "utils/common/common_macros.h"
 
 // Forward declaration for output function
 extern int ast_evaluator_append_output(ast_evaluator* evaluator, const char* text);
@@ -24,13 +25,14 @@ extern int ast_evaluator_append_output(ast_evaluator* evaluator, const char* tex
  * @return Last statement result or NULL
  */
 ast_value* ast_evaluate_program_node(ast_node* node, ast_evaluator* evaluator) {
-    if (!node || node->type != AST_PROGRAM || !evaluator) {
+    XMD_VALIDATE_PTRS(NULL, node, evaluator);
+    if (node->type != AST_PROGRAM) {
         return NULL;
     }
     
     ast_value* result = NULL;
     for (size_t i = 0; i < node->data.program.statement_count; i++) {
-        ast_value_free(result);
+        XMD_FREE_SAFE(result);
         result = ast_evaluate(node->data.program.statements[i], evaluator);
         
         // If the result is a string literal (plain text), append it to output

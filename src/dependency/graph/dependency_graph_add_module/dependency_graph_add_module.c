@@ -10,6 +10,7 @@
 
 #include "../../../../include/dependency.h"
 #include "../../../../include/utils.h"
+#include "../../../../src/utils/common/common_macros.h"
 /**
  * @brief Add module to dependency graph
  * @param graph Dependency graph
@@ -17,6 +18,7 @@
  * @return 0 on success, -1 on error
  */
 int dependency_graph_add_module(DependencyGraph* graph, Module* module) {
+    XMD_ENTRY_VALIDATE(graph, module);
     if (!graph || !module) {
         return -1;
     }
@@ -32,7 +34,7 @@ int dependency_graph_add_module(DependencyGraph* graph, Module* module) {
         DependencyNode** new_nodes = xmd_realloc(graph->nodes, 
                                                   new_capacity * sizeof(DependencyNode*));
         if (!new_nodes) {
-            return -1;
+            XMD_ERROR_RETURN(-1, "Failed to reallocate graph nodes array");
         }
         graph->nodes = new_nodes;
         graph->node_capacity = new_capacity;
@@ -41,7 +43,7 @@ int dependency_graph_add_module(DependencyGraph* graph, Module* module) {
     // Create and add node
     DependencyNode* node = dependency_node_new(module);
     if (!node) {
-        return -1;
+        XMD_ERROR_RETURN(-1, "Failed to create dependency node for module %s", module->name ? module->name : "unknown");
     }
     
     graph->nodes[graph->node_count++] = node;

@@ -10,6 +10,7 @@
 #include <string.h>
 #include "../../../../include/ast_parser.h"
 #include "../../../../include/utils.h"
+#include "../../../../src/utils/common/common_macros.h"
 
 /**
  * @brief Create new parser state
@@ -18,8 +19,9 @@
  * @return New parser state or NULL on error
  */
 parser_state* parser_state_create(token* tokens, const char* filename) {
-    parser_state* state = xmd_malloc(sizeof(parser_state));
-    if (!state) return NULL;
+    XMD_NULL_CHECK(tokens, NULL);
+    
+    XMD_MALLOC_SAFE(parser_state, state);
     
     state->tokens = tokens;
     state->current = tokens;

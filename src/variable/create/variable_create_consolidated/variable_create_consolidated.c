@@ -13,6 +13,7 @@
 #include "variable.h"
 #include "variable_internal.h"
 #include "utils.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Core variable creation function
@@ -21,9 +22,7 @@
  */
 static variable* variable_create_core(variable_type type) {
     variable* var = xmd_malloc(sizeof(variable));
-    if (var == NULL) {
-        return NULL;
-    }
+    XMD_NULL_CHECK(var, NULL);
     
     var->type = type;
     var->ref_count = 1;
@@ -64,14 +63,12 @@ variable* variable_create_number(double value) {
  */
 variable* variable_create_string(const char* value) {
     variable* var = variable_create_core(VAR_STRING);
-    if (!var) {
-        return NULL;
-    }
+    XMD_NULL_CHECK(var, NULL);
     
     if (value == NULL) {
         var->value.string_value = xmd_malloc(1);
         if (var->value.string_value == NULL) {
-            xmd_free(var);
+            XMD_FREE_SAFE(var);
             return NULL;
         }
         var->value.string_value[0] = '\0';
@@ -79,7 +76,7 @@ variable* variable_create_string(const char* value) {
         size_t len = strlen(value);
         var->value.string_value = xmd_malloc(len + 1);
         if (var->value.string_value == NULL) {
-            xmd_free(var);
+            XMD_FREE_SAFE(var);
             return NULL;
         }
         strcpy(var->value.string_value, value);

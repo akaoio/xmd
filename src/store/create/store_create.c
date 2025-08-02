@@ -25,7 +25,7 @@ store* store_create(void) {
     s->size = 0;
     s->buckets = xmd_calloc(s->capacity, sizeof(store_entry*));
     if (!s->buckets) {
-        free(s);
+        XMD_FREE_SAFE(s);
         return NULL;
     }
     return s;

@@ -17,7 +17,7 @@
  */
 void* xmd_realloc(void* ptr, size_t size) {
     if (size == 0) {
-        free(ptr);
+        XMD_FREE_SAFE(ptr);
         return NULL;
     }
     return realloc(ptr, size);

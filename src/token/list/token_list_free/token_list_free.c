@@ -15,12 +15,12 @@
  * @brief Free all tokens in list
  * @param list Token list head
  */
-void token_list_free(token* list) {
+void ast_value_free(token* list) {
     token* current = list;
     
     while (current != NULL) {
         token* next = current->next;
-        token_free(current);
+        XMD_FREE_SAFE(current);
         current = next;
     }
 }

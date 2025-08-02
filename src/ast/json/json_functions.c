@@ -154,7 +154,7 @@ static char* json_stringify_variable(variable* var, bool pretty, int indent) {
                             }
                             strcpy(result + pos, elem_str);
                             pos += elem_len;
-                            free(elem_str);
+                            XMD_FREE_SAFE(elem_str);
                         }
                     }
                 }
@@ -224,7 +224,7 @@ static char* json_stringify_variable(variable* var, bool pretty, int indent) {
                             }
                             strcpy(result + pos, key_str);
                             pos += key_len;
-                            free(key_str);
+                            XMD_FREE_SAFE(key_str);
                             
                             result[pos++] = ':';
                             if (pretty) {
@@ -243,14 +243,14 @@ static char* json_stringify_variable(variable* var, bool pretty, int indent) {
                                     }
                                     strcpy(result + pos, val_str);
                                     pos += val_len;
-                                    free(val_str);
+                                    XMD_FREE_SAFE(val_str);
                                 }
                             }
                             
-                            free(keys[i]);
+                            XMD_FREE_SAFE(keys[i]);
                         }
                     }
-                    free(keys);
+                    XMD_FREE_SAFE(keys);
                 }
                 
                 if (pretty && count > 0) {
@@ -342,7 +342,7 @@ static variable* json_parse_object(const char* json, size_t* pos) {
         }
         
         if (json[*pos] != ':') {
-            free(key);
+            XMD_FREE_SAFE(key);
             variable_unref(obj);
             return NULL;
         }
@@ -351,14 +351,14 @@ static variable* json_parse_object(const char* json, size_t* pos) {
         // Parse value
         variable* val = json_parse_value(json, pos);
         if (!val) {
-            free(key);
+            XMD_FREE_SAFE(key);
             variable_unref(obj);
             return NULL;
         }
         
         variable_object_set(obj, key, val);
         variable_unref(val);
-        free(key);
+        XMD_FREE_SAFE(key);
         
         // Skip whitespace
         while (json[*pos] && (json[*pos] == ' ' || json[*pos] == '\t' || 
@@ -439,7 +439,7 @@ static variable* json_parse_value(const char* json, size_t* pos) {
         (*pos)++;
     }
     
-    if (!json[*pos]) return NULL;
+    XMD_NULL_CHECK(json[*pos]);
     
     // Object
     if (json[*pos] == '{') {
@@ -460,7 +460,7 @@ static variable* json_parse_value(const char* json, size_t* pos) {
             (*pos)++;
         }
         
-        if (!json[*pos]) return NULL;
+        XMD_NULL_CHECK(json[*pos]);
         
         size_t str_len = *pos - str_start;
         char* str = xmd_malloc(str_len + 1);
@@ -470,7 +470,7 @@ static variable* json_parse_value(const char* json, size_t* pos) {
         (*pos)++; // Skip closing quote
         
         variable* result = variable_create_string(str);
-        free(str);
+        XMD_FREE_SAFE(str);
         return result;
     }
     
@@ -516,7 +516,7 @@ static variable* json_parse_value(const char* json, size_t* pos) {
         num_str[num_len] = '\0';
         
         double num = atof(num_str);
-        free(num_str);
+        XMD_FREE_SAFE(num_str);
         
         return variable_create_number(num);
     }
@@ -544,7 +544,7 @@ ast_value* ast_json_stringify(ast_node** args, size_t arg_count, ast_evaluator* 
     
     // Convert to variable
     variable* var = ast_value_to_variable(arg_val);
-    ast_value_free(arg_val);
+    XMD_FREE_SAFE(arg_val);
     
     if (!var) {
         return ast_value_create_string("");
@@ -560,7 +560,7 @@ ast_value* ast_json_stringify(ast_node** args, size_t arg_count, ast_evaluator* 
     
     // Create result
     ast_value* result = ast_value_create_string(json);
-    free(json);
+    XMD_FREE_SAFE(json);
     return result;
 }
 
@@ -579,14 +579,14 @@ ast_value* ast_json_parse(ast_node** args, size_t arg_count, ast_evaluator* eval
     // Evaluate the argument
     ast_value* arg_val = ast_evaluate(args[0], evaluator);
     if (!arg_val || arg_val->type != AST_VAL_STRING) {
-        if (arg_val) ast_value_free(arg_val);
+        if (arg_val) XMD_FREE_SAFE(arg_val);
         return ast_value_create_string("");
     }
     
     // Parse JSON
     size_t pos = 0;
     variable* var = json_parse_value(arg_val->value.string_value, &pos);
-    ast_value_free(arg_val);
+    XMD_FREE_SAFE(arg_val);
     
     if (!var) {
         return ast_value_create_string("");

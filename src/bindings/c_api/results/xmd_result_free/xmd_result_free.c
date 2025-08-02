@@ -14,9 +14,9 @@
  * @param result Result to free
   * /
  */
-void xmd_result_free(xmd_result* result) {
+void xmd_result_XMD_FREE_SAFE(xmd_result* result) {
     if (!result) return;
-    free(result->output);
-    free(result->error_message);
-    free(result);
+    XMD_FREE_SAFE(result->output);
+    XMD_FREE_SAFE(result->error_message);
+    XMD_FREE_SAFE(result);
 }

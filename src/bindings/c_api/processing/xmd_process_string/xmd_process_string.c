@@ -48,6 +48,6 @@ xmd_result* xmd_process_string(xmd_processor* processor,
         result->processing_time_ms = processing_time;
     }
     
-    free(output);
+    XMD_FREE_SAFE(output);
     return result;
 }

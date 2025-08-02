@@ -91,12 +91,12 @@ ast_node* ast_parse_object_creation(const char** pos, const char* obj_name) {
                     // For now, just use the object as is - proper object support needs more work
                     // This is better than falling back to simple assignment though
                 }
-                ast_free(key_node);
+                XMD_FREE_SAFE(key_node);
             }
-            if (value_node) ast_free(value_node);
-            free(value_str);
+            if (value_node) XMD_FREE_SAFE(value_node);
+            XMD_FREE_SAFE(value_str);
         }
-        free(key_str);
+        XMD_FREE_SAFE(key_str);
         // Skip comma if present
         if (*start == ',') {
             start++;

@@ -36,7 +36,7 @@ ast_node* ast_create_method_def(const char* name, bool is_private, source_locati
     node->data.method_def.is_private = is_private;
     node->location = loc;
     if (!node->data.method_def.name) {
-        free(node);
+        XMD_FREE_SAFE(node);
         return NULL;
     }
     return node;

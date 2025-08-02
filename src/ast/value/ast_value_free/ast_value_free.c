@@ -16,16 +16,19 @@ void ast_value_free(ast_value* val) {
     
     switch (val->type) {
         case AST_VAL_STRING:
-            free(val->value.string_value);
+            XMD_FREE_SAFE(val->value.string_value);
             break;
             
         case AST_VAL_ARRAY:
             // Free all elements
             for (size_t i = 0; i < val->value.array_value.element_count; i++) {
-                ast_value_free(val->value.array_value.elements[i]);
+                XMD_FREE_SAFE(val->value.array_value.elements[i]);
             }
-            free(val->value.array_value.elements);
+            XMD_FREE_SAFE(val->value.array_value.elements);
+            break;
+            
         default:
+            break;
     }
-    free(val);
+    XMD_FREE_SAFE(val);
 }

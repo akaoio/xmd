@@ -46,7 +46,7 @@ ast_node* ast_parse_number_literal(const char** start, const char** pos) {
     strncpy(num_str, num_start, num_len);
     num_str[num_len] = '\0';
     double value = atof(num_str);
-    free(num_str);
+    XMD_FREE_SAFE(num_str);
     *pos = *start;
     source_location loc = {1, 1, "input"};
     return ast_create_number_literal(value, loc);

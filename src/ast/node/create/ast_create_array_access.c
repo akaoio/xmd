@@ -10,8 +10,8 @@
  */
 
 #include <stdlib.h>
-#include "ast_node.h"
-#include "variable.h"
+#include "ast.h"
+#include "utils.h"
 /**
  * @brief Create AST array access node
  * @param array_expr Array expression

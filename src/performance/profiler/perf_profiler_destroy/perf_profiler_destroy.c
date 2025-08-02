@@ -7,6 +7,6 @@
 #include "../../../../include/performance_internal.h"
 void perf_profiler_destroy(perf_profiler* profiler) {
     if (!profiler) return;
-    free(profiler->profile_data);
-    free(profiler);
+    XMD_FREE_SAFE(profiler->profile_data);
+    XMD_FREE_SAFE(profiler);
 }

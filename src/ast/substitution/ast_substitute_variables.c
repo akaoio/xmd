@@ -45,7 +45,7 @@ char* ast_substitute_variables(const char* content, store* variables) {
                 var_end = strchr(var_start, '}');
                 if (!var_end) {
                     // Unterminated variable reference
-                    free(result);
+                    XMD_FREE_SAFE(result);
                     return NULL;
                 }
             } else {
@@ -58,13 +58,13 @@ char* ast_substitute_variables(const char* content, store* variables) {
             size_t var_len = var_end - var_start;
             char* var_name = xmd_malloc(var_len + 1);
             if (!var_name) {
-                free(result);
+                XMD_FREE_SAFE(result);
                 return NULL;
             strncpy(var_name, var_start, var_len);
             var_name[var_len] = '\0';
             // Look up variable
             variable* var = store_get(variables, var_name);
-            free(var_name);
+            XMD_FREE_SAFE(var_name);
             if (var) {
                 const char* var_value = variable_to_string(var);
                 if (var_value) {
@@ -75,7 +75,7 @@ char* ast_substitute_variables(const char* content, store* variables) {
                         result_size *= 2;
                         char* new_result = xmd_realloc(result, result_size);
                         if (!new_result) {
-                            free(result);
+                            XMD_FREE_SAFE(result);
                             return NULL;
                         }
                         result = new_result;

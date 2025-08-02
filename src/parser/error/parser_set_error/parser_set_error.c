@@ -8,8 +8,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 #include "../../../../include/ast_parser.h"
 #include "../../../../include/utils.h"
+#include "../../../../src/utils/common/common_macros.h"
 
 /**
  * @brief Set error message in parser state
@@ -18,18 +20,18 @@
  * @param ... Format arguments
  */
 void parser_set_error(parser_state* state, const char* message, ...) {
-    if (!state || !message) return;
+    XMD_ENTRY_VALIDATE_VOID(state, message);
     
     // Free existing error message
     if (state->error_message) {
-        free(state->error_message);
+        XMD_FREE_SAFE(state->error_message);
     }
     
     // Allocate new error message
     state->error_message = xmd_malloc(512);
     if (!state->error_message) {
         state->has_error = true;
-        return;
+        XMD_ERROR_RETURN(, "Failed to allocate memory for error message");
     }
     
     // Format error message

@@ -41,6 +41,7 @@ ast_node* ast_parse_loop(const char** pos) {
     
     size_t var_len = start - var_start;
     if (var_len == 0) {
+        printf("[ERROR] ast_parse_loop: Missing loop variable name after 'for'\n");
         // Skip to end of line on error
         while (**pos && **pos != '\n') {
             (*pos)++;
@@ -50,6 +51,7 @@ ast_node* ast_parse_loop(const char** pos) {
     
     char* var_name = xmd_malloc(var_len + 1);
     if (!var_name) {
+        printf("[ERROR] ast_parse_loop: Memory allocation failed for loop variable\n");
         return NULL;
     }
     strncpy(var_name, var_start, var_len);
@@ -62,7 +64,7 @@ ast_node* ast_parse_loop(const char** pos) {
     
     // Check for "in" keyword
     if (strncmp(start, "in ", 3) != 0) {
-        free(var_name);
+        XMD_FREE_SAFE(var_name);
         return NULL;
     }
     
@@ -78,7 +80,7 @@ ast_node* ast_parse_loop(const char** pos) {
     size_t iterable_len = start - iterable_start;
     char* iterable_text = xmd_malloc(iterable_len + 1);
     if (!iterable_text) {
-        free(var_name);
+        XMD_FREE_SAFE(var_name);
         return NULL;
     }
     
@@ -88,8 +90,8 @@ ast_node* ast_parse_loop(const char** pos) {
     // Create array literal from space-separated values
     ast_node* iterable_array = ast_create_array_literal((source_location){1, 1, "input"});
     if (!iterable_array) {
-        free(iterable_text);
-        free(var_name);
+        XMD_FREE_SAFE(iterable_text);
+        XMD_FREE_SAFE(var_name);
         return NULL;
     }
     
@@ -113,8 +115,8 @@ ast_node* ast_parse_loop(const char** pos) {
     // Create loop node
     source_location loc = {1, 1, "input"};
     ast_node* loop = ast_create_loop(var_name, iterable_array, loc);
-    free(var_name);
-    free(iterable_text);
+    XMD_FREE_SAFE(var_name);
+    XMD_FREE_SAFE(iterable_text);
     
     *pos = start;
     return loop;

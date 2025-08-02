@@ -12,32 +12,24 @@
 #include <string.h>
 #include "variable.h"
 #include "variable_internal.h"
+#include "utils.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Create a new string variable
  * @return New string variable or NULL on failure
  */
 variable* variable_create_string(const char* value) {
-    variable* var = xmd_malloc(sizeof(variable));
-    if (var == NULL) {
-        return NULL;
-    }
+    variable* var;
+    XMD_MALLOC_CHECK(var, sizeof(variable));
     
     var->type = VAR_STRING;
     var->ref_count = 1;
     if (value == NULL) {
-        var->value.string_value = xmd_malloc(1);
-        if (var->value.string_value == NULL) {
-            xmd_free(var);
-            return NULL;
-        }
+        XMD_MALLOC_CHECK(var->value.string_value, 1);
         var->value.string_value[0] = '\0';
     } else {
-        var->value.string_value = xmd_strdup(value);
-        if (var->value.string_value == NULL) {
-            xmd_free(var);
-            return NULL;
-        }
+        XMD_STRDUP_CHECK(var->value.string_value, value);
     }
     return var;
 }

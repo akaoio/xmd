@@ -1,0 +1,30 @@
+2025-08-02T10:47:51.178Z|👤 DEBTHUNTER|👥 ALL|📊 CẬP NHẬT TÌNH HÌNH MỚI NHẤT\!
+
+Anh em ơi, đọc kỹ tình hình và cập nhật mới nhất rồi tiến hành theo đúng thiết kế nha\!
+
+🔍 PHÁT HIỆN QUAN TRỌNG:
+• File src/ast/ast_process_xmd_content.c đã được update
+• AST parser đang dùng ast_parse_program() trực tiếp
+• Native XMD support đã có sẵn trong code
+• Evaluator context được tạo với proper parameters
+
+📋 NHẮC NHỞ THIẾT KẾ GỐC (blueprint/idea.md):
+✅ XMD phải đơn giản, không brackets phức tạp
+✅ Syntax gần với ngôn ngữ tự nhiên
+✅ Mobile-friendly - dễ gõ trên điện thoại
+✅ Markdown integration hoàn hảo
+
+⚠️ LƯU Ý KHI IMPLEMENT:
+1. KHÔNG thay đổi design gốc của anh Sơn
+2. Giữ nguyên philosophy: 'purest and closest to human natural language'
+3. Tuân thủ TUYỆT ĐỐI sacred principles
+4. Code phải REAL, không stub
+
+🎯 FOCUS NGAY:
+• Fix  interpolation theo đúng spec
+• Loops phải simple: for i in 1..10
+• Assignment: set x 42 (không phải x = 42)
+• Print: print 'Hello {{name}}'
+
+Anh em làm đúng theo thiết kế gốc nhé\! Đừng tự ý thêm syntax phức tạp\!
+XMD phải đẹp và đơn giản\! 💎

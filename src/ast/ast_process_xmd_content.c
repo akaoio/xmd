@@ -16,6 +16,7 @@
 #include "../../include/ast_parser.h"
 #include "../../include/ast_evaluator.h"
 #include "../../include/ast_node.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Process XMD content using AST system

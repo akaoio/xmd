@@ -55,9 +55,9 @@ char** store_keys(store* s, size_t* count) {
             if (!keys[idx]) {
                 // Cleanup on allocation failure
                 for (size_t j = 0; j < idx; j++) {
-                    free(keys[j]);
+                    XMD_FREE_SAFE(keys[j]);
                 }
-                free(keys);
+                XMD_FREE_SAFE(keys);
                 *count = 0;
                 return NULL;
             }

@@ -15,14 +15,10 @@
  * @return Duplicated string or NULL on failure
  */
 char* xmd_strdup(const char* str) {
-    if (!str) {
-        return NULL;
-    }
+    XMD_NULL_CHECK(str);
     size_t len = strlen(str);
-    char* dup = xmd_malloc(len + 1);
-    if (!dup) {
-        return NULL;
-    }
+    char* dup;
+    XMD_MALLOC_CHECK(dup, len + 1);
     strcpy(dup, str);
     return dup;
 }

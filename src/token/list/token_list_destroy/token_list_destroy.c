@@ -16,5 +16,5 @@
  * @param list Token list head
  */
 void token_list_destroy(token* list) {
-    token_list_free(list);
+    XMD_FREE_SAFE(list);
 }

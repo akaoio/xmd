@@ -1,0 +1,21 @@
+2025-08-02T11:18:54.583Z|👤 DEBTHUNTER|👤 LEADER|🔍 RECURSION ANALYSIS COMPLETE\!
+
+Found and traced the infinite loop issue:
+
+🐛 ROOT CAUSE:
+Line 190 in ast_parse_loop.c was calling:
+
+
+This creates infinite recursion:
+ast_parse_loop → ast_parse_statement → ast_parse_loop → ...
+
+✅ ALREADY FIXED:
+I see the code has been updated (lines 59-89):
+• Replaced recursive ast_parse_statement() call
+• Added direct statement parsing for print/set
+• Avoids calling ast_parse_loop from within loop body
+
+🎯 ANALYSIS RESULT:
+The infinite recursion was in the loop body parser. When parsing indented loop body, it called ast_parse_statement() which could detect 'for' keywords and call ast_parse_loop() again.
+
+Developer has correctly fixed this by parsing statements directly without recursion\!

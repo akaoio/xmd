@@ -118,26 +118,7 @@ bool xmd_check_null(const void* ptr, const char* error_msg);
  */
 void* xmd_malloc_safe(size_t size, const char* error_msg);
 
-/**
- * @brief Macro for NULL pointer checks with return
- */
-#define XMD_NULL_CHECK_RETURN(ptr, retval) \
-    do { if (!(ptr)) return (retval); } while(0)
-
-/**
- * @brief Macro for NULL pointer checks with goto
- */
-#define XMD_NULL_CHECK_GOTO(ptr, label) \
-    do { if (!(ptr)) goto label; } while(0)
-
-/**
- * @brief Macro for memory allocation with NULL check
- */
-#define XMD_MALLOC_CHECK(ptr, size, retval) \
-    do { \
-        (ptr) = xmd_malloc(size); \
-        if (!(ptr)) return (retval); \
-    } while(0)
+/* Macro definitions moved to src/utils/common/common_macros.h for centralization */
 
 /**
  * @brief Process escape sequences in string literals

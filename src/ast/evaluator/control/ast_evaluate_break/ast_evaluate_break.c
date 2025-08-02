@@ -16,6 +16,7 @@
 #include "error.h"
 #include "utils.h"
 #include "variable.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Evaluate break statement
@@ -24,7 +25,8 @@
  * @return NULL (break statements don't return values)
  */
 ast_value* ast_evaluate_break(ast_node* node, ast_evaluator* evaluator) {
-    if (!node || !evaluator || node->type != AST_BREAK) {
+    XMD_VALIDATE_PTRS(NULL, node, evaluator);
+    if (node->type != AST_BREAK) {
         return NULL;
     }
     
@@ -32,7 +34,7 @@ ast_value* ast_evaluate_break(ast_node* node, ast_evaluator* evaluator) {
     // Improved loop context handling with proper break signaling
     evaluator->has_error = true;
     if (evaluator->error_message) {
-        free(evaluator->error_message);
+        XMD_FREE_SAFE(evaluator->error_message);
     }
     evaluator->error_message = xmd_strdup("__BREAK__");
     printf("DEBUG: Break statement executed - signaling loop exit\n");

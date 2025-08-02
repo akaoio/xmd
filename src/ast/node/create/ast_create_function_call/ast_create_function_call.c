@@ -12,6 +12,7 @@
 #include "module.h"
 #include "utils.h"
 #include "variable.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Create AST function call node
  * @param name Function name
@@ -34,7 +35,7 @@ ast_node* ast_create_function_call(const char* name, source_location loc) {
     node->data.function_call.argument_count = 0;
     node->location = loc;
     if (!node->data.function_call.name) {
-        free(node);
+        XMD_FREE_SAFE(node);
         return NULL;
     }
     return node;

@@ -5,8 +5,8 @@
 
 #include <stdlib.h>
 #include "../../../../include/resource.h"
-void resource_monitor_free(ResourceMonitor* monitor) {
+void resource_monitor_XMD_FREE_SAFE(ResourceMonitor* monitor) {
     if (!monitor) return;
-    free(monitor->last_error);
-    free(monitor);
+    XMD_FREE_SAFE(monitor->last_error);
+    XMD_FREE_SAFE(monitor);
 }

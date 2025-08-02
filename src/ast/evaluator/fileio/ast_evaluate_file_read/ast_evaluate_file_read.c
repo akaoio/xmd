@@ -10,6 +10,7 @@
  */
 
 #include <stdlib.h>
+#include "utils/common/common_macros.h"
 #include <stdio.h>
 #include "ast_evaluator.h"
 #include "ast_node.h"
@@ -23,18 +24,20 @@
  */
 ast_value* ast_evaluate_file_read(ast_node* node, ast_evaluator* evaluator) {
     if (!node || !evaluator || node->type != AST_FILE_READ) {
+        printf("[ERROR] ast_evaluate_file_read: Invalid parameters or node type\n");
         return NULL;
     }
     
     const char* file_path = node->data.file_io.file_path;
     if (!file_path) {
+        printf("[ERROR] ast_evaluate_file_read: Missing file path\n");
         return ast_value_create_string("");
     }
     
     // Open file for reading
     FILE* file = fopen(file_path, "r");
     if (!file) {
-        // File not found or permission denied
+        printf("[ERROR] ast_evaluate_file_read: Cannot open file '%s'\n", file_path);
         return ast_value_create_string("");
     }
     
@@ -60,6 +63,6 @@ ast_value* ast_evaluate_file_read(ast_node* node, ast_evaluator* evaluator) {
     
     // Create string value
     ast_value* result = ast_value_create_string(content);
-    free(content);
+    XMD_FREE_SAFE(content);
     return result;
 }

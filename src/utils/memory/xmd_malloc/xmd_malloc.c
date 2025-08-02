@@ -17,9 +17,10 @@
  */
 void* xmd_malloc(size_t size) {
     if (size == 0) {
+        printf("[ERROR] xmd_malloc: Zero size allocation requested\n");
         return NULL;
     }
-    void* ptr = malloc(size);
+    void* ptr = xmd_malloc(size);
     if (!ptr) {
         fprintf(stderr, "Memory allocation failed for %zu bytes\n", size);
     }

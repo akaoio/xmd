@@ -16,6 +16,7 @@
 #include "ast_evaluator.h"
 #include "ast_node.h"
 #include "variable.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Evaluate conditional node (if/elif/else)
  * @param node Conditional AST node
@@ -23,7 +24,9 @@
  * @return AST value result or NULL on error
  */
 ast_value* ast_evaluate_conditional(ast_node* node, ast_evaluator* evaluator) {
-    if (!node || node->type != AST_CONDITIONAL || !evaluator) {
+    XMD_VALIDATE_PTRS(NULL, node, evaluator);
+    if (node->type != AST_CONDITIONAL) {
+        printf("[ERROR] ast_evaluate_conditional: Invalid node type %d\n", node->type);
         return NULL;
     }
     
@@ -56,7 +59,7 @@ ast_value* ast_evaluate_conditional(ast_node* node, ast_evaluator* evaluator) {
     }
     
     printf("DEBUG: Condition result: %s\n", condition_true ? "true" : "false");
-    ast_value_free(condition_result);
+    XMD_FREE_SAFE(condition_result);
     // Execute appropriate branch
     if (condition_true) {
         printf("DEBUG: Executing then block\n");

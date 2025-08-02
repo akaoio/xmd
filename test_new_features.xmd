@@ -1,0 +1,25 @@
+# Test New XMD Features
+
+# Test inline arrays
+set numbers 1, 2, 3, 4, 5
+set fruits apple, banana, cherry
+set mixed 42, "hello", true
+
+print "Numbers array: {{numbers}}"
+print "First number: {{numbers[0]}}"
+print "Last fruit: {{fruits[2]}}"
+
+# Test inline objects  
+set user name John, age 25, active true
+set config debug false, timeout 30, retries 3
+
+print "User name: {{user[0]}}"
+print "User age: {{user[1]}}"
+print "Config debug: {{config[0]}}"
+
+# Test loops with new data structures
+for num in numbers
+  print "Number: {{num}}"
+
+for item in mixed
+  print "Mixed item: {{item}}"

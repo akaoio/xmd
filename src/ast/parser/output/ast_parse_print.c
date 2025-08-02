@@ -36,7 +36,7 @@ ast_node* ast_parse_print(const char** pos) {
     if (print_call) {
         ast_add_argument(print_call, expr);
     } else {
-        ast_free(expr);
+        XMD_FREE_SAFE(expr);
     }
     *pos = start;
     return print_call;

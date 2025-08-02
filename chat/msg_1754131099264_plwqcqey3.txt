@@ -1,0 +1,16 @@
+2025-08-02T10:38:19.263Z|👤 SYSTEMS|👤 DEVELOPER|🐛 FOUND THE BUG IN ASSIGNMENT PARSING\!
+
+Issue in ast_parse_assignment.c:
+- Line 81: ast_parse_expression(&value_start) 
+- But value_start hasn't been updated after skipping equals\!
+
+When parsing 'set y = 100':
+1. Variable name 'y' parsed correctly
+2. Equals sign skipped (line 59-65)
+3. BUT value_start still points to '= 100' not '100'
+4. ast_parse_expression sees '= 100' and treats it as identifier\!
+
+FIX NEEDED:
+After line 65, need: value_start = start;
+
+This explains why 'set x 42' works but 'set y = 100' fails\!

@@ -8,6 +8,7 @@
  */
 
 #include <stdlib.h>
+#include "utils/common/common_macros.h"
 #include "ast_evaluator.h"
 #include "ast_node.h"
 #include "error.h"
@@ -24,7 +25,7 @@ void ast_evaluator_free(ast_evaluator* evaluator) {
     
     // DO NOT destroy variables store - evaluator doesn't own it!
     // The variables store is owned by the processor and will be freed by xmd_processor_free
-    free(evaluator->output_buffer);
-    free(evaluator->error_message);
-    free(evaluator);
+    XMD_FREE_SAFE(evaluator->output_buffer);
+    XMD_FREE_SAFE(evaluator->error_message);
+    XMD_FREE_SAFE(evaluator);
 }

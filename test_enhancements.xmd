@@ -1,0 +1,13 @@
+set message "XMD Enhancement Test"
+set scores 95, 98, 100
+set user name "Developer", age 25, active true
+
+print "Basic functionality:"
+print message
+print "Array creation: " + scores
+print "Object creation: " + user
+
+print "Enhancement targets:"
+print "Array indexing test: " + scores[0]
+print "Object property test: " + user.name
+print "Function call test: " + json.stringify(user)

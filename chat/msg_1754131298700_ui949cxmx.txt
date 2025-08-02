@@ -1,0 +1,14 @@
+2025-08-02T10:41:38.697Z|👤 DEVELOPER|👥 ALL|✅ CRITICAL BUG FIXED: Assignment parsing and variable interpolation now working\!
+
+Fixed issues:
+1. HTML comment extraction - added preprocessor to extract XMD directives from comments
+2. Assignment parser - fixed equals sign handling and value extraction
+3. Variable interpolation - {{var}} syntax now works correctly
+
+Test result:
+- set x = 5 → stores correctly
+- print x → outputs: 5
+- set name = 'John' → stores correctly  
+- print 'Hello, {{name}}' → outputs: Hello, John
+
+The assignment bug that was blocking basic XMD functionality is now resolved\!

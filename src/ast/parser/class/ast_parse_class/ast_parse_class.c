@@ -61,8 +61,8 @@ ast_node* ast_parse_class(const char** pos) {
     // Create class definition node
     source_location loc = {1, 1, "input"};
     ast_node* class_def = ast_create_class_def(class_name, parent_class, loc);
-    free(class_name);
-    free(parent_class);
+    XMD_FREE_SAFE(class_name);
+    XMD_FREE_SAFE(parent_class);
     
     // Check for class body (indented lines following)
     if (*start == '\n') {

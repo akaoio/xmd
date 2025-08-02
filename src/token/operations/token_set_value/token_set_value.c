@@ -11,6 +11,7 @@
 #include "performance.h"
 #include "token.h"
 #include "utils.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Set token value
  * @param tok Token to modify
@@ -18,22 +19,18 @@
  * @return 0 on success, -1 on error
  */
 int token_set_value(token* tok, const char* value) {
-    if (tok == NULL) {
-        return -1;
-    }
+    XMD_NULL_CHECK_RETURN(tok, -1);
     
     // Free existing value
     if (tok->value != NULL) {
-        free(tok->value);
+        XMD_FREE_SAFE(tok->value);
         tok->value = NULL;
     }
     
     // Copy new value if provided
     if (value != NULL) {
         tok->value = xmd_strdup(value);
-        if (tok->value == NULL) {
-            return -1;
-        }
+        XMD_NULL_CHECK_RETURN(tok->value, -1);
     }
     
     return 0;

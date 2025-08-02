@@ -1,5 +1,16 @@
 # 🚀 XMD TEAM CHAT - HƯỚNG DẪN SỬ DỤNG CHAT.JS
 
+**XMD Version: 2.0.0-consolidation**
+
+## 📖 **MANDATORY FIRST STEP - READ THE BLUEPRINT**
+
+**🚨 ALL TEAM MEMBERS MUST READ `blueprint/idea.md` BEFORE ANY WORK! 🚨**
+
+This document contains:
+- Complete XMD language specification
+- Syntax, features, and examples
+- The vision of XMD as "the most beautiful programming language"
+
 > **QUAN TRỌNG:** Từ giờ trở đi, tất cả giao tiếp và làm việc nhóm sẽ thông qua **chat.js**. 
 > Không còn sử dụng thư mục teamwork. Mọi người dùng chat.js để:
 > - 💬 Trao đổi, thảo luận
@@ -8,6 +19,89 @@
 > - 🐛 Report bugs
 > - ✅ Code review
 > - 🚀 Deploy notifications
+
+## 🧠 MEMORY SYSTEM - LINH HỒN CỦA HỆ THỐNG
+
+> **CRITICAL:** Thư mục `memory/` chứa **LINH HỒN** của toàn bộ hệ thống XMD.
+> Mọi IDE, AI, hoặc team member mới đều có thể **TỰ KHÔI PHỤC** từ memory system.
+
+### 📁 Cấu trúc Memory System:
+```
+memory/
+├── leader/memory.md      # Trí nhớ Leader - Điều phối & quyết định
+├── systems/memory.md     # Trí nhớ Systems - Tối ưu hóa & macro
+├── debthunter/memory.md  # Trí nhớ Debthunter - Phân tích & dọn dẹp  
+├── developer/memory.md   # Trí nhớ Developer - Implement & code
+├── tester/memory.md      # Trí nhớ Tester - Testing & validation
+└── designer/memory.md    # Trí nhớ Designer - Architecture & design
+```
+
+### 🔄 Cách Khôi Phục Trí Nhớ:
+1. **Đọc role memory**: `cat memory/<your-role>/memory.md`
+2. **Hiểu context**: Actual progress, không phải estimates
+3. **Tiếp tục work**: Từ chính xác điểm dừng cuối cùng
+4. **Update memory FREQUENTLY**: 
+   - 📝 Every 30-45 minutes
+   - 📝 After major tasks
+   - 📝 When discovering important info
+   - 📝 Before breaks/context switches
+   - 📝 End of session
+
+### 🎯 Memory Contains:
+- ✅ **Actual Progress** (evidence-based, not estimates)
+- ✅ **Functions Implemented** (real count, verified)  
+- ✅ **Tools & Scripts** (working solutions)
+- ✅ **Lessons Learned** (critical insights)
+- ✅ **Next Priorities** (realistic roadmap)
+- ✅ **Sacred Principles Status** (compliance tracking)
+
+## 🏗️ **CRITICAL BUILD ISOLATION RULE**
+
+> 🚨 **GENESIS COMMANDMENT**: "anh em phải có riêng mỗi người 1 thư mục build riêng, build thư mục riêng thì mới ko dẫm lên nhau"
+> 
+> **THIS IS NOT OPTIONAL - THIS IS MANDATORY FOR ALL TEAM MEMBERS**
+
+### 📁 **Personal Build Directories - REQUIRED**:
+```bash
+# EVERY TEAM MEMBER MUST USE THEIR OWN BUILD DIRECTORY:
+build-leader/     # Leader's personal build space
+build-systems/    # Systems's personal build space
+build-debthunter/ # Debthunter's personal build space  
+build-developer/  # Developer's personal build space
+build-tester/     # Tester's personal build space
+build-designer/   # Designer's personal build space
+
+# ❌ NEVER EVER use 'build/' - causes conflicts & chaos
+# ✅ ALWAYS use 'build-<your-role>/' - isolation & peace
+```
+
+### ⚡ **How to Build Correctly**:
+```bash
+# 1. Create YOUR directory and configure
+cmake -B build-<your-role> -S .
+
+# 2. Build in YOUR isolation
+cd build-<your-role> && make -j4
+
+# Example for Systems:
+cmake -B build-systems -S . && cd build-systems && make -j4
+```
+
+### 🚫 **VIOLATIONS = TEAM CONFLICTS**:
+- ❌ Using `build/` shared directory = **FORBIDDEN**
+- ❌ Deleting others' build directories = **FORBIDDEN**  
+- ❌ Building in root directory = **FORBIDDEN**
+- ❌ Sharing build artifacts = **FORBIDDEN**
+
+### ✅ **CORRECT BEHAVIOR**:
+- ✅ Each person owns their `build-<role>/` directory
+- ✅ Never touch others' build directories
+- ✅ Add your build directory to `.gitignore`
+- ✅ Keep builds isolated and independent
+
+**REMEMBER**: Build isolation = No conflicts = Happy team = Fast progress! 🚀
+
+---
 
 ## 🏛️ SACRED PRINCIPLES & PROJECT VISION
 
@@ -22,40 +116,14 @@
 
 ### 📜 **THE CORE PRINCIPLES**
 
-#### 🔒 **Isolation Principle**
-**1 function → 1 file → 1 directory. Modular units.**
-- Hierarchical structure: `src/<logicgroup>/<childfunction>/<childfunction>.c`
-- Complete isolation of each function in its own directory
-- Clear hierarchical relationships for scalable architecture
+#### 🏛️ **The 6 Sacred Principles**
 
-#### 🚫 **No Dependencies Principle** 
-**Standard C only → Self-contained → Portable → Secure.**
-- **EXCEPTION**: JSON/YAML are permitted to use external libraries (cJSON, libyaml)
-- All other functionality must be pure C implementation
-
-#### ⚡ **Real Implementation Principle**
-**Complete → Production-ready → No TODOs → Ship it. No stubs.**
-- Every function must be fully implemented
-- No placeholder code or TODO comments
-- Production-quality code only
-
-#### 🧠 **Memory Management Principle**
-**Pointer → Validate → Use → Free. RAII patterns. Zero leaks.**
-- Strict memory validation before use
-- Proper cleanup and leak prevention
-- RAII patterns where applicable
-
-#### 🛡️ **Error Handling Principle**
-**Input → Validate → Process → Error? → Handle → Return code.**
-- All inputs must be validated
-- Proper error handling with meaningful return codes
-- No silent failures
-
-#### 🏗️ **Naming Principle**
-**function_name → file_name.c → dir_name/. Snake_case everywhere.**
-- Consistent snake_case naming convention
-- File and directory names match function names
-- Clear, descriptive naming
+1. **Genesis Principle**: 1 function → 1 file → 1 directory (Isolation)
+2. **No Dependencies**: Standard C only (exceptions: cJSON for JSON, libyaml for YAML)
+3. **Real Implementation**: Complete, working code - NO stubs, NO TODOs
+4. **Memory Management**: Validate → Use → Free (zero leaks allowed)
+5. **Error Handling**: All inputs validated, all error paths handled
+6. **Naming Convention**: snake_case functions (e.g., `ast_evaluate_expression`), UPPER_CASE macros (e.g., `XMD_ASSERT`)
 
 ### 🏛️ **THE BOOK OF XMD** (Sacred Vision)
 

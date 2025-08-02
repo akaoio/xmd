@@ -1,0 +1,2 @@
+set user x "Alice", y 30
+print "User variable created"

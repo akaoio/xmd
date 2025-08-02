@@ -22,5 +22,5 @@ void c_api_xmd_cleanup(void* handle) {
     xmd_context_internal* ctx = (xmd_context_internal*)handle;
     if (ctx->config) config_destroy(ctx->config);
     if (ctx->global_variables) store_destroy(ctx->global_variables);
-    free(ctx);
+    XMD_FREE_SAFE(ctx);
 }

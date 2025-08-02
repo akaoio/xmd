@@ -33,9 +33,9 @@ int dependency_graph_topological_sort(DependencyGraph* graph) {
     Module** result = xmd_malloc(graph->node_count * sizeof(Module*));
     
     if (!in_degrees || !visited || !result) {
-        free(in_degrees);
-        free(visited);
-        free(result);
+        XMD_FREE_SAFE(in_degrees);
+        XMD_FREE_SAFE(visited);
+        XMD_FREE_SAFE(result);
         return -1;
     }
     
@@ -87,21 +87,21 @@ int dependency_graph_topological_sort(DependencyGraph* graph) {
         }
     }
     
-    free(in_degrees);
-    free(visited);
+    XMD_FREE_SAFE(in_degrees);
+    XMD_FREE_SAFE(visited);
     
     if (result_count != graph->node_count) {
         // Cycle detected
-        free(result);
+        XMD_FREE_SAFE(result);
         return -1;
     }
     
     // Store sorted order in graph
     if (graph->load_order) {
         for (size_t i = 0; i < graph->load_order_count; i++) {
-            free(graph->load_order[i]);
+            XMD_FREE_SAFE(graph->load_order[i]);
         }
-        free(graph->load_order);
+        XMD_FREE_SAFE(graph->load_order);
     }
     
     graph->load_order = xmd_malloc(result_count * sizeof(char*));
@@ -110,6 +110,6 @@ int dependency_graph_topological_sort(DependencyGraph* graph) {
     }
     graph->load_order_count = result_count;
     
-    free(result);
+    XMD_FREE_SAFE(result);
     return 0;
 }

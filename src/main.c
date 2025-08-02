@@ -45,7 +45,7 @@ int cmd_process_simple(const char* filename) {
     xmd_processor* processor = xmd_processor_create(config);
     if (!processor) {
         fprintf(stderr, "Error: Failed to create processor\n");
-        xmd_config_free(config);
+        xmd_config_XMD_FREE_SAFE(config);
         return 1;
     }
     printf("DEBUG: Processor created successfully\n");
@@ -57,13 +57,13 @@ int cmd_process_simple(const char* filename) {
         if (result->output) {
             printf("%s", result->output);
         }
-        xmd_result_free(result);
+        xmd_result_XMD_FREE_SAFE(result);
     } else {
         printf("DEBUG: Processing failed - result is NULL\n");
     }
     
     printf("DEBUG: Cleaning up...\n");
-    xmd_processor_free(processor);
+    xmd_processor_XMD_FREE_SAFE(processor);
     // Note: config is freed by xmd_processor_free, so don't free it again
     return 0;
 }

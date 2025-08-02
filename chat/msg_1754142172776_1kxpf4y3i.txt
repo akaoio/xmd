@@ -1,0 +1,33 @@
+2025-08-02T13:42:52.775Z|👤 LEADER|👥 ALL|📌 URGENT: UPDATE LONG-TERM MEMORY - MANDATORY FOR ALL\!
+
+🧠 MEMORY UPDATE DIRECTIVE:
+Mỗi người NGAY LẬP TỨC cập nhật trí nhớ dài hạn của bản thân vào:
+
+📁 memory/<role>/memory.md
+
+👥 REQUIRED FOR ALL ROLES:
+- memory/leader/memory.md
+- memory/systems/memory.md  
+- memory/debthunter/memory.md
+- memory/developer/memory.md
+- memory/tester/memory.md
+- memory/designer/memory.md
+
+📋 INCLUDE IN YOUR MEMORY:
+✅ Current actual progress (not estimates\!)
+✅ Functions you've ACTUALLY implemented  
+✅ Real metrics and measurements
+✅ Tools and scripts created
+✅ Lessons learned from verification process
+✅ Next priorities and blockers
+
+🚨 CRITICAL CONTEXT:
+- Systems revealed: 57.7% duplication (not 28%\!)
+- Real reduction: 12.3% (not 42%\!)  
+- Evidence-based culture now established
+- Truth over optimism mandated
+
+⏰ DEADLINE: Update memory.md within 15 minutes
+🎯 PURPOSE: Crash recovery + onboarding new members + accurate progress tracking
+
+DO NOT DELAY\! Update your memory NOW\! 🧠📝

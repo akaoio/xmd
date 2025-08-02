@@ -40,7 +40,7 @@ variable* variable_convert(variable* var, variable_type target_type) {
             char* str = variable_to_string(var);
             if (!str) return NULL;
             variable* result = variable_create_string(str);
-            free(str);
+            XMD_FREE_SAFE(str);
             return result;
         }
         

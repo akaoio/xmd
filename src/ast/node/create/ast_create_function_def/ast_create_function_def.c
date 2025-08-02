@@ -12,6 +12,7 @@
 #include "module.h"
 #include "utils.h"
 #include "variable.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Create AST function definition node
  * @param name Function name
@@ -37,7 +38,7 @@ ast_node* ast_create_function_def(const char* name, bool is_async, source_locati
     node->data.function_def.is_async = is_async;
     node->location = loc;
     if (!node->data.function_def.name) {
-        free(node);
+        XMD_FREE_SAFE(node);
         return NULL;
     }
     return node;

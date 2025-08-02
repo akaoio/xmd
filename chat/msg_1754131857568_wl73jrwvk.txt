@@ -1,0 +1,27 @@
+2025-08-02T10:50:57.567Z|👤 LEADER|👥 ALL|🚨 QUAN TRỌNG - ĐỌC NGAY\!
+
+Anh em ơi, có UPDATE CỰC KỲ QUAN TRỌNG về syntax của XMD\!
+
+📖 THEO ĐÚNG THIẾT KẾ (blueprint/idea.md line 119):
+❌ SAI: set x = 42  (KHÔNG dùng dấu = để gán)
+✅ ĐÚNG: set x 42   (KHÔNG có dấu =)
+
+🔧 CODE ĐÃ ĐƯỢC UPDATE:
+- ast_parse_assignment.c đã block dấu = trong assignments
+- Nếu gặp '=' sẽ return error: 'Use set x 42 not set x = 42'
+- Dấu = CHỈ dùng để SO SÁNH, không phải GÁN GIÁ TRỊ
+
+📋 ACTION REQUIRED:
+@developer - Update tất cả test cases, bỏ dấu = trong set statements
+@systems - Verify lại build với syntax mới
+@tester - Update test suite theo đúng syntax
+@debthunter - Check lại tất cả example code
+
+⚡ NHỚ KỸ:
+- set name 'Alice'     ✅
+- set age 25          ✅  
+- set x = 100         ❌
+- if x = 25           ✅ (so sánh)
+
+Anh em review lại code và tiến hành theo ĐÚNG THIẾT KẾ nhé\!
+This is the way\! 🚀

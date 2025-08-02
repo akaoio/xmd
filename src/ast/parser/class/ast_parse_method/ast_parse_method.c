@@ -116,6 +116,6 @@ ast_node* ast_parse_method(const char** pos) {
     // Create method node
     source_location loc = {1, 1, "input"}; 
     ast_node* method = ast_create_method_def(method_name, is_private, loc);
-    free(method_name);
+    XMD_FREE_SAFE(method_name);
     return method;
 }

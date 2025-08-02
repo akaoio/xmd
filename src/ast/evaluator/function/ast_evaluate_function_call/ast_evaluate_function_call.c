@@ -18,6 +18,7 @@
 #include "store.h"
 #include "variable.h"
 #include "utils.h"
+#include "utils/common/common_macros.h"
 
 // Forward declaration for output append function
 int ast_evaluator_append_output(ast_evaluator* evaluator, const char* text);
@@ -31,7 +32,9 @@ char* ast_interpolate_string(const char* str, ast_evaluator* evaluator);
  * @return AST value result or NULL on error
  */
 ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) {
-    if (!node || node->type != AST_FUNCTION_CALL || !evaluator) {
+    XMD_VALIDATE_PTRS(NULL, node, evaluator);
+    if (node->type != AST_FUNCTION_CALL) {
+        printf("[ERROR] ast_evaluate_function_call: Invalid node type %d\n", node->type);
         return NULL;
     }
     
@@ -51,10 +54,10 @@ ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) 
                     // Append to evaluator's output buffer
                     ast_evaluator_append_output(evaluator, interpolated);
                     ast_evaluator_append_output(evaluator, "\n");
-                    free(interpolated);
-                    free(output);
+                    XMD_FREE_SAFE(interpolated);
+                    XMD_FREE_SAFE(output);
                 }
-                ast_value_free(arg_value);
+                XMD_FREE_SAFE(arg_value);
             }
         }
         // Print function returns empty string (no return value)
@@ -109,7 +112,7 @@ ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) 
                 store_set(evaluator->variables, param_name, param_var);
                 variable_unref(param_var);
             }
-            ast_value_free(arg_value);
+            XMD_FREE_SAFE(arg_value);
         }
     }
     
@@ -137,6 +140,6 @@ ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) 
         }
     }
     
-    free(backup_vars);
+    XMD_FREE_SAFE(backup_vars);
     return result ? result : ast_value_create_string("");
 }

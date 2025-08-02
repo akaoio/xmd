@@ -117,6 +117,7 @@ include_directories(${CMAKE_BINARY_DIR}/include)  # For generated headers
 set(XMD_LIB_SOURCES
     # AST module (refactored to hierarchical structure)
     "src/ast/ast_process_xmd_content.c"
+    "src/ast/preprocess/extract_xmd_directives.c"
     "src/ast/evaluator/assignment/ast_evaluate_assignment.c"
     "src/ast/evaluator/ast_evaluator_create/ast_evaluator_create.c"
     "src/ast/evaluator/ast_evaluator_free/ast_evaluator_free.c"
@@ -128,6 +129,7 @@ set(XMD_LIB_SOURCES
     "src/ast/evaluator/control/ast_evaluate_continue/ast_evaluate_continue.c"
     "src/ast/evaluator/expression/ast_evaluate_binary_op/ast_evaluate_binary_op.c"
     "src/ast/evaluator/expression/ast_evaluate_identifier/ast_evaluate_identifier.c"
+    "src/ast/evaluator/expression/ast_evaluate_array_access/ast_evaluate_array_access.c"
     "src/ast/evaluator/fileio/ast_evaluate_file_delete/ast_evaluate_file_delete.c"
     "src/ast/evaluator/fileio/ast_evaluate_file_exists/ast_evaluate_file_exists.c"
     "src/ast/evaluator/fileio/ast_evaluate_file_list/ast_evaluate_file_list.c"
@@ -140,8 +142,8 @@ set(XMD_LIB_SOURCES
     "src/ast/evaluator/loop/ast_evaluate_while_loop/ast_evaluate_while_loop.c"
     "src/ast/evaluator/program/ast_evaluate_program_node.c"
     "src/ast/evaluator/program/ast_evaluate_program/ast_evaluate_program.c"
-    "src/ast/node/create/ast_create_array_access.c"
     # "src/ast/node/create/ast_create_literal/ast_create_literal.c"  # Type errors - revert to individual files  
+    "src/ast/node/create/ast_create_array_access.c"
     "src/ast/node/create/ast_create_array_literal/ast_create_array_literal.c"
     "src/ast/node/create/ast_create_boolean_literal/ast_create_boolean_literal.c"
     "src/ast/node/create/ast_create_assignment/ast_create_assignment.c"
@@ -174,6 +176,7 @@ set(XMD_LIB_SOURCES
     "src/ast/parser/control/ast_parse_if_then/ast_parse_if_then.c"
     "src/ast/parser/expression/ast_parse_comparison_expression/ast_parse_comparison_expression.c"
     "src/ast/parser/expression/ast_parse_expression/ast_parse_expression.c"
+    "src/ast/parser/expression/ast_parse_identifier_or_array/ast_parse_identifier_or_array.c"
     "src/ast/parser/expression/ast_parse_math_expression/ast_parse_math_expression.c"
     "src/ast/parser/expression/ast_parse_primary/ast_parse_primary.c"
     "src/ast/parser/function/ast_parse_function/ast_parse_function.c"
@@ -184,7 +187,7 @@ set(XMD_LIB_SOURCES
     "src/ast/parser/loop/ast_parse_range_loop/ast_parse_range_loop.c"
     "src/ast/parser/loop/ast_parse_while/ast_parse_while.c"
     "src/ast/parser/program/ast_parse_program.c"
-    "src/ast/parser/statement/ast_parse_statement.c"
+    "src/ast/parser/statement/ast_parse_statement/ast_parse_statement.c"
     "src/ast/parser/output/ast_parse_print.c"
     "src/ast/parser/variable/ast_parse_assignment/ast_parse_assignment.c"
     "src/ast/parser/function/ast_parse_potential_function_call/ast_parse_potential_function_call.c"
@@ -198,8 +201,10 @@ set(XMD_LIB_SOURCES
     "src/ast/value/ast_value_to_variable/ast_value_to_variable.c"
     "src/ast/value/misc/ast_value_array_add.c"
     "src/ast/substitution/ast_interpolate_string.c"
-    "src/ast/json/json_functions.c"
-    "src/ast/yaml/yaml_functions.c"
+    "src/ast/json/ast_json_stringify/ast_json_stringify.c"
+    "src/ast/json/ast_json_parse/ast_json_parse.c"
+    "src/ast/yaml/ast_yaml_stringify/ast_yaml_stringify.c"
+    "src/ast/yaml/ast_yaml_parse/ast_yaml_parse.c"
     # Bindings module (fully refactored to hierarchical c_api structure) - TEAM COLLABORATION
     "src/bindings/c_api/initialization/xmd_init/xmd_init.c"
     "src/bindings/c_api/initialization/c_api_xmd_init/c_api_xmd_init.c"
@@ -217,6 +222,16 @@ set(XMD_LIB_SOURCES
     "src/bindings/c_api/results/xmd_result_free/xmd_result_free.c"
     "src/bindings/c_api/version/bindings_get_version/bindings_get_version.c"
     "src/bindings/c_api/version/xmd_get_version/xmd_get_version.c"
+    # Core module (Genesis hierarchical structure)
+    "src/core/version/xmd_get_version/xmd_get_version.c"
+    "src/core/syntax/xmd_get_syntax_name/xmd_get_syntax_name.c"
+    "src/core/validation/xmd_validate/xmd_validate.c"
+    "src/core/config/xmd_set_config/xmd_set_config.c"
+    "src/core/config/xmd_get_config/xmd_get_config.c"
+    "src/core/license/copyright/copyright.c"
+    # CLI module (Genesis hierarchical structure)
+    "src/cli/init/cli_init/cli_init.c"
+    "src/cli/cleanup/cli_cleanup/cli_cleanup.c"
     # Config module (real implementation from backup)
     "src/config/create/config_create/config_create.c"
     "src/config/create/config_destroy/config_destroy.c"
@@ -399,8 +414,26 @@ set(XMD_LIB_SOURCES
     "src/dependency/utilities/calculate_in_degrees/calculate_in_degrees.c"
     # "src/parser_utils.c"  # Moved to Genesis structure
     
+    # Core module - Runtime management (Genesis structure)
+    "src/core/runtime/xmd_runtime_init/xmd_runtime_init.c"
+    "src/core/runtime/xmd_runtime_cleanup/xmd_runtime_cleanup.c"
+    "src/core/runtime/xmd_runtime_status/xmd_runtime_status.c"
+    "src/core/config/xmd_set_config/xmd_set_config.c"
+    "src/core/config/xmd_get_config/xmd_get_config.c"
+    "src/core/license/copyright/copyright.c"
+    "src/core/syntax/xmd_get_syntax_name/xmd_get_syntax_name.c"
+    "src/core/validation/xmd_validate/xmd_validate.c"
+    "src/core/version/xmd_get_version/xmd_get_version.c"
+    
+    # CLI module - Command-line interface (Genesis structure)
+    "src/cli/init/cli_init/cli_init.c"
+    "src/cli/cleanup/cli_cleanup/cli_cleanup.c"
+    
     # Native XMD system
-    "src/misc/native_xmd_dispatch.c"
+    "src/misc/xmd_is_native_syntax/xmd_is_native_syntax.c"
+    "src/misc/xmd_get_syntax_name/xmd_get_syntax_name.c"
+    "src/misc/xmd_dispatch_content/xmd_dispatch_content.c"
+    "src/misc/native_evaluate_program/native_evaluate_program.c"
 )
 
 # Create static library
@@ -721,4 +754,3 @@ set(CPACK_PACKAGE_DESCRIPTION "eXtended MarkDown - Programmable markdown process
 set(CPACK_PACKAGE_CONTACT "dev@xmd.io")
 
 include(CPack)
-

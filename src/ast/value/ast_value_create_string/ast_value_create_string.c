@@ -11,10 +11,11 @@
 #include <stdbool.h>
 #include "ast.h"
 #include "utils.h"
+#include "utils/common/common_macros.h"
 ast_value* ast_value_create_string(const char* str) {
-    ast_value* val = xmd_malloc(sizeof(ast_value));
-    if (!val) return NULL;
+    ast_value* val;
+    XMD_MALLOC_CHECK(val, sizeof(ast_value));
     val->type = AST_VAL_STRING;
-    val->value.string_value = xmd_strdup(str);
+    XMD_STRDUP_CHECK(val->value.string_value, str);
     return val;
 }

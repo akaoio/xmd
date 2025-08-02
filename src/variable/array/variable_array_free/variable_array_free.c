@@ -16,7 +16,7 @@
  * @brief Free array contents (internal helper)
  * @param array_var Array variable
  */
-void variable_array_free(variable* array_var) {
+void variable_array_XMD_FREE_SAFE(variable* array_var) {
     if (!array_var || array_var->type != VAR_ARRAY || !array_var->value.array_value) {
         return;
     }
@@ -25,7 +25,7 @@ void variable_array_free(variable* array_var) {
     for (size_t i = 0; i < array->count; i++) {
         variable_unref(array->items[i]);
     }
-    free(array->items);
+    XMD_FREE_SAFE(array->items);
     array->items = NULL;
     array->count = 0;
     array->capacity = 0;

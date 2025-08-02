@@ -23,9 +23,9 @@ variable* variable_create_object(void) {
     }
     
     var->type = VAR_OBJECT;
-    var->value.object_value = malloc(sizeof(variable_object));
+    var->value.object_value = xmd_malloc(sizeof(variable_object));
     if (!var->value.object_value) {
-        free(var);
+        XMD_FREE_SAFE(var);
         return NULL;
     }
     var->value.object_value->pairs = NULL;

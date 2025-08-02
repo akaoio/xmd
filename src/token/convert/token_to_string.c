@@ -15,6 +15,7 @@
 #include "token_internal.h"
 #include "utils.h"
 #include "variable.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Convert token to string representation
  * @param tok Token to convert
@@ -30,9 +31,7 @@ char* token_to_string(const token* tok) {
     // Estimate size: type + value + formatting + null terminator
     size_t size = strlen(type_str) + strlen(value_str) + 50;
     char* result = xmd_malloc(size);
-    if (result == NULL) {
-        return NULL;
-    }
+    XMD_NULL_CHECK(result, NULL);
     snprintf(result, size, "Token{type=%s, value=\"%s\", line=%zu, column=%zu}", 
              type_str, value_str, tok->line, tok->column);
     return result;

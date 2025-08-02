@@ -57,7 +57,7 @@ ast_node* ast_parse_math_expression(const char* expr) {
             left = ast_create_number_literal(val, loc);
         } else {
             source_location loc = {1, 1, "input"};
-            left = ast_create_identifier(left_str, loc);
+            left = ast_parse_identifier_or_array(left_str, loc);
         }
         // Parse right operand (which might be another expression)
         ast_node* right = NULL;
@@ -81,20 +81,20 @@ ast_node* ast_parse_math_expression(const char* expr) {
                 id_end--;
             }
             source_location loc = {1, 1, "input"};
-            right = ast_create_identifier(right_str, loc);
+            right = ast_parse_identifier_or_array(right_str, loc);
         }
         
         if (left && right) {
             source_location loc = {1, 1, "input"};
             ast_node* result = ast_create_binary_op(op_type, left, right, loc);
-            free(expr_copy);
+            XMD_FREE_SAFE(expr_copy);
             return result;
         } else {
-            if (left) ast_free(left);
-            if (right) ast_free(right);
+            if (left) XMD_FREE_SAFE(left);
+            if (right) XMD_FREE_SAFE(right);
         }
     }
     
-    free(expr_copy);
+    XMD_FREE_SAFE(expr_copy);
     return NULL;
 }

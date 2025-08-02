@@ -77,4 +77,12 @@ ast_node* ast_parse_object_creation(const char** pos, const char* first_name);
  */
 ast_node* ast_parse_multiple_variables_handler(const char** pos, const char* first_name);
 
+/**
+ * @brief Parse identifier or array access (array[index])
+ * @param identifier_str The identifier string to parse
+ * @param loc Source location for AST nodes
+ * @return AST node (identifier or array access)
+ */
+ast_node* ast_parse_identifier_or_array(const char* identifier_str, source_location loc);
+
 #endif /* XMD_AST_PARSER_H */

@@ -57,7 +57,7 @@ ast_node* ast_parse_function(const char** pos) {
     // Create function definition node
     source_location loc = {1, 1, "input"};
     ast_node* func_def = ast_create_function_def(func_name, false, loc);
-    free(func_name);
+    XMD_FREE_SAFE(func_name);
     
     if (!func_def) {
         return NULL;
@@ -82,7 +82,7 @@ ast_node* ast_parse_function(const char** pos) {
                 strncpy(param_name, param_start, param_len);
                 param_name[param_len] = '\0';
                 ast_add_parameter(func_def, param_name);
-                free(param_name);
+                XMD_FREE_SAFE(param_name);
             }
         }
         
@@ -188,7 +188,7 @@ ast_node* ast_parse_function(const char** pos) {
                                     printf("DEBUG: Statement added to function body\n");
                                 }
                             }
-                            free(line_content);
+                            XMD_FREE_SAFE(line_content);
                         }
                     }
                     

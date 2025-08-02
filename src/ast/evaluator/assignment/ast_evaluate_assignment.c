@@ -15,6 +15,7 @@
 #include "error.h"
 #include "store.h"
 #include "variable.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Evaluate assignment node
  * @param node Assignment node
@@ -22,12 +23,15 @@
  * @return Assigned value or NULL
  */
 int ast_evaluate_assignment(ast_node* node, ast_evaluator* evaluator) {
-    if (!node || node->type != AST_ASSIGNMENT || !evaluator) {
+    XMD_VALIDATE_PTRS(-1, node, evaluator);
+    if (node->type != AST_ASSIGNMENT) {
+        printf("[ERROR] ast_evaluate_assignment: Invalid node type %d\n", node->type);
         return -1;
     }
     
     ast_value* value = ast_evaluate(node->data.assignment.value, evaluator);
     if (!value || evaluator->error_message) {
+        printf("[ERROR] ast_evaluate_assignment: Failed to evaluate assignment value\n");
         return -1;
     }
     

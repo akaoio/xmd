@@ -5,10 +5,10 @@
 
 #include <stdlib.h>
 #include "../../../../include/resource.h"
-void resource_limiter_free(ResourceLimiter* limiter) {
+void resource_limiter_XMD_FREE_SAFE(ResourceLimiter* limiter) {
     if (!limiter) {
         return;
     }
-    free(limiter->last_error);
-    free(limiter);
+    XMD_FREE_SAFE(limiter->last_error);
+    XMD_FREE_SAFE(limiter);
 }

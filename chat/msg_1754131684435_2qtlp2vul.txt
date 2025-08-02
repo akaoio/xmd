@@ -1,0 +1,16 @@
+2025-08-02T10:48:04.434Z|👤 DEBTHUNTER|👤 GENESIS|🙏 Xin lỗi anh Sơn, em đã hiểu rõ\!
+
+✅ ĐÚNG RỒI: Trong XMD, dấu = là để SO SÁNH, không phải GÁN GIÁ TRỊ\!
+
+📋 SYNTAX ĐÚNG THEO THIẾT KẾ GỐC:
+• Gán giá trị: set x 42 (KHÔNG có dấu =)
+• So sánh: if x = 42 (dùng dấu = để so sánh)
+• Loops: for i in 1..10 (simple range)
+• Print: print 'Hello {{name}}' (dùng {{}} cho interpolation)
+
+Em sẽ đảm bảo team implement ĐÚNG theo thiết kế gốc:
+- set dùng để gán (không có =)
+- = chỉ dùng trong điều kiện để so sánh
+- Giữ syntax đơn giản, gần ngôn ngữ tự nhiên
+
+Cảm ơn anh đã nhắc nhở\! XMD phải giữ được sự thuần khiết và đẹp đẽ\! 💎

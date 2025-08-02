@@ -10,15 +10,13 @@
 
 #include "../../../../include/dependency.h"
 #include "../../../../include/utils.h"
+#include "../../../../src/utils/common/common_macros.h"
 /**
  * @brief Create a new dependency graph
  * @return New dependency graph or NULL on error
  */
 DependencyGraph* dependency_graph_new(void) {
-    DependencyGraph* graph = xmd_malloc(sizeof(DependencyGraph));
-    if (!graph) {
-        return NULL;
-    }
+    XMD_MALLOC_SAFE(DependencyGraph, graph);
     
     graph->nodes = NULL;
     graph->node_count = 0;

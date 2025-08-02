@@ -13,7 +13,7 @@
  */
 void* xmd_aligned_alloc(size_t alignment, size_t size) {
 #ifdef XMD_PLATFORM_WINDOWS
-    return _aligned_malloc(size, alignment);
+    return _aligned_xmd_malloc(size, alignment);
 #else
     /* Use POSIX approach for all Unix-like systems including Android/Linux */
     void* ptr;

@@ -17,6 +17,7 @@
 #include "ast_node.h"
 #include "utils.h"
 #include "variable.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Evaluate binary operation node
  * @param node Binary operation AST node
@@ -24,8 +25,9 @@
  * @return AST value result or NULL on error
  */
 ast_value* ast_evaluate_binary_op(ast_node* node, ast_evaluator* evaluator) {
-    if (!node || node->type != AST_BINARY_OP || !evaluator) {
-        return NULL;
+    XMD_VALIDATE_PTRS(NULL, node, evaluator);
+    if (node->type != AST_BINARY_OP) {
+        XMD_ERROR_RETURN(NULL, "Invalid node type: expected AST_BINARY_OP, got %d", node->type);
     }
     
     printf("DEBUG: ast_evaluate_binary_op called with op=%d\n", node->data.binary_op.op);
@@ -35,9 +37,9 @@ ast_value* ast_evaluate_binary_op(ast_node* node, ast_evaluator* evaluator) {
     printf("DEBUG: Left operand type=%d, Right operand type=%d\n", 
            left ? left->type : -1, right ? right->type : -1);
     if (!left || !right) {
-        if (left) ast_value_free(left);
-        if (right) ast_value_free(right);
-        return NULL;
+        XMD_FREE_SAFE(left);
+        XMD_FREE_SAFE(right);
+        XMD_ERROR_RETURN(NULL, "Failed to evaluate operands");
     }
     
     ast_value* result = NULL;
@@ -58,7 +60,7 @@ ast_value* ast_evaluate_binary_op(ast_node* node, ast_evaluator* evaluator) {
                     strcpy(concat, left->value.string_value);
                     strcat(concat, right->value.string_value);
                     result = ast_value_create_string(concat);
-                    free(concat);
+                    XMD_FREE_SAFE(concat);
                     printf("DEBUG: String concat: '%s' + '%s' = '%s'\n", 
                            left->value.string_value, right->value.string_value, 
                            result ? result->value.string_value : "NULL");
@@ -93,11 +95,11 @@ ast_value* ast_evaluate_binary_op(ast_node* node, ast_evaluator* evaluator) {
                         strcpy(concat, left_str);
                         strcat(concat, right_str);
                         result = ast_value_create_string(concat);
-                        free(concat);
+                        XMD_FREE_SAFE(concat);
                     }
                 }
-                if (left_str) free(left_str);
-                if (right_str) free(right_str);
+                XMD_FREE_SAFE(left_str);
+                XMD_FREE_SAFE(right_str);
             }
             break;
         case BINOP_SUB:
@@ -178,7 +180,7 @@ ast_value* ast_evaluate_binary_op(ast_node* node, ast_evaluator* evaluator) {
             break;
     }
     
-    ast_value_free(left);
-    ast_value_free(right);
+    XMD_FREE_SAFE(left);
+    XMD_FREE_SAFE(right);
     return result;
 }

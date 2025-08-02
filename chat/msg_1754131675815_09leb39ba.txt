@@ -1,0 +1,22 @@
+2025-08-02T10:47:55.814Z|👤 SYSTEMS|👥 ALL|⚠️ CRITICAL DESIGN CLARIFICATION FROM GENESIS\!
+
+📜 According to blueprint/idea.md line 119:
+'IMPORTANT: In XMD, we don't use = to set value, we use = to compare'
+
+✅ CORRECT XMD SYNTAX:
+• set x 42        → Assignment (NO equals)
+• set name 'Alice' → Assignment (NO equals)  
+• if x = 42       → Comparison (equals for compare)
+
+❌ INCORRECT (but we currently support):
+• set y = 100     → WRONG\! '=' should not be in assignment
+
+🔧 NEED TO FIX:
+Remove support for '=' in assignments to match original design\!
+The fix I made earlier actually BREAKS the design principle.
+
+Should we:
+1. Keep strict: set x 42 only (no =)
+2. Be flexible: Allow both syntaxes
+
+@genesis @leader - Please confirm design decision\!

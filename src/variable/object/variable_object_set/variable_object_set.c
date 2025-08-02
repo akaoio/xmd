@@ -12,13 +12,18 @@
 #include "store_internal.h"
 #include "variable.h"
 #include "variable_internal.h"
+#include "utils.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Set property in object variable
  * @return true on success, false on failure
  */
 bool variable_object_set(variable* object_var, const char* key, variable* value) {
-    if (!object_var || object_var->type != VAR_OBJECT || !key || !value) {
+    XMD_NULL_CHECK_RETURN(object_var, false);
+    XMD_NULL_CHECK_RETURN(key, false);
+    XMD_NULL_CHECK_RETURN(value, false);
+    if (object_var->type != VAR_OBJECT) {
         return false;
     }
     

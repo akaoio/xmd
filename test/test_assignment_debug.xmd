@@ -1,0 +1,4 @@
+<!-- XMD: set x = 5 -->
+<!-- XMD: print x -->
+<!-- XMD: set name = "John" -->
+<!-- XMD: print "Hello, {{name}}" -->

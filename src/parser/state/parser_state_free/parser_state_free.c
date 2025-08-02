@@ -13,15 +13,15 @@
  * @brief Free parser state and associated memory
  * @param state Parser state to free
  */
-void parser_state_free(parser_state* state) {
+void parser_state_XMD_FREE_SAFE(parser_state* state) {
     if (!state) return;
     
     if (state->error_message) {
-        free(state->error_message);
+        XMD_FREE_SAFE(state->error_message);
     }
     if (state->filename) {
-        free(state->filename);
+        XMD_FREE_SAFE(state->filename);
     }
     
-    free(state);
+    XMD_FREE_SAFE(state);
 }

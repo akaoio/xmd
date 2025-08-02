@@ -35,7 +35,7 @@ ast_node* ast_create_variable_ref(const char* name, source_location loc) {
     node->location = loc;
     
     if (!node->data.variable_ref.name) {
-        free(node);
+        XMD_FREE_SAFE(node);
         return NULL;
     }
     

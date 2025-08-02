@@ -1,0 +1,4 @@
+EVIDENCE-BASED FILE MODIFICATION ANALYSIS
+Files with common_macros.h include: 69
+Files with XMD_* macro usage: 69
+Recently modified files: 333

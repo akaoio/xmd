@@ -32,7 +32,7 @@ ast_node* ast_create_string_literal(const char* value, source_location loc) {
     node->data.literal.value.string_value = xmd_strdup(value);
     node->location = loc;
     if (!node->data.literal.value.string_value) {
-        free(node);
+        XMD_FREE_SAFE(node);
         return NULL;
     }
     return node;

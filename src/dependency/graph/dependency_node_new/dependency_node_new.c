@@ -10,20 +10,16 @@
 
 #include "../../../../include/dependency.h"
 #include "../../../../include/utils.h"
+#include "../../../../src/utils/common/common_macros.h"
 /**
  * @brief Create a new dependency node
  * @param module Module to wrap in node
  * @return New dependency node or NULL on error
  */
 DependencyNode* dependency_node_new(Module* module) {
-    if (!module) {
-        return NULL;
-    }
+    XMD_NULL_CHECK(module, NULL);
     
-    DependencyNode* node = xmd_malloc(sizeof(DependencyNode));
-    if (!node) {
-        return NULL;
-    }
+    XMD_MALLOC_SAFE(DependencyNode, node);
     
     node->module = module;
     node->children = NULL;

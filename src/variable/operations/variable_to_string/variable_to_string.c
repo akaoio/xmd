@@ -44,7 +44,7 @@ char* variable_to_string(const variable* var) {
                 char* elem_str = variable_to_string(arr->items[i]);
                 if (elem_str) {
                     total_size += strlen(elem_str) + 3; // +3 for quotes and comma
-                    free(elem_str);
+                    XMD_FREE_SAFE(elem_str);
                 }
             char* result = xmd_malloc(total_size);
             if (!result) {
@@ -64,7 +64,7 @@ char* variable_to_string(const variable* var) {
                 char* val_str = variable_to_string(obj->pairs[i].value);
                 if (val_str) {
                     total_size += strlen(obj->pairs[i].key) + strlen(val_str) + 10;
-                    free(val_str);
+                    XMD_FREE_SAFE(val_str);
                 return xmd_strdup("{object}");
             strcpy(result, "{");
                 strcat(result, obj->pairs[i].key);

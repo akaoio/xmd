@@ -27,7 +27,7 @@ char** variable_object_keys(const variable* object_var, size_t* count) {
     variable_object* obj = object_var->value.object_value;
     *count = obj->count;
     if (obj->count == 0) {
-    char** keys = malloc(obj->count * sizeof(char*));
+    char** keys = xmd_malloc(obj->count * sizeof(char*));
     if (!keys) {
         *count = 0;
     for (size_t i = 0; i < obj->count; i++) {
@@ -35,9 +35,9 @@ char** variable_object_keys(const variable* object_var, size_t* count) {
         if (!keys[i]) {
             // Free previously allocated keys on failure
             for (size_t j = 0; j < i; j++) {
-                free(keys[j]);
+                XMD_FREE_SAFE(keys[j]);
             }
-            free(keys);
+            XMD_FREE_SAFE(keys);
             *count = 0;
             return NULL;
         }

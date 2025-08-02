@@ -56,6 +56,6 @@ int benchmark_run(benchmark_suite* suite, const char* test_name,
     result->iterations = iterations;
     calculate_stats(times, iterations, result);
     
-    free(times);
+    XMD_FREE_SAFE(times);
     return 0;
 }

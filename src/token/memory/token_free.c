@@ -10,15 +10,14 @@
 #include <stdlib.h>
 #include "performance.h"
 #include "token.h"
+#include "utils.h"
 /**
  * @brief Free a token and its resources
  * @param tok Token to free (can be NULL)
  */
-void token_free(token* tok) {
-    if (tok == NULL) {
-        return;
-    }
+void ast_value_free(token* tok) {
+    if (!tok) return;
     
-    free(tok->value);
-    free(tok);
+    XMD_FREE_SAFE(tok->value);
+    XMD_FREE_SAFE(tok);
 }

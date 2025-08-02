@@ -42,7 +42,7 @@ ast_node* ast_parse_program(const char* input) {
         if (stmt) {
             // Add statement to program using existing ast_add_statement function
             if (ast_add_statement(program, stmt) != 0) {
-                ast_free(stmt);
+                XMD_FREE_SAFE(stmt);
                 break;
             }
         }

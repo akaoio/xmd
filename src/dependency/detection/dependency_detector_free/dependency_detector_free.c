@@ -12,17 +12,17 @@
 #include "../../../../include/dependency.h"
 
 // Forward declaration
-void dependency_graph_free(DependencyGraph* graph);
+void dependency_graph_XMD_FREE_SAFE(DependencyGraph* graph);
 /**
  * @brief Free a dependency detector
  * @param detector Detector to free
  */
-void dependency_detector_free(DependencyDetector* detector) {
+void dependency_detector_XMD_FREE_SAFE(DependencyDetector* detector) {
     if (!detector) {
         return;
     }
     
-    dependency_graph_free(detector->graph);
-    free(detector->cycle_path);
-    free(detector);
+    dependency_graph_XMD_FREE_SAFE(detector->graph);
+    XMD_FREE_SAFE(detector->cycle_path);
+    XMD_FREE_SAFE(detector);
 }

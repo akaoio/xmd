@@ -16,7 +16,7 @@
  * @param processor Processor to free
   * /
  */
-void xmd_processor_free(xmd_processor* processor) {
+void xmd_processor_XMD_FREE_SAFE(xmd_processor* processor) {
     if (!processor) return;
     printf("DEBUG: xmd_processor_free starting\n");
     fflush(stdout);
@@ -48,17 +48,17 @@ void xmd_processor_free(xmd_processor* processor) {
     
     if (processor->config) {
         printf("DEBUG: About to free config\n");
-        free(processor->config);
+        XMD_FREE_SAFE(processor->config);
         printf("DEBUG: Config freed\n");
     }
     
     if (processor->current_file) {
         printf("DEBUG: About to free current_file\n");
-        free(processor->current_file);
+        XMD_FREE_SAFE(processor->current_file);
         printf("DEBUG: Current_file freed\n");
     }
     
     printf("DEBUG: About to free processor\n");
-    free(processor);
+    XMD_FREE_SAFE(processor);
     printf("DEBUG: xmd_processor_free completed\n");
 }

@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "utils/common/common_macros.h"
 #include <string.h>
 #include "ast_evaluator.h"
 #include "ast_node.h"
@@ -54,13 +55,13 @@ ast_value* ast_evaluate_file_write(ast_node* node, ast_evaluator* evaluator) {
     // Write to file
     FILE* file = fopen(file_path, "w");
     if (!file) {
-        ast_value_free(content_value);
+        XMD_FREE_SAFE(content_value);
         return ast_value_create_boolean(false);
     }
     
     size_t bytes_written = fwrite(content_str, 1, strlen(content_str), file);
     fclose(file);
     bool success = (bytes_written == strlen(content_str));
-    ast_value_free(content_value);
+    XMD_FREE_SAFE(content_value);
     return ast_value_create_boolean(success);
 }

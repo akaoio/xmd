@@ -9,6 +9,7 @@
  */
 
 #include "../../../../include/dependency.h"
+#include "../../../../src/utils/common/common_macros.h"
 
 // Forward declaration
 void reset_visit_states(DependencyGraph* graph);
@@ -19,9 +20,8 @@ int dependency_check_circular_from(DependencyDetector* detector, const char* mod
  * @return 1 if circular dependencies found, 0 otherwise, -1 on error
  */
 int dependency_check_circular(DependencyDetector* detector) {
-    if (!detector || !detector->graph) {
-        return -1;
-    }
+    XMD_NULL_CHECK(detector, -1);
+    XMD_NULL_CHECK(detector->graph, -1);
     
     reset_visit_states(detector->graph);
     

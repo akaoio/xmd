@@ -34,7 +34,7 @@ ast_node* ast_create_loop(const char* variable, ast_node* iterable, source_locat
     node->data.loop.body = NULL;
     node->location = loc;
     if (!node->data.loop.variable) {
-        free(node);
+        XMD_FREE_SAFE(node);
         return NULL;
     }
     return node;

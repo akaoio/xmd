@@ -14,9 +14,9 @@
  * @param ctx Context to free
   * /
  */
-void condition_context_free(ConditionContext* ctx) {
+void condition_context_XMD_FREE_SAFE(ConditionContext* ctx) {
     if (ctx) {
-        free(ctx->last_error);
-        free(ctx);
+        XMD_FREE_SAFE(ctx->last_error);
+        XMD_FREE_SAFE(ctx);
     }
 }

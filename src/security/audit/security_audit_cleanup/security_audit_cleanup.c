@@ -25,7 +25,7 @@ void security_audit_cleanup(void) {
         audit_state.log_file = NULL;
     }
     
-    free(audit_state.log_path);
+    XMD_FREE_SAFE(audit_state.log_path);
     audit_state.log_path = NULL;
     
     // Cleanup simplified - entries managed elsewhere
