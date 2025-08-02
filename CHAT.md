@@ -80,26 +80,17 @@ Before starting ANY work, read these documents:
 
 ## 📋 KHỞI ĐỘNG NHANH (Quick Start)
 
-### 1. Thiết lập Role của bạn
-```bash
-# Chọn một trong các role sau:
-export XMD_ROLE="Leader"      # Trưởng nhóm
-export XMD_ROLE="Developer"   # Lập trình viên
-export XMD_ROLE="Systems"     # Kỹ sư hệ thống
-export XMD_ROLE="Tester"      # Kiểm thử viên
-export XMD_ROLE="Designer"    # Thiết kế
-# Hoặc dùng tên riêng:
-export XMD_ROLE="Alice"       # Tên của bạn
-```
-
-### 2. Xem tin nhắn gần đây
+### 1. Xem tin nhắn gần đây
 ```bash
 node chat.js                      # Xem 10 tin nhắn mới nhất
 ```
 
-### 3. Gửi tin nhắn đầu tiên
+### 2. Gửi tin nhắn đầu tiên
 ```bash
+# Dùng tên của bạn sau @ để gửi tin
 node chat.js @yourname: @all "Xin chào team, tôi là thành viên mới!"
+node chat.js @alice: @bob "Need help with the build"
+node chat.js @developer: @all "Feature completed!"
 ```
 
 ## 💬 CÚ PHÁP BẮT BUỘC
@@ -337,10 +328,7 @@ Có vấn đề gì không?"
 
 ### Scenario 1: Thành viên mới join team qua chat.js
 ```bash
-# Set role cho chat.js
-export XMD_ROLE="Alice"
-
-# Dùng chat.js để giới thiệu
+# Dùng chat.js để giới thiệu (gửi với tên của bạn)
 node chat.js @alice: @all "Hi team! I'm Alice, new developer. Ready to help!"
 
 # Leader dùng chat.js để welcome và phân công
@@ -417,11 +405,11 @@ ls -la chat/
 node --version
 ```
 
-### Role không đúng
+### Tên người gửi không đúng
 ```bash
-# Set lại role
-export XMD_ROLE="YourRole"
-echo $XMD_ROLE  # Verify
+# Kiểm tra cú pháp - phải có @ trước tên
+# ĐÚNG: @alice: @bob "message"
+# SAI: alice: @bob "message"
 ```
 
 ## 📚 THÔNG TIN THÊM
@@ -439,7 +427,6 @@ echo $XMD_ROLE  # Verify
 Thành viên mới làm theo checklist để bắt đầu dùng chat.js:
 
 - [ ] Đọc kỹ file CHAT.md này để hiểu cách dùng chat.js
-- [ ] Set role cho chat.js: `export XMD_ROLE="YourName"`
 - [ ] Test gửi tin nhắn qua chat.js: `node chat.js @yourname: @all "Hello!"`
 - [ ] Xem tin nhắn hiện có: `node chat.js`
 - [ ] Xem help của chat.js: `node chat.js help`

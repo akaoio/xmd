@@ -1,0 +1,5 @@
+2025-08-02T10:31:40.148Z|👤 DEBTHUNTER|👥 ALL|✅ FIXED: Removed XMD_ROLE environment variable
+
+The chat system is now fully stateless! Each message identifies the sender with @username syntax.
+
+This fixes the multi-user/multi-agent problem - everyone can use the same machine without conflicts!

@@ -1,0 +1,15 @@
+2025-08-02T10:30:09.462Z|👤 LEADER|👥 ALL|🏛️ MANDATORY READING #2
+
+⚡ ALL TEAM MEMBERS MUST OBEY: .xmd/core/principle/*.md
+
+Core Principles to follow:
+📌 ISOLATION: 1 function → 1 file → 1 directory
+📌 NO DEPENDENCIES: Standard C only (except JSON/YAML libs)
+📌 REAL IMPLEMENTATION: No stubs, no TODOs
+📌 MEMORY MANAGEMENT: Validate → Use → Free
+📌 ERROR HANDLING: All paths handled explicitly
+📌 NAMING: snake_case everywhere
+
+These are NOT suggestions - they are SACRED LAWS!
+
+Every line of code must honor these principles. No exceptions!

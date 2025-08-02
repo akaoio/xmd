@@ -130,12 +130,9 @@ function sendMessage(args) {
 
 // Show header
 function showHeader() {
-    const role = process.env.XMD_ROLE || 'User';
-    const timestamp = formatTimestamp(new Date());
-    
     console.log("\n" + colors.dim + "═══════════════════════" + colors.reset);
     console.log('🚀 XMD TEAM CHAT');
-    console.log(`Role: ${colors.bold}${role}${colors.reset} | ${formatTimestamp(new Date())}`);
+    console.log(`Time: ${formatTimestamp(new Date())}`);
     console.log(colors.dim + "═══════════════════════" + colors.reset + "\n");
 }
 
@@ -399,6 +396,8 @@ function showHelp() {
     console.log(colors.bold + '💾 STORAGE:' + colors.reset);
     console.log('  • Messages: ./chat/msg_*.txt');
     console.log('  • Pinned: ./chat/pinned/pinned_*.txt');
+    console.log('  • Each user identifies themselves with @username');
+    console.log('  • No environment variables needed - fully stateless');
     console.log('');
 }
 
