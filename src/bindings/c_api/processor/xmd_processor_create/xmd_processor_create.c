@@ -1,0 +1,71 @@
+/**
+ * @file xmd_processor_create.c
+ * @brief Create XMD processor with configuration
+ * 
+ * This file contains ONLY the xmd_processor_create function.
+ * One function per file - Genesis principle compliance.
+ * Extracted from: src/bindings_consolidated.c
+ */
+
+#include <string.h>
+#include <stdlib.h>
+#include "../../../../../include/xmd.h"
+#include "../../../../../include/store.h"
+#include "../../../../../include/utils.h"
+/**
+ * @brief Create XMD processor with configuration
+ * @param config Configuration to use (NULL for defaults)
+ * @return New processor or NULL on error
+  * /
+ */
+xmd_processor* xmd_processor_create(const xmd_config* config) {
+    xmd_processor* processor = xmd_calloc(1, sizeof(xmd_processor));
+    if (!processor) return NULL;
+    
+    // Initialize variable store
+    processor->variables = store_create();
+    if (!processor->variables) {
+        free(processor);
+        return NULL;
+    }
+    
+    // Copy config (don't just reference)
+    if (config) {
+        processor->config = xmd_malloc(sizeof(xmd_config));
+        if (processor->config) {
+            memcpy(processor->config, config, sizeof(xmd_config));
+        }
+    }
+    
+    // Initialize other stores with NULL checks
+    processor->modules = store_create();
+    if (!processor->modules) {
+        store_destroy(processor->variables);
+        free(processor->config);
+        free(processor);
+        return NULL;
+    }
+    
+    processor->functions = store_create();
+    if (!processor->functions) {
+        store_destroy(processor->modules);
+        store_destroy(processor->variables);
+        free(processor->config);
+        free(processor);
+        return NULL;
+    }
+    
+    processor->exports = store_create();
+    if (!processor->exports) {
+        store_destroy(processor->functions);
+        store_destroy(processor->modules);
+        store_destroy(processor->variables);
+        free(processor->config);
+        free(processor);
+        return NULL;
+    }
+    
+    processor->initialized = true;
+    processor->current_file = NULL; // Initialize to NULL for safe free()
+    return processor;
+}

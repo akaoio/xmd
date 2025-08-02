@@ -1,0 +1,79 @@
+-- The C compiler identification is Clang 20.1.7
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /data/data/com.termux/files/usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Configuring done (0.9s)
+-- Generating done (0.1s)
+-- Build files have been written to: /data/data/com.termux/files/home/xmd/build
+[  0%] Building C object CMakeFiles/xmd_lib.dir/src/ast/evaluator/assignment/ast_evaluate_assignment.c.o
+[  0%] Building C object CMakeFiles/xmd_lib.dir/src/ast/evaluator/expression/ast_evaluate_binary_op.c.o
+[  1%] Building C object CMakeFiles/xmd_lib.dir/src/ast/evaluator/expression/ast_evaluate_identifier.c.o
+[  2%] Building C object CMakeFiles/xmd_lib.dir/src/ast/evaluator/control/ast_evaluate_conditional.c.o
+[  3%] Building C object CMakeFiles/xmd_lib.dir/src/ast/evaluator/fileio/ast_evaluate_file_delete.c.o
+[  3%] Building C object CMakeFiles/xmd_lib.dir/src/ast/evaluator/fileio/ast_evaluate_file_exists.c.o
+[  3%] Building C object CMakeFiles/xmd_lib.dir/src/ast/evaluator/fileio/ast_evaluate_file_read.c.o
+[  4%] Building C object CMakeFiles/xmd_lib.dir/src/ast/evaluator/fileio/ast_evaluate_file_list.c.o
+[  5%] Building C object CMakeFiles/xmd_lib.dir/src/ast/evaluator/fileio/ast_evaluate_file_write.c.o
+[  6%] Building C object CMakeFiles/xmd_lib.dir/src/ast/evaluator/function/ast_evaluate_function_call.c.o
+[  6%] Building C object CMakeFiles/xmd_lib.dir/src/ast/evaluator/function/ast_evaluate_function_def.c.o
+[  7%] Building C object CMakeFiles/xmd_lib.dir/src/ast/evaluator/loop/ast_evaluate_loop.c.o
+[  7%] Building C object CMakeFiles/xmd_lib.dir/src/ast/evaluator/loop/ast_evaluate_while_loop.c.o
+[  8%] Building C object CMakeFiles/xmd_lib.dir/src/ast/evaluator/program/ast_evaluate_program_node.c.o
+[  9%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/create/ast_create_array_access.c.o
+[  9%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/create/ast_create_array_literal.c.o
+[ 10%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/create/ast_create_assignment.c.o
+[ 10%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/create/ast_create_binary_op.c.o
+[ 11%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/create/ast_create_block.c.o
+[ 12%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/create/ast_create_boolean_literal.c.o
+[ 12%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/create/ast_create_break_statement.c.o
+[ 13%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/create/ast_create_class_def.c.o
+[ 13%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/create/ast_create_conditional.c.o
+[ 14%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/create/ast_create_continue_statement.c.o
+[ 14%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/create/ast_create_function_call.c.o
+[ 15%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/create/ast_create_function_def.c.o
+[ 16%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/create/ast_create_identifier.c.o
+[ 16%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/create/ast_create_loop.c.o
+[ 17%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/create/ast_create_method_def.c.o
+[ 19%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/create/ast_create_program.c.o
+[ 19%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/create/ast_create_string_literal.c.o
+[ 19%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/create/ast_create_number_literal.c.o
+[ 19%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/free/ast_free.c.o
+[ 19%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/util/ast_add_element.c.o
+[ 20%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/util/ast_add_argument.c.o
+[ 21%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/util/ast_add_method.c.o
+[ 22%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/util/ast_add_parameter.c.o
+[ 22%] Building C object CMakeFiles/xmd_lib.dir/src/ast/node/util/ast_add_statement.c.o
+[ 23%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/class/ast_parse_class.c.o
+[ 24%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/control/ast_parse_elif.c.o
+[ 24%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/class/ast_parse_method.c.o
+[ 25%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/control/ast_parse_else.c.o
+[ 26%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/control/ast_parse_if_block.c.o
+[ 26%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/control/ast_parse_if_then.c.o
+[ 26%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/expression/ast_parse_comparison_expression.c.o
+[ 27%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/expression/ast_parse_expression.c.o
+[ 27%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/expression/ast_parse_math_expression.c.o
+[ 28%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/expression/ast_parse_primary.c.o
+[ 29%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/function/ast_parse_function.c.o
+[ 29%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/literal/ast_parse_array_assignment.c.o
+[ 30%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/literal/ast_parse_number_literal.c.o
+[ 31%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/literal/ast_parse_string_literal.c.o
+[ 31%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/loop/ast_parse_loop.c.o
+[ 32%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/loop/ast_parse_range_loop.c.o
+[ 32%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/loop/ast_parse_while.c.o
+[ 33%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/program/ast_parse_program.c.o
+[ 33%] Building C object CMakeFiles/xmd_lib.dir/src/ast/parser/statement/ast_parse_statement.c.o
+[ 34%] Building C object CMakeFiles/xmd_lib.dir/src/ast/value/ast_value_create_array.c.o
+[ 35%] Building C object CMakeFiles/xmd_lib.dir/src/ast/value/ast_value_create_boolean.c.o
+[ 35%] Building C object CMakeFiles/xmd_lib.dir/src/ast/value/ast_value_create_number.c.o
+[ 35%] Building C object CMakeFiles/xmd_lib.dir/src/ast/value/ast_value_free.c.o
+[ 36%] Building C object CMakeFiles/xmd_lib.dir/src/ast/value/ast_value_create_string.c.o
+[ 37%] Building C object CMakeFiles/xmd_lib.dir/src/ast/value/ast_value_from_variable.c.o
+[ 38%] Building C object CMakeFiles/xmd_lib.dir/src/ast/value/ast_value_to_string.c.o
+[ 38%] Building C object CMakeFiles/xmd_lib.dir/src/ast/value/ast_value_to_variable.c.o
+[ 39%] Building C object CMakeFiles/xmd_lib.dir/src/bindings_consolidated.c.o
+[ 39%] Building C object CMakeFiles/xmd_lib.dir/src/config_consolidated.c.o
+[ 40%] Building C object CMakeFiles/xmd_lib.dir/src/devtools_consolidated.c.o
+[ 41%] Building C object CMakeFiles/xmd_lib.dir/src/docs_consolidated.c.o
+[ 41%] Building C object CMakeFiles/xmd_lib.dir/src/import_consolidated.c.o

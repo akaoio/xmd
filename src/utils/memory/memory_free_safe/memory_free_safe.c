@@ -1,28 +1,21 @@
 /**
  * @file memory_free_safe.c
- * @brief Implementation of safe memory deallocation wrapper
+ * @brief Safe free with NULL pointer check
+ * @author XMD Development Team
+ * @date 2025-08-01
  * 
- * Provides a safe wrapper around free that prevents double-free errors.
+ * Following Genesis "1→1→1" principle: 1 function → 1 file → 1 directory
  */
 
 #include <stdlib.h>
-#include <stddef.h>
 #include "../../../../include/utils.h"
-
 /**
- * @brief Free memory safely and set pointer to NULL
- * 
- * Frees the memory pointed to by *ptr and sets *ptr to NULL.
- * This prevents double-free errors and use-after-free bugs.
- * Handles NULL pointers gracefully.
- * 
- * @param ptr Pointer to the pointer to free (can be NULL)
+ * @brief Safe free with NULL pointer check
+ * @param ptr Pointer to pointer to free
  */
 void memory_free_safe(void** ptr) {
-    if (ptr == NULL || *ptr == NULL) {
-        return;
+    if (ptr && *ptr) {
+        free(*ptr);
+        *ptr = NULL;
     }
-    
-    free(*ptr);
-    *ptr = NULL;
 }

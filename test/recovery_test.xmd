@@ -1,0 +1,6 @@
+# Recovery Test - Basic Functionality Check
+set name "Alice"
+set x 10
+print "Testing basic functionality"
+print name
+if x = 10 then print "Control flow working"

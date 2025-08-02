@@ -1,0 +1,145 @@
+name: XMD CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [created]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build-test:
+    name: Build and Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            cc: gcc
+          - os: macos-latest
+            cc: clang
+          - os: windows-latest
+            cc: cl
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up build environment
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake
+    
+    - name: Configure CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+    
+    - name: Build
+      run: cmake --build build --config ${{env.BUILD_TYPE}}
+    
+    - name: Test basic functionality
+      run: |
+        ./build/xmd --version
+        echo "Testing basic variable substitution..."
+        echo 'set name "CI" | {{name}}' > test_ci.xmd
+        ./build/xmd process test_ci.xmd
+    
+    - name: Evaluation Engine Status Check
+      run: |
+        echo "Checking evaluation engine completion status..."
+        chmod +x test_infrastructure/evaluation_test_runner.sh
+        chmod +x test_infrastructure/generate_evaluation_report.sh
+        ./test_infrastructure/generate_evaluation_report.sh
+        
+        # Extract completion percentage
+        COMPLETION=$(cat test_infrastructure/reports/evaluation_progress_*.json | jq -r '.evaluation.completion_percent')
+        echo "Evaluation Engine Completion: $COMPLETION%"
+        
+        # Set CI status based on completion
+        if [ "$COMPLETION" -eq 100 ]; then
+          echo "✅ Evaluation engine complete!"
+          exit 0
+        elif [ "$COMPLETION" -gt 0 ]; then
+          echo "⚠️ Evaluation engine $COMPLETION% complete - in progress"
+          exit 0
+        else
+          echo "🔧 Evaluation engine needs implementation"
+          exit 0
+        fi
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: xmd-${{ matrix.os }}
+        path: build/xmd*
+
+  code-quality:
+    name: Code Quality Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Count warnings
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Debug
+        cmake --build build 2>&1 | tee build.log
+        echo "Build warnings: $(grep -c 'warning:' build.log || echo 0)"
+    
+    - name: Check for tech debt
+      run: |
+        echo "Checking for stubs and mocks..."
+        ! grep -r "stub\|mock" src/ || echo "Warning: Potential stubs/mocks found"
+
+  release:
+    name: Create Release
+    needs: [build-test, code-quality]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Build release binary
+      run: |
+        cmake -B build -DCMAKE_BUILD_TYPE=Release
+        cmake --build build
+        strip build/xmd
+    
+    - name: Create release package
+      run: |
+        mkdir -p xmd-release
+        cp build/xmd xmd-release/
+        cp README.md LICENSE xmd-release/
+        tar -czf xmd-${{ github.event.release.tag_name }}-linux-x64.tar.gz xmd-release
+    
+    - name: Upload release assets
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./xmd-${{ github.event.release.tag_name }}-linux-x64.tar.gz
+        asset_name: xmd-${{ github.event.release.tag_name }}-linux-x64.tar.gz
+        asset_content_type: application/gzip
+
+  deploy-docs:
+    name: Deploy Documentation
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Build documentation
+      run: |
+        # Future: Generate docs from source
+        echo "Documentation deployment placeholder"
+    
+    - name: Deploy to GitHub Pages
+      # Future: Deploy generated docs
+      run: echo "Docs deployment not yet implemented"

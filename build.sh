@@ -1,8 +1,6 @@
-#!/usr/bin/bash
+#!/bin/bash
+set -e
 rm -rf build
-mkdir build
-cd build
-cmake -DCMAKE_BUILD_TYPE=Release ..
-make -j4
-cd ..
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build -- -j1
 echo "✅ Build complete! Binary available at build/xmd"

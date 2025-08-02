@@ -1,71 +1,11 @@
-/**
- * @file ast_parser.h
- * @brief AST parser interface for XMD language
- * @author XMD Team
- * @date 2025-07-28
- */
 
 #ifndef XMD_AST_PARSER_H
 #define XMD_AST_PARSER_H
 
-#include "ast_node.h"
+#include "ast.h"
 #include "token.h"
 
-/**
- * @brief Parser state structure
- */
-typedef struct {
-    token* tokens;           /**< Token stream from lexer */
-    token* current_token;    /**< Current parsing position */
-    size_t position;         /**< Current token index */
-    const char* filename;    /**< Source filename for errors */
-    bool has_error;          /**< Error flag */
-    char* error_message;     /**< Last error message */
-} parser_state;
-
-/* Main parsing functions */
-
-/**
- * @brief Parse program from token stream
- * @param tokens Token stream from lexer
- * @return AST program node or NULL on error
- */
-ast_node* ast_parse_program(token* tokens);
-
-/**
- * @brief Parse single statement
- * @param state Parser state
- * @return AST statement node or NULL on error
- */
-ast_node* ast_parse_statement(parser_state* state);
-
-/**
- * @brief Parse expression with precedence
- * @param state Parser state
- * @return AST expression node or NULL on error
- */
-ast_node* ast_parse_expression(parser_state* state);
-
-/**
- * @brief Parse assignment statement
- * @param state Parser state  
- * @return AST assignment node or NULL on error
- */
-ast_node* ast_parse_assignment(parser_state* state);
-
-/**
- * @brief Parse function call
- * @param state Parser state
- * @return AST function call node or NULL on error
- */
-ast_node* ast_parse_function_call(parser_state* state);
-
-/**
- * @brief Parse primary expression (literals, identifiers, parentheses)
- * @param state Parser state
- * @return AST primary expression node or NULL on error
- */
-ast_node* ast_parse_primary(parser_state* state);
+/* Forward declarations - parser_state is defined in ast.h */
 
 /* Parser state management */
 
@@ -115,5 +55,26 @@ const char* parser_get_error(void);
  * @param message Error message
  */
 void parser_set_error(parser_state* state, const char* message);
+
+/**
+ * @brief Parse single value (string, number, identifier) without comma handling
+ * @param pos Pointer to current position
+ * @return Value AST node or NULL
+ */
+ast_node* ast_parse_single_value(const char** pos);
+
+/**
+ * @brief Parse object creation from comma-separated key-value pairs
+ * @param pos Pointer to current position
+ * @return Object AST node or NULL
+ */
+ast_node* ast_parse_object_creation(const char** pos, const char* first_name);
+
+/**
+ * @brief Parse assignment with Genesis comma disambiguation: set varname value
+ * @param pos Pointer to current position
+ * @return Assignment AST node or NULL (or program node for multiple assignments)
+ */
+ast_node* ast_parse_multiple_variables_handler(const char** pos, const char* first_name);
 
 #endif /* XMD_AST_PARSER_H */

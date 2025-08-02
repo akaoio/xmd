@@ -1,23 +1,22 @@
 /**
  * @file condition_context_free.c
  * @brief Free condition context
- * @author XMD Implementation Team
- * @date 2025-07-27
+ * 
+ * This file contains ONLY the condition_context_free function.
+ * One function per file - Genesis principle compliance.
+ * Extracted from: src/systems_consolidated.c (with syntax fixes)
  */
 
-#include <stdio.h>
 #include <stdlib.h>
 #include "../../../include/conditional.h"
-
 /**
- * @brief Free a condition context
- * @param ctx Condition context to free
+ * @brief Free condition context
+ * @param ctx Context to free
+  * /
  */
 void condition_context_free(ConditionContext* ctx) {
-    if (!ctx) {
-        return;
+    if (ctx) {
+        free(ctx->last_error);
+        free(ctx);
     }
-    
-    free(ctx->last_error);
-    free(ctx);
 }

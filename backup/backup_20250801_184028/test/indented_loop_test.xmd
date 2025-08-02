@@ -1,0 +1,6 @@
+# Indented Loop Test
+print "Testing indented loop body:"
+for i in 1..3
+    print "Value:"
+    print i
+print "Loop finished"

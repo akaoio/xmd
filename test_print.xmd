@@ -1,0 +1,6 @@
+print "Hello, World!"
+set name "XMD"
+print "Welcome to ${name}!"
+set x 10
+set y 20
+print "x = ${x}, y = ${y}"

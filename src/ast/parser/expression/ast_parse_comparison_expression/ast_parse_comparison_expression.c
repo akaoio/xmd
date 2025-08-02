@@ -1,0 +1,146 @@
+/**
+ * @file ast_parse_comparison_expression.c
+ *
+ * @brief Implementation of ast_parse_comparison_expression function
+ * 
+ * This file contains ONLY the ast_parse_comparison_expression function.
+ * One function per file - Genesis principle compliance.
+ * Extracted from: src/ast_consolidated.c
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+#include "ast_node.h"
+#include "ast_parser.h"
+#include "utils.h"
+/**
+ * @brief Parse comparison expression: variable = value
+ * @param expr Expression string to parse
+ * @return Binary operation AST node or NULL
+ */
+ast_node* ast_parse_comparison_expression(const char* expr) {
+    if (!expr) {
+        return NULL;
+    }
+    
+    printf("DEBUG: ast_parse_comparison_expression called with: %s\n", expr);
+    
+    char* expr_copy = xmd_strdup(expr);
+    if (!expr_copy) {
+        return NULL;
+    }
+    
+    char* left_str = NULL;
+    char* right_str = NULL;
+    binary_operator op = BINOP_EQ;
+    char* op_pos = NULL;
+    int op_len = 0;
+    
+    // Look for comparison operators in order of precedence (longest first)
+    if ((op_pos = strstr(expr_copy, " <= "))) {
+        op = BINOP_LE;
+        op_len = 4;
+    } else if ((op_pos = strstr(expr_copy, " >= "))) {
+        op = BINOP_GE;
+        op_len = 4;
+    } else if ((op_pos = strstr(expr_copy, " != "))) {
+        op = BINOP_NE;
+        op_len = 4;
+    } else if ((op_pos = strstr(expr_copy, " < "))) {
+        op = BINOP_LT;
+        op_len = 3;
+    } else if ((op_pos = strstr(expr_copy, " > "))) {
+        op = BINOP_GT;
+        op_len = 3;
+    } else if ((op_pos = strstr(expr_copy, " = "))) {
+        op = BINOP_EQ;
+        op_len = 3;
+    } else {
+        // No comparison operator found
+        free(expr_copy);
+        return NULL;
+    }
+    
+    // Split at operator
+    *op_pos = '\0';
+    left_str = expr_copy;
+    right_str = op_pos + op_len;
+    
+    // Trim whitespace from both operands
+    while (*left_str && isspace(*left_str)) left_str++;
+    while (*right_str && isspace(*right_str)) right_str++;
+    
+    // Trim trailing whitespace
+    char* end = left_str + strlen(left_str) - 1;
+    while (end > left_str && isspace(*end)) *end-- = '\0';
+    end = right_str + strlen(right_str) - 1;
+    while (end > right_str && isspace(*end)) *end-- = '\0';
+    
+    source_location loc = {1, 1, "input"};
+    
+    // Parse left operand
+    ast_node* left = NULL;
+    if (*left_str == '"') {
+        // String literal - remove quotes
+        size_t len = strlen(left_str);
+        if (len >= 2 && left_str[len-1] == '"') {
+            char* string_val = xmd_malloc(len - 1);
+            if (string_val) {
+                strncpy(string_val, left_str + 1, len - 2);
+                string_val[len - 2] = '\0';
+                left = ast_create_string_literal(string_val, loc);
+                free(string_val);
+            }
+        }
+    } else if (isdigit(*left_str) || *left_str == '-') {
+        double val = atof(left_str);
+        left = ast_create_number_literal(val, loc);
+    } else {
+        left = ast_create_identifier(left_str, loc);
+    }
+    
+    // Parse right operand
+    ast_node* right = NULL;
+    if (*right_str == '"') {
+        size_t len = strlen(right_str);
+        if (len >= 2 && right_str[len-1] == '"') {
+            char* string_val = xmd_malloc(len - 1);
+            if (string_val) {
+                strncpy(string_val, right_str + 1, len - 2);
+                string_val[len - 2] = '\0';
+                right = ast_create_string_literal(string_val, loc);
+                free(string_val);
+            }
+        }
+    } else if (isdigit(*right_str) || *right_str == '-') {
+        double val = atof(right_str);
+        right = ast_create_number_literal(val, loc);
+    } else {
+        right = ast_create_identifier(right_str, loc);
+    }
+    
+    ast_node* result = NULL;
+    if (left && right) {
+        result = ast_create_binary_op(op, left, right, loc);
+        
+        const char* op_name = "=";
+        switch (op) {
+            case BINOP_LT: op_name = "<"; break;
+            case BINOP_LE: op_name = "<="; break;
+            case BINOP_GT: op_name = ">"; break;
+            case BINOP_GE: op_name = ">="; break;
+            case BINOP_EQ: op_name = "="; break;
+            case BINOP_NE: op_name = "!="; break;
+            default: op_name = "?"; break;
+        }
+        printf("DEBUG: Created comparison node: %s %s %s\n", left_str, op_name, right_str);
+    } else {
+        if (left) ast_free(left);
+        if (right) ast_free(right);
+    }
+    
+    free(expr_copy);
+    return result;
+}

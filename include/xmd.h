@@ -42,6 +42,7 @@ typedef enum {
 typedef struct xmd_config xmd_config;
 typedef struct xmd_processor xmd_processor;
 typedef struct xmd_result xmd_result;
+typedef struct store store;
 
 /**
  * @brief XMD processing result
@@ -104,6 +105,20 @@ typedef struct xmd_config {
     char* log_level;                /**< Log level: "error", "warn", "info", "debug" */
 } xmd_config;
 
+/**
+ * @brief XMD processor instance
+ * @struct xmd_processor
+ */
+struct xmd_processor {
+    store* variables;      /**< Variable storage */
+    store* modules;        /**< Module storage */
+    store* functions;      /**< Function definitions */
+    store* exports;        /**< Exported symbols */
+    xmd_config* config;    /**< Processor configuration */
+    char* current_file;    /**< Currently processing file */
+    bool initialized;      /**< Whether processor is initialized */
+};
+
 /* Core API functions */
 
 /**
@@ -156,6 +171,15 @@ xmd_result* xmd_process_string(xmd_processor* processor,
  */
 xmd_result* xmd_process_file(xmd_processor* processor, 
                              const char* input_path);
+
+/**
+ * @brief Core XMD string processing API
+ * @param handle XMD context handle
+ * @param input Input markdown string
+ * @param input_length Input string length
+ * @return Processing result (must be freed with xmd_result_free)
+ */
+xmd_result* xmd_process_string_api(void* handle, const char* input, size_t input_length);
 
 /**
  * @brief Free XMD processing result

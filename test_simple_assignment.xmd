@@ -1,0 +1,5 @@
+set counter = 42
+set name "Alice"
+set score 85.5
+
+Done.

@@ -1,0 +1,5 @@
+# Simple Range Test
+print "Testing single range loop:"
+for i in 1..3
+print "Loop completed, i ="
+print i

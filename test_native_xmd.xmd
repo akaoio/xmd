@@ -1,0 +1,31 @@
+# Native XMD Test File
+# Testing pure XMD syntax without HTML comments
+
+set name "Vietnam XMD System"
+set age 25
+set pi 3.14159
+
+print "Hello from " + name
+print "Age is: " + age  
+print "Pi value: " + pi
+
+# Conditional test
+if age > 20 then
+    print "Adult user"
+else
+    print "Young user"
+endif
+
+# Loop test
+for i in 1 .. 5
+    print "Count: " + i
+endfor
+
+# Function test
+function greet(name)
+    print "Hello, " + name + "!"
+endfunction
+
+greet("XMD Developer")
+
+print "Test complete!"

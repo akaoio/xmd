@@ -1,0 +1,84 @@
+<!-- XMD Comprehensive Functionality Test -->
+<!-- Testing all major XMD features according to blueprint/idea.md -->
+
+<!-- 1. Variables Test -->
+set made "in Vietnam",
+    by "Nguyen Ky Son",
+    age 40
+set pi 3.14
+set active true
+set empty null
+
+print "Made: " + made
+print "By: " + by
+print "Age: " + age
+print "Pi: " + pi
+print "Active: " + active
+print "Empty: " + empty
+
+<!-- 2. Arrays Test -->
+set scores 1, 2, 3
+set items
+    "pen",
+    "book",
+    "lamp",
+
+print "Scores: " + scores
+print "Items: " + items
+
+<!-- 3. Objects Test -->
+set user name "Alice", age 30, active true
+set config
+    debug true,
+    retries 3,
+    timeout 1000,
+
+print "User: " + user
+print "Config: " + config
+
+<!-- 4. Functions Test -->
+function greet name
+    return "Hello " + name
+
+function add a b
+    return a + b
+
+print greet "World"
+print add 10 20
+
+<!-- 5. Conditionals Test -->
+set score 85
+if score >= 90
+    print "Excellent"
+elif score >= 70
+    print "Good"
+else
+    print "Try again"
+
+<!-- 6. Loops Test -->
+loop 3 times
+    print "Loop iteration"
+
+for i in 1 .. 3
+    print "Range loop: " + i
+
+for item in items
+    print "Array loop: " + item
+
+<!-- 7. String Operations Test -->
+set text "Hello World"
+print "Text: " + text
+
+<!-- 8. Math Operations Test -->
+set result 10 + 20 * 2
+print "Math result: " + result
+
+<!-- 9. Comparison Test -->
+set comparison 10 > 5
+print "10 > 5: " + comparison
+
+<!-- 10. Nested Structures Test -->
+set profile name "Linh", scores scores, active true
+print "Profile: " + profile
+
+print "XMD Functionality Test Complete!"

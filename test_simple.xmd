@@ -1,0 +1,6 @@
+set a 5
+print "a = ${a}"
+set b 3
+print "b = ${b}"
+set c a + b
+print "c = ${c}"

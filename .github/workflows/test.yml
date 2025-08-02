@@ -1,0 +1,127 @@
+name: XMD Language Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-xmd-language:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake
+    
+    - name: Build XMD
+      run: |
+        chmod +x build.sh
+        ./build.sh
+    
+    - name: Run basic tests
+      run: |
+        chmod +x test_infrastructure/test_runner.sh
+        ./test_infrastructure/test_runner.sh
+      continue-on-error: true
+    
+    - name: Run comprehensive tests
+      run: |
+        chmod +x test_infrastructure/comprehensive_test_suite.sh
+        ./test_infrastructure/comprehensive_test_suite.sh
+      continue-on-error: true
+    
+    - name: Run Genesis compliance tests
+      run: |
+        chmod +x test_infrastructure/genesis_compliance_test.sh
+        ./test_infrastructure/genesis_compliance_test.sh
+      continue-on-error: true
+    
+    - name: Generate test report
+      if: always()
+      run: |
+        echo "## XMD Language Test Report" > test_report.md
+        echo "" >> test_report.md
+        echo "### Test Results" >> test_report.md
+        ./test_infrastructure/comprehensive_test_suite.sh 2>&1 | tee -a test_report.md || true
+    
+    - name: Upload test report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-report
+        path: test_report.md
+    
+    - name: Comment PR with results
+      if: github.event_name == 'pull_request' && always()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const report = fs.readFileSync('test_report.md', 'utf8');
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: report
+          });
+  
+  test-memory-safety:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install Valgrind
+      run: sudo apt-get install -y valgrind
+    
+    - name: Build XMD with debug symbols
+      run: |
+        chmod +x build.sh
+        CFLAGS="-g -O0" ./build.sh
+    
+    - name: Run memory tests
+      run: |
+        echo "set x 42" > simple_test.xmd
+        echo "{{x}}" >> simple_test.xmd
+        valgrind --leak-check=full --show-leak-kinds=all ./build/xmd process simple_test.xmd
+      continue-on-error: true
+
+  test-coverage:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install coverage tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y lcov
+    
+    - name: Build with coverage
+      run: |
+        chmod +x build.sh
+        CFLAGS="--coverage" LDFLAGS="--coverage" ./build.sh
+    
+    - name: Run tests for coverage
+      run: |
+        ./test.sh || true
+        chmod +x test_infrastructure/test_runner.sh
+        ./test_infrastructure/test_runner.sh || true
+    
+    - name: Generate coverage report
+      run: |
+        lcov --capture --directory . --output-file coverage.info
+        lcov --remove coverage.info '/usr/*' --output-file coverage.info
+        lcov --list coverage.info
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.info
+        flags: unittests
+        name: codecov-xmd

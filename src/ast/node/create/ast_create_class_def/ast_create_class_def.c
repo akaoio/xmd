@@ -1,0 +1,50 @@
+/**
+ * @file ast_create_class_def.c
+ *
+ *
+ * @brief Implementation of ast_create_class_def function
+ * 
+ * This file contains ONLY the ast_create_class_def function.
+ * One function per file - Genesis principle compliance.
+ * Extracted from: src/ast_consolidated.c (backup recovery)
+ */
+
+#include <stdlib.h>
+#include <stdbool.h>
+#include "ast.h"
+#include "utils.h"
+/**
+ * @brief Create AST class definition node
+ * @param name Class name
+ * @param parent_class Parent class name (or NULL if no inheritance)
+ * @param loc Source location
+ * @return New class def node or NULL on error
+ */
+ast_node* ast_create_class_def(const char* name, const char* parent_class, source_location loc) {
+    if (!name) {
+        return NULL;
+    }
+    
+    ast_node* node = xmd_malloc(sizeof(ast_node));
+    if (!node) {
+        return NULL;
+    }
+    
+    node->type = AST_CLASS_DEF;
+    node->data.class_def.name = xmd_strdup(name);
+    node->data.class_def.parent_class = parent_class ? xmd_strdup(parent_class) : NULL;
+    node->data.class_def.constructor = NULL;
+    node->data.class_def.methods = NULL;
+    node->data.class_def.method_count = 0;
+    node->location = loc;
+    if (!node->data.class_def.name) {
+        free(node);
+        return NULL;
+    }
+    if (parent_class && !node->data.class_def.parent_class) {
+        free(node->data.class_def.name);
+        free(node);
+        return NULL;
+    }
+    return node;
+}

@@ -1,54 +1,39 @@
 /**
  * @file string_extract.c
- * @brief Implementation of string extraction utility
+ * @brief Extract substring from string
+ * @author XMD Development Team
+ * @date 2025-08-01
  * 
- * Provides safe substring extraction with bounds checking.
+ * Following Genesis "1→1→1" principle: 1 function → 1 file → 1 directory
  */
 
-#include <stdlib.h>
 #include <string.h>
 #include <stddef.h>
 #include "../../../../include/utils.h"
-
 /**
- * @brief Extract a substring from a string
- * 
- * Extracts a substring starting at the given position with the specified length.
- * The returned string is null-terminated and must be freed by the caller.
- * If the requested length extends beyond the string, only available characters are extracted.
- * 
- * @param str The source string
- * @param start Starting position (0-based)
- * @param length Number of characters to extract
- * @return New substring on success, NULL if str is NULL, start is out of bounds, or allocation fails
+ * @brief Extract substring from string
+ * @param source Source string
+ * @param start Start position
+ * @param length Length to extract
+ * @return Extracted string or NULL on failure
  */
-char* string_extract(const char* str, size_t start, size_t length) {
-    if (str == NULL) {
+char* string_extract(const char* source, size_t start, size_t length) {
+    if (!source) {
         return NULL;
     }
-    
-    size_t str_len = strlen(str);
-    
-    // Check if start is out of bounds
-    if (start >= str_len) {
+    size_t source_len = strlen(source);
+    if (start >= source_len) {
         return NULL;
     }
-    
-    // Adjust length if it extends beyond string end
-    size_t available = str_len - start;
-    if (length > available) {
-        length = available;
+    // Adjust length if it exceeds remaining string
+    if (start + length > source_len) {
+        length = source_len - start;
     }
-    
-    // Allocate memory for substring
-    char* result = malloc(length + 1);
-    if (result == NULL) {
+    char* extracted = xmd_malloc(length + 1);
+    if (!extracted) {
         return NULL;
     }
-    
-    // Copy substring
-    memcpy(result, str + start, length);
-    result[length] = '\0';
-    
-    return result;
+    strncpy(extracted, source + start, length);
+    extracted[length] = '\0';
+    return extracted;
 }

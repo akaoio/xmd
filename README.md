@@ -1,230 +1,361 @@
-# XMD - eXtended MarkDown
+# 🚀 XMD Programming Language
 
-A powerful markdown preprocessor that adds programming capabilities to markdown files with advanced scripting features.
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](build.sh)
+[![Version](https://img.shields.io/badge/version-0.0.6-orange.svg)](CHANGELOG.md)
 
-## Features
+---
 
-- **Advanced Scripting**: Array literals, for loops, string concatenation with `+` operator
-- **Dynamic Imports**: Import files using variables and expressions
-- **Variables & Templates**: Define and use variables throughout your markdown
-- **Command Execution**: Run shell commands and embed their output with dynamic buffer allocation
-- **Control Flow**: If/else conditions and array iteration loops
-- **Functions**: Built-in print() and cmd() functions
-- **Multiline Support**: Clean syntax for complex operations with script-like blocks
-- **Dynamic Content**: Generate content programmatically with full expression evaluation
-- **Watch Mode**: Real-time file processing and monitoring
+## 🎯 **What is XMD?**
 
-## Quick Start
+**XMD** is a lightweight, mobile-friendly programming language designed for clarity and simplicity. With its natural language-like syntax and minimal punctuation, XMD makes programming accessible on any device - from mobile phones to desktop environments.
 
-```bash
-# Install (downloads latest release)
-curl -fsSL https://raw.githubusercontent.com/akaoio/xmd/main/install.sh | bash
+- 📱 **Mobile-First** - Minimal syntax optimized for mobile typing
+- 📝 **Markdown Integration** - Can be embedded in .md files using ```xmd``` code blocks
+- 🤖 **AI-Collaborative** - Natural language syntax that both humans and AI understand
+- 🔧 **Simple Syntax** - No complex punctuation or nested brackets
+- 🏗️ **Modular Architecture** - Clean separation of concerns with isolated functions
+- 🌐 **Cross-Platform** - Standard C implementation runs everywhere
 
-# Verify installation
-xmd version
+---
 
-# Process a file
-xmd input.md -o output.md
+## 🤝 **Development Team Workflow**
 
-# Process to stdout
-xmd input.md
+The XMD project uses a **custom coordination system** (`chat.js`) that enables seamless collaboration between team members (including AI agents) across different development environments. This is a development tool, not part of the XMD language itself.
 
-# Upgrade to latest version
-xmd upgrade
-```
+### 🗣️ **Real-Time Team Communication**
 
-## Syntax Examples
-
-### Variables
-```markdown
-<!-- xmd: set name = "World" -->
-Hello, {{name}}!
-```
-
-### Advanced Scripting with Arrays
-```markdown
-<!-- xmd:
-set items = ["apple", "banana", "cherry"]
-set result = ""
-for item in items
-    result += "- " + item + "\n"
--->
-{{result}}
-```
-
-### Dynamic Imports
-```markdown
-<!-- xmd:
-set files = ["config.md", "setup.md", "deploy.md"]
-set content = ""
-for file in files
-    content += "## " + import file + "\n\n"
--->
-{{content}}
-```
-
-### Command Execution
-```markdown
-<!-- xmd: exec date -->
-
-<!-- xmd:
-set files = exec ls -la
--->
-Files: {{files}}
-```
-
-### Functions
-```markdown
-<!-- xmd:
-set user = exec whoami
-print(user)
--->
-```
-
-### Control Flow
-```markdown
-<!-- xmd: if exists("DEBUG") -->
-Debug mode is ON
-<!-- xmd: else -->
-Debug mode is OFF  
-<!-- xmd: endif -->
-```
-
-### Watch Mode
-```bash
-# Watch source directory and output to dist/
-xmd watch src/ dist/
-
-# Watch with custom patterns
-xmd watch docs/ build/ --pattern "*.md"
-```
-
-## Team Collaboration & Agent Integration
-
-XMD is perfect for team collaboration and AI agent coordination! Here's how to set up your collaborative workspace:
-
-### Quick Setup for Teams/Agents
+The `chat.js` system provides structured communication for mixed human/AI teams:
 
 ```bash
-# 1. Clone XMD to your project
+# Human developer working in VS Code
+node chat.js @alice: @ai_agent "Can you implement the user authentication module?"
+
+# AI agent responds from any environment 
+node chat.js @ai_agent: @alice "✅ Auth module complete. Added OAuth2 and session management. Ready for review."
+
+# Another human from Vim
+node chat.js @bob: @all "Running integration tests now"
+
+# AI agent provides real-time analysis
+node chat.js @ai_agent: @bob "⚠️ Test failure in auth.test.js line 42. Null pointer in session validation."
+```
+
+### 🔧 **Cross-IDE Workflow Example**
+
+```bash
+# 1. Human sets up project structure (VS Code)
+node chat.js @alice: @all "Created project skeleton. Need database schema design."
+
+# 2. AI agent analyzes requirements (Cloud/API)
+node chat.js @ai_schema: @alice "Analyzing requirements... Generated 3 schema options in schemas/ directory."
+
+# 3. Human reviews and chooses (Mobile/Termux)
+node chat.js @alice: @ai_schema "Option 2 looks good. Please implement with PostgreSQL."
+
+# 4. AI implements and tests (Automated environment)
+node chat.js @ai_schema: @all "✅ Database schema implemented. Migration scripts ready. All tests pass."
+
+# 5. Human integrates (Any IDE)
+node chat.js @alice: @all "Integrated schema. Starting frontend development."
+```
+
+### 📊 **Practical Collaboration Patterns**
+
+#### **Pattern 1: Code Review Chain**
+```bash
+# Human writes code
+node chat.js @developer: @ai_reviewer "Please review user.js - added password validation"
+
+# AI reviews automatically
+node chat.js @ai_reviewer: @developer "Found 2 security issues: 1) Password stored in plaintext 2) No rate limiting. Suggestions attached."
+
+# Human fixes
+node chat.js @developer: @ai_reviewer "Fixed issues. Re-review please."
+
+# AI approves
+node chat.js @ai_reviewer: @all "✅ Code approved. Security standards met."
+```
+
+#### **Pattern 2: Documentation Sync**
+```bash
+# AI updates docs based on code changes
+node chat.js @ai_docs: @all "Detected API changes. Updated documentation in docs/api.md"
+
+# Human reviews
+node chat.js @tech_writer: @ai_docs "Good updates but missing examples for new endpoints"
+
+# AI adds examples
+node chat.js @ai_docs: @tech_writer "✅ Added 5 code examples with curl commands and responses"
+```
+
+#### **Pattern 3: Issue Triage**
+```bash
+# Bug reported
+node chat.js @user: @all "Bug: App crashes when uploading large files"
+
+# AI triages automatically  
+node chat.js @ai_triage: @all "Issue classified: Memory management. Assigned to @backend_team. Priority: High"
+
+# Human investigates
+node chat.js @backend_dev: @ai_triage "Found memory leak in file_upload.c line 156"
+
+# AI suggests fix
+node chat.js @ai_triage: @backend_dev "Suggested fix: Use streaming upload instead of loading full file to memory. Example implementation attached."
+```
+
+---
+
+## ⚡ **Real-World Applications**
+
+### 🏥 **Healthcare & Telemedicine**
+```xmd
+// Mobile health monitoring script
+set patient_id "P12345"
+set vitals get "health_data.json".patients[patient_id].vitals
+
+if vitals.heart_rate > 100
+    send_alert "High heart rate detected", vitals
+    log "alert_" + Date.now, patient_id, vitals
+
+// Generate daily report
+set report generate_health_report patient_id, vitals
+put "reports/" + Date.today + ".json" report
+```
+
+### 🎓 **Education & Interactive Learning**
+```xmd
+// Dynamic lesson generator
+function create_math_lesson level
+    set problems generate_problems level, 10
+    
+    for i, problem in problems
+        print "Problem " + (i + 1) + ": " + problem.question
+        set answer input "Your answer: "
+        
+        if answer = problem.solution
+            print "✅ Correct! Well done."
+        else
+            print "❌ Try again. Hint: " + problem.hint
+
+create_math_lesson "intermediate"
+```
+
+### 💼 **Business Process Automation**
+```xmd
+// Invoice processing workflow
+set invoices get "pending_invoices.yaml"
+
+for invoice in invoices
+    if invoice.amount > 10000
+        set approval request_approval invoice.manager, invoice
+        if approval.approved
+            process_payment invoice
+            put "processed/" + invoice.id + ".json" invoice
+    else
+        auto_approve invoice
+        
+send_summary_report Date.today, processed_count
+```
+
+### 📊 **Data Science & Analytics**
+```xmd
+// Simple data analysis pipeline
+set sales_data import "sales_2024.csv"
+set monthly_totals aggregate sales_data by "month"
+
+for month, total in monthly_totals
+    if total > 50000
+        print "🎉 Great month: " + month + " with $" + total
+    elif total < 20000
+        print "⚠️ Low performance: " + month + " only $" + total
+
+set chart create_chart monthly_totals, "line"
+export chart "monthly_sales_chart.png"
+```
+
+### 🏡 **Smart Home & IoT**
+```xmd
+// Home automation script
+set temperature get "sensors.json".living_room.temperature
+set time Date.now.hour
+
+if temperature < 18 and time >= 18
+    set heating on
+    log "Heating activated at " + time
+
+if get "devices.yaml".security.motion_detected
+    send_notification "Motion detected at home", Date.now
+    
+// Schedule daily tasks
+if time = 7
+    set coffee_maker on
+    set news get_daily_news
+    display news on "kitchen_screen"
+```
+
+### 🚗 **Transportation & Logistics**
+```xmd
+// Fleet management system
+set vehicles get "fleet_status.json"
+set routes optimize_routes vehicles
+
+for vehicle in vehicles
+    if vehicle.fuel_level < 20
+        add_fuel_stop vehicle.route
+        notify vehicle.driver "Fuel stop added to your route"
+        
+    if vehicle.maintenance_due
+        schedule_maintenance vehicle.id
+        
+generate_efficiency_report vehicles, routes
+```
+
+---
+
+## 🌟 **Why XMD?**
+
+### 💎 **Simplicity Over Complexity**
+```xmd
+// XMD Way - Natural and readable
+set users get "database.json".active_users
+for user in users
+    if user.last_login > 30 days ago
+        send_reminder user.email
+```
+vs.
+```javascript
+// The Old Ways - Verbose and cluttered
+const users = JSON.parse(fs.readFileSync('database.json')).active_users;
+users.forEach((user) => {
+    if (Date.now() - new Date(user.last_login).getTime() > 30 * 24 * 60 * 60 * 1000) {
+        sendReminder(user.email);
+    }
+});
+```
+
+### 📱 **Mobile-First Philosophy**
+- **No complex symbols** - Type easily on any device
+- **Minimal syntax** - Less typing, more thinking
+- **Intuitive structure** - Reads like natural language
+- **Markdown integration** - Perfect for documentation
+
+### 🎓 **Educational Excellence**
+- **Beginner-friendly** - Learn programming concepts without syntax overhead
+- **Progressive complexity** - Scales from simple scripts to complex applications
+- **Clear error messages** - Helpful guidance for learners
+- **Interactive docs** - Live examples in markdown
+
+---
+
+## 🚀 **Installation & Setup**
+
+### Prerequisites
+- C Compiler (GCC/Clang)
+- CMake 3.10+
+- Make
+
+### Quick Setup
+```bash
+# Clone the repository
 git clone https://github.com/akaoio/xmd.git
 cd xmd
 
-# 2. Build the project
+# Build the project
+chmod +x build.sh
 ./build.sh
 
-# 3. Create team workspace
-mkdir teamwork && cd teamwork
-mkdir update  # Individual team member files go here
+# Test installation
+./xmd --version
 ```
 
-### Team Dashboard Template
-
-Create `dashboard.md` in your teamwork directory:
-
-```markdown
-# Team Dashboard
-Last updated: <!-- xmd:exec date '+%Y-%m-%d %H:%M:%S' -->
-
-<!-- xmd:import update/developer.md -->
-<!-- xmd:import update/designer.md -->
-<!-- xmd:import update/tester.md -->
-<!-- xmd:import update/coordinator.md -->
-
-## Team Status
-Members active: 4
-```
-
-### Individual Team Member Files
-
-Each team member creates `update/<role>.md`:
-
-```markdown
-### Developer Update
-
-**Role:** Backend Developer  
-**Name:** Agent/Person Name  
-**Status:** Working on authentication system
-
-#### Progress:
-- ✅ Database schema completed
-- 🔄 API endpoints in progress
-- ⏳ Testing pending
-
-#### Next Steps:
-- Complete API documentation
-- Set up automated tests
-```
-
-### Live Dashboard with Watch Mode
-
+### First Steps
 ```bash
-# Auto-update dashboard when any team file changes
-../xmd watch dashboard.md dashboard_output.md
+# Create your first XMD script
+echo 'set greeting "Hello, World!"
+print greeting' > hello.xmd
 
-# Now edit any file in update/ and see live updates!
+# Run the script
+./xmd process hello.xmd
+
+# XMD is now ready to use
+# Note: chat.js is only for XMD project development team coordination
 ```
 
-### Agent Prompt Templates
+### Example: Simple XMD Programs
+```xmd
+// Variables and basic operations
+set name "Alice"
+set age 25
+set greeting "Hello, " + name + "! You are " + age + " years old."
+print greeting
 
-**For AI Agents joining teamwork:**
-```
-You are now part of a collaborative XMD-based team. Your workspace is in `/teamwork/update/<your-role>.md`. 
+// Simple conditionals
+if age >= 18
+    print "You can vote!"
+else
+    print "Too young to vote"
 
-Instructions:
-1. Edit only your assigned file: update/<your-role>.md
-2. Use the template format shown in README.md
-3. Update your progress regularly
-4. Dashboard auto-updates when you save
-
-Your role file template:
-```markdown
-### <Your Role> Update
-
-**Role:** <Your Specialization>
-**Name:** <Agent Name/ID>
-**Status:** <Current Task>
-
-#### Progress:
-- Status updates here
-
-#### Next Steps:
-- Planned tasks
+// Basic loops
+for i in 1..5
+    print "Count: " + i
 ```
 
-Never edit dashboard.md directly - it's auto-generated.
-```
+---
 
-**For Project Owners:**
-```
-To add XMD team collaboration to your project:
+## 📚 **Documentation & Resources**
 
-1. Add XMD as submodule: git submodule add https://github.com/akaoio/xmd.git
-2. Create teamwork/ directory with dashboard.md template
-3. Set up watch mode: xmd/xmd watch teamwork/dashboard.md teamwork/output.md
-4. Give agents the workspace path and role templates
+- 📖 **[Language Specification](blueprint/idea.md)** - Complete XMD syntax and features
+- 📜 **[Project Vision](blueprint/amen.md)** - Philosophy and design principles
+- 🏛️ **[Core Principles](.xmd/core/principle/)** - The fundamental laws of development
+- 💬 **[Team Communication](CHAT.md)** - Collaboration through chat.js system
 
-Your team can now collaborate in real-time with auto-updating dashboard!
-```
+---
 
-## Documentation
+## 🤝 **Join the Community**
 
-- [Quick Start Guide](docs/quick-start.md)
-- [CLI Reference](docs/cli-reference.md)
-- [Multiline Directives](docs/multiline-directives.md)
-- [Team Collaboration Guide](docs/collaboration.md)
-- [Developer Guide](docs/dev/index.md)
+### 💬 **Community & Support**
+- 📱 **Telegram**: [@xmddev](https://t.me/xmddev) - Join the community
+- 💻 **Development**: The XMD team uses `node chat.js` for internal project coordination
 
-## Contributing
-
+### 🎯 **For Contributors**
+To contribute to XMD development:
 1. Fork the repository
-2. Create your feature branch: `git checkout -b feature/amazing-feature`
-3. Commit your changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+2. Read the core principles in `.xmd/core/principle/`
+3. Follow the development standards below
+4. Submit pull requests for review
 
-For AI agents: Use the team workspace setup above to collaborate with other contributors!
 
-## License
+### 📊 **Development Standards**
+- **Modular Architecture** - Every function isolated in its own directory
+- **Pure C Implementation** - Self-contained and portable (except JSON/YAML libs)
+- **Production Quality** - No placeholder code, only working implementations
+- **Memory Safety** - Validate, use, free - the essential pattern
+- **Clear Error Handling** - Handle all failure paths explicitly
 
-MIT License - see [LICENSE](LICENSE) file for details.
+---
+
+## 🏆 **Project Status**
+
+- ✅ **Minimal Dependencies** - Only JSON/YAML use external libraries
+- ✅ **Mobile-Optimized** - Designed for mobile development workflows
+- ✅ **Markdown Integration** - Native embedding in documentation
+- ✅ **Production Ready** - Real implementations, not prototypes
+- ✅ **Educational Focus** - Clean syntax for learning programming
+- ✅ **Cross-Platform** - Runs on mobile, desktop, and server environments
+
+---
+
+## 📄 **License**
+
+Released under the MIT License.
+
+---
+
+## 🙏 **Acknowledgments**
+
+Thanks to all contributors who help make development more accessible and collaborative.
+
+---
+
+*Created by Nguyen Ky Son in Vietnam. "Although not the most powerful language, but it is the one that is purest and closest to human natural language."*

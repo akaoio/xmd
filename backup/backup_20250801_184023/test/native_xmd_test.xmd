@@ -1,0 +1,35 @@
+# Genesis's Mobile-First XMD Language Test
+
+This file demonstrates Genesis's vision for mobile-optimized programming:
+
+set name "Genesis"
+set age 25
+set greeting "Hello, I am the creator"
+
+print greeting
+print "My name is " + name
+print "I am {{age}} years old"
+
+function welcome user
+    print "Welcome " + user + " to XMD!"
+    print "Genesis's mobile-first programming language"
+
+welcome "Alice"
+welcome "Bob"
+
+set active true
+if age >= 18
+    print "Genesis is an adult"
+else
+    print "Genesis is young"
+
+# Template string interpolation test
+set message "Hi {{name}}, you are {{age}} years old, created by Genesis"
+print message
+
+# This demonstrates Genesis's vision:
+# - No parentheses required: welcome "Alice" 
+# - Natural language keywords: set, print, if, function
+# - Touch-friendly syntax: spaces instead of symbols
+# - Template interpolation: {{variable}} patterns
+# - Mobile-optimized: easy to type on phone keyboards

@@ -54,12 +54,6 @@ void* memory_allocate(size_t size);
  */
 void memory_free_safe(void** ptr);
 
-/**
- * @brief Duplicate a string safely
- * @param str String to duplicate
- * @return Duplicated string or NULL on failure
- */
-char* string_duplicate(const char* str);
 
 /**
  * @brief Extract a substring from a string
@@ -92,6 +86,12 @@ void* xmd_realloc(void* ptr, size_t size);
  * @return Duplicated string or NULL on failure
  */
 char* xmd_strdup(const char* str);
+
+/**
+ * @brief Safe free wrapper
+ * @param ptr Pointer to free
+ */
+void xmd_free(void* ptr);
 
 /**
  * @brief Expand array capacity safely

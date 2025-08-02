@@ -1,14 +1,18 @@
 /**
  * @file dependency_node_new.c
  * @brief Create a new dependency node
- * @author XMD Team
+ * @author XMD Development Team
+ * @date 2025-08-01
+ * 
+ * Genesis Principle: 1 function → 1 file → 1 directory
+ * Part of dependency graph subsystem
  */
 
-#include "../../../../include/dependency_graph_internal.h"
-
+#include "../../../../include/dependency.h"
+#include "../../../../include/utils.h"
 /**
  * @brief Create a new dependency node
- * @param module Module for this node
+ * @param module Module to wrap in node
  * @return New dependency node or NULL on error
  */
 DependencyNode* dependency_node_new(Module* module) {
@@ -16,7 +20,7 @@ DependencyNode* dependency_node_new(Module* module) {
         return NULL;
     }
     
-    DependencyNode* node = malloc(sizeof(DependencyNode));
+    DependencyNode* node = xmd_malloc(sizeof(DependencyNode));
     if (!node) {
         return NULL;
     }
@@ -26,6 +30,5 @@ DependencyNode* dependency_node_new(Module* module) {
     node->child_count = 0;
     node->child_capacity = 0;
     node->visit_state = 0; // White (unvisited)
-    
     return node;
 }

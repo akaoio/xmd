@@ -1,0 +1,10 @@
+set x 10
+set y 3
+set sum x + y
+print "10 + 3 = ${sum}"
+set diff x - y
+print "10 - 3 = ${diff}"
+set prod x * y
+print "10 * 3 = ${prod}"
+set quot x / y
+print "10 / 3 = ${quot}"

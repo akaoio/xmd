@@ -1,0 +1,114 @@
+# Comprehensive Native XMD Test Suite
+# Testing Genesis's mobile-first programming language vision
+
+# 1. Basic Variable Operations
+set name "Genesis"
+set age 30
+set score 95.5
+set active true
+set empty null
+
+print "=== VARIABLE TEST ==="
+print "Name: " + name
+print "Age: " + age
+print "Score: " + score
+print "Active: " + active
+print "Empty: " + empty
+
+# 2. Arrays (inline format preferred)
+set scores 85, 90, 95, 100
+set items "pen", "book", "lamp"
+
+print "=== ARRAY TEST ==="
+print "Scores: " + scores
+print "Items: " + items
+
+# 3. Objects (inline format)
+set user name "Alice", age 30, active true
+set config debug true, retries 3, timeout 1000
+
+print "=== OBJECT TEST ==="
+print "User: " + user
+print "Config: " + config
+
+# 4. Functions
+function greet name
+    return "Hello " + name + "!"
+
+function add a b
+    return a + b
+
+print "=== FUNCTION TEST ==="
+print greet "XMD"
+print "5 + 3 = " + add 5 3
+
+# 5. Conditionals
+if score >= 90
+    print "Excellent!"
+elif score >= 70
+    print "Good"
+else
+    print "Keep trying"
+
+# 6. Ternary operator
+set result age >= 18 ? "adult" : "minor"
+print "Status: " + result
+
+# 7. Loops
+print "=== LOOP TEST ==="
+
+# Repeat N times
+loop 3 times
+    print "Hello from loop"
+
+# For in range
+for i in range 1 5
+    print "Count: " + i
+
+# For over array
+for item in items
+    print "Item: " + item
+
+# 8. While loop
+set count 0
+while count < 3
+    print "While count: " + count
+    set count count + 1
+
+# 9. String operations
+set text "Hello World"
+set upper text.upper
+set parts text.split " "
+set joined parts.join "-"
+
+print "=== STRING TEST ==="
+print "Original: " + text
+print "Upper: " + upper
+print "Parts: " + parts
+print "Joined: " + joined
+
+# 10. Error handling
+function divide a b
+    try
+        if b == 0
+            throw "Divide by zero"
+        return a / b
+    catch err
+        return "Error: " + err
+
+print "=== ERROR TEST ==="
+print "10 / 2 = " + divide 10 2
+print "10 / 0 = " + divide 10 0
+
+# 11. Lambda functions
+set numbers 1, 2, 3, 4, 5
+set doubled map numbers (x => x * 2)
+set evens filter numbers (x => x % 2 == 0)
+
+print "=== LAMBDA TEST ==="
+print "Numbers: " + numbers
+print "Doubled: " + doubled
+print "Evens: " + evens
+
+# End of test
+print "=== TEST COMPLETE ==="

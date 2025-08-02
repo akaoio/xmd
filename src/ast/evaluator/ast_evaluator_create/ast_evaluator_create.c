@@ -1,0 +1,41 @@
+
+/**
+ * @file ast_evaluator_create.c
+ * @brief Implementation of ast_evaluator_create function
+ * 
+ * This file contains ONLY the ast_evaluator_create function.
+ * One function per file - Genesis principle compliance.
+ * Extracted from: src/ast_consolidated.c
+ */
+
+#include <stdbool.h>
+#include <stdlib.h>
+#include "ast_evaluator.h"
+#include "ast_node.h"
+#include "error.h"
+#include "store.h"
+#include "variable.h"
+#include "xmd_processor_internal.h"
+
+/**
+ * @brief Create and initialize AST evaluator
+ * @param variables Variable store
+ * @param ctx Processor context
+ * @return New evaluator or NULL on error
+ */
+ast_evaluator* ast_evaluator_create(store* variables, processor_context* ctx) {
+    ast_evaluator* evaluator = xmd_calloc(1, sizeof(ast_evaluator));
+    if (!evaluator) {
+        return NULL;
+    }
+    
+    evaluator->variables = variables ? variables : store_create();
+    evaluator->ctx = ctx;
+    evaluator->output_buffer = NULL;
+    evaluator->output_size = 0;
+    evaluator->output_capacity = 0;
+    evaluator->has_error = false;
+    evaluator->error_message = NULL;
+    evaluator->in_statement_context = false;
+    return evaluator;
+}

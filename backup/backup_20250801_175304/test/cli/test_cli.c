@@ -1,0 +1,335 @@
+/**
+ * @file test_cli.c
+ * @brief Test suite for CLI interface
+ * @author XMD Implementation Team
+ * @date 2025-07-25
+ */
+
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+#include <unistd.h>
+#include "../../include/cli.h"
+
+/**
+ * @brief Test CLI argument parsing
+ */
+static void test_cli_argument_parsing(void) {
+    printf("Testing CLI argument parsing...\n");
+    
+    // Test basic process command
+    {
+        char* argv[] = {"xmd", "process", "test.md"};
+        int argc = 3;
+        
+        cli_args* args = cli_parse_args(argc, argv);
+        assert(args != NULL);
+        assert(args->command == CLI_CMD_PROCESS);
+        assert(args->input_file != NULL);
+        assert(strcmp(args->input_file, "test.md") == 0);
+        assert(args->output_file == NULL);
+        assert(!args->verbose);
+        assert(!args->debug);
+        
+        free(args->input_file);
+        free(args);
+    }
+    
+    // Test process command with output
+    {
+        char* argv[] = {"xmd", "process", "input.md", "-o", "output.md"};
+        int argc = 5;
+        
+        cli_args* args = cli_parse_args(argc, argv);
+        assert(args != NULL);
+        assert(args->command == CLI_CMD_PROCESS);
+        assert(args->input_file != NULL);
+        assert(strcmp(args->input_file, "input.md") == 0);
+        assert(args->output_file != NULL);
+        assert(strcmp(args->output_file, "output.md") == 0);
+        
+        free(args->input_file);
+        free(args->output_file);
+        free(args);
+    }
+    
+    // Test watch command  
+    {
+        char* argv[] = {"xmd", "watch", "/path/to/dir"};
+        int argc = 3;
+        
+        cli_args* args = cli_parse_args(argc, argv);
+        assert(args != NULL);
+        assert(args->command == CLI_CMD_WATCH);
+        assert(args->watch_directory != NULL);
+        assert(strcmp(args->watch_directory, "/path/to/dir") == 0);
+        
+        free(args->watch_directory);
+        free(args);
+    }
+    
+    // Test watch command with verbose flag
+    {
+        char* argv[] = {"xmd", "watch", "/path/to/dir", "--verbose"};
+        int argc = 4;
+        
+        cli_args* args = cli_parse_args(argc, argv);
+        assert(args != NULL);
+        assert(args->command == CLI_CMD_WATCH);
+        assert(args->watch_directory != NULL);
+        assert(strcmp(args->watch_directory, "/path/to/dir") == 0);
+        assert(args->verbose);
+        
+        free(args->watch_directory);
+        free(args);
+    }
+    
+    // Test validate command
+    {
+        char* argv[] = {"xmd", "validate", "test.md", "--debug"};
+        int argc = 4;
+        
+        cli_args* args = cli_parse_args(argc, argv);
+        assert(args != NULL);
+        assert(args->command == CLI_CMD_VALIDATE);
+        assert(args->input_file != NULL);
+        assert(strcmp(args->input_file, "test.md") == 0);
+        assert(args->debug);
+        
+        free(args->input_file);
+        free(args);
+    }
+    
+    // Test config command
+    {
+        char* argv[] = {"xmd", "config"};
+        int argc = 2;
+        
+        cli_args* args = cli_parse_args(argc, argv);
+        assert(args != NULL);
+        assert(args->command == CLI_CMD_CONFIG);
+        
+        free(args);
+    }
+    
+    // Test plugin command
+    {
+        char* argv[] = {"xmd", "plugin", "list"};
+        int argc = 3;
+        
+        cli_args* args = cli_parse_args(argc, argv);
+        assert(args != NULL);
+        assert(args->command == CLI_CMD_PLUGIN);
+        assert(args->plugin_name != NULL);
+        free(args);
+    }
+    
+    // Test help command
+    {
+        char* argv[] = {"xmd", "--help"};
+        int argc = 2;
+        
+        cli_args* args = cli_parse_args(argc, argv);
+        assert(args != NULL);
+        assert(args->help);
+        
+        free(args);
+    }
+    
+    // Test version command
+    {
+        char* argv[] = {"xmd", "--version"};
+        int argc = 2;
+        
+        cli_args* args = cli_parse_args(argc, argv);
+        assert(args != NULL);
+        assert(args->version);
+        
+        free(args);
+    }
+    
+    // Test invalid command
+    {
+        char* argv[] = {"xmd", "invalid"};
+        int argc = 2;
+        
+        cli_args* args = cli_parse_args(argc, argv);
+        assert(args == NULL); // Should fail for invalid command
+    }
+    
+    printf("✓ CLI argument parsing tests passed\n");
+}
+
+/**
+ * @brief Test CLI execution flow
+ */
+static void test_cli_execution(void) {
+    printf("Testing CLI execution flow...\n");
+    
+    // Create a temporary test file
+    const char* test_content = "# Test\n\nThis is a test markdown file.\n";
+    const char* test_file = "./xmd_test.md";
+    
+    FILE* f = fopen(test_file, "w");
+    assert(f != NULL);
+    fprintf(f, "%s", test_content);
+    fclose(f);
+    
+    // Test process command execution
+    {
+        char* argv[] = {"xmd", "process", (char*)test_file};
+        int argc = 3;
+        
+        cli_context* ctx = cli_init(argc, argv);
+        assert(ctx != NULL);
+        assert(ctx->args != NULL);
+        assert(ctx->args->command == CLI_CMD_PROCESS);
+        
+        // Note: Actual execution would depend on XMD processor being available
+        // For now, just test that CLI context is set up correctly
+        
+        cli_cleanup(ctx);
+    }
+    
+    // Test validate command execution
+    {
+        char* argv[] = {"xmd", "validate", (char*)test_file};
+        int argc = 3;
+        
+        cli_context* ctx = cli_init(argc, argv);
+        assert(ctx != NULL);
+        assert(ctx->args != NULL);
+        assert(ctx->args->command == CLI_CMD_VALIDATE);
+        
+        cli_cleanup(ctx);
+    }
+    
+    // Cleanup test file
+    unlink(test_file);
+    
+    printf("✓ CLI execution tests passed\n");
+}
+
+/**
+ * @brief Test configuration system
+ */
+static void test_configuration_system(void) {
+    printf("Testing configuration system...\n");
+    
+    // Test configuration creation
+    xmd_config* config = xmd_config_create_default();
+    assert(config != NULL);
+    assert(config->debug_mode == false); // Default should be false
+    assert(config->preserve_comments == false); // Default should be false
+    
+    // Test configuration cleanup
+    xmd_config_free(config);
+    
+    // Test creating empty config
+    config = xmd_config_new();
+    assert(config != NULL);
+    xmd_config_free(config);
+    
+    printf("✓ Configuration system tests passed\n");
+}
+
+
+/**
+ * @brief Test C API interface
+ */
+static void test_c_api(void) {
+    printf("Testing C API interface...\n");
+    
+    // Test XMD initialization
+    xmd_error_code init_result = xmd_init();
+    assert(init_result == XMD_OK);
+    
+    // Test processor creation and string processing
+    {
+        xmd_processor* processor = xmd_processor_create(NULL);
+        assert(processor != NULL);
+        
+        const char* test_input = "# Test\n\nThis is test content.";
+        xmd_result* result = xmd_process_string(processor, test_input, strlen(test_input));
+        
+        assert(result != NULL);
+        assert(result->error_code == 0);
+        assert(result->output != NULL);
+        assert(result->output_length > 0);
+        assert(result->processing_time_ms >= 0);
+        
+        xmd_result_free(result);
+        xmd_processor_free(processor);
+    }
+    
+    // Test validation
+    {
+        const char* test_input = "# Valid Markdown\n\nThis is valid.";
+        xmd_error_code validation_result = xmd_validate_syntax(test_input, strlen(test_input));
+        assert(validation_result == XMD_OK);
+    }
+    
+    xmd_cleanup();
+    
+    printf("✓ C API tests passed\n");
+}
+
+/**
+ * @brief Test edge cases and error conditions
+ */
+static void test_edge_cases(void) {
+    printf("Testing edge cases...\n");
+    
+    // Test NULL arguments
+    assert(cli_parse_args(0, NULL) == NULL);
+    assert(cli_init(0, NULL) == NULL);
+    assert(config_create() != NULL); // Should work without arguments
+    assert(plugin_manager_create() != NULL); // Should work without arguments
+    
+    // Test empty arguments
+    {
+        char* argv[] = {"xmd"};
+        int argc = 1;
+        
+        cli_args* args = cli_parse_args(argc, argv);
+        assert(args == NULL); // Should fail - no command specified
+    }
+    
+    // Test configuration with NULL inputs
+    {
+        xmd_config* config = xmd_config_create_default();
+        assert(config != NULL);
+        xmd_config_free(config);
+    }
+    
+    
+    // Test C API with NULL inputs
+    {
+        xmd_error_code init_result = xmd_init();
+        assert(init_result == XMD_OK); // Should work
+        xmd_cleanup(); // Clean up
+        
+        assert(xmd_process_string(NULL, "input", 5) == NULL);
+        assert(xmd_validate_syntax(NULL, 5) != XMD_OK);
+    }
+    
+    printf("✓ Edge case tests passed\n");
+}
+
+/**
+ * @brief Main test function
+ */
+int main(void) {
+    printf("=== CLI System Tests ===\n");
+    
+    test_cli_argument_parsing();
+    test_cli_execution();
+    test_configuration_system();
+    test_c_api();
+    test_edge_cases();
+    
+    printf("\n✅ All CLI tests passed!\n");
+    return 0;
+}

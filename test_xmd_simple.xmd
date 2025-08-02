@@ -1,0 +1,4 @@
+set name "Alice"
+print "Hello, {{name}}!"
+set age 25
+print "Age: {{age}}"

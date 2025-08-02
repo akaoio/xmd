@@ -19,6 +19,8 @@
 extern xmd_internal_config* g_config;
 
 // Function declarations
+// xmd_config* config_create(void);
+// void config_destroy(xmd_config* config);
 xmd_resource_limits create_default_limits(void);
 xmd_buffer_config create_default_buffers(void);
 xmd_paths_config create_default_paths(void);

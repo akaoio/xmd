@@ -1,0 +1,22 @@
+# While Loop Enhancement Test
+print "Testing while loops:"
+
+# Test 1: Basic while loop
+set count 1
+while count < 4
+    print "Count is:"
+    print count
+    set count count + 1
+
+print "---"
+
+# Test 2: While loop with condition variable
+set done false
+set i 0
+while i < 3
+    print i
+    set i i + 1
+
+print "Final values:"
+print count
+print i

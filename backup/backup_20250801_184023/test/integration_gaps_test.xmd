@@ -1,0 +1,24 @@
+# Integration Gaps Test
+
+# Test 1: Multi-variable parsing edge cases
+print "Testing multi-variable parsing:"
+set a 1, b 2, c 3
+print a
+print b
+print c
+
+# Test 2: Mixed types in multi-variable
+set name "Alice", age 30, active true
+print name
+print age
+
+# Test 3: Plain text handling
+This is plain text that should not be a function call.
+Hello world!
+
+# Test 4: Variable substitution in text
+The user {{name}} is {{age}} years old.
+
+# Test 5: Output formatting
+set scores 1, 2, 3
+print scores

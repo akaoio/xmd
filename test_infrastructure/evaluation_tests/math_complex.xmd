@@ -1,0 +1,6 @@
+set x 10
+set y 5
+set sum x + y
+set diff x - y
+set prod x * y
+Sum: {{sum}}, Diff: {{diff}}, Product: {{prod}}

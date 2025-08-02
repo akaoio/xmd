@@ -13,7 +13,7 @@
 #include "dependency.h"
 
 // Internal function declarations
-int calculate_in_degrees(DependencyGraph* graph, size_t* in_degree);
+int calculate_in_degrees(DependencyGraph* graph, int* in_degrees);
 
 // Public function declarations
 DependencyNode* dependency_node_new(Module* module);

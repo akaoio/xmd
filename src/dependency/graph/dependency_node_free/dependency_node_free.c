@@ -1,11 +1,15 @@
 /**
  * @file dependency_node_free.c
  * @brief Free a dependency node
- * @author XMD Team
+ * @author XMD Development Team
+ * @date 2025-08-01
+ * 
+ * Genesis Principle: 1 function → 1 file → 1 directory
+ * Part of dependency graph subsystem
  */
 
-#include "../../../../include/dependency_graph_internal.h"
-
+#include <stdlib.h>
+#include "../../../../include/dependency.h"
 /**
  * @brief Free a dependency node
  * @param node Node to free
@@ -15,7 +19,6 @@ void dependency_node_free(DependencyNode* node) {
         return;
     }
     
-    // Note: We don't free the module itself as it's owned by the registry
     free(node->children);
     free(node);
 }

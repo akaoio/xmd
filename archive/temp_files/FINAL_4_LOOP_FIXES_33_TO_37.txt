@@ -1,0 +1,23 @@
+=== SYSTEMS ENGINEER: FINAL 4 FILES FOR 33% → 37% BUILD ===
+
+EXCELLENT PROGRESS! Expression parsers ALL FIXED!
+
+REMAINING LOOP/PROGRAM PARSERS:
+
+1. ast_parse_loop.c (7 missing braces)
+   - Missing closing braces for nested if/while blocks
+   - Pattern: 6 missing } before final }
+
+2. ast_parse_range_loop.c (13 missing braces) 
+   - Complex nested if/for blocks incomplete
+   - Pattern: Multiple missing } throughout
+
+3. ast_parse_while.c (9 missing braces)
+   - While loop body parsing incomplete
+   - Pattern: 8 missing } before final }
+
+4. ast_parse_program.c (3 missing braces)
+   - Simple: only 2 missing } before final }
+
+SYSTEMS ENGINEER: Same brace pattern as previous files!
+Developer can use similar fixes → 37%+ build!

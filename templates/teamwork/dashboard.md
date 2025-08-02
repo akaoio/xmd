@@ -10,6 +10,8 @@
 <!-- xmd:import update/tester.md -->
 ---
 <!-- xmd:import update/coordinator.md -->
+---
+<!-- xmd:import update/developer2.md -->
 
 ## Quick Stats
 **Active Members:** <!-- xmd:exec ls update/*.md | wc -l | tr -d ' ' -->  

@@ -1,0 +1,14 @@
+# XMD Processing Test
+
+<!-- xmd:set name "Genesis Team" -->
+<!-- xmd:set version "2.0.0" -->
+
+Hello, {{name}}!
+
+XMD Version: {{version}}
+
+<!-- xmd:for i in 1,2,3 -->
+Item {{i}}
+<!-- xmd:endfor -->
+
+Test complete.
