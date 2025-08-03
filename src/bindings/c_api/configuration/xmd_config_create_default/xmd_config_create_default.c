@@ -18,5 +18,5 @@ extern xmd_config* config_create(void);
  * @return Default configuration or NULL on error
  */
 xmd_config* xmd_config_create_default(void) { 
-    return config_create(); 
+    return config_create();
 }

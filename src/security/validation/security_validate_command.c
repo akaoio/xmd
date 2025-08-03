@@ -11,15 +11,14 @@
 #include <string.h>
 #include "../../../include/security.h"
 #include "../../../include/auditor_internal.h"
+#include "../../utils/common/common_macros.h"
 /**
  * @brief Validate command security
  * @param command Command to validate
  * @return SECURITY_VALID if safe, error code if dangerous
  */
 security_result security_validate_command(const char* command) {
-    if (!command) {
-        return SECURITY_INVALID_INPUT;
-    }
+    XMD_VALIDATE_PTRS(SECURITY_INVALID_INPUT, command);
     
     // Check for dangerous commands
     const char* dangerous[] = {

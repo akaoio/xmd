@@ -1,0 +1,53 @@
+# Conditional Test Suite for XMD Runtime
+# Tests if/else/elif statements
+
+# Simple if
+set x 10
+if x > 5
+    print "X is greater than 5"
+
+# If-else
+set y 3
+if y > 5
+    print "Y is greater than 5"
+else
+    print "Y is not greater than 5"
+
+# If-elif-else
+set score 85
+if score >= 90
+    print "Grade: A"
+elif score >= 80
+    print "Grade: B"
+elif score >= 70
+    print "Grade: C"
+else
+    print "Grade: F"
+
+# Nested conditions
+set a 10
+set b 20
+if a > 5
+    if b > 15
+        print "Both conditions true"
+    else
+        print "Only first condition true"
+else
+    print "First condition false"
+
+# Boolean operators
+set age 25
+set has_license true
+if age >= 18 and has_license
+    print "Can drive"
+else
+    print "Cannot drive"
+
+# Comparison operators
+set val 42
+if val == 42
+    print "Value equals 42"
+if val != 0
+    print "Value is not zero"
+if val < 100
+    print "Value is less than 100"

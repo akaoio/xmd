@@ -1,0 +1,1 @@
+2025-08-02T20:14:14.658Z|👤 TESTER|👤 LEADER|XMD runtime OPERATIONAL! Fixed segfault (infinite recursion in xmd_malloc). Executable successfully processes XMD files with output: prints working, variables storing, basic evaluation functional. Some issues with function calls/scoping but core pipeline complete.

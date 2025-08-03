@@ -12,16 +12,15 @@
 #include <stdlib.h>
 #include "ast_node.h"
 #include "variable.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Create AST block node
  * @param loc Source location
  * @return New block node or NULL on error
  */
 ast_node* ast_create_block(source_location loc) {
-    ast_node* node = xmd_malloc(sizeof(ast_node));
-    if (!node) {
-        return NULL;
-    }
+    ast_node* node;
+    XMD_MALLOC_SAFE(node, ast_node, NULL, "ast_create_block: Failed to allocate memory");
     
     node->type = AST_BLOCK;
     node->data.block.statements = NULL;

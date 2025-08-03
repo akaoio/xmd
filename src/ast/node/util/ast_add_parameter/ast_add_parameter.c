@@ -11,6 +11,7 @@
 #include "module.h"
 #include "utils.h"
 #include "variable.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Add a parameter to a function or method definition
  * @param function Function or method definition node
@@ -18,9 +19,7 @@
  * @return 0 on success, -1 on error
  */
 int ast_add_parameter(ast_node* function, const char* parameter) {
-    if (!function || !parameter) {
-        return -1;
-    }
+    XMD_VALIDATE_PTRS(-1, function, parameter);
     
     // Determine which union member to use
     char*** parameters_ptr;

@@ -15,15 +15,14 @@
 #include "ast_node.h"
 #include "ast_parser.h"
 #include "utils.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Parse if-then single line (Genesis syntax)
  * @param pos Pointer to current position
  * @return Conditional AST node or NULL
  */
 ast_node* ast_parse_if_then(const char** pos) {
-    if (!pos || !*pos) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, pos, *pos);
     
     const char* start = *pos;
     
@@ -37,10 +36,8 @@ ast_node* ast_parse_if_then(const char** pos) {
     
     // Extract condition
     size_t condition_len = then_pos - start;
-    char* condition_text = xmd_malloc(condition_len + 1);
-    if (!condition_text) {
-        return NULL;
-    }
+    char* condition_text;
+    XMD_MALLOC_SAFE(condition_text, char[condition_len + 1], NULL, "ast_parse_if_then: Failed to allocate condition text");
     
     strncpy(condition_text, start, condition_len);
     condition_text[condition_len] = '\0';
@@ -63,7 +60,7 @@ ast_node* ast_parse_if_then(const char** pos) {
     ast_node* then_stmt = ast_parse_statement(&start);
     
     // Create conditional node
-    source_location loc = {1, 1, "input"};
+    source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
     ast_node* conditional = ast_create_conditional(condition_expr, loc);
     
     if (conditional) {

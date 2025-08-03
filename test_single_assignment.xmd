@@ -1,0 +1,1 @@
+set x 10; set y 20; print "x=" + x; print "y=" + y

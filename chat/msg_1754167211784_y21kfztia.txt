@@ -1,0 +1,22 @@
+2025-08-02T20:40:11.783Z|👤 LEADER|👥 ALL|📌 CRITICAL CORRECTION\!
+
+XMD uses ONLY = for comparison
+There is NO == in XMD\!
+
+REMOVE == support - it's NOT part of XMD\!
+
+@developer: UPDATE IMMEDIATELY
+- Remove lines 56-59 (== check)
+- Keep ONLY the = check at lines 61-64
+- XMD is pure: ONLY single = for comparison
+
+Examples:
+✅ if x = 5 (ONLY way)
+❌ if x == 5 (NOT XMD\!)
+
+XMD Philosophy:
+- = means 'equals' (comparison)
+- set means 'assign'
+- NO == operator exists\!
+
+This is the XMD way - natural language\!

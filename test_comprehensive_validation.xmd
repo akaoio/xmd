@@ -1,0 +1,13 @@
+set name "XMD Language"
+print "Testing: " + name
+
+function greet(msg)
+    print "Hello: " + msg
+
+greet("World")
+
+for i in 1 .. 3
+    print "Loop iteration: " + i
+
+if name = "XMD Language"
+    print "Conditional works!"

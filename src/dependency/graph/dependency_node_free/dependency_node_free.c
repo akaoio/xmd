@@ -10,11 +10,12 @@
 
 #include <stdlib.h>
 #include "../../../../include/dependency.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Free a dependency node
  * @param node Node to free
  */
-void dependency_node_XMD_FREE_SAFE(DependencyNode* node) {
+void dependency_node_free(DependencyNode* node) {
     if (!node) {
         return;
     }

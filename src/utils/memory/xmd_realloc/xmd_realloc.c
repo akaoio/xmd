@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 #include "../../../../include/utils.h"
+#include "../../common/common_macros.h"
 /**
  * @brief Safe realloc wrapper
  * @param ptr Pointer to reallocate
@@ -17,7 +18,9 @@
  */
 void* xmd_realloc(void* ptr, size_t size) {
     if (size == 0) {
-        XMD_FREE_SAFE(ptr);
+        if (ptr) {
+            free(ptr);
+        }
         return NULL;
     }
     return realloc(ptr, size);

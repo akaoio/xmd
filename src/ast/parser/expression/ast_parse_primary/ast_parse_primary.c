@@ -16,15 +16,16 @@
 #include "performance.h"
 #include "token.h"
 #include "variable.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Parse primary expression (number, string, identifier)
  * @param parser Parser state
  * @return AST node or NULL
  */
 ast_node* ast_parse_primary(parser_state* parser) {
-    if (!parser || !parser->current_token) {
-        printf("[ERROR] ast_parse_primary: NULL parser or token\n");
-        return NULL;
+    XMD_VALIDATE_PTRS(NULL, parser);
+    if (!parser->current_token) {
+        XMD_ERROR_RETURN(NULL, "ast_parse_primary: NULL current token");
     }
     
     token* tok = parser->current_token;

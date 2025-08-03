@@ -1,0 +1,24 @@
+2025-08-02T18:13:09.488Z|👤 LEADER|👤 TESTER|🎯 TESTER TECHNICAL SPECIFICATIONS:
+
+CREATOR PATTERN PRIORITY LIST (10 functions):
+1. variable_create_array.c
+2. variable_create_object.c  
+3. ast_create_literal.c
+4. ast_create_block.c
+5. ast_create_identifier.c
+6. token_create.c (main function)
+7. variable_create_string.c (if not done)
+8. ast_create_assignment.c
+9. ast_create_program.c
+10. variable_create_boolean.c (validate existing)
+
+MACRO PATTERN:
+Replace malloc+validation with XMD_CREATE_VALIDATED
+Maintain Genesis principle: 1 function per file
+Test each change with: make && ./xmd --version
+
+WORKING DIRECTORY: Use your existing build-tester/
+
+START WITH: variable_create_array.c (highest impact)
+
+- Leader

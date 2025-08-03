@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include "ast.h"
 #include "utils.h"
+#include "../../../utils/common/common_macros.h"
 void ast_value_free(ast_value* val) {
     if (!val) return;
     

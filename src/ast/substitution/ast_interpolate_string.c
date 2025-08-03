@@ -12,12 +12,13 @@
 #include "../../../include/store.h"
 #include "../../../include/variable.h"
 #include "../../../include/utils.h"
+#include "../../utils/common/common_macros.h"
 
 // Debug: This file was compiled and loaded
-__attribute__((constructor))
-void debug_interpolate_loaded() {
-    printf("DEBUG: ast_interpolate_string.c LOADED AND COMPILED!\n");
-}
+// TEMP: Disabled constructor for debugging
+// __attribute__((constructor))
+// void debug_interpolate_loaded() {
+// }
 
 /**
  * @brief Interpolate variables in a string containing ${var} patterns
@@ -26,29 +27,23 @@ void debug_interpolate_loaded() {
  * @return New string with variables substituted (must be freed)
  */
 char* ast_interpolate_string(const char* str, ast_evaluator* evaluator) {
-    printf("DEBUG: ============= INSIDE SUBSTITUTION FUNCTION =============\n");
     fflush(stdout);
-    printf("DEBUG: ast_interpolate_string called with: '%s'\n", str);
     fflush(stdout);
     
     // Early return test
     if (!str) {
-        printf("DEBUG: str is NULL, returning empty string\n");
         fflush(stdout);
         return xmd_strdup("");
     }
     if (!evaluator) {
-        printf("DEBUG: evaluator is NULL, returning original string\n");
         fflush(stdout);
         return xmd_strdup(str);
     }
     if (!evaluator->variables) {
-        printf("DEBUG: evaluator->variables is NULL, returning original string\n");
         fflush(stdout);
         return xmd_strdup(str);
     }
     
-    printf("DEBUG: All parameters valid, proceeding with interpolation\n");
     fflush(stdout);
     
     // First pass: calculate total size needed
@@ -73,10 +68,8 @@ char* ast_interpolate_string(const char* str, ast_evaluator* evaluator) {
                 
                 // Look up variable
                 variable* var = store_get(evaluator->variables, var_name);
-                printf("DEBUG: Looking up variable '%s' - found: %s\n", var_name, var ? "yes" : "no");
                 if (var) {
                     char* var_value = variable_to_string(var);
-                    printf("DEBUG: Variable value: '%s'\n", var_value ? var_value : "(null)");
                     if (var_value) {
                         total_size += strlen(var_value);
                         XMD_FREE_SAFE(var_value);

@@ -9,11 +9,11 @@
 
 #include <stddef.h>
 #include <stdlib.h>
-#include "performance.h"
-#include "token.h"
-#include "utils.h"
-#include "variable.h"
-#include "utils/common/common_macros.h"
+#include "../../../include/performance.h"
+#include "../../../include/token.h"
+#include "../../../include/utils.h"
+#include "../../../include/variable.h"
+#include "../../utils/common/common_macros.h"
 /**
  * @brief Create a new token
  * @param type Token type
@@ -23,16 +23,20 @@
  * @return New token or NULL on failure
  */
 token* token_create(token_type type, const char* value, size_t line, size_t column) {
-    token* t;
-    XMD_MALLOC_CHECK(t, sizeof(token));
+    XMD_CREATE_VALIDATED(t, token, sizeof(token), NULL);
     
     t->type = type;
     t->line = line;
     t->column = column;
     t->next = NULL;
+    
     // Copy value if provided
     if (value != NULL) {
-        XMD_STRDUP_CHECK(t->value, value);
+        t->value = xmd_strdup(value);
+        if (!t->value) {
+            XMD_FREE_SAFE(t);
+            return NULL;
+        }
     } else {
         t->value = NULL;
     }

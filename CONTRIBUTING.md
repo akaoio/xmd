@@ -43,10 +43,9 @@ cat memory/<your-role>/memory.md
 
 # Choose your role:
 # - leader: Project coordination, decisions, team management
-# - systems: Code optimization, technical debt reduction  
 # - developer: Function implementation, core development
 # - debthunter: Bug analysis, dead code cleanup
-# - tester: Testing, validation, quality assurance
+# - tester: Quality Systems Engineer (QA + code optimization + technical debt reduction)  
 # - designer: Architecture, UI/UX, system design
 ```
 

@@ -25,10 +25,7 @@
  */
 ast_value* ast_evaluate_conditional(ast_node* node, ast_evaluator* evaluator) {
     XMD_VALIDATE_PTRS(NULL, node, evaluator);
-    if (node->type != AST_CONDITIONAL) {
-        printf("[ERROR] ast_evaluate_conditional: Invalid node type %d\n", node->type);
-        return NULL;
-    }
+    XMD_VALIDATE_NODE_TYPE(node, AST_CONDITIONAL, NULL, "ast_evaluate_conditional: Invalid node type");
     
     printf("DEBUG: Evaluating conditional node\n");
     // If this is an 'else' block (condition is NULL), execute the then_block
@@ -59,7 +56,7 @@ ast_value* ast_evaluate_conditional(ast_node* node, ast_evaluator* evaluator) {
     }
     
     printf("DEBUG: Condition result: %s\n", condition_true ? "true" : "false");
-    XMD_FREE_SAFE(condition_result);
+    ast_value_free(condition_result);
     // Execute appropriate branch
     if (condition_true) {
         printf("DEBUG: Executing then block\n");

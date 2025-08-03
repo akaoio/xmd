@@ -25,6 +25,10 @@ void ast_evaluator_free(ast_evaluator* evaluator) {
     
     // DO NOT destroy variables store - evaluator doesn't own it!
     // The variables store is owned by the processor and will be freed by xmd_processor_free
+    // But we do destroy the functions store since we created it in ast_evaluator_create
+    if (evaluator->functions) {
+        store_destroy(evaluator->functions);
+    }
     XMD_FREE_SAFE(evaluator->output_buffer);
     XMD_FREE_SAFE(evaluator->error_message);
     XMD_FREE_SAFE(evaluator);

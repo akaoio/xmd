@@ -26,9 +26,7 @@
  */
 ast_value* ast_evaluate_while_loop(ast_node* node, ast_evaluator* evaluator) {
     XMD_VALIDATE_PTRS(NULL, node, evaluator);
-    if (node->type != AST_WHILE_LOOP) {
-        return NULL;
-    }
+    XMD_VALIDATE_NODE_TYPE(node, AST_WHILE_LOOP, NULL, "ast_evaluate_while_loop: Invalid node type");
     
     // While loop structure uses the loop data fields:
     // - node->data.loop.variable is "__while__" (marker)
@@ -59,7 +57,7 @@ ast_value* ast_evaluate_while_loop(ast_node* node, ast_evaluator* evaluator) {
                       strlen(condition_result->value.string_value) > 0);
         }
         
-        XMD_FREE_SAFE(condition_result);
+        ast_value_free(condition_result);
         if (!is_true) {
             break; // Exit while loop
         }
@@ -68,7 +66,7 @@ ast_value* ast_evaluate_while_loop(ast_node* node, ast_evaluator* evaluator) {
         if (node->data.loop.body) {
             ast_value* body_result = ast_evaluate(node->data.loop.body, evaluator);
             if (body_result) {
-                XMD_FREE_SAFE(body_result);
+                ast_value_free(body_result);
             }
         } else {
             // FALLBACK: Old auto-increment behavior (remove this once body parsing is confirmed working)

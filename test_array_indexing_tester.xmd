@@ -1,0 +1,4 @@
+set scores 85, 92, 78
+print "Scores array: " + scores
+print "First score: " + scores[0]
+print "Second score: " + scores[1]

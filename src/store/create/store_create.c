@@ -8,8 +8,10 @@
  */
 
 #include <stdlib.h>
-#include "store.h"
-#include "store_internal.h"
+#include "../../../include/store.h"
+#include "../../../include/store_internal.h"
+#include "../../../include/utils.h"
+#include "../../utils/common/common_macros.h"
 
 /**
  * @brief Create new store
@@ -25,7 +27,7 @@ store* store_create(void) {
     s->size = 0;
     s->buckets = xmd_calloc(s->capacity, sizeof(store_entry*));
     if (!s->buckets) {
-        XMD_FREE_SAFE(s);
+        xmd_free(s);
         return NULL;
     }
     return s;

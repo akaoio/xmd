@@ -17,5 +17,4 @@
   * /
  */
 void debugger_log(const char* file, int line, const char* message) {
-    printf("[DEBUG] %s:%d - %s\n", file ? file : "unknown", line, message ? message : "");
 }

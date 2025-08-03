@@ -14,13 +14,13 @@
 #include "ast_node.h"
 #include "ast_parser.h"
 #include "utils.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Parse mathematical expression: 2 + 3 * 4
  */
 ast_node* ast_parse_math_expression(const char* expr) {
-    if (!expr) return NULL;
+    XMD_VALIDATE_PTRS(NULL, expr);
     
-    printf("DEBUG: ast_parse_math_expression called with: %s\n", expr);
     // Simple addition parser for Genesis compliance
     char* expr_copy = xmd_strdup(expr);
     if (!expr_copy) return NULL;
@@ -53,10 +53,10 @@ ast_node* ast_parse_math_expression(const char* expr) {
             left = ast_parse_string_literal(&temp_pos, &temp_pos);
         } else if (isdigit(*left_str) || *left_str == '-') {
             double val = atof(left_str);
-            source_location loc = {1, 1, "input"};
+            source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
             left = ast_create_number_literal(val, loc);
         } else {
-            source_location loc = {1, 1, "input"};
+            source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
             left = ast_parse_identifier_or_array(left_str, loc);
         }
         // Parse right operand (which might be another expression)
@@ -71,7 +71,7 @@ ast_node* ast_parse_math_expression(const char* expr) {
             right = ast_parse_string_literal(&temp_pos, &temp_pos);
         } else if (isdigit(*right_str) || *right_str == '-') {
             double val = atof(right_str);
-            source_location loc = {1, 1, "input"};
+            source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
             right = ast_create_number_literal(val, loc);
         } else {
             // Trim any trailing whitespace from identifier
@@ -80,12 +80,12 @@ ast_node* ast_parse_math_expression(const char* expr) {
                 *id_end = '\0';
                 id_end--;
             }
-            source_location loc = {1, 1, "input"};
+            source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
             right = ast_parse_identifier_or_array(right_str, loc);
         }
         
         if (left && right) {
-            source_location loc = {1, 1, "input"};
+            source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
             ast_node* result = ast_create_binary_op(op_type, left, right, loc);
             XMD_FREE_SAFE(expr_copy);
             return result;

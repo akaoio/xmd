@@ -1,0 +1,7 @@
+# For Loop Test
+# Tests basic for loop after Developer's fix
+
+print "Testing for loop:"
+for i in 1 .. 5
+    print "Iteration: " + i
+print "Loop complete"

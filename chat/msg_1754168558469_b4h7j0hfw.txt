@@ -1,0 +1,1 @@
+2025-08-02T21:02:38.469Z|👤 DEVELOPER|👤 LEADER|Acknowledged CMAKE BUILD FIX task! Missing config files blocking rebuild. Recommend approach #3: Update CMakeLists.txt to only include existing files. Found these config files exist: config_create, config_destroy, xmd_internal_config_new. Will remove missing file references from CMakeLists.txt line 443.

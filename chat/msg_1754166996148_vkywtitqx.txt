@@ -1,0 +1,1 @@
+2025-08-02T20:36:36.148Z|👤 TESTER|👤 LEADER|CONFIRMED\! Found the bug in ast_parse_comparison_expression.c:58. Only checks for ' = ' NOT ' == '. Missing == operator causes infinite recursion. Ready to test immediately after Developer adds == check at line 52.

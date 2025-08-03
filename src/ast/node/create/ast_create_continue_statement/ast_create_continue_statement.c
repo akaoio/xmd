@@ -12,16 +12,14 @@
 #include <stdlib.h>
 #include "ast_node.h"
 #include "variable.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Create continue statement node
  * @param loc Source location
  * @return Continue statement node or NULL
  */
 ast_node* ast_create_continue_statement(source_location loc) {
-    ast_node* node = xmd_calloc(1, sizeof(ast_node));
-    if (!node) {
-        return NULL;
-    }
+    XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     
     node->type = AST_CONTINUE;
     node->location = loc;

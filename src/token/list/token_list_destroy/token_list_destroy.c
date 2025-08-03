@@ -8,13 +8,24 @@
  */
 
 #include <stdlib.h>
-#include "performance.h"
-#include "token.h"
-#include "token_internal.h"
+#include "../../../../include/token.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Destroy token list (alias for token_list_free)
  * @param list Token list head
  */
 void token_list_destroy(token* list) {
-    XMD_FREE_SAFE(list);
+    // This should actually call token_list_free to properly free all tokens
+    // For now, simple implementation
+    if (list) {
+        token* current = list;
+        while (current) {
+            token* next = current->next;
+            if (current->value) {
+                XMD_FREE_SAFE(current->value);
+            }
+            XMD_FREE_SAFE(current);
+            current = next;
+        }
+    }
 }

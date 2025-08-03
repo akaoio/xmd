@@ -18,14 +18,16 @@
 #include "ast_parser.h"
 #include "module.h"
 #include "utils.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Parse a method definition within a class
  * @param pos Pointer to current position (updated)
  * @return Method AST node or NULL
  */
 ast_node* ast_parse_method(const char** pos) {
+    XMD_VALIDATE_PTRS(NULL, pos, *pos);
+    
     const char* start = *pos;
-    if (!start) return NULL;
     
     // Check for "private" keyword
     bool is_private = false;
@@ -35,10 +37,10 @@ ast_node* ast_parse_method(const char** pos) {
         while (*start && isspace(*start)) start++;
     }
     // Check for "constructor" keyword
-    bool is_constructor = false;
+    // bool is_constructor = false;  // Reserved for future use
     char* method_name = NULL;
     if (strncmp(start, "constructor", 11) == 0) {
-        is_constructor = true;
+        // is_constructor = true;  // Will be used in future
         start += 11;
         method_name = xmd_strdup("constructor");
     } else {
@@ -83,7 +85,6 @@ ast_node* ast_parse_method(const char** pos) {
         }
         
         if (method_body_indent > 0 && *next_line && *next_line != '\n') {
-            printf("DEBUG: Found indented method body for %s (indent: %d)\n", method_name, method_body_indent);
             
             while (*start) {
                 // Check if this line starts a new method (less indentation)
@@ -96,7 +97,6 @@ ast_node* ast_parse_method(const char** pos) {
                 
                 // If we hit a line with less indentation than the method body, or EOF, we're done
                 if (*line_start == '\0' || (*line_start != '\n' && line_indent < method_body_indent)) {
-                    printf("DEBUG: End of method body - found line with indent %d\n", line_indent);
                     break;
                 }
                 
@@ -104,8 +104,6 @@ ast_node* ast_parse_method(const char** pos) {
                 while (*start && *start != '\n') start++;
                 if (*start == '\n') start++;
             }
-            printf("DEBUG: Method body skipped for %s\n", method_name);
-            printf("DEBUG: Position after method body: %.20s\n", start);
         } else {
                 // No method body, skip to end of line
             while (*start && *start != '\n') start++;
@@ -114,7 +112,7 @@ ast_node* ast_parse_method(const char** pos) {
     
     *pos = start;
     // Create method node
-    source_location loc = {1, 1, "input"}; 
+    source_location loc = XMD_DEFAULT_SOURCE_LOCATION(); 
     ast_node* method = ast_create_method_def(method_name, is_private, loc);
     XMD_FREE_SAFE(method_name);
     return method;

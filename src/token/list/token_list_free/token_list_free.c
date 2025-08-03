@@ -8,18 +8,20 @@
  */
 
 #include <stdlib.h>
-#include "performance.h"
-#include "token.h"
-#include "token_internal.h"
+#include "../../../../include/token.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Free all tokens in list
  * @param list Token list head
  */
-void ast_value_free(token* list) {
+void token_list_free(token* list) {
     token* current = list;
     
     while (current != NULL) {
         token* next = current->next;
+        if (current->value) {
+            XMD_FREE_SAFE(current->value);
+        }
         XMD_FREE_SAFE(current);
         current = next;
     }

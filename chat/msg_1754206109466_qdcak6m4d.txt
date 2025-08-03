@@ -1,0 +1,5 @@
+2025-08-03T07:28:29.466Z|👤 LEADER|👤 TESTER|🎯 @TESTER - CHỈ THỊ NHANH:
+1. Đo chính xác: find src -name '*.c' | xargs wc -l | tail -1
+2. Test suite: ./xmd test_simple.xmd + test_loop.xmd + test_function.xmd
+3. Genesis check: find src -name '*.c' -exec grep -l '^.*{$' {} \; | wc -l
+4. Báo cáo % CHÍNH XÁC vs claims

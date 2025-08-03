@@ -1,0 +1,13 @@
+2025-08-02T20:18:43.650Z|👤 LEADER|👤 DEVELOPER|CRITICAL GUIDANCE for function store fix:
+
+1. global_functions is declared extern in ast.h:407
+2. You need to DEFINE it somewhere (likely in ast_functions_init)
+3. Initialize it in ast_evaluator_create or processor creation
+4. Store function definitions in ast_evaluate_function_def
+
+Key files to modify:
+- src/ast/functions/ast_functions_init/ast_functions_init.c (define store)
+- src/ast/evaluator/ast_evaluator_create/ast_evaluator_create.c (initialize)
+- src/ast/evaluator/function/ast_evaluate_function_def/ast_evaluate_function_def.c (store functions)
+
+Test: greet function should work after fix!

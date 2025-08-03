@@ -1,0 +1,237 @@
+In file included from /data/data/com.termux/files/home/xmd/src/ast/evaluator/ast_evaluator_create/ast_evaluator_create.c:14:
+In file included from /data/data/com.termux/files/home/xmd/include/ast_evaluator.h:6:
+/data/data/com.termux/files/home/xmd/include/ast.h:413:9: warning: 'XMD_NULL_CHECK' macro redefined [-Wmacro-redefined]
+  413 | #define XMD_NULL_CHECK(ptr) \
+      |         ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:26:9: note: previous definition is here
+   26 | #define XMD_NULL_CHECK(ptr, return_val) \
+      |         ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+2 warnings generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/evaluator/ast_evaluator_free/ast_evaluator_free.c:12:
+In file included from /data/data/com.termux/files/home/xmd/include/ast_evaluator.h:6:
+/data/data/com.termux/files/home/xmd/include/ast.h:413:9: warning: 'XMD_NULL_CHECK' macro redefined [-Wmacro-redefined]
+  413 | #define XMD_NULL_CHECK(ptr) \
+      |         ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:26:9: note: previous definition is here
+   26 | #define XMD_NULL_CHECK(ptr, return_val) \
+      |         ^
+1 warning generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/evaluator/expression/ast_evaluate_identifier/ast_evaluate_identifier.c:19:
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+1 warning generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/evaluator/expression/ast_evaluate_array_access/ast_evaluate_array_access.c:17:
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:30: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                              ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:30: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                              ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:30: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:30: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                              ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:30: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                              ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:30: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+9 warnings generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/evaluator/expression/ast_evaluate_object_access/ast_evaluate_object_access.c:15:
+/data/data/com.termux/files/home/xmd/src/ast/evaluator/expression/ast_evaluate_object_access/../../../../utils/common/common_macros.h:174:30: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                              ^
+/data/data/com.termux/files/home/xmd/src/ast/evaluator/expression/ast_evaluate_object_access/../../../../utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+/data/data/com.termux/files/home/xmd/src/ast/evaluator/expression/ast_evaluate_object_access/../../../../utils/common/common_macros.h:174:30: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                              ^
+/data/data/com.termux/files/home/xmd/src/ast/evaluator/expression/ast_evaluate_object_access/../../../../utils/common/common_macros.h:174:30: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+/data/data/com.termux/files/home/xmd/src/ast/evaluator/expression/ast_evaluate_object_access/../../../../utils/common/common_macros.h:174:30: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+/data/data/com.termux/files/home/xmd/src/ast/evaluator/expression/ast_evaluate_object_access/ast_evaluate_object_access.c:122:2: warning: no newline at end of file [-Wnewline-eof]
+  122 | }
+      |  ^
+6 warnings generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/evaluator/fileio/ast_evaluate_file_list/ast_evaluate_file_list.c:19:
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+1 warning generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/evaluator/fileio/ast_evaluate_file_read/ast_evaluate_file_read.c:15:
+In file included from /data/data/com.termux/files/home/xmd/include/ast_evaluator.h:6:
+/data/data/com.termux/files/home/xmd/include/ast.h:413:9: warning: 'XMD_NULL_CHECK' macro redefined [-Wmacro-redefined]
+  413 | #define XMD_NULL_CHECK(ptr) \
+      |         ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:26:9: note: previous definition is here
+   26 | #define XMD_NULL_CHECK(ptr, return_val) \
+      |         ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+2 warnings generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/evaluator/fileio/ast_evaluate_file_write/ast_evaluate_file_write.c:17:
+In file included from /data/data/com.termux/files/home/xmd/include/ast_evaluator.h:6:
+/data/data/com.termux/files/home/xmd/include/ast.h:413:9: warning: 'XMD_NULL_CHECK' macro redefined [-Wmacro-redefined]
+  413 | #define XMD_NULL_CHECK(ptr) \
+      |         ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:26:9: note: previous definition is here
+   26 | #define XMD_NULL_CHECK(ptr, return_val) \
+      |         ^
+1 warning generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/evaluator/function/ast_evaluate_function_call/ast_evaluate_function_call.c:21:
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:30: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                              ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:30: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                              ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:30: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+4 warnings generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/evaluator/function/ast_evaluate_function_def/ast_evaluate_function_def.c:20:
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+1 warning generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/evaluator/loop/ast_evaluate_loop/ast_evaluate_loop.c:18:
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+2 warnings generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/evaluator/loop/ast_evaluate_while_loop/ast_evaluate_while_loop.c:20:
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+3 warnings generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/evaluator/program/ast_evaluate_program_node.c:17:
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+1 warning generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/evaluator/program/ast_evaluate_program/ast_evaluate_program.c:10:
+/data/data/com.termux/files/home/xmd/src/ast/evaluator/program/ast_evaluate_program/../../../../../include/ast.h:413:9: warning: 'XMD_NULL_CHECK' macro redefined [-Wmacro-redefined]
+  413 | #define XMD_NULL_CHECK(ptr) \
+      |         ^
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:26:9: note: previous definition is here
+   26 | #define XMD_NULL_CHECK(ptr, return_val) \
+      |         ^
+/data/data/com.termux/files/home/xmd/src/ast/evaluator/program/ast_evaluate_program/ast_evaluate_program.c:37:2: warning: no newline at end of file [-Wnewline-eof]
+   37 | }
+      |  ^
+2 warnings generated.
+/data/data/com.termux/files/home/xmd/src/ast/node/create/ast_create_object_access.c:40:2: warning: no newline at end of file [-Wnewline-eof]
+   40 | }
+      |  ^
+1 warning generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/parser/class/ast_parse_class/ast_parse_class.c:17:
+/data/data/com.termux/files/home/xmd/src/ast/parser/class/ast_parse_class/../../../../utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+1 warning generated.
+/data/data/com.termux/files/home/xmd/src/ast/parser/class/ast_parse_method/ast_parse_method.c:39:10: warning: variable 'is_constructor' set but not used [-Wunused-but-set-variable]
+   39 |     bool is_constructor = false;
+      |          ^
+1 warning generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/parser/expression/ast_parse_expression/ast_parse_expression.c:18:
+/data/data/com.termux/files/home/xmd/src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+/data/data/com.termux/files/home/xmd/src/ast/parser/expression/ast_parse_expression/ast_parse_expression.c:225:85: warning: format specifies type 'void *' but the argument has type 'ast_node *' (aka 'struct ast_node *') [-Wformat-pedantic]
+  225 |     printf("DEBUG: ast_parse_expression result: %p, advancing position to: '%s'\n", result, start);
+      |                                                 ~~                                  ^~~~~~
+2 warnings generated.
+/data/data/com.termux/files/home/xmd/src/ast/parser/expression/ast_parse_object_access/ast_parse_object_access.c:86:2: warning: no newline at end of file [-Wnewline-eof]
+   86 | }
+      |  ^
+1 warning generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/parser/function/ast_parse_function/ast_parse_function.c:21:
+/data/data/com.termux/files/home/xmd/src/ast/parser/function/ast_parse_function/../../../../utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+/data/data/com.termux/files/home/xmd/src/ast/parser/function/ast_parse_function/../../../../utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+/data/data/com.termux/files/home/xmd/src/ast/parser/function/ast_parse_function/../../../../utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+3 warnings generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/parser/literal/ast_parse_string_literal/ast_parse_string_literal.c:16:
+/data/data/com.termux/files/home/xmd/src/ast/parser/literal/ast_parse_string_literal/../../../../utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+/data/data/com.termux/files/home/xmd/src/ast/parser/literal/ast_parse_string_literal/../../../../utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+/data/data/com.termux/files/home/xmd/src/ast/parser/literal/ast_parse_string_literal/../../../../utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+3 warnings generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/parser/statement/ast_parse_statement/ast_parse_statement.c:16:
+/data/data/com.termux/files/home/xmd/src/ast/parser/statement/ast_parse_statement/../../../../utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+/data/data/com.termux/files/home/xmd/src/ast/parser/statement/ast_parse_statement/../../../../utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+/data/data/com.termux/files/home/xmd/src/ast/parser/statement/ast_parse_statement/ast_parse_statement.c:227:2: warning: no newline at end of file [-Wnewline-eof]
+  227 | }
+      |  ^
+3 warnings generated.
+In file included from /data/data/com.termux/files/home/xmd/src/ast/parser/variable/ast_parse_assignment/ast_parse_assignment.c:13:
+/data/data/com.termux/files/home/xmd/src/ast/parser/variable/ast_parse_assignment/../../../../../src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+  174 |         fprintf(stderr, fmt, ##__VA_ARGS__); \
+      |                            ^
+/data/data/com.termux/files/home/xmd/src/ast/parser/variable/ast_parse_assignment/../../../../../src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+/data/data/com.termux/files/home/xmd/src/ast/parser/variable/ast_parse_assignment/../../../../../src/utils/common/common_macros.h:174:28: warning: token pasting of ',' and __VA_ARGS__ is a GNU extension [-Wgnu-zero-variadic-macro-arguments]
+/data/data/com.termux/files/home/xmd/src/ast/parser/variable/ast_parse_assignment/ast_parse_assignment.c:109:2: warning: no newline at end of file [-Wnewline-eof]
+  109 | }
+      |  ^
+/data/data/com.termux/files/home/xmd/src/ast/parser/variable/ast_parse_assignment/ast_parse_assignment.c:77:15: warning: unused variable 'identifier' [-Wunused-variable]
+   77 |     ast_node* identifier = ast_create_identifier(var_name, loc);
+      |               ^~~~~~~~~~
+5 warnings generated.
+/data/data/com.termux/files/home/xmd/src/ast/substitution/ast_interpolate_string.c:159:2: warning: no newline at end of file [-Wnewline-eof]
+  159 | }
+      |  ^
+1 warning generated.
+/data/data/com.termux/files/home/xmd/src/bindings/c_api/processing/xmd_process_string/xmd_process_string.c:54:2: warning: no newline at end of file [-Wnewline-eof]
+   54 | }
+      |  ^
+/data/data/com.termux/files/home/xmd/src/bindings/c_api/processing/xmd_process_string/xmd_process_string.c:28:39: warning: unused parameter 'input_length' [-Wunused-parameter]
+   28 |                                size_t input_length) {
+      |                                       ^
+2 warnings generated.
+/data/data/com.termux/files/home/xmd/src/bindings/c_api/processing/xmd_process_string_api/xmd_process_string_api.c:27:76: warning: unused parameter 'input_length' [-Wunused-parameter]
+   27 | xmd_result* xmd_process_string_api(void* handle, const char* input, size_t input_length) {
+      |                                                                            ^
+1 warning generated.
+/data/data/com.termux/files/home/xmd/src/config/create/config_create/config_create.c:31:20: error: assigning to 'xmd_resource_limits' (aka 'struct xmd_resource_limits') from incompatible type 'void *'
+   31 |     config->limits = NULL;
+      |                    ^ ~~~~
+/data/data/com.termux/files/home/xmd/src/config/create/config_create/config_create.c:32:21: error: assigning to 'xmd_buffer_config' (aka 'struct xmd_buffer_config') from incompatible type 'void *'
+   32 |     config->buffers = NULL;
+      |                     ^ ~~~~
+/data/data/com.termux/files/home/xmd/src/config/create/config_create/config_create.c:33:19: error: assigning to 'xmd_paths_config' (aka 'struct xmd_paths_config') from incompatible type 'void *'
+   33 |     config->paths = NULL;
+      |                   ^ ~~~~
+/data/data/com.termux/files/home/xmd/src/config/create/config_create/config_create.c:34:23: error: assigning to 'xmd_precision_config' (aka 'struct xmd_precision_config') from incompatible type 'void *'
+   34 |     config->precision = NULL;
+      |                       ^ ~~~~
+/data/data/com.termux/files/home/xmd/src/config/create/config_create/config_create.c:35:22: error: assigning to 'xmd_security_config' (aka 'struct xmd_security_config') from incompatible type 'void *'
+   35 |     config->security = NULL;
+      |                      ^ ~~~~
+/data/data/com.termux/files/home/xmd/src/config/create/config_create/config_create.c:36:20: error: assigning to 'xmd_timing_config' (aka 'struct xmd_timing_config') from incompatible type 'void *'
+   36 |     config->timing = NULL;
+      |                    ^ ~~~~
+6 errors generated.
+make[2]: *** [CMakeFiles/xmd_lib.dir/build.make:1689: CMakeFiles/xmd_lib.dir/src/config/create/config_create/config_create.c.o] Error 1
+make[1]: *** [CMakeFiles/Makefile2:90: CMakeFiles/xmd_lib.dir/all] Error 2
+make: *** [Makefile:156: all] Error 2

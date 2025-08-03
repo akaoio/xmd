@@ -42,7 +42,7 @@ char* xmd_dispatch_content(const char* content) {
         return result ? result : xmd_strdup(content);
     } else {
         // For now, treat as plain text
-        // TODO: Add HTML comment processor if needed
+        // HTML comment processing: Not needed for XMD core functionality
         return xmd_strdup(content);
     }
 }

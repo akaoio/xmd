@@ -1,0 +1,45 @@
+# Function Test Suite for XMD Runtime
+# Tests function definition and calls
+
+# Simple function
+function greet name
+    return "Hello, " + name + "!"
+
+set result greet "Alice"
+print result
+
+# Function with multiple parameters
+function add x y
+    return x + y
+
+set sum add 10 20
+print "10 + 20 = " + sum
+
+# Function with conditionals
+function max a b
+    if a > b
+        return a
+    else
+        return b
+
+set larger max 15 8
+print "Max of 15 and 8: " + larger
+
+# Recursive function (factorial)
+function factorial n
+    if n <= 1
+        return 1
+    return n * factorial(n - 1)
+
+set fact factorial 5
+print "5! = " + fact
+
+# Function calling other functions
+function double x
+    return x * 2
+
+function quadruple x
+    return double(double(x))
+
+set quad quadruple 5
+print "Quadruple of 5: " + quad

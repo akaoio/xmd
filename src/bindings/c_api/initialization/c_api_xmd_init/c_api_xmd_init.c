@@ -13,6 +13,7 @@
 #include "../../../../../include/config_internal.h"
 #include "../../../../../include/store.h"
 #include "../../../../../include/utils.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Initialize XMD C API context
  * @param config_path Path to configuration file (NULL for defaults)

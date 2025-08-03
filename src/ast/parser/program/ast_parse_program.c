@@ -12,15 +12,15 @@
 #include <stdlib.h>
 #include "ast_node.h"
 #include "ast_parser.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Parse XMD program - function needed by native_xmd_consolidated.c
  * @param input Input string to parse
  * @return AST program node or NULL
  */
 ast_node* ast_parse_program(const char* input) {
-    if (!input) {
-        return NULL;
-    }
+    XMD_NULL_CHECK_RETURN(input, NULL);
+    
     
     // Create program node
     ast_node* program = ast_create_program();
@@ -37,6 +37,7 @@ ast_node* ast_parse_program(const char* input) {
         }
         
         if (!*pos) break; // End of input
+        
         // Parse next statement
         ast_node* stmt = ast_parse_statement(&pos);
         if (stmt) {
@@ -45,6 +46,7 @@ ast_node* ast_parse_program(const char* input) {
                 XMD_FREE_SAFE(stmt);
                 break;
             }
+        } else {
         }
     }
     

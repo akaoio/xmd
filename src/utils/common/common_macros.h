@@ -47,6 +47,33 @@
     } while(0)
 
 /**
+ * AST Node Type Validation Macro
+ * PHASE 2 MANUAL CONSOLIDATION: Standardize type validation patterns
+ * Usage: XMD_VALIDATE_NODE_TYPE(node, AST_PROGRAM, NULL, "error_msg")
+ */
+#define XMD_VALIDATE_NODE_TYPE(node, expected_type, return_val, error_msg) \
+    do { \
+        if ((node)->type != (expected_type)) { \
+            fprintf(stderr, "[ERROR] %s at %s:%d\n", (error_msg), __FILE__, __LINE__); \
+            return (return_val); \
+        } \
+    } while(0)
+
+/**
+ * Memory Allocation with Error Handling Macro
+ * PHASE 2 MANUAL CONSOLIDATION: Standardize memory allocation patterns
+ * Usage: XMD_MALLOC_SAFE(ptr, type, return_val, error_msg)
+ */
+#define XMD_MALLOC_SAFE(ptr, type, return_val, error_msg) \
+    do { \
+        (ptr) = xmd_malloc(sizeof(type)); \
+        if (!(ptr)) { \
+            fprintf(stderr, "[ERROR] %s at %s:%d\n", (error_msg), __FILE__, __LINE__); \
+            return (return_val); \
+        } \
+    } while(0)
+
+/**
  * Simple NULL check with custom return value
  * Usage: XMD_NULL_CHECK_RETURN(ptr, retval)
  */
@@ -93,17 +120,10 @@
 /* ==================== MEMORY ALLOCATION MACROS ==================== */
 
 /**
- * Safe malloc with automatic NULL check and zero initialization
- * Usage: XMD_MALLOC_SAFE(MyStruct, var_name)
+ * Safe malloc with automatic NULL check and zero initialization (REMOVED)
+ * NOTE: This definition was removed to avoid conflict with line 67
+ * Use the macro at line 67 instead: XMD_MALLOC_SAFE(ptr, type, return_val, error_msg)
  */
-#define XMD_MALLOC_SAFE(type, var) \
-    type* var = (type*)malloc(sizeof(type)); \
-    if (!(var)) { \
-        fprintf(stderr, "[ERROR] Memory allocation failed for " #type " at %s:%d\n", \
-                __FILE__, __LINE__); \
-        return NULL; \
-    } \
-    memset(var, 0, sizeof(type))
 
 /**
  * Safe calloc with automatic NULL check
@@ -167,6 +187,12 @@
  * Log error and return
  * Usage: XMD_ERROR_RETURN(return_val, "Error message: %s", error_detail)
  */
+/* Use GNU extension for compatibility, suppress warning with pragma */
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
+#endif
+
 #define XMD_ERROR_RETURN(return_val, fmt, ...) \
     do { \
         fprintf(stderr, "[ERROR] %s:%d in %s(): ", \
@@ -175,6 +201,10 @@
         fprintf(stderr, "\n"); \
         return return_val; \
     } while(0)
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 /**
  * Log warning but continue execution
@@ -360,6 +390,43 @@
     #define XMD_UNLIKELY(x) (x)
 #endif
 
+/* ==================== CREATOR PATTERN MACROS ==================== */
+
+/**
+ * Standard variable creator pattern - reduces duplication across 39 creator functions
+ * Usage: XMD_CREATE_VARIABLE(variable, VAR_STRING, string_value, value)
+ */
+#define XMD_CREATE_VARIABLE(var_name, var_type, field_name, field_value) \
+    do { \
+        variable* var_name = malloc(sizeof(variable)); \
+        if (!var_name) return NULL; \
+        var_name->type = var_type; \
+        var_name->ref_count = 1; \
+        var_name->value.field_name = field_value; \
+    } while(0)
+
+/**
+ * Creator with validation and cleanup on failure
+ * Usage: XMD_CREATE_VALIDATED(result, variable, sizeof(variable), NULL)
+ */
+#define XMD_CREATE_VALIDATED(result_var, type, size, return_val) \
+    type* result_var = malloc(size); \
+    if (!result_var) { \
+        fprintf(stderr, "[ERROR] Memory allocation failed for %s at %s:%d\n", \
+                #type, __FILE__, __LINE__); \
+        return return_val; \
+    }
+
+/**
+ * Standard initialization pattern for structures
+ * Usage: XMD_INIT_STRUCT(ptr, field1, value1, field2, value2)
+ */
+#define XMD_INIT_STRUCT(ptr, ...) \
+    do { \
+        memset(ptr, 0, sizeof(*(ptr))); \
+        /* Custom initialization would need variadic macro handling */ \
+    } while(0)
+
 /* ==================== USAGE EXAMPLES ==================== */
 
 /*
@@ -395,5 +462,32 @@ char* read_file(const char* path) {
     return content;
 }
 */
+
+/* ==================== AST SPECIFIC MACROS ==================== */
+
+/**
+ * Default source location initialization for AST nodes
+ * Usage: source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
+ * Reduces duplication in 22+ parser files
+ */
+#define XMD_DEFAULT_SOURCE_LOCATION() ((source_location){1, 1, "input"})
+
+/* ==================== STORE OPERATION MACROS ==================== */
+
+/**
+ * Store linked list traversal macro
+ * Usage: XMD_STORE_TRAVERSE(store, index, entry, { 
+ *     // operations on entry
+ * });
+ * Reduces duplication in store operations
+ */
+#define XMD_STORE_TRAVERSE(store, index, entry_var, code) \
+    do { \
+        store_entry* entry_var = (store)->buckets[index]; \
+        while (entry_var) { \
+            code; \
+            entry_var = entry_var->next; \
+        } \
+    } while(0)
 
 #endif /* XMD_COMMON_MACROS_H */

@@ -24,9 +24,8 @@
  * @return Boolean value indicating success
  */
 ast_value* ast_evaluate_file_write(ast_node* node, ast_evaluator* evaluator) {
-    if (!node || !evaluator || node->type != AST_FILE_WRITE) {
-        return ast_value_create_boolean(false);
-    }
+    XMD_VALIDATE_PTRS(NULL, node, evaluator);
+    XMD_VALIDATE_NODE_TYPE(node, AST_FILE_WRITE, NULL, "ast_evaluate_file_write: Invalid node type");
     
     const char* file_path = node->data.file_io.file_path;
     if (!file_path || !node->data.file_io.content) {

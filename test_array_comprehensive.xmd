@@ -1,0 +1,48 @@
+# COMPREHENSIVE ARRAY INDEXING TEST - Validation Suite
+# Testing array indexing functionality after Developer fix
+
+# Test 1: Basic array indexing with numbers
+set numbers 10, 20, 30, 40, 50
+print "Test 1 - Numbers Array:"
+print "numbers[0] = " + numbers[0]
+print "numbers[1] = " + numbers[1]
+print "numbers[2] = " + numbers[2]
+print "numbers[3] = " + numbers[3]
+print "numbers[4] = " + numbers[4]
+print ""
+
+# Test 2: String array indexing
+set names "Alice", "Bob", "Charlie", "Diana"
+print "Test 2 - Names Array:"
+print "names[0] = " + names[0]
+print "names[1] = " + names[1]
+print "names[2] = " + names[2]
+print "names[3] = " + names[3]
+print ""
+
+# Test 3: Mixed type array
+set mixed 100, "test", true, 3.14
+print "Test 3 - Mixed Array:"
+print "mixed[0] = " + mixed[0]
+print "mixed[1] = " + mixed[1]
+print "mixed[2] = " + mixed[2]
+print "mixed[3] = " + mixed[3]
+print ""
+
+# Test 4: Complex expressions with array indexing
+set arr 5, 15, 25
+print "Test 4 - Complex Expressions:"
+print "First item: " + arr[0]
+print "Second + Third: " + arr[1] + " + " + arr[2]
+print "Array values: " + arr[0] + ", " + arr[1] + ", " + arr[2]
+print ""
+
+# Test 5: Array indexing in variable assignment
+set first_value arr[0]
+set second_value arr[1]
+print "Test 5 - Variable Assignment:"
+print "first_value = " + first_value
+print "second_value = " + second_value
+print ""
+
+print "=== ARRAY INDEXING VALIDATION COMPLETE ==="

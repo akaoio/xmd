@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include "../../../../include/resource.h"
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 void set_monitor_error(ResourceMonitor* monitor, const char* message) {
     if (!monitor || !message) {
         return;

@@ -19,7 +19,7 @@
 DependencyNode* dependency_node_new(Module* module) {
     XMD_NULL_CHECK(module, NULL);
     
-    XMD_MALLOC_SAFE(DependencyNode, node);
+    XMD_CREATE_VALIDATED(node, DependencyNode, sizeof(DependencyNode), NULL);
     
     node->module = module;
     node->children = NULL;

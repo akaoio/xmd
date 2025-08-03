@@ -14,6 +14,7 @@
 #include <ctype.h>
 #include "ast_node.h"
 #include "ast_parser.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Parse number literal
  * @param start Pointer to starting position
@@ -21,6 +22,7 @@
  * @return Number literal AST node or NULL
  */
 ast_node* ast_parse_number_literal(const char** start, const char** pos) {
+    XMD_VALIDATE_PTRS(NULL, start, *start, pos);
     const char* num_start = *start;
     
     // Handle negative numbers
@@ -41,13 +43,13 @@ ast_node* ast_parse_number_literal(const char** start, const char** pos) {
     }
     
     size_t num_len = *start - num_start;
-    char* num_str = xmd_malloc(num_len + 1);
-    if (!num_str) return NULL;
+    char* num_str;
+    XMD_MALLOC_SAFE(num_str, char[num_len + 1], NULL, "ast_parse_number_literal: Memory allocation failed");
     strncpy(num_str, num_start, num_len);
     num_str[num_len] = '\0';
     double value = atof(num_str);
     XMD_FREE_SAFE(num_str);
     *pos = *start;
-    source_location loc = {1, 1, "input"};
+    source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
     return ast_create_number_literal(value, loc);
 }

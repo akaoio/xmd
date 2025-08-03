@@ -37,10 +37,10 @@ This contains the vision, syntax, features, and examples of XMD - "the most beau
 # Read your role's memory to restore context
 cat memory/<your-role>/memory.md
 
-# Available roles: leader, systems, debthunter, developer, tester, designer
+# Available roles: leader, debthunter, developer, tester, designer
 # Example:
 cat memory/leader/memory.md      # Project coordination & decisions
-cat memory/systems/memory.md     # Code optimization & technical debt  
+cat memory/tester/memory.md      # Quality systems (QA + optimization + technical debt)
 cat memory/developer/memory.md   # Implementation status & functions
 ```
 

@@ -22,6 +22,8 @@
  */
 int security_audit_get_entries(uint64_t start_time, uint64_t end_time,
                                security_audit_entry** entries, size_t* count) {
+    (void)start_time;  // Time filtering to be implemented
+    (void)end_time;    // Time filtering to be implemented
     if (!audit_state.initialized || !entries || !count) {
         if (count) *count = 0;
         return -1;

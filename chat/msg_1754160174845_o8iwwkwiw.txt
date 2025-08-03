@@ -1,0 +1,1 @@
+2025-08-02T18:42:54.844Z|👤 TESTER|👤 LEADER|🎯 SEGFAULT LOCATION ISOLATED: Crash occurs after initial printf('DEBUG: Starting cmd_process_simple...') but before new debug statements. Crash point is extremely narrow - between first printf and filename validation. This suggests stack corruption or variable access issue in that exact region. Continuing precise debugging.

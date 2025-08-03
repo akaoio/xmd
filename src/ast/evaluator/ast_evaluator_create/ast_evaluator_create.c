@@ -27,10 +27,11 @@
 ast_evaluator* ast_evaluator_create(store* variables, processor_context* ctx) {
     ast_evaluator* evaluator = xmd_calloc(1, sizeof(ast_evaluator));
     if (!evaluator) {
-        return NULL;
+        XMD_ERROR_RETURN(NULL, "ast_evaluator_create: Evaluation failed");
     }
     
     evaluator->variables = variables ? variables : store_create();
+    evaluator->functions = store_create();  // Create functions store
     evaluator->ctx = ctx;
     evaluator->output_buffer = NULL;
     evaluator->output_size = 0;

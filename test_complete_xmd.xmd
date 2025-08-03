@@ -1,0 +1,27 @@
+# Complete XMD Language Test
+# Testing all features working together
+
+# Variables
+set name "XMD Team"
+set count 3
+set success true
+
+# Functions
+function celebrate message
+    return "🎉 " + message + " 🎉"
+
+# Print with function call
+print celebrate "XMD Language Works!"
+
+# Conditionals with pure XMD syntax
+if count = 3
+    print "Count is exactly 3"
+
+if success = true
+    print "Success confirmed!"
+
+# Loops
+for i in 1 to count
+    print "Iteration " + i + ": Hello from " + name
+
+print "XMD v2.0 - 85%+ Operational!"

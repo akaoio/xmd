@@ -5,13 +5,14 @@
  */
 
 #include "../../../../include/platform_internal.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Check if path is directory
  * @param path Path to check
  * @return 1 if directory, 0 if not, -1 on error
  */
 int xmd_is_directory(const char* path) {
-    if (!path) return -1;
+    XMD_VALIDATE_PTRS(-1, path);
 #ifdef XMD_PLATFORM_WINDOWS
     DWORD attrs = GetFileAttributesA(path);
     if (attrs == INVALID_FILE_ATTRIBUTES) return -1;

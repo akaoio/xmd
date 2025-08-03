@@ -1,0 +1,5 @@
+set message "Tester validation"
+print "Hello from " + message
+set count 3
+for i in 1..count
+    print "Test " + i

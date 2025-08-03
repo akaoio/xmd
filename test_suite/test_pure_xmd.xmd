@@ -1,0 +1,7 @@
+# Pure XMD Syntax Test
+set x 5
+
+if x = 5
+    print "XMD Pure: X equals 5"
+
+print "Pure XMD test complete"

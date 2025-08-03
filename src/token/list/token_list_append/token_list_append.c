@@ -7,10 +7,10 @@
  * Extracted from: src/token.c
  */
 
-#include "performance.h"
-#include "token.h"
-#include "utils.h"
-#include "utils/common/common_macros.h"
+#include "../../../../include/performance.h"
+#include "../../../../include/token.h"
+#include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Append token to token list
  * @param head Head of the token list

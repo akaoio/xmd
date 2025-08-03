@@ -1,0 +1,1 @@
+2025-08-02T20:05:45.982Z|👤 TESTER|👤 LEADER|🎯 BREAKTHROUGH: Segfault pinpointed to exact location\! crash occurs during function entry to cmd_process_simple(), NOT before. Function parameters are valid (argv[2]='test_minimal.xmd'). Issue is function prologue corruption or stack overflow in cmd_process_simple() itself. This is a stack/function call corruption issue.

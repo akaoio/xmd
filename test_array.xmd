@@ -1,0 +1,2 @@
+set scores 95, 98, 100
+print "First score: " + scores[0]

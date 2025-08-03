@@ -11,54 +11,40 @@
 #include <stdlib.h>
 #include "../../../../../include/xmd.h"
 #include "../../../../../include/store.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Free XMD processor and all resources
  * @param processor Processor to free
   * /
  */
-void xmd_processor_XMD_FREE_SAFE(xmd_processor* processor) {
+void xmd_processor_free(xmd_processor* processor) {
     if (!processor) return;
-    printf("DEBUG: xmd_processor_free starting\n");
     fflush(stdout);
     
     // Safely destroy stores with NULL checks
     if (processor->variables) {
-        printf("DEBUG: About to destroy variables store\n");
         store_destroy(processor->variables);
-        printf("DEBUG: Variables store destroyed\n");
     }
     
     if (processor->modules) {
-        printf("DEBUG: About to destroy modules store\n");
         store_destroy(processor->modules);
-        printf("DEBUG: Modules store destroyed\n");
     }
     
     if (processor->functions) {
-        printf("DEBUG: About to destroy functions store\n");
         store_destroy(processor->functions);
-        printf("DEBUG: Functions store destroyed\n");
     }
     
     if (processor->exports) {
-        printf("DEBUG: About to destroy exports store\n");
         store_destroy(processor->exports);
-        printf("DEBUG: Exports store destroyed\n");
     }
     
     if (processor->config) {
-        printf("DEBUG: About to free config\n");
         XMD_FREE_SAFE(processor->config);
-        printf("DEBUG: Config freed\n");
     }
     
     if (processor->current_file) {
-        printf("DEBUG: About to free current_file\n");
         XMD_FREE_SAFE(processor->current_file);
-        printf("DEBUG: Current_file freed\n");
     }
     
-    printf("DEBUG: About to free processor\n");
     XMD_FREE_SAFE(processor);
-    printf("DEBUG: xmd_processor_free completed\n");
 }

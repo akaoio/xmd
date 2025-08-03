@@ -9,9 +9,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "store.h"
-#include "store_internal.h"
-#include "variable.h"
+#include "../../../include/store.h"
+#include "../../../include/store_internal.h"
+#include "../../../include/variable.h"
+#include "../../utils/common/common_macros.h"
 
 /**
  * @brief Destroy store
@@ -22,33 +23,24 @@ void store_destroy(store* s) {
         return;
     }
     
-    printf("DEBUG: store_destroy - checking %zu buckets\n", s->capacity);
     fflush(stdout);
     for (size_t i = 0; i < s->capacity; i++) {
         store_entry* entry = s->buckets[i];
         while (entry) {
-            printf("DEBUG: store_destroy - processing entry with key: %s\n", entry->key ? entry->key : "(null)");
             fflush(stdout);
             
             store_entry* next = entry->next;
             if (entry->key) {
-                printf("DEBUG: store_destroy - freeing key\n");
                 fflush(stdout);
-                XMD_FREE_SAFE(entry->key);
+                free(entry->key);
             }
             if (entry->value) {
-                printf("DEBUG: store_destroy - about to call variable_unref\n");
                 variable_unref(entry->value);
-                printf("DEBUG: store_destroy - variable_unref completed\n");
             }
-            printf("DEBUG: store_destroy - freeing entry\n");
-            XMD_FREE_SAFE(entry);
+            free(entry);
             entry = next;
         }
     }
-    printf("DEBUG: store_destroy - freeing buckets\n");
-    XMD_FREE_SAFE(s->buckets);
-    printf("DEBUG: store_destroy - freeing store\n");
-    XMD_FREE_SAFE(s);
-    printf("DEBUG: store_destroy - completed\n");
+    free(s->buckets);
+    free(s);
 }

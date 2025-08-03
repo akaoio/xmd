@@ -1,0 +1,38 @@
+# Variable Test Suite for XMD Runtime
+# Tests basic variable declarations and types
+
+# String variables
+set greeting "Hello World"
+set name "XMD"
+set empty ""
+
+# Number variables  
+set count 42
+set pi 3.14159
+set negative -10
+set zero 0
+
+# Boolean variables
+set is_ready true
+set is_done false
+
+# Print all variables
+print "Testing String Variables:"
+print greeting
+print name
+print empty
+
+print "Testing Number Variables:"
+print count
+print pi
+print negative
+print zero
+
+print "Testing Boolean Variables:"
+print is_ready
+print is_done
+
+# Variable reassignment
+set count 100
+print "After reassignment, count = "
+print count

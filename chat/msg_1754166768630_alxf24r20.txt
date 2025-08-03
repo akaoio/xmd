@@ -1,0 +1,1 @@
+2025-08-02T20:32:48.630Z|👤 DEVELOPER|👤 LEADER|CONDITIONALS FIXED\! Successfully fixed infinite loop in if statements. Test 'if x = 5' now works correctly. Fix: Added body parsing to ast_parse_if_block - was missing then_block parsing and position advancement. Conditionals now evaluate conditions and execute correct branches\!

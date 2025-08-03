@@ -33,12 +33,13 @@ char* ast_interpolate_string(const char* str, ast_evaluator* evaluator);
  */
 ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) {
     XMD_VALIDATE_PTRS(NULL, node, evaluator);
-    if (node->type != AST_FUNCTION_CALL) {
-        printf("[ERROR] ast_evaluate_function_call: Invalid node type %d\n", node->type);
-        return NULL;
+    XMD_VALIDATE_NODE_TYPE(node, AST_FUNCTION_CALL, NULL, "ast_evaluate_function_call: Invalid node type");
+    
+    // Validate function name
+    if (!node->data.function_call.name || strlen(node->data.function_call.name) == 0) {
+        XMD_ERROR_RETURN(NULL, "ast_evaluate_function_call: Empty or NULL function name");
     }
     
-    printf("DEBUG: Evaluating function call: %s\n", node->data.function_call.name);
     // Handle built-in print function
     if (strcmp(node->data.function_call.name, "print") == 0) {
         if (node->data.function_call.argument_count > 0) {
@@ -47,10 +48,8 @@ ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) 
             if (arg_value) {
                 char* output = ast_value_to_string(arg_value);
                 if (output) {
-                    printf("DEBUG: Print output before interpolation: '%s'\n", output);
                     // Interpolate variables in the output string
                     char* interpolated = ast_interpolate_string(output, evaluator);
-                    printf("DEBUG: Print output after interpolation: '%s'\n", interpolated);
                     // Append to evaluator's output buffer
                     ast_evaluator_append_output(evaluator, interpolated);
                     ast_evaluator_append_output(evaluator, "\n");
@@ -64,27 +63,49 @@ ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) 
         return ast_value_create_string("");
     }
     
-    // Look up user-defined function in global functions store
-    if (!global_functions) {
-        printf("DEBUG: No functions store available\n");
-        return ast_value_create_string("");
+    // Look up user-defined function in evaluator's functions store
+    if (!evaluator->functions) {
+        XMD_ERROR_RETURN(NULL, "ast_evaluate_function_call: No functions store available for function '%s'", node->data.function_call.name);
     }
     
-    variable* func_var = store_get(global_functions, node->data.function_call.name);
+    // Extract function name without parentheses for lookup
+    char func_name_clean[256];
+    const char* paren = strchr(node->data.function_call.name, '(');
+    if (paren) {
+        size_t name_len = paren - node->data.function_call.name;
+        if (name_len < sizeof(func_name_clean)) {
+            strncpy(func_name_clean, node->data.function_call.name, name_len);
+            func_name_clean[name_len] = '\0';
+        } else {
+            strncpy(func_name_clean, node->data.function_call.name, sizeof(func_name_clean) - 1);
+            func_name_clean[sizeof(func_name_clean) - 1] = '\0';
+        }
+    } else {
+        strncpy(func_name_clean, node->data.function_call.name, sizeof(func_name_clean) - 1);
+        func_name_clean[sizeof(func_name_clean) - 1] = '\0';
+    }
+    
+    // fprintf(stderr, "DEBUG: Looking for function '%s' with %zu arguments\n", func_name_clean, node->data.function_call.argument_count);
+    variable* func_var = store_get(evaluator->functions, func_name_clean);
     if (!func_var) {
-        printf("DEBUG: Function '%s' not found\n", node->data.function_call.name);
-        return ast_value_create_string("");
+        // Debug: List all functions in store
+        size_t count = 0;
+        char** keys = store_keys(evaluator->functions, &count);
+        if (keys) {
+            fprintf(stderr, "DEBUG: Available functions in store (%zu total):\n", count);
+            for (size_t i = 0; i < count; i++) {
+                fprintf(stderr, "  - '%s'\n", keys[i]);
+                XMD_FREE_SAFE(keys[i]);
+            }
+            XMD_FREE_SAFE(keys);
+        }
+        XMD_ERROR_RETURN(NULL, "ast_evaluate_function_call: Function '%s' not defined", func_name_clean);
     }
     
     // Get function definition AST node from stored variable
-    ast_node* func_def = (ast_node*)func_var->value.string_value; // Get AST node pointer
-    printf("DEBUG: Calling user-defined function '%s' with %zu parameters\n", 
-           node->data.function_call.name, node->data.function_call.argument_count);
+    ast_node* func_def = (ast_node*)func_var->value.object_value; // Get AST node pointer from NULL-type variable
     // Check parameter count matches
     if (node->data.function_call.argument_count != func_def->data.function_def.parameter_count) {
-        printf("DEBUG: Parameter count mismatch: expected %zu, got %zu\n",
-               func_def->data.function_def.parameter_count,
-               node->data.function_call.argument_count);
         return ast_value_create_string("");
     }
     
@@ -109,6 +130,7 @@ ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) 
         if (arg_value) {
             variable* param_var = ast_value_to_variable(arg_value);
             if (param_var) {
+                // fprintf(stderr, "DEBUG: Binding parameter '%s' to value\n", param_name);
                 store_set(evaluator->variables, param_name, param_var);
                 variable_unref(param_var);
             }
@@ -116,14 +138,11 @@ ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) 
         }
     }
     
-    printf("DEBUG: Parameters bound successfully\n");
     ast_value* result = NULL;
     // Execute function body if it exists
     if (func_def->data.function_def.body) {
-        printf("DEBUG: Executing function body\n");
         result = ast_evaluate(func_def->data.function_def.body, evaluator);
     } else {
-        printf("DEBUG: No function body - returning empty result\n");
         result = ast_value_create_string("");
     }
     

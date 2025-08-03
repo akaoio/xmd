@@ -7,12 +7,10 @@
  * Extracted from: src/ast_consolidated.c
  */
 
-#include <stdlib.h>
 #include "ast_node.h"
-#include "module.h"
 #include "utils.h"
-#include "variable.h"
 #include "../../../../utils/common/common_macros.h"
+
 /**
  * @brief Create AST function definition node
  * @param name Function name
@@ -25,21 +23,22 @@ ast_node* ast_create_function_def(const char* name, bool is_async, source_locati
         return NULL;
     }
     
-    ast_node* node = xmd_malloc(sizeof(ast_node));
-    if (!node) {
-        return NULL;
-    }
+    XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     
     node->type = AST_FUNCTION_DEF;
-    node->data.function_def.name = xmd_strdup(name);
-    node->data.function_def.parameters = NULL;
-    node->data.function_def.parameter_count = 0;
-    node->data.function_def.body = NULL;
-    node->data.function_def.is_async = is_async;
     node->location = loc;
+    memset(&node->data, 0, sizeof(node->data));
+    
+    node->data.function_def.name = xmd_strdup(name);
     if (!node->data.function_def.name) {
         XMD_FREE_SAFE(node);
         return NULL;
     }
+    
+    node->data.function_def.parameters = NULL;
+    node->data.function_def.parameter_count = 0;
+    node->data.function_def.body = NULL;
+    node->data.function_def.is_async = is_async;
+    
     return node;
 }

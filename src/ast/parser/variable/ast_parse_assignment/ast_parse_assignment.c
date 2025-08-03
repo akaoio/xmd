@@ -42,30 +42,24 @@ ast_node* ast_parse_assignment(const char** pos) {
     }
     
     size_t var_len = start - var_start;
-    char* var_name = xmd_malloc(var_len + 1);
-    if (!var_name) {
-        XMD_ERROR_RETURN(NULL, "Memory allocation failed for variable name");
-    }
+    char* var_name;
+    XMD_MALLOC_SAFE(var_name, char[var_len + 1], NULL, "ast_parse_assignment: Memory allocation failed");
     strncpy(var_name, var_start, var_len);
     var_name[var_len] = '\0';
     
     // Skip whitespace
     while (*start && isspace(*start)) start++;
     
-    printf("DEBUG: Assignment parsing - after var name: '%s'\n", start);
     
     // Skip optional equals sign
     if (*start == '=') {
-        printf("DEBUG: Found equals sign, skipping\n");
         start++;
         // Skip whitespace after equals
         while (*start && isspace(*start)) start++;
-        printf("DEBUG: After skipping equals and whitespace: '%s'\n", start);
     }
     
     // Parse value expression
     const char* value_start = start;
-    printf("DEBUG: Value starts at: '%s'\n", value_start);
     
     // Find end of line or next statement
     while (*start && *start != '\n' && *start != ';') {
@@ -73,8 +67,8 @@ ast_node* ast_parse_assignment(const char** pos) {
     }
     
     // Create assignment node
-    source_location loc = {1, 1, "input"};
-    ast_node* identifier = ast_create_identifier(var_name, loc);
+    source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
+    // ast_node* identifier = ast_create_identifier(var_name, loc); // Unused - var_name used directly
     
     // Parse the value expression
     ast_node* value = ast_parse_expression(&value_start);
@@ -94,12 +88,9 @@ ast_node* ast_parse_assignment(const char** pos) {
     
     // Debug: Check what kind of value node was created
     if (value) {
-        printf("DEBUG: Assignment created - variable: '%s', value node type: %d\n", var_name, value->type);
         if (value->type == AST_IDENTIFIER) {
-            printf("DEBUG: Value is identifier with name: '%s'\n", value->data.identifier.name);
         }
     } else {
-        printf("DEBUG: Assignment created - variable: '%s', value node: NULL\n", var_name);
     }
     
     *pos = start;

@@ -26,10 +26,7 @@ ast_node* ast_create_class_def(const char* name, const char* parent_class, sourc
         return NULL;
     }
     
-    ast_node* node = xmd_malloc(sizeof(ast_node));
-    if (!node) {
-        return NULL;
-    }
+    XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     
     node->type = AST_CLASS_DEF;
     node->data.class_def.name = xmd_strdup(name);

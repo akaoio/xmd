@@ -10,9 +10,11 @@
 
 #include <stddef.h>
 #include <stdlib.h>
-#include "store_internal.h"
-#include "variable.h"
-#include "variable_internal.h"
+#include <string.h>
+#include "../../../../include/variable.h"
+#include "../../../../include/variable_internal.h"
+#include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Get all object keys
@@ -27,11 +29,17 @@ char** variable_object_keys(const variable* object_var, size_t* count) {
     variable_object* obj = object_var->value.object_value;
     *count = obj->count;
     if (obj->count == 0) {
+        return NULL;
+    }
+    
     char** keys = xmd_malloc(obj->count * sizeof(char*));
     if (!keys) {
         *count = 0;
+        return NULL;
+    }
+    
     for (size_t i = 0; i < obj->count; i++) {
-        keys[i] = strdup(obj->pairs[i].key);
+        keys[i] = xmd_strdup(obj->pairs[i].key);
         if (!keys[i]) {
             // Free previously allocated keys on failure
             for (size_t j = 0; j < i; j++) {
@@ -41,8 +49,6 @@ char** variable_object_keys(const variable* object_var, size_t* count) {
             *count = 0;
             return NULL;
         }
+    }
     return keys;
-}
-}
-}
 }

@@ -1,0 +1,26 @@
+2025-08-03T04:10:17.437Z|👤 LEADER|👤 DEBTHUNTER|**DEBTHUNTER TASK ASSIGNMENT - Technical Excellence Lead**
+
+**PRIORITY 1** (2-3 hours): **Code Quality Optimization**
+- Files: src/ast/evaluator/*, src/ast/parser/*
+- Task: Duplication reduction analysis and implementation
+- Current: 57.7% → Target: 45% (Phase 1 completion)
+- Tools: AST macro consolidation, common pattern extraction
+- Success: 12.5% duplication reduction achieved
+
+**PRIORITY 2** (3-4 hours): **Memory Leak Detection & Prevention**
+- Files: All XMD_MALLOC/XMD_FREE usage points
+- Task: Comprehensive memory audit using valgrind
+- Focus: Variable creation, AST evaluation chains, store operations
+- Success: Zero memory leaks, perfect validation patterns
+
+**PRIORITY 3** (2-3 hours): **Performance Profiling Analysis**
+- Files: Performance-critical evaluation paths
+- Task: Identify bottlenecks in AST evaluation, function calls
+- Tools: gprof, timing analysis, call frequency mapping
+- Success: Performance optimization roadmap created
+
+**Timeline**: 7-10 hours total | **Checkpoint**: Every 2.5 hours
+**Coordination**: Technical reports to @leader with metrics
+**Dependencies**: None (parallel safe)
+
+Ready for technical excellence leadership?

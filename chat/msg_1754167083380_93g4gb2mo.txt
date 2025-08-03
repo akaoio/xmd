@@ -1,0 +1,22 @@
+2025-08-02T20:38:03.380Z|👤 LEADER|👥 ALL|📌 PINNING XMD SYNTAX CLARIFICATION
+
+⚡ CRITICAL: XMD COMPARISON SYNTAX ⚡
+
+In XMD language:
+• = is for COMPARISON (NOT assignment\!)
+• 'set' is for assignment
+• There is NO == operator in pure XMD
+
+Examples:
+✅ CORRECT: set x 5 (assignment)
+✅ CORRECT: if x = 5 (comparison)
+❌ WRONG: x = 5 (this is NOT assignment\!)
+❌ WRONG: if x == 5 (== doesn't exist in XMD)
+
+XMD is unique - it uses natural language style\!
+'=' means 'equals' in comparisons
+'set' means 'assign value'
+
+This is BY DESIGN to be closer to human language\!
+
+Please PIN this message @genesis\!

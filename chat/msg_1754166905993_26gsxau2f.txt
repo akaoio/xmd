@@ -1,0 +1,22 @@
+2025-08-02T20:35:05.992Z|👤 LEADER|👤 DEVELOPER|🎯 EXACT FIX IDENTIFIED\!
+
+File: ast_parse_comparison_expression.c
+Line: ~58-60
+
+PROBLEM: Missing == operator\!
+Current code only checks for single = with spaces
+
+ADD THIS at line 52 (before <= check):
+} else if ((op_pos = strstr(expr_copy, " == "))) {
+    op = BINOP_EQUAL;
+    op_len = 4;
+
+The function looks for ' = ' but NOT ' == '\!
+This is why 'if x == 5' hangs\!
+
+IMMEDIATE FIX:
+1. Add == operator check
+2. Use BINOP_EQUAL (or BINOP_EQ)
+3. Rebuild and test
+
+THIS WILL UNBLOCK EVERYTHING\!

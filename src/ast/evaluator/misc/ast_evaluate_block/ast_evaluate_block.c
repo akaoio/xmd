@@ -22,7 +22,7 @@
  */
 ast_value* ast_evaluate_block(ast_node* node, ast_evaluator* evaluator) {
     if (!node || node->type != AST_BLOCK || !evaluator) {
-        return NULL;
+        XMD_ERROR_RETURN(NULL, "ast_evaluate_block: Evaluation failed");
     }
     
     ast_value* result = NULL;

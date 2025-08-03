@@ -10,14 +10,15 @@
 
 #include <stdlib.h>
 #include "../../../../include/dependency.h"
+#include "../../../utils/common/common_macros.h"
 
 // Forward declaration
-void dependency_node_XMD_FREE_SAFE(DependencyNode* node);
+void dependency_node_free(DependencyNode* node);
 /**
  * @brief Free a dependency graph
  * @param graph Graph to free
  */
-void dependency_graph_XMD_FREE_SAFE(DependencyGraph* graph) {
+void dependency_graph_free(DependencyGraph* graph) {
     if (!graph) {
         return;
     }
@@ -25,7 +26,7 @@ void dependency_graph_XMD_FREE_SAFE(DependencyGraph* graph) {
     // Free all nodes
     if (graph->nodes) {
         for (size_t i = 0; i < graph->node_count; i++) {
-            dependency_node_XMD_FREE_SAFE(graph->nodes[i]);
+            dependency_node_free(graph->nodes[i]);
         }
         XMD_FREE_SAFE(graph->nodes);
     }

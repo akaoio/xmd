@@ -7,12 +7,12 @@
  * Extracted from: src/token.c
  */
 
-#include "performance.h"
-#include "token.h"
-#include "token_internal.h"
-#include "variable.h"
-#include "utils.h"
-#include "utils/common/common_macros.h"
+#include "../../../../include/performance.h"
+#include "../../../../include/token.h"
+#include "../../../../include/token_internal.h"
+#include "../../../../include/variable.h"
+#include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Duplicate a token
  * @param tok Token to duplicate

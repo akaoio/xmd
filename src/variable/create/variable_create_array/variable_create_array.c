@@ -9,18 +9,17 @@
  */
 
 #include <stdlib.h>
-#include "variable.h"
-#include "variable_internal.h"
-#include "utils.h"
-#include "utils/common/common_macros.h"
+#include "../../../../include/variable.h"
+#include "../../../../include/variable_internal.h"
+#include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Create a new array variable
  * @return New empty array variable or NULL on failure
  */
 variable* variable_create_array(void) {
-    variable* var = xmd_malloc(sizeof(variable));
-    XMD_NULL_CHECK(var, NULL);
+    XMD_CREATE_VALIDATED(var, variable, sizeof(variable), NULL);
     
     var->type = VAR_ARRAY;
     var->value.array_value = xmd_malloc(sizeof(variable_array));

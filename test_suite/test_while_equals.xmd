@@ -1,0 +1,10 @@
+# While loop with equals only
+set counter 0
+set target 5
+
+print "Testing while with = operator:"
+while counter = 0
+    print "Counter is zero, incrementing"
+    set counter 1
+
+print "Done. Counter = " + counter

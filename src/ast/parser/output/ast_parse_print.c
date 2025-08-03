@@ -12,12 +12,14 @@
 #include "ast_node.h"
 #include "ast_parser.h"
 #include "error.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Parse print statement: print "message" or print variable
  * @param pos Pointer to current position
  * @return Print function call AST node or NULL
  */
 ast_node* ast_parse_print(const char** pos) {
+    XMD_VALIDATE_PTRS(NULL, pos, *pos);
     const char* start = *pos;
     
     // Skip "print "
@@ -31,7 +33,7 @@ ast_node* ast_parse_print(const char** pos) {
         return NULL;
     }
     // Create a function call node for print
-    source_location loc = {1, 1, "input"};
+    source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
     ast_node* print_call = ast_create_function_call("print", loc);
     if (print_call) {
         ast_add_argument(print_call, expr);

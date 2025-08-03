@@ -1,0 +1,3 @@
+# Single Iteration Test - Leader's specific test case
+for i in 1 .. 1
+    print "once"

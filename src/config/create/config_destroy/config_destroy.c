@@ -9,6 +9,7 @@
 
 #include "../../../../include/config_internal.h"
 #include "../../../../include/xmd.h"
+#include "../../../../include/core_macros.h"
 #include <stdlib.h>
 
 /**
@@ -20,26 +21,8 @@ void config_destroy(xmd_config* config) {
     
     xmd_internal_config* internal = (xmd_internal_config*)config;
     
-    // Free path strings (only the ones that exist in the struct)
-    XMD_FREE_SAFE(internal->paths.proc_status_path);
-    XMD_FREE_SAFE(internal->paths.proc_fd_path);
-    XMD_FREE_SAFE(internal->paths.temp_dir);
-    
-    // Free module search paths if they exist
-    if (internal->paths.module_search_paths) {
-        for (size_t i = 0; i < internal->paths.module_search_path_count; i++) {
-            XMD_FREE_SAFE(internal->paths.module_search_paths[i]);
-        }
-        XMD_FREE_SAFE(internal->paths.module_search_paths);
-    }
-    
-    // Free security exec whitelist
-    if (internal->security.exec_whitelist) {
-        for (size_t i = 0; i < internal->security.exec_whitelist_count; i++) {
-            XMD_FREE_SAFE(internal->security.exec_whitelist[i]);
-        }
-        XMD_FREE_SAFE(internal->security.exec_whitelist);
-    }
+    XMD_CONFIG_CLEANUP_PATHS(internal);
+    XMD_CONFIG_CLEANUP_SECURITY(internal);
     
     XMD_FREE_SAFE(config);
 }

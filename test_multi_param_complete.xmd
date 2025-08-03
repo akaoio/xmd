@@ -1,0 +1,12 @@
+function greet name title
+    return title + " " + name
+
+function add a b
+    return a + b
+
+function triple a b c
+    return a + " - " + b + " - " + c
+
+print greet "Alice" "Dr."
+print add 10 5
+print triple "First" "Second" "Third"

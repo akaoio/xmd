@@ -1,0 +1,5 @@
+function test_two a b
+    print a
+    print b
+
+test_two "first" "second"

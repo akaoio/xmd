@@ -29,6 +29,8 @@ extern char* ast_interpolate_string(const char* str, ast_evaluator* evaluator);
 ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
     XMD_VALIDATE_PTRS(NULL, node, evaluator);
     
+    // DEBUG: ast_evaluate - disabled after successful loop fix
+    
     switch (node->type) {
         case AST_PROGRAM:
             return ast_evaluate_program_node(node, evaluator);
@@ -38,7 +40,6 @@ ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
             
         case AST_ASSIGNMENT: {
             // FIXED: Return the assigned value instead of boolean success
-            printf("DEBUG: Evaluating assignment node\n");
             
             // Use the existing assignment evaluation which handles everything
             int result = ast_evaluate_assignment(node, evaluator);
@@ -48,7 +49,6 @@ ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
             ast_value* assigned_value = ast_evaluate(node->data.assignment.value, evaluator);
             
             // Return the assigned value instead of boolean true
-            printf("DEBUG: Assignment successful, returning computed value\n");
             return assigned_value;
         }
             
@@ -96,11 +96,8 @@ ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
             
         case AST_CLASS_DEF:
             // Class definitions don't return a value, they register classes
-            printf("DEBUG: Evaluating class definition: %s\n", node->data.class_def.name);
             if (node->data.class_def.parent_class) {
-                printf("DEBUG: Extends: %s\n", node->data.class_def.parent_class);
             }
-            printf("DEBUG: Methods: %zu\n", node->data.class_def.method_count);
             // Store class in evaluator context for instantiation
             return ast_value_create_boolean(true);
             
@@ -112,6 +109,7 @@ ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
             return ast_evaluate_conditional(node, evaluator);
             
         case AST_LOOP:
+            // Loop evaluation - working correctly now
             return ast_evaluate_loop(node, evaluator);
             
         case AST_WHILE_LOOP:
@@ -138,8 +136,10 @@ ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
         case AST_FILE_LIST:
             return ast_evaluate_file_list(node, evaluator);
             
+        case AST_ARRAY_ACCESS:
+            return ast_evaluate_array_access(node, evaluator);
+            
         case AST_ARRAY_LITERAL: {
-            printf("DEBUG: Evaluating array literal with %zu elements\n", node->data.array_literal.element_count);
             // Create array value
             ast_value* array_val = ast_value_create_array();
             XMD_NULL_CHECK(array_val);

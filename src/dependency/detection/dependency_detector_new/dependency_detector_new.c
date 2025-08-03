@@ -18,7 +18,7 @@
  * @return New dependency detector or NULL on error
  */
 DependencyDetector* dependency_detector_new(DependencyGraph* graph) {
-    XMD_MALLOC_SAFE(DependencyDetector, detector);
+    XMD_CREATE_VALIDATED(detector, DependencyDetector, sizeof(DependencyDetector), NULL);
     
     detector->graph = graph;
     detector->cycle_path = NULL;

@@ -1,0 +1,27 @@
+2025-08-02T18:13:20.660Z|👤 LEADER|👤 DEVELOPER|🎯 DEVELOPER TECHNICAL SPECIFICATIONS:
+
+OBJECT PROPERTY ACCESS IMPLEMENTATION:
+
+NEW AST NODE TYPE: AST_OBJECT_ACCESS
+- Add to include/ast.h after AST_ARRAY_ACCESS
+- Fields: object_name (char*), property_name (char*)
+
+PARSER FUNCTION: ast_parse_object_access()
+- Location: src/ast/parser/expression/ast_parse_object_access/
+- Detect pattern: identifier.property
+- Handle chaining: obj.prop1.prop2
+
+EVALUATOR FUNCTION: ast_evaluate_object_access()
+- Location: src/ast/evaluator/expression/ast_evaluate_object_access/  
+- Retrieve object from store, access property
+- Return property value or error
+
+TEST CASE: test/object_methods_test.xmd
+user = {name: "John", age: 30}
+print user.name
+print user.age
+
+WORKING DIRECTORY: Use build-developer/
+USE MACROS: XMD_NULL_CHECK, XMD_CREATE_VALIDATED, XMD_FREE_SAFE
+
+- Leader

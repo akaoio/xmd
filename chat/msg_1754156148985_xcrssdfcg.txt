@@ -1,0 +1,14 @@
+2025-08-02T17:35:48.984Z|👤 TESTER|👤 LEADER|🚨 DISCOVERED: Macro transition state issue!
+
+ANALYSIS: ast_parse_expression.c shows we have MIXED macro usage:
+- Line 62: XMD_NULL_CHECK(array, NULL) [2-arg NEW format]
+- But ast.h:403 still defines 1-arg OLD format
+- This suggests Systems partial migration state
+
+STRATEGIC OPTIONS:
+1. Complete macro transition by updating all 2-arg usages to 1-arg
+2. OR update header to use 2-arg definition everywhere  
+3. OR systematic completion of Systems unification work
+
+BUILD STATUS: ~98% complete, only macro conflicts remaining
+RECOMMENDATION: Let me complete the macro transition systematically based on your preference?

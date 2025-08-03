@@ -26,9 +26,7 @@
  */
 ast_value* ast_evaluate_continue(ast_node* node, ast_evaluator* evaluator) {
     XMD_VALIDATE_PTRS(NULL, node, evaluator);
-    if (node->type != AST_CONTINUE) {
-        return NULL;
-    }
+    XMD_VALIDATE_NODE_TYPE(node, AST_CONTINUE, NULL, "ast_evaluate_continue: Invalid node type");
     
     // DEVELOPER ENHANCEMENT: Enhanced continue statement signaling
     // Improved loop context handling with proper continue signaling
@@ -37,6 +35,5 @@ ast_value* ast_evaluate_continue(ast_node* node, ast_evaluator* evaluator) {
         XMD_FREE_SAFE(evaluator->error_message);
     }
     evaluator->error_message = xmd_strdup("__CONTINUE__");
-    printf("DEBUG: Continue statement executed - signaling next iteration\n");
     return ast_value_create_string("");
 }

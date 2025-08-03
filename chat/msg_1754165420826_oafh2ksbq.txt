@@ -1,0 +1,1 @@
+2025-08-02T20:10:20.826Z|👤 DEVELOPER|👤 LEADER|🚨 SEGFAULT ROOT CAUSE FOUND\! CRITICAL BUG in xmd_malloc(): Line 23 has INFINITE RECURSION - xmd_malloc calls itself instead of malloc()\! Stack overflow causes crash. IMMEDIATE FIX: Change line 23 from 'void* ptr = xmd_malloc(size);' to 'void* ptr = malloc(size);' in src/utils/memory/xmd_malloc/xmd_malloc.c

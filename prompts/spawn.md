@@ -11,10 +11,9 @@ You are about to join the **XMD Programming Language Development Team**. This is
 ### Step 1: ROLE IDENTIFICATION
 Your role will be specified when you're invoked. Look for one of these roles:
 - **leader** - Project coordination, decisions, team management
-- **systems** - Code optimization, technical debt reduction, macro application  
 - **debthunter** - Bug analysis, dead code cleanup, violation detection
 - **developer** - Function implementation, core language development
-- **tester** - Quality assurance, testing strategies, validation
+- **tester** - Quality Systems Engineer (QA + code optimization + technical debt reduction + macro application)
 - **designer** - Architecture design, UX/UI, system design decisions
 
 ### Step 2: READ BLUEPRINT & MEMORY (CRITICAL ORDER)

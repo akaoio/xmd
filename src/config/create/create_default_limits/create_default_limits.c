@@ -1,28 +1,29 @@
 /**
  * @file create_default_limits.c
- * @brief Create default resource limits
+ * @brief Implementation of create_default_limits function
  * 
  * This file contains ONLY the create_default_limits function.
  * One function per file - Genesis principle compliance.
- * Extracted from: backup/backup_20250801_184028/src/config_consolidated.c
  */
 
 #include "../../../../include/config_internal.h"
+#include "../../../../include/utils.h"
 
 /**
- * @brief Create default resource limits
- * @return Default resource limits configuration
+ * @brief Create default limits configuration
+ * @return Default limits configuration or NULL on error
  */
-xmd_resource_limits create_default_limits(void) {
-    xmd_resource_limits limits;
+limits_config* create_default_limits(void) {
+    limits_config* limits = xmd_calloc(1, sizeof(limits_config));
+    if (!limits) return NULL;
     
-    // Memory limits
-    limits.memory_limit_mb = 64; // 64MB default
-    limits.cpu_time_limit_ms = 30000; // 30 seconds CPU time
-    limits.execution_time_limit_ms = 30000; // 30 seconds wall time
-    limits.max_output_size = 10 * 1024 * 1024; // 10MB output
-    limits.max_recursion_depth = 1000; // Stack depth limit
-    limits.max_loop_iterations = 100000; // Loop iteration limit
+    // Set default limits
+    limits->max_memory = 100 * 1024 * 1024;  // 100MB
+    limits->max_file_size = 10 * 1024 * 1024;  // 10MB
+    limits->max_execution_time = 30;  // 30 seconds
+    limits->max_recursion_depth = 100;
+    limits->max_variables = 10000;
+    limits->max_function_calls = 1000;
     
     return limits;
 }

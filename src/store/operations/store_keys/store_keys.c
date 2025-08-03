@@ -8,9 +8,9 @@
  */
 
 #include <stdlib.h>
-#include "store.h"
-#include "store_internal.h"
-#include "utils.h"
+#include "../../../../include/store.h"
+#include "../../../../include/store_internal.h"
+#include "../../../../include/utils.h"
 
 /**
  * @brief Get all keys from store
@@ -55,9 +55,9 @@ char** store_keys(store* s, size_t* count) {
             if (!keys[idx]) {
                 // Cleanup on allocation failure
                 for (size_t j = 0; j < idx; j++) {
-                    XMD_FREE_SAFE(keys[j]);
+                    free(keys[j]);
                 }
-                XMD_FREE_SAFE(keys);
+                free(keys);
                 *count = 0;
                 return NULL;
             }

@@ -23,33 +23,26 @@
  * @return AST node (identifier or array access)
  */
 ast_node* ast_parse_identifier_or_array(const char* identifier_str, source_location loc) {
-    if (!identifier_str) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, identifier_str);
     
-    printf("DEBUG: ast_parse_identifier_or_array called with: '%s'\n", identifier_str);
     
     // Look for bracket to detect array access
     const char* bracket_pos = strchr(identifier_str, '[');
     if (!bracket_pos) {
         // No bracket, just a regular identifier
-        printf("DEBUG: No bracket found, creating identifier for: '%s'\n", identifier_str);
         return ast_create_identifier(identifier_str, loc);
     }
     
     // Find the closing bracket
     const char* close_bracket = strchr(bracket_pos, ']');
     if (!close_bracket) {
-        printf("DEBUG: No closing bracket found, treating as identifier: '%s'\n", identifier_str);
         return ast_create_identifier(identifier_str, loc);
     }
     
     // Extract array name (before '[')
     size_t array_name_len = bracket_pos - identifier_str;
-    char* array_name = xmd_malloc(array_name_len + 1);
-    if (!array_name) {
-        return NULL;
-    }
+    char* array_name;
+    XMD_MALLOC_SAFE(array_name, char[array_name_len + 1], NULL, "ast_parse_identifier_or_array: Failed to allocate array name");
     strncpy(array_name, identifier_str, array_name_len);
     array_name[array_name_len] = '\0';
     
@@ -63,7 +56,6 @@ ast_node* ast_parse_identifier_or_array(const char* identifier_str, source_locat
     strncpy(index_str, bracket_pos + 1, index_len);
     index_str[index_len] = '\0';
     
-    printf("DEBUG: Parsed array access - array:'%s', index:'%s'\n", array_name, index_str);
     
     // Create array expression (identifier)
     ast_node* array_expr = ast_create_identifier(array_name, loc);
@@ -79,11 +71,9 @@ ast_node* ast_parse_identifier_or_array(const char* identifier_str, source_locat
         // Numeric index
         double index_val = atof(index_str);
         index_expr = ast_create_number_literal(index_val, loc);
-        printf("DEBUG: Created numeric index: %f\n", index_val);
     } else {
         // Variable index
         index_expr = ast_create_identifier(index_str, loc);
-        printf("DEBUG: Created variable index: '%s'\n", index_str);
     }
     
     if (!index_expr) {
@@ -96,9 +86,7 @@ ast_node* ast_parse_identifier_or_array(const char* identifier_str, source_locat
     // Create array access node
     ast_node* result = ast_create_array_access(array_expr, index_expr, loc);
     if (result) {
-        printf("DEBUG: Successfully created AST_ARRAY_ACCESS node\n");
     } else {
-        printf("DEBUG: Failed to create AST_ARRAY_ACCESS node\n");
         XMD_FREE_SAFE(array_expr);
         XMD_FREE_SAFE(index_expr);
     }

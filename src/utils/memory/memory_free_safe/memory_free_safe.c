@@ -15,7 +15,7 @@
  */
 void memory_free_safe(void** ptr) {
     if (ptr && *ptr) {
-        XMD_FREE_SAFE(*ptr);
+        free(*ptr);
         *ptr = NULL;
     }
 }

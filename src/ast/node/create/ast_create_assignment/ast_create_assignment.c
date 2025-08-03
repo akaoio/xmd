@@ -7,11 +7,10 @@
  * Extracted from: src/ast_consolidated.c
  */
 
-#include <stdlib.h>
 #include "ast_node.h"
 #include "utils.h"
-#include "variable.h"
 #include "../../../../utils/common/common_macros.h"
+
 /**
  * @brief Create AST assignment node
  * @param variable Variable name
@@ -25,19 +24,20 @@ ast_node* ast_create_assignment(const char* variable, binary_operator op, ast_no
         return NULL;
     }
     
-    ast_node* node = xmd_malloc(sizeof(ast_node));
-    if (!node) {
-        return NULL;
-    }
+    XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     
     node->type = AST_ASSIGNMENT;
-    node->data.assignment.variable = xmd_strdup(variable);
-    node->data.assignment.op = op;
-    node->data.assignment.value = value;
     node->location = loc;
+    memset(&node->data, 0, sizeof(node->data));
+    
+    node->data.assignment.variable = xmd_strdup(variable);
     if (!node->data.assignment.variable) {
         XMD_FREE_SAFE(node);
         return NULL;
     }
+    
+    node->data.assignment.op = op;
+    node->data.assignment.value = value;
+    
     return node;
 }

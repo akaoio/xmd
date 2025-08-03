@@ -22,7 +22,7 @@
  * @return String representation or NULL on error
  */
 char* ast_value_to_string(ast_value* value) {
-    XMD_NULL_CHECK(value, NULL);
+    XMD_NULL_CHECK(value);
     
     switch (value->type) {
         case AST_VAL_STRING:
@@ -46,7 +46,7 @@ char* ast_value_to_string(ast_value* value) {
             // Calculate total size needed
             size_t total_size = 3; // "[]\0"
             char** element_strings = xmd_malloc(sizeof(char*) * value->value.array_value.element_count);
-            XMD_NULL_CHECK(element_strings, NULL);
+            XMD_NULL_CHECK(element_strings);
             
             // Convert each element to string
             for (size_t i = 0; i < value->value.array_value.element_count; i++) {

@@ -18,10 +18,7 @@
  * @return 0 on success, -1 on error
  */
 int dependency_graph_add_module(DependencyGraph* graph, Module* module) {
-    XMD_ENTRY_VALIDATE(graph, module);
-    if (!graph || !module) {
-        return -1;
-    }
+    XMD_VALIDATE_PTRS(-1, graph, module);
     
     // Check if module already exists
     if (dependency_graph_find_node(graph, module->name)) {

@@ -24,6 +24,11 @@ variable* store_get(store* s, const char* key) {
     XMD_NULL_CHECK(s, NULL);
     XMD_NULL_CHECK(key, NULL);
     
+    // Validate key is not empty
+    if (strlen(key) == 0) {
+        XMD_ERROR_RETURN(NULL, "store_get: Empty key provided");
+    }
+    
     unsigned int index = xmd_hash_key(key, s->capacity);
     store_entry* entry = s->buckets[index];
     while (entry) {
@@ -32,5 +37,7 @@ variable* store_get(store* s, const char* key) {
         }
         entry = entry->next;
     }
-    return NULL;
+    
+    // Key not found - provide detailed error
+    XMD_ERROR_RETURN(NULL, "store_get: Key '%s' not found in store", key);
 }

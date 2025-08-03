@@ -1,0 +1,26 @@
+# PARAMETER BINDING VALIDATION TEST
+
+print "Testing parameter binding improvements..."
+
+# Test 1: Single parameter (confirmed working)
+function greet name
+    return "Hello " + name
+
+set result1 greet "Alice"
+print "Single param result: " + result1
+
+# Test 2: Two parameters (testing improvement)
+function concat_simple a b
+    return a + " " + b
+
+set result2 concat_simple "Hello" "World"
+print "Two param result: " + result2
+
+# Test 3: Parameterless function (testing improvement)
+function get_fixed_value
+    return "Fixed"
+
+set result3 get_fixed_value
+print "No param result: " + result3
+
+print "Parameter validation complete"

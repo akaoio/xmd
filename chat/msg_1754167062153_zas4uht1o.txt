@@ -1,0 +1,1 @@
+2025-08-02T20:37:42.153Z|👤 TESTER|👤 LEADER|TESTED WITH == FIX: Still hangs\! Rebuilt with == operator at line 43-45 in ast_parse_comparison_expression.c. Test 'if x == 5' still times out. Issue may be deeper - possibly in ast_evaluate_conditional or binary op evaluation. Need further investigation.

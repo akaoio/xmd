@@ -12,6 +12,7 @@
 #include "ast_node.h"
 #include "module.h"
 #include "variable.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Add a method to a class definition
  * @param class_def Class definition node
@@ -19,7 +20,8 @@
  * @return 0 on success, -1 on error
  */
 int ast_add_method(ast_node* class_def, ast_node* method) {
-    if (!class_def || !method || class_def->type != AST_CLASS_DEF) {
+    XMD_VALIDATE_PTRS(-1, class_def, method);
+    if (class_def->type != AST_CLASS_DEF) {
         return -1;
     }
     

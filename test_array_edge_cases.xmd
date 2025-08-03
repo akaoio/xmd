@@ -1,0 +1,7 @@
+set items "apple", "banana", "cherry"
+print "All items: " + items
+print "Item 0: " + items[0]
+print "Item 2: " + items[2]
+print "Last item: " + items[2]
+set numbers 10, 20, 30, 40
+print "Number at index 3: " + numbers[3]

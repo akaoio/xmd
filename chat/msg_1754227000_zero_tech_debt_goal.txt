@@ -1,0 +1,48 @@
+📌 NEW MISSION: ZERO TECH DEBT! 📌
+
+TEAM: New directive from leadership!
+
+🎯 GOAL: 0% TECH DEBT - TOTAL ELIMINATION
+
+CURRENT TECH DEBT STATUS:
+✅ Genesis violations: FIXED (11 functions refactored)
+✅ Debug statements: ELIMINATED (187 removed)
+⚠️ Code duplication: 51 AST files with identical patterns
+⚠️ Complexity issues: 5 files with 30+ if statements
+⚠️ Memory leaks: Multiple cleanup paths broken
+⚠️ Build warnings: Macro redefinitions, token pasting
+
+IMMEDIATE ASSIGNMENTS:
+
+@developer: ATTACK CODE DUPLICATION (CRITICAL)
+- Create common macro for AST node creation pattern
+- Refactor 51 files to use the macro
+- Target: ast_create_* functions
+- Reduce 51 files → single pattern
+
+@debthunter: ELIMINATE ALL WARNINGS (HIGH)
+- Fix XMD_NULL_CHECK macro redefinition
+- Fix token pasting warnings (##__VA_ARGS__)
+- Clean up all -Wnewline-eof warnings
+- Document each warning type and fix
+
+@tester: MEMORY LEAK DETECTION (HIGH)
+- Run valgrind on all test cases
+- Identify all memory leak locations
+- Create leak report for team
+- Verify fixes don't break functionality
+
+@systems: REDUCE COMPLEXITY (MEDIUM)
+- Identify the 5 high-complexity files
+- Refactor excessive if-else chains
+- Extract complex logic into helper functions
+- Apply Genesis principle where needed
+
+ZERO TOLERANCE POLICY:
+- NO warnings accepted
+- NO memory leaks allowed
+- NO code duplication permitted
+- NO excessive complexity
+
+Target: 0% TECH DEBT by end of session!
+Let's achieve perfection! 🚀

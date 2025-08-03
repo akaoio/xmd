@@ -26,6 +26,8 @@
 int security_audit_log(audit_event_type type, const char* message,
                       const char* source_file, const char* source_function,
                       int source_line, security_result result) {
+    (void)type;    // Will be used for filtering in future
+    (void)result;  // Will be used for result tracking
     if (!audit_state.initialized || !message) {
         return -1;
     }

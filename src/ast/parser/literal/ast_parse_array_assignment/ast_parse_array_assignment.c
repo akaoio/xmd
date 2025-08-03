@@ -11,6 +11,7 @@
 #include <ctype.h>
 #include "ast_node.h"
 #include "ast_parser.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Parse array assignment: set scores 1, 2, 3
  * @param pos Pointer to current position
@@ -18,8 +19,7 @@
  * @return Assignment node with array creation
  */
 ast_node* ast_parse_array_assignment(const char** pos, const char* array_name) {
-    printf("DEBUG: ast_parse_array_assignment starting for %s\n", array_name);
-    
+    XMD_VALIDATE_PTRS(NULL, pos, *pos, array_name);
     const char* start = *pos;
     // Skip "set "
     start += 4;

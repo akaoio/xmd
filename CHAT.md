@@ -29,10 +29,9 @@ This document contains:
 ```
 memory/
 ├── leader/memory.md      # Trí nhớ Leader - Điều phối & quyết định
-├── systems/memory.md     # Trí nhớ Systems - Tối ưu hóa & macro
 ├── debthunter/memory.md  # Trí nhớ Debthunter - Phân tích & dọn dẹp  
 ├── developer/memory.md   # Trí nhớ Developer - Implement & code
-├── tester/memory.md      # Trí nhớ Tester - Testing & validation
+├── tester/memory.md      # Trí nhớ Quality Systems Engineer - QA + tối ưu hóa + macro
 └── designer/memory.md    # Trí nhớ Designer - Architecture & design
 ```
 

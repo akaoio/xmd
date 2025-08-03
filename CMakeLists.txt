@@ -130,6 +130,7 @@ set(XMD_LIB_SOURCES
     "src/ast/evaluator/expression/ast_evaluate_binary_op/ast_evaluate_binary_op.c"
     "src/ast/evaluator/expression/ast_evaluate_identifier/ast_evaluate_identifier.c"
     "src/ast/evaluator/expression/ast_evaluate_array_access/ast_evaluate_array_access.c"
+    "src/ast/evaluator/expression/ast_evaluate_object_access/ast_evaluate_object_access.c"
     "src/ast/evaluator/fileio/ast_evaluate_file_delete/ast_evaluate_file_delete.c"
     "src/ast/evaluator/fileio/ast_evaluate_file_exists/ast_evaluate_file_exists.c"
     "src/ast/evaluator/fileio/ast_evaluate_file_list/ast_evaluate_file_list.c"
@@ -144,6 +145,7 @@ set(XMD_LIB_SOURCES
     "src/ast/evaluator/program/ast_evaluate_program/ast_evaluate_program.c"
     # "src/ast/node/create/ast_create_literal/ast_create_literal.c"  # Type errors - revert to individual files  
     "src/ast/node/create/ast_create_array_access.c"
+    "src/ast/node/create/ast_create_object_access.c"
     "src/ast/node/create/ast_create_array_literal/ast_create_array_literal.c"
     "src/ast/node/create/ast_create_boolean_literal/ast_create_boolean_literal.c"
     "src/ast/node/create/ast_create_assignment/ast_create_assignment.c"
@@ -177,6 +179,7 @@ set(XMD_LIB_SOURCES
     "src/ast/parser/expression/ast_parse_comparison_expression/ast_parse_comparison_expression.c"
     "src/ast/parser/expression/ast_parse_expression/ast_parse_expression.c"
     "src/ast/parser/expression/ast_parse_identifier_or_array/ast_parse_identifier_or_array.c"
+    "src/ast/parser/expression/ast_parse_object_access/ast_parse_object_access.c"
     "src/ast/parser/expression/ast_parse_math_expression/ast_parse_math_expression.c"
     "src/ast/parser/expression/ast_parse_primary/ast_parse_primary.c"
     "src/ast/parser/function/ast_parse_function/ast_parse_function.c"
@@ -201,15 +204,22 @@ set(XMD_LIB_SOURCES
     "src/ast/value/ast_value_to_variable/ast_value_to_variable.c"
     "src/ast/value/misc/ast_value_array_add.c"
     "src/ast/substitution/ast_interpolate_string.c"
+    "src/ast/json/json_escape_string/json_escape_string.c"
+    "src/ast/json/json_stringify_variable/json_stringify_variable.c"
+    "src/ast/json/json_parse_object/json_parse_object.c"
+    "src/ast/json/json_parse_array/json_parse_array.c"
+    "src/ast/json/json_parse_value/json_parse_value.c"
     "src/ast/json/ast_json_stringify/ast_json_stringify.c"
     "src/ast/json/ast_json_parse/ast_json_parse.c"
     "src/ast/yaml/ast_yaml_stringify/ast_yaml_stringify.c"
     "src/ast/yaml/ast_yaml_parse/ast_yaml_parse.c"
+    "src/ast/yaml/yaml_stringify_variable/yaml_stringify_variable.c"
+    "src/ast/yaml/yaml_parse_simple/yaml_parse_simple.c"
     # Bindings module (fully refactored to hierarchical c_api structure) - TEAM COLLABORATION
     "src/bindings/c_api/initialization/xmd_init/xmd_init.c"
     "src/bindings/c_api/initialization/c_api_xmd_init/c_api_xmd_init.c"
     "src/bindings/c_api/initialization/c_api_xmd_cleanup/c_api_xmd_cleanup.c"
-    "src/bindings/c_api/configuration/xmd_config_create_default/xmd_config_create_default.c"
+    # "src/bindings/c_api/configuration/xmd_config_create_default/xmd_config_create_default.c" # Commented out - depends on config_create
     "src/bindings/c_api/configuration/xmd_config_free/xmd_config_free.c"
     "src/bindings/c_api/variables/xmd_set_variable/xmd_set_variable.c"
     "src/bindings/c_api/variables/xmd_get_variable/xmd_get_variable.c"
@@ -233,14 +243,14 @@ set(XMD_LIB_SOURCES
     "src/cli/init/cli_init/cli_init.c"
     "src/cli/cleanup/cli_cleanup/cli_cleanup.c"
     # Config module (real implementation from backup)
-    "src/config/create/config_create/config_create.c"
+    # "src/config/create/config_create/config_create.c" # Commented out due to build errors
     "src/config/create/config_destroy/config_destroy.c"
-    "src/config/create/create_default_limits/create_default_limits.c"
-    "src/config/create/create_default_buffers/create_default_buffers.c"
-    "src/config/create/create_default_paths/create_default_paths.c"
-    "src/config/create/create_default_precision/create_default_precision.c"
-    "src/config/create/create_default_security/create_default_security.c"
-    "src/config/create/create_default_timing/create_default_timing.c"
+    # "src/config/create/create_default_limits/create_default_limits.c" # Commented out - file missing
+    # "src/config/create/create_default_buffers/create_default_buffers.c" # Commented out - file missing
+    # "src/config/create/create_default_paths/create_default_paths.c" # Commented out - file missing
+    # "src/config/create/create_default_precision/create_default_precision.c" # Commented out - file missing
+    # "src/config/create/create_default_security/create_default_security.c" # Commented out - file missing
+    # "src/config/create/create_default_timing/create_default_timing.c" # Commented out - file missing
     # All consolidated files have been successfully refactored to modular structure!
     # Performance module (refactored to Genesis hierarchical structure - 15 functions)
     "src/performance/timing/get_time_ns.c"
@@ -363,7 +373,7 @@ set(XMD_LIB_SOURCES
     "src/variable/create/variable_create_number/variable_create_number.c"
     "src/variable/create/variable_create_object/variable_create_object.c"
     "src/variable/create/variable_create_string/variable_create_string.c"
-    "src/variable/create/variable_new_array/variable_new_array.c"
+    # "src/variable/create/variable_new_array/variable_new_array.c" # Commented out - file missing
     "src/variable/memory/variable_ref/variable_ref.c"
     "src/variable/memory/variable_unref/variable_unref.c"
     "src/variable/object/variable_object_find_key/variable_object_find_key.c"
@@ -428,6 +438,9 @@ set(XMD_LIB_SOURCES
     # CLI module - Command-line interface (Genesis structure)
     "src/cli/init/cli_init/cli_init.c"
     "src/cli/cleanup/cli_cleanup/cli_cleanup.c"
+    "src/cli/output/print_version/print_version.c"
+    "src/cli/output/print_usage/print_usage.c"
+    "src/cli/commands/cmd_process_simple/cmd_process_simple.c"
     
     # Native XMD system
     "src/misc/xmd_is_native_syntax/xmd_is_native_syntax.c"

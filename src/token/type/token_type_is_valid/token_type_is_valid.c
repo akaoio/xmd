@@ -16,5 +16,7 @@
  * @return 1 if valid, 0 if invalid
  */
 bool token_type_is_valid(token_type type) {
-    return type >= TOKEN_EOF && type <= TOKEN_COMMENT;
+    // Check if token type is within valid range
+    // TOKEN_EOF is 0, TOKEN_COMMENT is the last valid type
+    return (type <= TOKEN_COMMENT);  // Since type is unsigned, >= 0 is always true
 }

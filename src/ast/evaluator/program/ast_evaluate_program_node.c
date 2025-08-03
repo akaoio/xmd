@@ -26,9 +26,7 @@ extern int ast_evaluator_append_output(ast_evaluator* evaluator, const char* tex
  */
 ast_value* ast_evaluate_program_node(ast_node* node, ast_evaluator* evaluator) {
     XMD_VALIDATE_PTRS(NULL, node, evaluator);
-    if (node->type != AST_PROGRAM) {
-        return NULL;
-    }
+    XMD_VALIDATE_NODE_TYPE(node, AST_PROGRAM, NULL, "ast_evaluate_program_node: Invalid node type");
     
     ast_value* result = NULL;
     for (size_t i = 0; i < node->data.program.statement_count; i++) {

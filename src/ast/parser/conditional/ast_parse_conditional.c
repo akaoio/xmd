@@ -12,12 +12,14 @@
 #include "ast.h"
 #include "error.h"
 #include "utils.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Parse conditional statement: if condition then action
  * @param pos Pointer to current position (updated)
  * @return Conditional AST node or NULL
  */
 ast_node* ast_parse_conditional(const char** pos) {
+    XMD_VALIDATE_PTRS(NULL, pos, *pos);
     const char* start = *pos;
     
     // Skip "if "
@@ -34,8 +36,8 @@ ast_node* ast_parse_conditional(const char** pos) {
     }
     // Extract condition text
     size_t condition_len = then_pos - condition_start;
-    char* condition_text = xmd_malloc(condition_len + 1);
-    if (!condition_text) return NULL;
+    char* condition_text;
+    XMD_MALLOC_SAFE(condition_text, char[condition_len + 1], NULL, "ast_parse_conditional: Failed to allocate condition text");
     strncpy(condition_text, condition_start, condition_len);
     condition_text[condition_len] = '\0';
     // Parse condition as comparison expression

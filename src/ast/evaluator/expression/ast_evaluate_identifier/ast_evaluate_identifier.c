@@ -16,6 +16,8 @@
 #include "module.h"
 #include "store.h"
 #include "variable.h"
+#include "utils/common/common_macros.h"
+
 /**
  * @brief Evaluate identifier node
  * @param node Identifier AST node
@@ -23,46 +25,66 @@
  * @return AST value result or NULL on error
  */
 ast_value* ast_evaluate_identifier(ast_node* node, ast_evaluator* evaluator) {
-    if (!node || node->type != AST_IDENTIFIER || !evaluator) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, node, evaluator);
+    XMD_VALIDATE_NODE_TYPE(node, AST_IDENTIFIER, NULL, "ast_evaluate_identifier: Invalid node type");
     
     const char* var_name = node->data.identifier.name;
-    printf("DEBUG: Looking up variable '%s' in evaluator\n", var_name);
     variable* var = store_get(evaluator->variables, var_name);
     if (!var) {
-        printf("DEBUG: Variable '%s' not found in evaluator store\n", var_name);
+        // Check if this identifier is a parameterless function
+        if (evaluator->functions) {
+            variable* func_var = store_get(evaluator->functions, var_name);
+            if (func_var) {
+                // This is a parameterless function call
+                // Create a function call AST node and evaluate it
+                ast_node* func_call_node;
+                func_call_node = xmd_malloc(sizeof(ast_node));
+                if (!func_call_node) {
+                    fprintf(stderr, "[ERROR] ast_evaluate_identifier: Failed to allocate function call node at %s:%d\n", __FILE__, __LINE__);
+                    return NULL;
+                }
+                memset(func_call_node, 0, sizeof(ast_node));
+                func_call_node->type = AST_FUNCTION_CALL;
+                func_call_node->data.function_call.name = xmd_strdup(var_name);
+                func_call_node->data.function_call.arguments = NULL;
+                func_call_node->data.function_call.argument_count = 0;
+                
+                // Import the function evaluation
+                extern ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator);
+                ast_value* result = ast_evaluate_function_call(func_call_node, evaluator);
+                
+                // Clean up
+                XMD_FREE_SAFE(func_call_node->data.function_call.name);
+                XMD_FREE_SAFE(func_call_node);
+                
+                return result;
+            }
+        }
         return ast_value_create_string(""); // Return empty string for undefined variables
     }
     
-    printf("DEBUG: Found variable '%s' with type %d\n", var_name, variable_get_type(var));
     // Convert variable to AST value based on its actual type
     variable_type var_type = variable_get_type(var);
     switch (var_type) {
         case VAR_STRING: {
             const char* str_val = variable_get_string(var);
-            printf("DEBUG: Variable '%s' string value: '%s'\n", var_name, str_val ? str_val : "NULL");
             return ast_value_create_string(str_val ? str_val : "");
         }
         case VAR_NUMBER: {
             double num_val = variable_get_number(var);
-            printf("DEBUG: Variable '%s' number value: %f\n", var_name, num_val);
             return ast_value_create_number(num_val);
         }
         case VAR_BOOLEAN: {
             bool bool_val = variable_get_boolean(var);
-            printf("DEBUG: Variable '%s' boolean value: %s\n", var_name, bool_val ? "true" : "false");
             return ast_value_create_boolean(bool_val);
         }
         case VAR_ARRAY:
         case VAR_OBJECT: {
             // Handle array by converting all elements to a comma-separated string
-            printf("DEBUG: Variable '%s' is array/object type %d\n", var_name, var_type);
             
             // For now, use variable_to_string to get some representation
             const char* var_str = variable_to_string(var);
             if (var_str) {
-                printf("DEBUG: Array/object string representation: '%s'\n", var_str);
                 return ast_value_create_string(var_str);
             }
             // If variable_to_string doesn't work well for arrays, we'll need to
@@ -72,7 +94,6 @@ ast_value* ast_evaluate_identifier(ast_node* node, ast_evaluator* evaluator) {
         default: {
             // Fallback to string conversion
             const char* var_str = variable_to_string(var);
-            printf("DEBUG: Variable '%s' fallback string: '%s'\n", var_name, var_str ? var_str : "NULL");
             return ast_value_create_string(var_str ? var_str : "");
         }
     }

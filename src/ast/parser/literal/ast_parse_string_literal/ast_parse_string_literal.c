@@ -38,15 +38,13 @@ ast_node* ast_parse_string_literal(const char** start, const char** pos) {
     }
     
     size_t value_len = *start - value_start;
-    char* string_value = xmd_malloc(value_len + 1);
-    if (!string_value) {
-        XMD_ERROR_RETURN(NULL, "Memory allocation failed for string literal");
-    }
+    char* string_value;
+    XMD_MALLOC_SAFE(string_value, char[value_len + 1], NULL, "ast_parse_string_literal: Memory allocation failed");
     strncpy(string_value, value_start, value_len);
     string_value[value_len] = '\0';
     (*start)++; // Skip closing quote
     *pos = *start;
-    source_location loc = {1, 1, "input"};
+    source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
     ast_node* result = ast_create_string_literal(string_value, loc);
     XMD_FREE_SAFE(string_value);
     return result;

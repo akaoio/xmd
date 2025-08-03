@@ -16,12 +16,15 @@
 #include "module.h"
 #include "variable.h"
 #include "utils.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Parse Genesis range loop: "for i in 1 .. 5"
  * @param pos Pointer to current position
  * @return Loop AST node or NULL
  */
 ast_node* ast_parse_range_loop(const char** pos) {
+    XMD_VALIDATE_PTRS(NULL, pos, *pos);
+    
     const char* start = *pos;
     start += 4; // Skip "for "
     
@@ -97,7 +100,7 @@ ast_node* ast_parse_range_loop(const char** pos) {
     int end_val = atoi(end_num_str);
     
     // Create array literal for range
-    source_location loc = {1, 1, "input"};
+    source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
     ast_node* range_array = ast_create_array_literal(loc);
     if (!range_array) {
         XMD_FREE_SAFE(var_name);
@@ -123,11 +126,60 @@ ast_node* ast_parse_range_loop(const char** pos) {
         }
     }
     
-    // Update position
+    // Update position past range
     *pos = end_end;
+    
+    // Skip to newline and parse loop body (indented statements)
+    while (**pos && **pos != '\n') {
+        (*pos)++;
+    }
+    if (**pos == '\n') {
+        (*pos)++; // Skip newline
+    }
+    
+    
+    // Parse loop body as block of indented statements
+    ast_node* loop_body = NULL;
+    if (**pos && (isspace(**pos) && **pos != '\n')) {
+        // Has indented content - parse as block
+        source_location body_loc = {1, 1, "input"};
+        loop_body = ast_create_block(body_loc);
+        
+        while (**pos) {
+            // Skip initial indentation
+            const char* line_start = *pos;
+            while ((**pos && **pos == ' ') || **pos == '\t') {
+                (*pos)++;
+            }
+            
+            // If we hit newline or end, break
+            if (!**pos || **pos == '\n') {
+                if (**pos == '\n') (*pos)++;
+                break;
+            }
+            
+            // Check if this line is indented (loop body content)
+            if (*pos > line_start) {
+                // Parse this indented statement as part of loop body
+                ast_node* stmt = ast_parse_statement(pos);
+                if (stmt && loop_body) {
+                    ast_add_statement(loop_body, stmt);
+                }
+            } else {
+                // Not indented - exit loop body
+                *pos = line_start; // Reset position
+                break;
+            }
+        }
+    }
+    
     
     // Create loop node
     ast_node* loop = ast_create_loop(var_name, range_array, loc);
+    if (loop && loop_body) {
+        loop->data.loop.body = loop_body;
+    }
+    
     XMD_FREE_SAFE(var_name);
     
     return loop;

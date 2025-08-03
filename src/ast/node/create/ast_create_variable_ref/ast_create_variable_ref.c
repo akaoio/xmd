@@ -13,6 +13,7 @@
 #include "utils.h"
 #include "variable.h"
 #include "variable_internal.h"
+#include "../../../../utils/common/common_macros.h"
 
 /**
  * @brief Create AST variable reference node
@@ -25,10 +26,7 @@ ast_node* ast_create_variable_ref(const char* name, source_location loc) {
         return NULL;
     }
     
-    ast_node* node = xmd_malloc(sizeof(ast_node));
-    if (!node) {
-        return NULL;
-    }
+    XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     
     node->type = AST_VARIABLE_REF;
     node->data.variable_ref.name = xmd_strdup(name);

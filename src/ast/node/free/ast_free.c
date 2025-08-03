@@ -15,7 +15,7 @@
  * @brief Free AST node and all children
  * @param node Node to free (can be NULL)
  */
-void ast_value_free(ast_node* node) {
+void ast_free(ast_node* node) {
     if (!node) {
         return;
     }

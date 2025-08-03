@@ -8,9 +8,10 @@
  */
 
 #include <stdlib.h>
-#include <stdbool.h>
+#include <stdbool.h>  
 #include "ast.h"
 #include "utils.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Create AST method definition node
  * @param name Method name
@@ -23,10 +24,7 @@ ast_node* ast_create_method_def(const char* name, bool is_private, source_locati
         return NULL;
     }
     
-    ast_node* node = xmd_malloc(sizeof(ast_node));
-    if (!node) {
-        return NULL;
-    }
+    XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     
     node->type = AST_METHOD_DEF;
     node->data.method_def.name = xmd_strdup(name);

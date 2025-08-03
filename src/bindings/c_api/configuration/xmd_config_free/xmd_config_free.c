@@ -9,12 +9,13 @@
 
 #include "../../../../../include/xmd.h"
 #include "../../../../../include/config_internal.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Free XMD configuration
  * @param config Configuration to free
   * /
  */
-void xmd_config_XMD_FREE_SAFE(xmd_config* config) {
+void xmd_config_free(xmd_config* config) {
     if (!config) return;
     
     xmd_internal_config* internal = (xmd_internal_config*)config;

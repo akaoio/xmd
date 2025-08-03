@@ -9,15 +9,14 @@
 
 #include "ast_node.h"
 #include "ast_parser.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Parse else statement
  * @param pos Pointer to current position
  * @return Conditional AST node or NULL
  */
 ast_node* ast_parse_else(const char** pos) {
-    if (!pos || !*pos) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, pos, *pos);
     
     const char* start = *pos;
     // Skip "else"
@@ -28,7 +27,7 @@ ast_node* ast_parse_else(const char** pos) {
     }
     
     // Create conditional node with NULL condition (indicates else)
-    source_location loc = {1, 1, "input"};
+    source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
     ast_node* else_node = ast_create_conditional(NULL, loc);
     *pos = start;
     return else_node;

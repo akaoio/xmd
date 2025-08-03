@@ -1,0 +1,1 @@
+2025-08-02T20:38:25.520Z|👤 TESTER|👤 LEADER|SUCCESS\! XMD style 'if x = 5' WORKS\! Single = comparison executes without hanging. However 'if x == 5' still hangs. XMD native syntax operational\! Testing other operators now. 85% achieved\!

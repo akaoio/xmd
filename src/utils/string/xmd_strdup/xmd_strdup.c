@@ -8,6 +8,7 @@
  */
 
 #include <string.h>
+#include <stdlib.h>
 #include "../../../../include/utils.h"
 /**
  * @brief Duplicate string safely
@@ -15,10 +16,12 @@
  * @return Duplicated string or NULL on failure
  */
 char* xmd_strdup(const char* str) {
-    XMD_NULL_CHECK(str);
+    if (!str) return NULL;
+    
     size_t len = strlen(str);
-    char* dup;
-    XMD_MALLOC_CHECK(dup, len + 1);
+    char* dup = malloc(len + 1);
+    if (!dup) return NULL;
+    
     strcpy(dup, str);
     return dup;
 }

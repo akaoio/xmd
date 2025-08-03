@@ -12,12 +12,14 @@
 #include "ast_node.h"
 #include "ast_parser.h"
 #include "variable.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Parse single value (string, number, identifier) without comma handling
  * @param pos Pointer to current position
  * @return Value AST node or NULL
  */
 ast_node* ast_parse_single_value(const char** pos) {
+    XMD_VALIDATE_PTRS(NULL, pos, *pos);
     const char* start = *pos;
     
     // Skip whitespace
@@ -41,16 +43,15 @@ ast_node* ast_parse_single_value(const char** pos) {
     }
     if (start > id_start) {
         size_t id_len = start - id_start;
-        char* id_str = xmd_malloc(id_len + 1);
-        if (id_str) {
-            strncpy(id_str, id_start, id_len);
-            id_str[id_len] = '\0';
-            source_location loc = {1, 1, "input"};
-            ast_node* result = ast_create_identifier(id_str, loc);
-            XMD_FREE_SAFE(id_str);
-            *pos = start;
-            return result;
-        }
+        char* id_str;
+        XMD_MALLOC_SAFE(id_str, char[id_len + 1], NULL, "ast_parse_single_value: Failed to allocate identifier");
+        strncpy(id_str, id_start, id_len);
+        id_str[id_len] = '\0';
+        source_location loc = {1, 1, "input"};
+        ast_node* result = ast_create_identifier(id_str, loc);
+        XMD_FREE_SAFE(id_str);
+        *pos = start;
+        return result;
     }
     return NULL;
 }

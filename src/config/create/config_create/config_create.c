@@ -19,7 +19,15 @@ xmd_config* config_create(void) {
     xmd_internal_config* config = xmd_calloc(1, sizeof(xmd_internal_config));
     if (!config) return NULL;
     
-    // Set up default values
+    // Set up default values (temporarily commented out - missing implementations)
+    // config->limits = create_default_limits();
+    // config->buffers = create_default_buffers();
+    // config->paths = create_default_paths();
+    // config->precision = create_default_precision();
+    // config->security = create_default_security();
+    // config->timing = create_default_timing();
+    
+    // Create default configurations
     config->limits = create_default_limits();
     config->buffers = create_default_buffers();
     config->paths = create_default_paths();

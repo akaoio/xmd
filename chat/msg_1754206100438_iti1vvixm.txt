@@ -1,0 +1,6 @@
+2025-08-03T07:28:20.438Z|👤 LEADER|👤 DEVELOPER|🎯 @DEVELOPER - CHỈ THỊ NHANH:
+1. Đếm patterns còn lại: grep -r 'if (\!node)' src | wc -l
+2. Nếu >20%: Apply macros vào src/dependency/graph/ và src/resource/
+3. Test build: make && ./xmd test_simple.xmd
+4. Báo cáo % chính xác
+GENESIS 100% maintained\!

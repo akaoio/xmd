@@ -24,10 +24,7 @@
  */
 int ast_evaluate_assignment(ast_node* node, ast_evaluator* evaluator) {
     XMD_VALIDATE_PTRS(-1, node, evaluator);
-    if (node->type != AST_ASSIGNMENT) {
-        printf("[ERROR] ast_evaluate_assignment: Invalid node type %d\n", node->type);
-        return -1;
-    }
+    XMD_VALIDATE_NODE_TYPE(node, AST_ASSIGNMENT, -1, "ast_evaluate_assignment: Invalid node type");
     
     ast_value* value = ast_evaluate(node->data.assignment.value, evaluator);
     if (!value || evaluator->error_message) {
@@ -41,11 +38,9 @@ int ast_evaluate_assignment(ast_node* node, ast_evaluator* evaluator) {
         variable* var = ast_value_to_variable(value);
         
         if (var) {
-            printf("DEBUG: Storing variable '%s' of type %d\n", node->data.assignment.variable, variable_get_type(var));
             store_set(evaluator->variables, node->data.assignment.variable, var);
             variable_unref(var); // store_set takes ownership
         } else {
-            printf("DEBUG: Failed to convert ast_value to variable for '%s'\n", node->data.assignment.variable);
         }
     }
     

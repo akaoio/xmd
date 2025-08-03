@@ -18,12 +18,14 @@
 #include "error.h"
 #include "module.h"
 #include "utils.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Parse function definition: function name param1 param2
  * @param pos Pointer to current position
  * @return Function definition AST node or NULL
  */
 ast_node* ast_parse_function(const char** pos) {
+    XMD_VALIDATE_PTRS(NULL, pos, *pos);
     const char* start = *pos;
     
     // Skip "function "
@@ -47,7 +49,8 @@ ast_node* ast_parse_function(const char** pos) {
         return NULL;
     }
     
-    char* func_name = xmd_malloc(name_len + 1);
+    char* func_name;
+    XMD_MALLOC_SAFE(func_name, char[name_len + 1], NULL, "ast_parse_function: Failed to allocate function name");
     if (!func_name) {
         return NULL;
     }
@@ -55,9 +58,9 @@ ast_node* ast_parse_function(const char** pos) {
     func_name[name_len] = '\0';
     
     // Create function definition node
-    source_location loc = {1, 1, "input"};
+    source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
     ast_node* func_def = ast_create_function_def(func_name, false, loc);
-    XMD_FREE_SAFE(func_name);
+    free(func_name);
     
     if (!func_def) {
         return NULL;
@@ -82,7 +85,7 @@ ast_node* ast_parse_function(const char** pos) {
                 strncpy(param_name, param_start, param_len);
                 param_name[param_len] = '\0';
                 ast_add_parameter(func_def, param_name);
-                XMD_FREE_SAFE(param_name);
+                free(param_name);
             }
         }
         
@@ -188,7 +191,7 @@ ast_node* ast_parse_function(const char** pos) {
                                     printf("DEBUG: Statement added to function body\n");
                                 }
                             }
-                            XMD_FREE_SAFE(line_content);
+                            free(line_content);
                         }
                     }
                     

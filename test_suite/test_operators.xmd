@@ -1,0 +1,36 @@
+# Operator Test Suite
+# Tests comparison operators
+
+set a 10
+set b 20
+
+# Equality test
+print "Testing equality:"
+print a == 10
+print b == 20
+print a == b
+
+# Inequality test  
+print "Testing inequality:"
+print a != b
+print a != 10
+
+# Less than
+print "Testing less than:"
+print a < b
+print b < a
+
+# Greater than
+print "Testing greater than:"
+print b > a
+print a > b
+
+# Less than or equal
+print "Testing less than or equal:"
+print a <= 10
+print a <= b
+
+# Greater than or equal
+print "Testing greater than or equal:"
+print b >= 20
+print b >= a

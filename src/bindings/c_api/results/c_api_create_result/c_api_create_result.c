@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include "../../../../../include/xmd.h"
 #include "../../../../../include/utils.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Create result structure helper
  * @param error_code Error code

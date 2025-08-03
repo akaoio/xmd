@@ -11,6 +11,7 @@
 #include "ast_node.h"
 #include "utils.h"
 #include "variable.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Create AST loop node (for)
  * @param variable Loop variable name
@@ -23,10 +24,7 @@ ast_node* ast_create_loop(const char* variable, ast_node* iterable, source_locat
         return NULL;
     }
     
-    ast_node* node = xmd_malloc(sizeof(ast_node));
-    if (!node) {
-        return NULL;
-    }
+    XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     
     node->type = AST_LOOP;
     node->data.loop.variable = xmd_strdup(variable);

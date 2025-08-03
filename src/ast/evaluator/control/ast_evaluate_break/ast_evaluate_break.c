@@ -26,9 +26,7 @@
  */
 ast_value* ast_evaluate_break(ast_node* node, ast_evaluator* evaluator) {
     XMD_VALIDATE_PTRS(NULL, node, evaluator);
-    if (node->type != AST_BREAK) {
-        return NULL;
-    }
+    XMD_VALIDATE_NODE_TYPE(node, AST_BREAK, NULL, "ast_evaluate_break: Invalid node type");
     
     // DEVELOPER ENHANCEMENT: Enhanced break statement signaling
     // Improved loop context handling with proper break signaling
@@ -37,6 +35,5 @@ ast_value* ast_evaluate_break(ast_node* node, ast_evaluator* evaluator) {
         XMD_FREE_SAFE(evaluator->error_message);
     }
     evaluator->error_message = xmd_strdup("__BREAK__");
-    printf("DEBUG: Break statement executed - signaling loop exit\n");
     return ast_value_create_string("");
 }

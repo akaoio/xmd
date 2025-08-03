@@ -7,9 +7,10 @@
  * Extracted from: src/ast_consolidated.c
  */
 
-#include <stdlib.h>
 #include "ast_node.h"
-#include "variable.h"
+#include "utils.h"
+#include "../../../../utils/common/common_macros.h"
+
 /**
  * @brief Create AST binary operation node
  * @param op Operation type
@@ -23,10 +24,7 @@ ast_node* ast_create_binary_op(binary_operator op, ast_node* left, ast_node* rig
         return NULL;
     }
     
-    ast_node* node = xmd_malloc(sizeof(ast_node));
-    if (!node) {
-        return NULL;
-    }
+    XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     
     node->type = AST_BINARY_OP;
     node->data.binary_op.op = op;

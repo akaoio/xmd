@@ -8,9 +8,9 @@
  */
 
 #include <stdlib.h>
-#include "store.h"
-#include "store_internal.h"
-#include "variable.h"
+#include "../../../../include/store.h"
+#include "../../../../include/store_internal.h"
+#include "../../../../include/variable.h"
 
 /**
  * @brief Clear all entries from store
@@ -25,12 +25,12 @@ void store_clear(store* s) {
         store_entry* entry = s->buckets[i];
         while (entry) {
             store_entry* next = entry->next;
-            XMD_FREE_SAFE(entry->key);
+            free(entry->key);
             variable_unref(entry->value);
-            XMD_FREE_SAFE(entry);
+            free(entry);
             entry = next;
         }
         s->buckets[i] = NULL;
+    }
     s->size = 0;
-}
 }

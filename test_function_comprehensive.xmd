@@ -1,0 +1,84 @@
+# COMPREHENSIVE FUNCTION EVALUATION TEST SUITE
+# Testing function parameter passing, scoping, and return values
+
+print "=== FUNCTION EVALUATION TEST SUITE ==="
+print ""
+
+# Test 1: Basic function definition and call
+print "Test 1: Basic Function Call"
+function greet name
+    return "Hello " + name
+
+set result1 greet "Alice"
+print "Result: " + result1
+print "Expected: Hello Alice"
+print ""
+
+# Test 2: Function with multiple parameters
+print "Test 2: Multiple Parameters"
+function add x y
+    return x + y
+
+set result2 add 10 5
+print "Result: " + result2  
+print "Expected: 15"
+print ""
+
+# Test 3: Function parameter scoping
+print "Test 3: Parameter Scoping"
+set global_var "global"
+function test_scope param
+    print "Inside function - param: " + param
+    print "Inside function - global_var: " + global_var
+    return "scope_test"
+
+set result3 test_scope "local"
+print "Function returned: " + result3
+print ""
+
+# Test 4: Function with local variables
+print "Test 4: Local Variables"
+function with_locals input
+    set local_var "I am local"
+    set result input + " processed"
+    return result
+
+set result4 with_locals "data"
+print "Result: " + result4
+print "Expected: data processed"
+print ""
+
+# Test 5: Nested function calls
+print "Test 5: Nested Function Calls"
+function double x
+    return x + x
+
+function quadruple x
+    return double double x
+
+set result5 quadruple 3
+print "Result: " + result5
+print "Expected: 12"
+print ""
+
+# Test 6: Function returning different types
+print "Test 6: Different Return Types"
+function return_number
+    return 42
+
+function return_string
+    return "text"
+
+function return_boolean
+    return true
+
+set num_result return_number
+set str_result return_string
+set bool_result return_boolean
+
+print "Number: " + num_result
+print "String: " + str_result
+print "Boolean: " + bool_result
+print ""
+
+print "=== FUNCTION TEST SUITE COMPLETE ==="

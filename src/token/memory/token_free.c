@@ -8,14 +8,14 @@
  */
 
 #include <stdlib.h>
-#include "performance.h"
-#include "token.h"
-#include "utils.h"
+#include "../../../include/token.h"
+#include "../../../include/utils.h"
+#include "../../utils/common/common_macros.h"
 /**
  * @brief Free a token and its resources
  * @param tok Token to free (can be NULL)
  */
-void ast_value_free(token* tok) {
+void token_free(token* tok) {
     if (!tok) return;
     
     XMD_FREE_SAFE(tok->value);

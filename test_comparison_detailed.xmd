@@ -1,0 +1,11 @@
+function get_hello_param name
+    return "Hello " + name
+
+function get_hello
+    return "Hello World"  
+
+set result1 get_hello_param "Alice"
+print result1
+
+set result2 get_hello
+print result2

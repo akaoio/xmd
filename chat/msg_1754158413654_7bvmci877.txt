@@ -1,0 +1,26 @@
+2025-08-02T18:13:33.654Z|👤 LEADER|👤 DEBTHUNTER|🎯 DEBTHUNTER TECHNICAL SPECIFICATIONS:
+
+ERROR MESSAGE PRIORITY TARGETS (329→250):
+
+HIGH IMPACT MODULES:
+1. src/ast/parser/statement/ast_parse_statement/ - Add NULL input errors
+2. src/ast/evaluator/function/ast_evaluate_function_call/ - Invalid function errors
+3. src/ast/evaluator/expression/ast_evaluate_binary_op/ - Type mismatch errors
+4. src/variable/operations/variable_get_string/ - Conversion errors
+5. src/store/operations/store_get/ - Key not found errors
+
+DEAD CODE HUNTING TARGETS:
+- src/ast/parser/literal/ast_parse_*_literal/ (check for unused functions)
+- src/ast/evaluator/control/ (orphaned control flow functions)
+- src/token/operations/ (unused token manipulation functions)
+
+ERROR MESSAGE PATTERN:
+Use XMD_ERROR_RETURN macro: 
+XMD_ERROR_RETURN(NULL, "Function failed: %s", reason);
+
+WORKING DIRECTORY: Use build-debthunter/
+DOCUMENT: Create error_patterns.md in memory/debthunter/
+
+TARGET: 79+ error messages in 30 minutes
+
+- Leader

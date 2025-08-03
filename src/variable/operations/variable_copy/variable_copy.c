@@ -51,17 +51,24 @@ variable* variable_copy(const variable* var) {
         
         case VAR_OBJECT: {
             variable* copy = variable_create_object();
+            XMD_NULL_CHECK(copy, NULL);
             if (var->value.object_value) {
                 for (size_t i = 0; i < var->value.object_value->count; i++) {
                     const char* key = var->value.object_value->pairs[i].key;
                     variable* value_copy = variable_copy(var->value.object_value->pairs[i].value);
                     if (!value_copy || !variable_object_set(copy, key, value_copy)) {
+                        XMD_ERROR_RETURN(NULL, "variable_copy: Failed to copy object property '%s'", key);
                         variable_unref(value_copy);
+                        variable_unref(copy);
+                        return NULL;
+                    }
                     variable_unref(value_copy); // object_set takes a reference
-    return NULL;
-}
-}
-}
-}
-}
+                }
+            }
+            return copy;
+        }
+        
+        default:
+            XMD_ERROR_RETURN(NULL, "variable_copy: Unknown variable type %d", var->type);
+    }
 }

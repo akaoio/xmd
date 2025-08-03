@@ -9,9 +9,11 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 #include "ast_node.h"
 #include "utils.h"
 #include "variable.h"
+#include "../../../../utils/common/common_macros.h"
 
 /**
  * @brief Create AST literal node for any type
@@ -22,7 +24,7 @@
  */
 ast_node* ast_create_literal(literal_type type, literal_value value, source_location loc) {
     ast_node* node;
-    XMD_MALLOC_CHECK(node, sizeof(ast_node));
+    XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     
     node->type = AST_LITERAL;
     node->data.literal.type = type;
@@ -34,7 +36,11 @@ ast_node* ast_create_literal(literal_type type, literal_value value, source_loca
                 XMD_FREE_SAFE(node);
                 return NULL;
             }
-            XMD_STRDUP_CHECK(node->data.literal.value.string_value, value.string_value);
+            node->data.literal.value.string_value = xmd_strdup(value.string_value);
+            if (!node->data.literal.value.string_value) {
+                XMD_FREE_SAFE(node);
+                return NULL;
+            }
             break;
         case LITERAL_NUMBER:
             node->data.literal.value.number_value = value.number_value;

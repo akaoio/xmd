@@ -8,11 +8,11 @@
  */
 
 #include <stdlib.h>
-#include "performance.h"
-#include "token.h"
-#include "utils.h"
-#include "variable.h"
-#include "utils/common/common_macros.h"
+#include "../../../../include/performance.h"
+#include "../../../../include/token.h"
+#include "../../../../include/utils.h"
+#include "../../../../include/variable.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Copy token data (shallow copy - reuses value pointer)
  * @param t Source token
@@ -21,13 +21,13 @@
 token* token_copy(const token* t) {
     XMD_NULL_CHECK(t, NULL);
     
-    token* copy = xmd_malloc(sizeof(token));
-    XMD_NULL_CHECK(copy, NULL);
+    XMD_CREATE_VALIDATED(copy, token, sizeof(token), NULL);
     
     copy->type = t->type;
     copy->line = t->line;
     copy->column = t->column;
     copy->next = NULL; // Don't copy the next pointer
+    
     // Copy value if present
     if (t->value != NULL) {
         copy->value = xmd_strdup(t->value);

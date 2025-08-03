@@ -23,10 +23,8 @@
  * @return String value with file contents or NULL on error
  */
 ast_value* ast_evaluate_file_read(ast_node* node, ast_evaluator* evaluator) {
-    if (!node || !evaluator || node->type != AST_FILE_READ) {
-        printf("[ERROR] ast_evaluate_file_read: Invalid parameters or node type\n");
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, node, evaluator);
+    XMD_VALIDATE_NODE_TYPE(node, AST_FILE_READ, NULL, "ast_evaluate_file_read: Invalid node type");
     
     const char* file_path = node->data.file_io.file_path;
     if (!file_path) {

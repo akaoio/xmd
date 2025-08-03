@@ -10,11 +10,11 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include "store.h"
-#include "store_internal.h"
-#include "variable.h"
+#include "../../../../include/store.h"
+#include "../../../../include/store_internal.h"
+#include "../../../../include/variable.h"
 #include "../../../../include/utils.h"
-#include "utils/common/common_macros.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Remove key from store
@@ -23,8 +23,13 @@
  * @return true if removed, false if not found
  */
 bool store_remove(store* s, const char* key) {
-    XMD_NULL_CHECK_RETURN(s, false);
-    XMD_NULL_CHECK_RETURN(key, false);
+    XMD_NULL_CHECK(s, false);
+    XMD_NULL_CHECK(key, false);
+    
+    // Validate key is not empty
+    if (strlen(key) == 0) {
+        XMD_ERROR_RETURN(false, "store_remove: Empty key provided");
+    }
     
     unsigned int index = xmd_hash_key(key, s->capacity);
     store_entry* entry = s->buckets[index];

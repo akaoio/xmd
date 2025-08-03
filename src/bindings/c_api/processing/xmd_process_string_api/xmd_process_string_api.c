@@ -12,6 +12,7 @@
 #include <time.h>
 #include "../../../../../include/xmd.h"
 #include "../../../../../include/c_api_internal.h"
+#include "../../../../utils/common/common_macros.h"
 
 // Forward declaration for AST-based XMD processor
 extern char* ast_process_xmd_content(const char* input, store* variables);
@@ -24,6 +25,7 @@ extern char* ast_process_xmd_content(const char* input, store* variables);
  * @return Processing result (must be freed with xmd_result_free)
  */
 xmd_result* xmd_process_string_api(void* handle, const char* input, size_t input_length) {
+    (void)input_length;  // Reserved for future validation
     if (!handle || !input) {
         return NULL; // Return NULL for invalid parameters
     }

@@ -11,12 +11,13 @@
 #include <stdlib.h>
 #include "../../../../include/variable.h"
 #include "../../../../include/variable_internal.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Free array contents (internal helper)
  * @param array_var Array variable
  */
-void variable_array_XMD_FREE_SAFE(variable* array_var) {
+void variable_array_free(variable* array_var) {
     if (!array_var || array_var->type != VAR_ARRAY || !array_var->value.array_value) {
         return;
     }

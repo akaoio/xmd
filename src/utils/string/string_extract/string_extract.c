@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stddef.h>
 #include "../../../../include/utils.h"
+#include "../../common/common_macros.h"
 /**
  * @brief Extract substring from string
  * @param source Source string
@@ -18,9 +19,7 @@
  * @return Extracted string or NULL on failure
  */
 char* string_extract(const char* source, size_t start, size_t length) {
-    if (!source) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, source);
     size_t source_len = strlen(source);
     if (start >= source_len) {
         return NULL;
@@ -29,10 +28,8 @@ char* string_extract(const char* source, size_t start, size_t length) {
     if (start + length > source_len) {
         length = source_len - start;
     }
-    char* extracted = xmd_malloc(length + 1);
-    if (!extracted) {
-        return NULL;
-    }
+    char* extracted;
+    XMD_MALLOC_SAFE(extracted, char[length + 1], NULL, "string_extract: Failed to allocate memory");
     strncpy(extracted, source + start, length);
     extracted[length] = '\0';
     return extracted;

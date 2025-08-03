@@ -1,15 +1,2 @@
-set scores 95, 98, 100
-set names "Alice", "Bob", "Charlie"
-
-print "Testing array indexing:"
-print "First score: " + scores[0]
-print "Second score: " + scores[1]
-print "Third score: " + scores[2]
-
-print "First name: " + names[0]
-print "Second name: " + names[1]
-print "Third name: " + names[2]
-
-set index 1
-print "Score at index variable: " + scores[index]
-print "Name at index variable: " + names[index]
+set nums [1, 2, 3]
+print nums[0]

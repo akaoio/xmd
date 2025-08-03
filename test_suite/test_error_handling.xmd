@@ -1,0 +1,35 @@
+# Error Handling Test Cases
+
+# Undefined variable access
+print undefined_variable
+
+# Function with wrong parameter count
+function greet name
+    return "Hello " + name
+
+set result greet
+print result
+
+# Division by zero (if supported)
+set zero 0
+set ten 10
+# set div_result ten / zero
+
+# Empty function body
+function empty_func
+    
+
+# Circular function calls (if possible)
+function func_a
+    return func_b
+
+function func_b  
+    return func_a
+
+# Invalid loop ranges
+for i in 5 .. 1
+    print i
+
+# Null comparisons
+if undefined_var = 5
+    print "This shouldn't work"

@@ -13,17 +13,17 @@
 #include <string.h>
 #include "ast_node.h"
 #include "ast_parser.h"
+#include "ast.h"
 #include "variable.h"
 #include "utils.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Parse while loop statement: while condition
  * @param pos Pointer to current position
  * @return While loop AST node or NULL
  */
 ast_node* ast_parse_while(const char** pos) {
-    if (!pos || !*pos) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, pos, *pos);
     
     const char* start = *pos;
     // Skip "while "
@@ -44,10 +44,8 @@ ast_node* ast_parse_while(const char** pos) {
     }
     
     // Create condition expression from string
-    char* condition_str = xmd_malloc(condition_len + 1);
-    if (!condition_str) {
-        return NULL;
-    }
+    char* condition_str;
+    XMD_MALLOC_SAFE(condition_str, char[condition_len + 1], NULL, "ast_parse_while: Failed to allocate condition string");
     strncpy(condition_str, condition_start, condition_len);
     condition_str[condition_len] = '\0';
     
@@ -62,7 +60,8 @@ ast_node* ast_parse_while(const char** pos) {
     ast_node* condition_node = NULL;
     if (strstr(condition_str, " < ") || strstr(condition_str, " > ") || 
         strstr(condition_str, " <= ") || strstr(condition_str, " >= ") ||
-        strstr(condition_str, " = ") || strstr(condition_str, " != ")) {
+        strstr(condition_str, " == ") || strstr(condition_str, " = ") || 
+        strstr(condition_str, " != ")) {
         condition_node = ast_parse_comparison_expression(condition_str);
     } else {
         // Simple expression or variable
@@ -76,9 +75,55 @@ ast_node* ast_parse_while(const char** pos) {
         return NULL;
     }
     
-    // Create while loop node
-    source_location loc = {1, 1, "input"};
-    ast_node* while_node = ast_create_loop("", condition_node, loc); // Use empty string for while loops
+    // Create while loop node (using loop structure with condition as iterable)
+    source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
+    ast_node* while_node = ast_create_loop("", condition_node, loc); // Empty var name for while
+    
+    // Move past newline
+    if (*start == '\n') {
+        start++;
+    }
+    
+    // Parse the loop body (indented statements)
+    ast_node* body = ast_create_block(loc);
+    if (body) {
+        // Parse all indented lines
+        while (*start) {
+            // Check for indentation
+            const char* line_start = start;
+            int indent_count = 0;
+            while (*line_start == ' ' || *line_start == '\t') {
+                indent_count++;
+                line_start++;
+            }
+            
+            // If not indented or empty line, break
+            if (indent_count == 0 || *line_start == '\n') {
+                break;
+            }
+            
+            // Parse the statement
+            const char* stmt_pos = line_start;
+            ast_node* stmt = ast_parse_statement(&stmt_pos);
+            if (stmt) {
+                ast_add_statement(body, stmt);
+                start = stmt_pos;
+                
+                // Skip to next line
+                while (*start && *start != '\n') {
+                    start++;
+                }
+                if (*start == '\n') {
+                    start++;
+                }
+            } else {
+                break;
+            }
+        }
+        
+        // Attach body to while loop
+        while_node->data.loop.body = body;
+    }
     
     *pos = start;
     return while_node;

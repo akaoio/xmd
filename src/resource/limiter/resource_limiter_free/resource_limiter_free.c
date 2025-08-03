@@ -5,7 +5,8 @@
 
 #include <stdlib.h>
 #include "../../../../include/resource.h"
-void resource_limiter_XMD_FREE_SAFE(ResourceLimiter* limiter) {
+#include "../../../utils/common/common_macros.h"
+void resource_limiter_free(ResourceLimiter* limiter) {
     if (!limiter) {
         return;
     }

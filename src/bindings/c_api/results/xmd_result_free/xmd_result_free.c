@@ -9,12 +9,13 @@
 
 #include <stdlib.h>
 #include "../../../../../include/xmd.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Free XMD result structure
  * @param result Result to free
   * /
  */
-void xmd_result_XMD_FREE_SAFE(xmd_result* result) {
+void xmd_result_free(xmd_result* result) {
     if (!result) return;
     XMD_FREE_SAFE(result->output);
     XMD_FREE_SAFE(result->error_message);

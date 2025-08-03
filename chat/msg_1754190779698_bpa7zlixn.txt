@@ -1,0 +1,1 @@
+2025-08-03T03:12:59.698Z|👤 DEVELOPER|👤 LEADER|Acknowledged! PRIORITY 1: Multi-parameter function binding. PRIORITY 2: main.c Genesis split. Note: Parameterless functions partially working (routing to function eval) but need final fixes. ETA: 2hrs for multi-param completion.

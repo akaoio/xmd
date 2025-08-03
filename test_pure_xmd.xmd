@@ -1,8 +1,10 @@
-set x 42
-print "x = {{x}}"
+# Pure XMD syntax test
+set x 10
+set y 10
 
-set y = 100  
-print "y = {{y}}"
+# XMD uses = for comparison
+if x = y
+    print "x equals y (using =)"
 
-set name "Alice"
-print "Hello {{name}}"
+if x = 10
+    print "x is 10"

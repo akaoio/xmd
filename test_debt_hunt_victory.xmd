@@ -1,0 +1,3 @@
+set test_var "DEBT HUNTING SUCCESS"
+print "Build health: 100%"
+print test_var

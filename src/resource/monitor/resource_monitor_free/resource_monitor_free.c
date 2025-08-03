@@ -5,7 +5,8 @@
 
 #include <stdlib.h>
 #include "../../../../include/resource.h"
-void resource_monitor_XMD_FREE_SAFE(ResourceMonitor* monitor) {
+#include "../../../utils/common/common_macros.h"
+void resource_monitor_free(ResourceMonitor* monitor) {
     if (!monitor) return;
     XMD_FREE_SAFE(monitor->last_error);
     XMD_FREE_SAFE(monitor);

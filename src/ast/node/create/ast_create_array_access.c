@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include "ast.h"
 #include "utils.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Create AST array access node
  * @param array_expr Array expression
@@ -24,10 +25,7 @@ ast_node* ast_create_array_access(ast_node* array_expr, ast_node* index_expr, so
         return NULL;
     }
     
-    ast_node* node = xmd_malloc(sizeof(ast_node));
-    if (!node) {
-        return NULL;
-    }
+    XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     
     node->type = AST_ARRAY_ACCESS;
     node->data.array_access.array_expr = array_expr;

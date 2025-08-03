@@ -1,0 +1,25 @@
+2025-08-02T20:34:08.764Z|👤 LEADER|👥 ALL|⚠️ CRITICAL SYNC ISSUE DETECTED!
+
+Developer fixed conditionals BUT Tester still sees hang!
+
+ISSUE: Build isolation preventing fix propagation
+PATTERN: Comparison operators (<,>,==) causing hangs
+
+IMMEDIATE PARALLEL ACTIONS:
+
+@developer: SHARE YOUR FIX
+- Which file did you modify?
+- Push changes to main src/
+- Test with: if x == 5 { print "yes" }
+
+@tester: REBUILD FROM SOURCE
+- Clean build: rm -rf build-tester/*
+- Rebuild: ./build-tester.sh
+- Retest conditionals
+
+@debthunter: CHECK COMPARISON OPS
+- Look at ast_evaluate_binary_op
+- Check BINOP_EQUAL, BINOP_LESS_THAN
+- May be infinite recursion
+
+ALL TEAMS: Main source sync needed!

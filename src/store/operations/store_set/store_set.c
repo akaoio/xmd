@@ -10,11 +10,11 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include "store.h"
-#include "store_internal.h"
-#include "utils.h"
-#include "variable.h"
-#include "utils/common/common_macros.h"
+#include "../../../../include/store.h"
+#include "../../../../include/store_internal.h"
+#include "../../../../include/utils.h"
+#include "../../../../include/variable.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Set value in store
@@ -24,9 +24,18 @@
  * @return true on success, false on error
  */
 bool store_set(store* s, const char* key, variable* value) {
-    XMD_NULL_CHECK_RETURN(s, false);
-    XMD_NULL_CHECK_RETURN(key, false);
-    XMD_NULL_CHECK_RETURN(value, false);
+    XMD_NULL_CHECK(s, false);
+    XMD_NULL_CHECK(key, false);
+    XMD_NULL_CHECK(value, false);
+    
+    // Validate key is not empty
+    if (strlen(key) == 0) {
+        XMD_ERROR_RETURN(false, "store_set: Empty key provided");
+    }
+    
+    if (value->type == VAR_STRING) {
+    } else if (value->type == VAR_NUMBER) {
+    }
     
     unsigned int index = xmd_hash_key(key, s->capacity);
     store_entry* entry = s->buckets[index];
@@ -42,8 +51,8 @@ bool store_set(store* s, const char* key, variable* value) {
     }
     
     // Create new entry
-    entry = xmd_malloc(sizeof(store_entry));
-    XMD_NULL_CHECK_RETURN(entry, false);
+    XMD_CREATE_VALIDATED(new_entry, store_entry, sizeof(store_entry), false);
+    entry = new_entry;
     
     entry->key = xmd_strdup(key);
     if (!entry->key) {

@@ -1,0 +1,23 @@
+# PARSER DEBUGGING TEST
+# Testing Developer's discovery about multi-parameter parsing
+
+print "Testing parsing behavior..."
+
+# Test 1: Single parameter (known working)
+function single_test name
+    return "Works: " + name
+
+# Test 2: Multi-parameter (Developer says parsed as print)
+function multi_test a b
+    return "Should work: " + a + " " + b
+
+# Test calls
+print "Calling single parameter function:"
+set result1 single_test "Alice"
+print "Single result: " + result1
+
+print "Calling multi-parameter function:"
+set result2 multi_test "Hello" "World"  
+print "Multi result: " + result2
+
+print "Parser debug test complete"

@@ -23,7 +23,6 @@
  */
 ast_node* ast_parse_expression(const char** pos) {
     const char* start = *pos;
-    printf("DEBUG: ast_parse_expression called with: '%s'\n", start);
     
     // Skip whitespace
     while (*start && isspace(*start) && *start != '\n') {
@@ -57,9 +56,9 @@ ast_node* ast_parse_expression(const char** pos) {
     
     // If we found a comma at top level, parse as array
     if (has_comma) {
-        source_location loc = {1, 1, "input"};
+        source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
         ast_node* array = ast_create_array_literal(loc);
-        XMD_NULL_CHECK(array, NULL);
+        XMD_NULL_CHECK(array);
         
         // Parse comma-separated elements
         while (*start && *start != '\n') {
@@ -187,7 +186,7 @@ ast_node* ast_parse_expression(const char** pos) {
     }
     
     ast_node* result = NULL;
-    source_location loc = {1, 1, "input"};
+    source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
     
     // Check for mathematical expressions
     if (strstr(expr_str, " + ") || strstr(expr_str, " - ") || 
@@ -210,13 +209,17 @@ ast_node* ast_parse_expression(const char** pos) {
         if (func_call) {
             result = func_call;
         } else {
-            // Otherwise treat as variable reference or identifier (may include array access)
-            result = ast_parse_identifier_or_array(expr_str, loc);
+            // Check for object property access first (obj.property)
+            if (strchr(expr_str, '.')) {
+                result = ast_parse_object_access(expr_str, loc);
+            } else {
+                // Otherwise treat as variable reference or identifier (may include array access)
+                result = ast_parse_identifier_or_array(expr_str, loc);
+            }
         }
     }
     
     XMD_FREE_SAFE(expr_str);
     *pos = start;
-    printf("DEBUG: ast_parse_expression result: %p, advancing position to: '%s'\n", result, start);
     return result;
 }

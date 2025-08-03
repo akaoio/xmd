@@ -1,0 +1,8 @@
+function test_with_param x
+    return x + 10
+
+function get_constant  
+    return 42
+
+print test_with_param 5
+print get_constant

@@ -10,12 +10,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "performance.h"
-#include "token.h"
-#include "token_internal.h"
-#include "utils.h"
-#include "variable.h"
-#include "utils/common/common_macros.h"
+#include "../../../include/performance.h"
+#include "../../../include/token.h"
+#include "../../../include/token_internal.h"
+#include "../../../include/utils.h"
+#include "../../../include/variable.h"
+#include "../../utils/common/common_macros.h"
 /**
  * @brief Convert token to string representation
  * @param tok Token to convert
@@ -30,8 +30,8 @@ char* token_to_string(const token* tok) {
     const char* value_str = tok->value ? tok->value : "";
     // Estimate size: type + value + formatting + null terminator
     size_t size = strlen(type_str) + strlen(value_str) + 50;
-    char* result = xmd_malloc(size);
-    XMD_NULL_CHECK(result, NULL);
+    
+    XMD_CREATE_VALIDATED(result, char, size, NULL);
     snprintf(result, size, "Token{type=%s, value=\"%s\", line=%zu, column=%zu}", 
              type_str, value_str, tok->line, tok->column);
     return result;

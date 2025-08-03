@@ -24,9 +24,7 @@
  */
 ast_value* ast_evaluate_loop(ast_node* node, ast_evaluator* evaluator) {
     XMD_VALIDATE_PTRS(NULL, node, evaluator);
-    if (node->type != AST_LOOP) {
-        return NULL;
-    }
+    XMD_VALIDATE_NODE_TYPE(node, AST_LOOP, NULL, "ast_evaluate_loop: Invalid node type");
     
     const char* loop_var = node->data.loop.variable;
     ast_node* iterable = node->data.loop.iterable;
@@ -64,7 +62,7 @@ ast_value* ast_evaluate_loop(ast_node* node, ast_evaluator* evaluator) {
             variable_unref(loop_var_obj); // store_set takes ownership
         }
         
-        XMD_FREE_SAFE(element_value);
+        ast_value_free(element_value);
         // Execute loop body if it exists
         if (node->data.loop.body) {
             // Execute loop body
@@ -72,7 +70,7 @@ ast_value* ast_evaluate_loop(ast_node* node, ast_evaluator* evaluator) {
             if (body_result) {
                 // The body result represents the output of all statements in the loop body
                 // Individual print statements handle their own output
-                XMD_FREE_SAFE(body_result);
+                ast_value_free(body_result);
             }
         }
         // Loop iteration completed

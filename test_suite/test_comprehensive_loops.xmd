@@ -1,0 +1,61 @@
+# Comprehensive Loop Test Suite
+# Created per Leader instructions for XMD v2.0 syntax validation
+
+# Test 1: Basic range loop (Leader's specific request)
+print "Test 1: Basic range loop"
+for i in 1 .. 5
+    print "Loop " + i
+
+# Test 2: No spaces around dots
+print "Test 2: No spaces syntax"
+for j in 1..3
+    print "No spaces: " + j
+
+# Test 3: Variable bounds
+print "Test 3: Variable bounds"
+set min 10
+set max 12
+for k in min .. max
+    print "Variable bound: " + k
+
+# Test 4: Reverse range (5 down to 1)
+print "Test 4: Reverse range"
+for r in 5 .. 1
+    print "Reverse: " + r
+
+# Test 5: Single iteration
+print "Test 5: Single iteration"
+for s in 7 .. 7
+    print "Single: " + s
+
+# Test 6: Zero range (should not iterate)
+print "Test 6: Zero range"
+for z in 3 .. 2
+    print "Should not print: " + z
+
+# Test 7: Nested loops
+print "Test 7: Nested loops"
+for x in 1 .. 2
+    for y in 1 .. 2
+        print "Nested: x=" + x + ", y=" + y
+
+# Test 8: Loop with break
+print "Test 8: Loop with break"
+for b in 1 .. 10
+    if b = 3
+        break
+    print "Break test: " + b
+
+# Test 9: Loop with continue
+print "Test 9: Loop with continue"
+for c in 1 .. 5
+    if c = 3
+        continue
+    print "Continue test: " + c
+
+# Test 10: Loop N times syntax
+print "Test 10: Loop N times"
+loop 3 times
+    print "N times loop"
+
+print "All loop tests complete"

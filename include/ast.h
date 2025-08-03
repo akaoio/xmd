@@ -41,6 +41,7 @@ typedef enum {
     AST_LITERAL,           /**< String, number, boolean literals */
     AST_ARRAY_LITERAL,     /**< Array literals [1, 2, 3] */
     AST_ARRAY_ACCESS,      /**< Array indexing array[index] */
+    AST_OBJECT_ACCESS,     /**< Object property access obj.property */
     AST_CONDITIONAL,       /**< if/elif/else blocks */
     AST_LOOP,              /**< for loops */
     AST_BLOCK,             /**< Statement blocks */
@@ -148,6 +149,7 @@ struct ast_value {
  */
 struct ast_evaluator {
     store* variables;              /**< Variable storage */
+    store* functions;              /**< Function storage */
     void* ctx;                     /**< XMD processor context */
     char* output_buffer;          /**< Output accumulator */
     size_t output_size;           /**< Current buffer usage */
@@ -233,6 +235,12 @@ struct ast_node {
             ast_node* index_expr;    /**< Index expression */
         } array_access;
         
+        /**< Object property access */
+        struct {
+            ast_node* object_expr;   /**< Object expression */
+            char* property_name;     /**< Property name to access */
+        } object_access;
+        
         /**< Conditional (if/elif/else) */
         struct {
             ast_node* condition;     /**< NULL for else */
@@ -308,6 +316,7 @@ int ast_add_statement(ast_node* block, ast_node* statement);
 ast_node*ast_create_array_access(ast_node* array_expr, ast_node* index_expr, source_location loc);
 ast_node*ast_create_array_access_from_strings(const char* array_name, const char* index_str, source_location loc);
 ast_node*ast_create_array_literal(source_location loc);
+ast_node*ast_create_object_access(ast_node* object_expr, const char* property_name, source_location loc);
 ast_node*ast_create_assignment(const char* variable, binary_operator op, ast_node* value, source_location loc);
 ast_node*ast_create_binary_op(binary_operator op, ast_node* left, ast_node* right, source_location loc);
 ast_node*ast_create_block(source_location loc);
@@ -336,6 +345,7 @@ ast_value*ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_function_def(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_identifier(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_array_access(ast_node* node, ast_evaluator* evaluator);
+ast_value*ast_evaluate_object_access(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_loop(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_program_node(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_while_loop(ast_node* node, ast_evaluator* evaluator);
@@ -400,11 +410,15 @@ extern store* global_functions;
 /**
  * @brief Mass consolidation macros for duplication reduction
  */
+#ifndef XMD_NULL_CHECK
 #define XMD_NULL_CHECK(ptr) \
     do { if (!(ptr)) return NULL; } while(0)
+#endif
 
+#ifndef XMD_NULL_CHECK_PARAM
 #define XMD_NULL_CHECK_PARAM(ptr, param) \
     do { if (!(ptr) || !(param)) return NULL; } while(0)
+#endif
 
 #define XMD_ERROR_RETURN_NULL(condition) \
     do { if (condition) return NULL; } while(0)

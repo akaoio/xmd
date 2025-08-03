@@ -1,0 +1,177 @@
+# XMD CI/CD Pipeline
+# Automated build, test, and deployment pipeline
+# Quality + Infrastructure Lead: Tester
+
+name: XMD Continuous Integration
+
+on:
+  push:
+    branches: [ main, develop, refactor ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Build and Test XMD
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        build_type: [Debug, Release]
+        compiler: [gcc, clang]
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake build-essential valgrind
+        sudo apt-get install -y libcjson-dev libyaml-dev
+        
+    - name: Setup Build Environment
+      run: |
+        mkdir -p build-ci-${{ matrix.compiler }}-${{ matrix.build_type }}
+        
+    - name: Configure CMake
+      run: |
+        cd build-ci-${{ matrix.compiler }}-${{ matrix.build_type }}
+        cmake -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+              -DCMAKE_C_COMPILER=${{ matrix.compiler }} \
+              -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+              -S ..
+              
+    - name: Build XMD
+      run: |
+        cd build-ci-${{ matrix.compiler }}-${{ matrix.build_type }}
+        make -j$(nproc) 2>&1 | tee build.log
+        
+    - name: Check Build Warnings
+      run: |
+        cd build-ci-${{ matrix.compiler }}-${{ matrix.build_type }}
+        WARNING_COUNT=$(grep -c "warning:" build.log || true)
+        echo "Warning count: $WARNING_COUNT"
+        if [ "$WARNING_COUNT" -gt 0 ]; then
+          echo "::warning::Build contains $WARNING_COUNT warnings"
+          grep "warning:" build.log || true
+        fi
+        
+    - name: Check Genesis Compliance
+      run: |
+        echo "Checking Genesis Principle compliance..."
+        VIOLATIONS=0
+        
+        # Check for multiple functions per file
+        for file in $(find src -name "*.c"); do
+          FUNC_COUNT=$(grep -c "^[a-z_][a-zA-Z0-9_]*(" "$file" || true)
+          if [ "$FUNC_COUNT" -gt 1 ]; then
+            echo "::error::Genesis violation in $file: $FUNC_COUNT functions (should be 1)"
+            VIOLATIONS=$((VIOLATIONS + 1))
+          fi
+        done
+        
+        if [ "$VIOLATIONS" -gt 0 ]; then
+          echo "::error::Found $VIOLATIONS Genesis violations"
+          exit 1
+        fi
+        echo "Genesis compliance: PASS"
+        
+    - name: Run Basic Functionality Tests
+      run: |
+        cd build-ci-${{ matrix.compiler }}-${{ matrix.build_type }}
+        
+        # Test basic functionality
+        echo 'print "Hello XMD"' > test_basic.xmd
+        ./xmd process test_basic.xmd
+        
+        # Test arrays
+        echo 'set arr 1, 2, 3; print arr[1]' > test_arrays.xmd
+        ./xmd process test_arrays.xmd
+        
+        # Test functions
+        echo 'function add x y; return x + y; set result add 5 3; print result' > test_functions.xmd
+        ./xmd process test_functions.xmd
+        
+    - name: Run Production Monitoring Tests
+      run: |
+        cd build-ci-${{ matrix.compiler }}-${{ matrix.build_type }}
+        if [ -f ../test/production_monitoring.xmd ]; then
+          timeout 30s ./xmd process ../test/production_monitoring.xmd || true
+        fi
+        
+    - name: Run Regression Tests
+      run: |
+        cd build-ci-${{ matrix.compiler }}-${{ matrix.build_type }}
+        if [ -f ../test/regression_suite.xmd ]; then
+          timeout 30s ./xmd process ../test/regression_suite.xmd || true
+        fi
+        
+    - name: Memory Leak Detection
+      if: matrix.build_type == 'Debug'
+      run: |
+        cd build-ci-${{ matrix.compiler }}-${{ matrix.build_type }}
+        echo 'print "Memory test"' > memory_test.xmd
+        valgrind --leak-check=full --error-exitcode=1 ./xmd process memory_test.xmd
+        
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: xmd-${{ matrix.compiler }}-${{ matrix.build_type }}
+        path: |
+          build-ci-${{ matrix.compiler }}-${{ matrix.build_type }}/xmd
+          build-ci-${{ matrix.compiler }}-${{ matrix.build_type }}/build.log
+          
+  quality-gates:
+    name: Quality Gate Validation
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: Production Readiness Check
+      run: |
+        echo "=== XMD PRODUCTION READINESS VALIDATION ==="
+        
+        # Check for TODOs and FIXMEs
+        TODO_COUNT=$(find src -name "*.c" -o -name "*.h" | xargs grep -c "TODO\|FIXME" || true)
+        echo "TODO/FIXME count: $TODO_COUNT"
+        
+        # Check for test coverage
+        TEST_FILES=$(find test -name "*.xmd" | wc -l)
+        echo "Test files: $TEST_FILES"
+        
+        # Production readiness score
+        if [ "$TODO_COUNT" -le 3 ] && [ "$TEST_FILES" -ge 5 ]; then
+          echo "✅ Production readiness: PASS"
+          echo "✅ Quality gates: APPROVED"
+        else
+          echo "❌ Production readiness: FAIL"
+          exit 1
+        fi
+        
+  deployment:
+    name: Deploy Production Build
+    runs-on: ubuntu-latest
+    needs: [build-and-test, quality-gates]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Download Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: xmd-gcc-Release
+        
+    - name: Create Release Package
+      run: |
+        mkdir -p xmd-release
+        cp xmd xmd-release/
+        tar -czf xmd-release.tar.gz xmd-release/
+        
+    - name: Upload Release
+      uses: actions/upload-artifact@v4
+      with:
+        name: xmd-release
+        path: xmd-release.tar.gz

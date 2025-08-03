@@ -27,6 +27,7 @@ variable* variable_object_get(const variable* object_var, const char* key) {
     
     size_t index = variable_object_find_key(object_var, key);
     if (index == SIZE_MAX) {
+        return NULL;
+    }
     return object_var->value.object_value->pairs[index].value;
-}
 }

@@ -11,12 +11,13 @@
 #include "../../../../include/dependency.h"
 #include "../../../../include/utils.h"
 #include "../../../../src/utils/common/common_macros.h"
+#include "../../../../src/utils/common/common_macros.h"
 /**
  * @brief Create a new dependency graph
  * @return New dependency graph or NULL on error
  */
 DependencyGraph* dependency_graph_new(void) {
-    XMD_MALLOC_SAFE(DependencyGraph, graph);
+    XMD_CREATE_VALIDATED(graph, DependencyGraph, sizeof(DependencyGraph), NULL);
     
     graph->nodes = NULL;
     graph->node_count = 0;

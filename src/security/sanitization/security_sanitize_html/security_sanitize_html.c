@@ -12,11 +12,18 @@
 #include <stdlib.h>
 #include "../../../../include/utils.h"
 
-// Forward declarations for utility functions
-static bool is_safe_html_tag(const char* tag);
-static size_t extract_tag_name(const char* tag_start, char* tag_name, size_t max_len);
+// Forward declarations for utility functions - to be implemented
+// static bool is_safe_html_tag(const char* tag);
+// static size_t extract_tag_name(const char* tag_start, char* tag_name, size_t max_len);
+
+// Stub implementation for process_html_tag
 static size_t process_html_tag(const char* tag_content, char* output, 
-                              size_t output_pos, size_t max_output_size);
+                              size_t output_pos, size_t max_output_size) {
+    (void)tag_content;
+    (void)output;
+    (void)max_output_size;
+    return output_pos;  // For now, just return unchanged position
+}
 /**
  * @brief Sanitize HTML content
  * @param html HTML content to sanitize

@@ -14,11 +14,14 @@
 #include "ast_node.h"
 #include "ast_parser.h"
 #include "module.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Parse class definition
  * Format: class ClassName [extends ParentClass]
  */
 ast_node* ast_parse_class(const char** pos) {
+    XMD_VALIDATE_PTRS(NULL, pos, *pos);
+    
     const char* start = *pos;
     
     // Skip "class "
@@ -32,7 +35,7 @@ ast_node* ast_parse_class(const char** pos) {
     }
     size_t name_len = start - name_start;
     if (name_len == 0) {
-        return NULL;
+        XMD_ERROR_RETURN(NULL, "ast_parse_class: Missing class name after 'class' keyword");
     }
     
     char* class_name = xmd_malloc(name_len + 1);
@@ -59,7 +62,7 @@ ast_node* ast_parse_class(const char** pos) {
     }
     
     // Create class definition node
-    source_location loc = {1, 1, "input"};
+    source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
     ast_node* class_def = ast_create_class_def(class_name, parent_class, loc);
     XMD_FREE_SAFE(class_name);
     XMD_FREE_SAFE(parent_class);
@@ -76,11 +79,9 @@ ast_node* ast_parse_class(const char** pos) {
         
         if (next_line > start && *next_line && *next_line != '\n') {
             // Found indented content - parse as class body
-            printf("DEBUG: Found indented class body\n");
             
             // Parse each indented line as a method or constructor
             while (*start) {
-                printf("DEBUG: Class body loop position: %.30s\n", start);
                 
                 if (*start == '\n') {
                     start++; // Skip newline
@@ -104,20 +105,15 @@ ast_node* ast_parse_class(const char** pos) {
                 start = line_check;
                 
                 // Parse method or constructor
-                printf("DEBUG: Attempting to parse method at: %.20s\n", line_check);
                 ast_node* method = ast_parse_method(&start);
                 if (method) {
                     ast_add_method(class_def, method);
-                    printf("DEBUG: Added method to class: %s\n", 
-                           method->data.method_def.name ? method->data.method_def.name : "unknown");
                 } else {
-                    printf("DEBUG: Failed to parse method\n");
                     // Skip unrecognized content to next line
                     while (*start && *start != '\n') start++;
                     if (*start == '\n') start++;
                 }
             }
-            printf("DEBUG: Class body parsing completed\n");
         }
     } else {
         // No class body, skip to end of line

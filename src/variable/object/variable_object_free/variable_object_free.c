@@ -9,15 +9,15 @@
  */
 
 #include <stdlib.h>
-#include "store_internal.h"
-#include "variable.h"
-#include "variable_internal.h"
+#include "../../../../include/variable.h"
+#include "../../../../include/variable_internal.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Free object contents (internal helper)
  * @param object_var Object variable
  */
-void variable_object_XMD_FREE_SAFE(variable* object_var) {
+void variable_object_free(variable* object_var) {
     if (!object_var || object_var->type != VAR_OBJECT || !object_var->value.object_value) {
         return;
     }
@@ -26,9 +26,9 @@ void variable_object_XMD_FREE_SAFE(variable* object_var) {
     for (size_t i = 0; i < obj->count; i++) {
         XMD_FREE_SAFE(obj->pairs[i].key);
         variable_unref(obj->pairs[i].value);
+    }
     XMD_FREE_SAFE(obj->pairs);
     obj->pairs = NULL;
     obj->count = 0;
     obj->capacity = 0;
-}
 }

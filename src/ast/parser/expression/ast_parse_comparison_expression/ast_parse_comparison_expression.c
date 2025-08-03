@@ -15,17 +15,28 @@
 #include "ast_node.h"
 #include "ast_parser.h"
 #include "utils.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Parse comparison expression: variable = value
  * @param expr Expression string to parse
  * @return Binary operation AST node or NULL
  */
+static int recursion_depth = 0;
+static int max_recursion = 100;
+
 ast_node* ast_parse_comparison_expression(const char* expr) {
     if (!expr) {
         return NULL;
     }
     
-    printf("DEBUG: ast_parse_comparison_expression called with: %s\n", expr);
+    recursion_depth++;
+    
+    if (recursion_depth > max_recursion) {
+        fprintf(stderr, "ERROR: Maximum recursion depth %d exceeded in ast_parse_comparison_expression\n", max_recursion);
+        fprintf(stderr, "       Expression causing loop: '%s'\n", expr);
+        recursion_depth--;
+        return NULL;
+    }
     
     char* expr_copy = xmd_strdup(expr);
     if (!expr_copy) {
@@ -39,6 +50,8 @@ ast_node* ast_parse_comparison_expression(const char* expr) {
     int op_len = 0;
     
     // Look for comparison operators in order of precedence (longest first)
+    
+    // XMD uses ONLY single = for comparison, no == operator
     if ((op_pos = strstr(expr_copy, " <= "))) {
         op = BINOP_LE;
         op_len = 4;
@@ -60,6 +73,7 @@ ast_node* ast_parse_comparison_expression(const char* expr) {
     } else {
         // No comparison operator found
         XMD_FREE_SAFE(expr_copy);
+        recursion_depth--;
         return NULL;
     }
     
@@ -78,7 +92,7 @@ ast_node* ast_parse_comparison_expression(const char* expr) {
     end = right_str + strlen(right_str) - 1;
     while (end > right_str && isspace(*end)) *end-- = '\0';
     
-    source_location loc = {1, 1, "input"};
+    source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
     
     // Parse left operand
     ast_node* left = NULL;
@@ -125,22 +139,23 @@ ast_node* ast_parse_comparison_expression(const char* expr) {
     if (left && right) {
         result = ast_create_binary_op(op, left, right, loc);
         
-        const char* op_name = "=";
+        // Debug logging switch - fully commented out
+        // const char* op_name = "=";
         switch (op) {
-            case BINOP_LT: op_name = "<"; break;
-            case BINOP_LE: op_name = "<="; break;
-            case BINOP_GT: op_name = ">"; break;
-            case BINOP_GE: op_name = ">="; break;
-            case BINOP_EQ: op_name = "="; break;
-            case BINOP_NE: op_name = "!="; break;
-            default: op_name = "?"; break;
+            case BINOP_LT: /* op_name = "<"; */ break;
+            case BINOP_LE: /* op_name = "<="; */ break;
+            case BINOP_GT: /* op_name = ">"; */ break;
+            case BINOP_GE: /* op_name = ">="; */ break;
+            case BINOP_EQ: /* op_name = "="; */ break;
+            case BINOP_NE: /* op_name = "!="; */ break;
+            default: /* op_name = "?"; */ break;
         }
-        printf("DEBUG: Created comparison node: %s %s %s\n", left_str, op_name, right_str);
     } else {
         if (left) XMD_FREE_SAFE(left);
         if (right) XMD_FREE_SAFE(right);
     }
     
     XMD_FREE_SAFE(expr_copy);
+    recursion_depth--;
     return result;
 }

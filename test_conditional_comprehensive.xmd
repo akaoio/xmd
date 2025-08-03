@@ -1,0 +1,97 @@
+# COMPREHENSIVE CONDITIONAL EVALUATION TEST SUITE
+# Testing if/else/elif functionality and operators
+
+print "=== CONDITIONAL EVALUATION TEST SUITE ==="
+print ""
+
+# Test 1: Basic equality conditionals
+print "Test 1: Basic Equality (=)"
+set x 10
+set y 10
+set z 20
+
+if x = 10
+    print "✅ x equals 10 - WORKING"
+
+if y = 10
+    print "✅ y equals 10 - WORKING"
+
+if z = 10
+    print "❌ z equals 10 - SHOULD NOT PRINT"
+print ""
+
+# Test 2: String equality
+print "Test 2: String Equality"
+set name "Alice"
+set name2 "Alice"
+set name3 "Bob"
+
+if name = "Alice"
+    print "✅ name equals Alice - WORKING"
+
+if name2 = "Alice"
+    print "✅ name2 equals Alice - WORKING"
+
+if name3 = "Alice"
+    print "❌ name3 equals Alice - SHOULD NOT PRINT"
+print ""
+
+# Test 3: If-else blocks
+print "Test 3: If-Else Blocks"
+set test_var 5
+
+if test_var = 10
+    print "❌ test_var is 10 - SHOULD NOT PRINT"
+else
+    print "✅ test_var is not 10 - WORKING"
+
+if test_var = 5
+    print "✅ test_var is 5 - WORKING"
+else
+    print "❌ test_var is not 5 - SHOULD NOT PRINT"
+print ""
+
+# Test 4: Multiple conditionals
+print "Test 4: Multiple Conditionals"
+set a 1
+set b 2
+set c 3
+
+if a = 1
+    print "✅ a is 1"
+
+if b = 2
+    print "✅ b is 2"
+
+if c = 3
+    print "✅ c is 3"
+print ""
+
+# Test 5: Nested conditionals
+print "Test 5: Nested Conditionals"
+set outer 1
+set inner 2
+
+if outer = 1
+    print "✅ Outer condition true"
+    if inner = 2
+        print "✅ Inner condition true"
+    else
+        print "❌ Inner condition false"
+else
+    print "❌ Outer condition false"
+print ""
+
+# Test 6: Boolean variables in conditionals
+print "Test 6: Boolean Variables"
+set flag true
+set flag2 false
+
+if flag = true
+    print "✅ flag is true"
+
+if flag2 = false
+    print "✅ flag2 is false"
+print ""
+
+print "=== CONDITIONAL TEST SUITE COMPLETE ==="

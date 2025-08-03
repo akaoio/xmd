@@ -17,12 +17,14 @@
 #include "store.h"
 #include "utils.h"
 #include "variable.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Parse potential function call: name arg1 arg2 ...
  * @param pos Pointer to current position  
  * @return Function call AST node or NULL if not a function call
  */
 ast_node* ast_parse_potential_function_call(const char** pos) {
+    XMD_VALIDATE_PTRS(NULL, pos, *pos);
     const char* start = *pos;
     
     // Parse function name (identifier with dots for method calls like File.read)
@@ -39,11 +41,11 @@ ast_node* ast_parse_potential_function_call(const char** pos) {
         return NULL;
     }
     // Extract function name
-    char* func_name = xmd_malloc(name_len + 1);
-    if (!func_name) return NULL;
+    char* func_name;
+    XMD_MALLOC_SAFE(func_name, char[name_len + 1], NULL, "ast_parse_potential_function_call: Memory allocation failed");
     strncpy(func_name, name_start, name_len);
     func_name[name_len] = '\0';
-    source_location loc = {1, 1, "input"};
+    source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
     ast_node* func_call = NULL;
     // Check for File I/O method calls and create appropriate AST nodes
     if (strcmp(func_name, "File.read") == 0) {
@@ -152,13 +154,13 @@ ast_node* ast_parse_potential_function_call(const char** pos) {
                                 if (str_val) {
                                     strncpy(str_val, content_str + 1, content_len - 2);
                                     str_val[content_len - 2] = '\0';
-                                    source_location loc = {1, 1, "input"};
+                                    source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
                                     func_call->data.file_io.content = ast_create_string_literal(str_val, loc);
                                     XMD_FREE_SAFE(str_val);
                                 }
                             } else {
                                 // Variable reference or other content
-                                source_location loc = {1, 1, "input"};
+                                source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
                                 func_call->data.file_io.content = ast_create_identifier(content_str, loc);
                             }
                             XMD_FREE_SAFE(content_str);
@@ -170,17 +172,73 @@ ast_node* ast_parse_potential_function_call(const char** pos) {
             }
         }
     } else {
-        // Regular function call - parse arguments normally
+        // Regular function call - parse individual arguments
         while (*start && *start != '\n') {
             // Skip whitespace
             while (*start && isspace(*start) && *start != '\n') start++;
             if (!*start || *start == '\n') break;
-            // Parse argument as a full expression (handles strings, math, concatenation, etc.)
-            ast_node* arg = ast_parse_expression(&start);
+            
+            // Parse individual argument (not full expression)
+            ast_node* arg = NULL;
+            const char* arg_start = start;
+            
+            if (*start == '"') {
+                // Parse string literal argument
+                start++; // Skip opening quote
+                while (*start && *start != '"') start++;
+                if (*start == '"') start++; // Skip closing quote
+                
+                size_t str_len = start - arg_start;
+                char* str_val = xmd_malloc(str_len + 1);
+                if (str_val) {
+                    strncpy(str_val, arg_start, str_len);
+                    str_val[str_len] = '\0';
+                    
+                    // Remove quotes and create string literal
+                    if (str_val[0] == '"' && str_val[str_len-1] == '"') {
+                        char* clean_str = xmd_malloc(str_len - 1);
+                        if (clean_str) {
+                            strncpy(clean_str, str_val + 1, str_len - 2);
+                            clean_str[str_len - 2] = '\0';
+                            source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
+                            arg = ast_create_string_literal(clean_str, loc);
+                            XMD_FREE_SAFE(clean_str);
+                        }
+                    }
+                    XMD_FREE_SAFE(str_val);
+                }
+            } else if (isdigit(*start) || (*start == '-' && isdigit(*(start+1)))) {
+                // Parse number literal argument
+                while (*start && (isdigit(*start) || *start == '.' || *start == '-')) start++;
+                
+                size_t num_len = start - arg_start;
+                char* num_str = xmd_malloc(num_len + 1);
+                if (num_str) {
+                    strncpy(num_str, arg_start, num_len);
+                    num_str[num_len] = '\0';
+                    double val = atof(num_str);
+                    source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
+                    arg = ast_create_number_literal(val, loc);
+                    XMD_FREE_SAFE(num_str);
+                }
+            } else {
+                // Parse identifier/variable argument
+                while (*start && !isspace(*start) && *start != '\n') start++;
+                
+                size_t id_len = start - arg_start;
+                char* id_str = xmd_malloc(id_len + 1);
+                if (id_str) {
+                    strncpy(id_str, arg_start, id_len);
+                    id_str[id_len] = '\0';
+                    source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
+                    arg = ast_create_identifier(id_str, loc);
+                    XMD_FREE_SAFE(id_str);
+                }
+            }
+            
             if (arg) {
                 ast_add_argument(func_call, arg);
             }
-            // If expression parsing fails, skip to next whitespace
         }
     }
     *pos = start;

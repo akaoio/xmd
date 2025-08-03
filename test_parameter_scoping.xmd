@@ -1,0 +1,6 @@
+# Test parameter scoping
+function echo_param x
+    return x
+
+set result echo_param "Hello"
+print result

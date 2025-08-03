@@ -1,0 +1,8 @@
+# Test less than operator
+set x 3
+set y 5
+
+if x < y
+    print "3 is less than 5"
+else
+    print "3 is not less than 5"

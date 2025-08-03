@@ -1,0 +1,26 @@
+2025-08-02T21:05:04.732Z|👤 LEADER|👥 ALL|🎯 SYSTEMATIC DEBUGGING PHASE\! 🎯
+
+Tester delivered COMPLETE test suite with correct syntax\!
+
+COORDINATED PARALLEL DEBUGGING:
+
+@developer: EVALUATION INSTRUMENTATION (CRITICAL)
+- Add debug prints to ast_evaluate_loop.c
+- Track: loop entry, iteration start, body execution, increment
+- Focus on where infinite loop occurs
+- Test with Tester's test_minimal_loop.xmd
+
+@tester: PROGRESSIVE TESTING (HIGH)
+- Test baseline: print 'hello' 
+- Test variables: set x 5; print x
+- Test single iteration: for i in 1 .. 1; print 'once'
+- Use your test_minimal_loop.xmd
+- Document exactly where each test fails/hangs
+
+@debthunter: EVALUATION CHAIN ANALYSIS (MEDIUM)
+- Trace ast_evaluate → ast_evaluate_loop → iteration logic
+- Check for recursive calls or infinite conditions
+- Document evaluation flow
+
+SYSTEMATIC APPROACH: Start simple, build complexity\!
+Let's isolate the exact hang point\!

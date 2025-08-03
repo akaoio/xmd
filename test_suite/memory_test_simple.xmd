@@ -1,0 +1,3 @@
+# Simple memory test
+set x 10
+print "Value: " + x

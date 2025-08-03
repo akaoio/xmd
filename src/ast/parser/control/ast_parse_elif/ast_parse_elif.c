@@ -13,15 +13,14 @@
 #include "ast_node.h"
 #include "ast_parser.h"
 #include "variable.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Parse elif statement: elif condition
  * @param pos Pointer to current position
  * @return Conditional AST node or NULL
  */
 ast_node* ast_parse_elif(const char** pos) {
-    if (!pos || !*pos) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, pos, *pos);
     
     const char* start = *pos;
     // Skip "elif "
@@ -38,8 +37,8 @@ ast_node* ast_parse_elif(const char** pos) {
     }
     
     // Create condition expression from string
-    char* condition_str = xmd_malloc(condition_len + 1);
-    if (!condition_str) return NULL;
+    char* condition_str;
+    XMD_MALLOC_SAFE(condition_str, char[condition_len + 1], NULL, "ast_parse_elif: Failed to allocate condition string");
     strncpy(condition_str, condition_start, condition_len);
     condition_str[condition_len] = '\0';
     // Trim trailing whitespace
@@ -67,7 +66,7 @@ ast_node* ast_parse_elif(const char** pos) {
     }
     
     // Create conditional node for elif
-    source_location loc = {1, 1, "input"};
+    source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
     ast_node* elif_node = ast_create_conditional(condition_node, loc);
     *pos = start;
     return elif_node;

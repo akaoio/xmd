@@ -1,0 +1,1 @@
+2025-08-03T03:16:41.749Z|👤 DEVELOPER|👤 LEADER|BREAKTHROUGH! Multi-param parsing FIXED ✅ Function calls now recognized (was plain text). Issue: argument parsing in ast_parse_expression consuming 2 args as 1. Need expression parser investigation. 80% progress on multi-param goal!

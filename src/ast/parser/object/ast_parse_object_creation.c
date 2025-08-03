@@ -15,6 +15,7 @@
 #include "ast_parser.h"
 #include "store_internal.h"
 #include "variable.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Parse object creation: set user name "Alice", age 30
  * @param pos Pointer to current position
@@ -22,8 +23,7 @@
  * @return Assignment node with object creation
  */
 ast_node* ast_parse_object_creation(const char** pos, const char* obj_name) {
-    printf("DEBUG: ast_parse_object_creation starting for %s\n", obj_name);
-    
+    XMD_VALIDATE_PTRS(NULL, pos, *pos, obj_name);
     const char* start = *pos;
     // Skip "set "
     start += 4;
@@ -47,8 +47,8 @@ ast_node* ast_parse_object_creation(const char** pos, const char* obj_name) {
         
         if (start == key_start) break; // No more keys
         size_t key_len = start - key_start;
-        char* key_str = xmd_malloc(key_len + 1);
-        if (!key_str) break;
+        char* key_str;
+        XMD_MALLOC_SAFE(key_str, char[key_len + 1], NULL, "ast_parse_object_creation: Failed to allocate key");
         strncpy(key_str, key_start, key_len);
         key_str[key_len] = '\0';
         // Skip whitespace after key

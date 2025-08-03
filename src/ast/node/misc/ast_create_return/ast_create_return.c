@@ -12,6 +12,7 @@
 #include "module.h"
 #include "utils.h"
 #include "variable.h"
+#include "../../../../utils/common/common_macros.h"
 
 /**
  * @brief Create AST return statement node
@@ -20,10 +21,8 @@
  * @return New return node or NULL on error
  */
 ast_node* ast_create_return(ast_node* value, source_location loc) {
-    ast_node* node = xmd_malloc(sizeof(ast_node));
-    if (!node) {
-        return NULL;
-    }
+    ast_node* node;
+    XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     
     node->type = AST_RETURN;
     node->data.return_stmt.value = value;
