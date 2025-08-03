@@ -19,9 +19,7 @@
  * @param evaluator Evaluator to free
  */
 void ast_evaluator_free(ast_evaluator* evaluator) {
-    if (!evaluator) {
-        return;
-    }
+    XMD_ENTRY_VALIDATE_VOID(evaluator);
     
     // DO NOT destroy variables store - evaluator doesn't own it!
     // The variables store is owned by the processor and will be freed by xmd_processor_free

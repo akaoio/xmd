@@ -18,17 +18,10 @@
  * @return New store instance or NULL on error
  */
 store* store_create(void) {
-    store* s = xmd_malloc(sizeof(store));
-    if (!s) {
-        return NULL;
-    }
+    XMD_CREATE_VALIDATED(s, store, sizeof(store), NULL);
     
     s->capacity = 16;
     s->size = 0;
-    s->buckets = xmd_calloc(s->capacity, sizeof(store_entry*));
-    if (!s->buckets) {
-        xmd_free(s);
-        return NULL;
-    }
+    XMD_CALLOC_STANDARD(s->buckets, s->capacity, store_entry*, NULL);
     return s;
 }

@@ -20,9 +20,7 @@
  * @return New assignment node or NULL on error
  */
 ast_node* ast_create_assignment(const char* variable, binary_operator op, ast_node* value, source_location loc) {
-    if (!variable || !value) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, variable, value);
     
     XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     

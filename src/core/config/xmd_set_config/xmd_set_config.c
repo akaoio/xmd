@@ -16,9 +16,7 @@
  * @return XMD_SUCCESS on success, XMD_ERROR on failure
  */
 xmd_error_code xmd_set_config(const char* key, const char* value) {
-    if (!key || !value) {
-        return XMD_ERROR_INVALID_ARGUMENT;
-    }
+    XMD_VALIDATE_PTRS(XMD_ERROR_INVALID_ARGUMENT, key, value);
     
     // Set configuration parameter
     // This would typically update a global config structure

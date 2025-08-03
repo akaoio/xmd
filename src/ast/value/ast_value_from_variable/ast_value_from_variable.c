@@ -12,11 +12,12 @@
 #include "ast.h"
 #include "variable.h"
 #include "utils.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Convert variable to ast_value - MISSING FUNCTION
  */
 ast_value* ast_value_from_variable(variable* var) {
-    if (!var) return NULL;
+    XMD_VALIDATE_PTRS(NULL, var);
     
     switch (var->type) {
         case VAR_STRING:

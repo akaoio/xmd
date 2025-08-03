@@ -22,9 +22,7 @@
  * @return YAML string (must be freed)
  */
 char* yaml_stringify_variable(variable* var, int indent) {
-    if (!var) {
-        return xmd_strdup("null");
-    }
+    XMD_VALIDATE_PTRS(xmd_strdup("null"), var);
     
     variable_type type = variable_get_type(var);
     char* result = NULL;

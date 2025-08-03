@@ -19,7 +19,7 @@
  * @return New parser state or NULL on error
  */
 parser_state* parser_state_create(token* tokens, const char* filename) {
-    XMD_NULL_CHECK(tokens, NULL);
+    XMD_VALIDATE_PTRS(NULL, tokens);
     
     XMD_MALLOC_SAFE(parser_state, state);
     

@@ -10,6 +10,7 @@
 #include "../../../../../include/xmd.h"
 #include "../../../../../include/store.h"
 #include "../../../../../include/variable.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Get XMD processor variable
  * @param processor XMD processor
@@ -18,7 +19,7 @@
   * /
  */
 char* xmd_get_variable(xmd_processor* processor, const char* key) {
-    if (!processor || !key) return NULL;
+    XMD_VALIDATE_PTRS(NULL, processor, key);
     store* variables = (store*)processor;
     variable* var = store_get(variables, key);
     return var ? variable_to_string(var) : NULL;

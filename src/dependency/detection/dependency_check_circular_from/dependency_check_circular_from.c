@@ -9,6 +9,7 @@
  */
 
 #include "../../../../include/dependency.h"
+#include "../../../utils/common/common_macros.h"
 
 // Forward declaration
 DependencyNode* dependency_graph_find_node(DependencyGraph* graph, const char* module_name);
@@ -19,9 +20,7 @@ DependencyNode* dependency_graph_find_node(DependencyGraph* graph, const char* m
  * @return 1 if cycle found, 0 if no cycle, -1 on error
  */
 int dependency_check_circular_from(DependencyDetector* detector, const char* module_name) {
-    if (!detector || !module_name) {
-        return -1;
-    }
+    XMD_VALIDATE_PTRS(-1, detector, module_name);
     
     DependencyNode* node = dependency_graph_find_node(detector->graph, module_name);
     if (!node) {

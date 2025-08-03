@@ -6,6 +6,7 @@
  */
 
 #include "../../../../include/ast_parser.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Check if parser state has error
@@ -13,5 +14,6 @@
  * @return true if error exists, false otherwise
  */
 bool parser_has_error(parser_state* state) {
-    return state ? state->has_error : true;
+    XMD_VALIDATE_PTRS(true, state);
+    return state->has_error;
 }

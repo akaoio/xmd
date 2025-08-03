@@ -23,9 +23,7 @@ void calculate_stats(uint64_t* times, uint32_t count, benchmark_result* result);
  */
 int benchmark_run(benchmark_suite* suite, const char* test_name,
                   int (*test_func)(void*), void* test_data, uint32_t iterations) {
-    if (!suite || !test_name || !test_func) {
-        return -1;
-    }
+    XMD_VALIDATE_PTRS(-1, suite, test_name, test_func);
     
     // Ensure capacity
     if (suite->result_count >= suite->result_capacity) {
@@ -39,10 +37,8 @@ int benchmark_run(benchmark_suite* suite, const char* test_name,
     }
     
     // Run benchmark
-    uint64_t* times = xmd_malloc(iterations * sizeof(uint64_t));
-    if (!times) {
-        return -1;
-    }
+    uint64_t* times;
+    XMD_MALLOC_DYNAMIC(times, iterations * sizeof(uint64_t), -1);
     
     for (uint32_t i = 0; i < iterations; i++) {
         uint64_t start = get_time_ns();

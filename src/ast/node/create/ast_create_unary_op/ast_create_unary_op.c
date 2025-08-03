@@ -19,9 +19,7 @@
  * @return New unary op node or NULL on error
  */
 ast_node* ast_create_unary_op(unary_operator op, ast_node* operand, source_location loc) {
-    if (!operand) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, operand);
     
     XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     memset(node, 0, sizeof(ast_node));

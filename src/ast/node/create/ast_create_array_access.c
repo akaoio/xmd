@@ -21,9 +21,7 @@
  * @return New array access node or NULL on error
  */
 ast_node* ast_create_array_access(ast_node* array_expr, ast_node* index_expr, source_location loc) {
-    if (!array_expr || !index_expr) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, array_expr, index_expr);
     
     XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     

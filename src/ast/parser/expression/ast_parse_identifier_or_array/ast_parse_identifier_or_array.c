@@ -48,11 +48,8 @@ ast_node* ast_parse_identifier_or_array(const char* identifier_str, source_locat
     
     // Extract index (between '[' and ']')
     size_t index_len = close_bracket - bracket_pos - 1;
-    char* index_str = xmd_malloc(index_len + 1);
-    if (!index_str) {
-        XMD_FREE_SAFE(array_name);
-        return NULL;
-    }
+    char* index_str;
+    XMD_MALLOC_DYNAMIC(index_str, index_len + 1, NULL);
     strncpy(index_str, bracket_pos + 1, index_len);
     index_str[index_len] = '\0';
     

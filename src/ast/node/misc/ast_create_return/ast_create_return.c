@@ -21,7 +21,6 @@
  * @return New return node or NULL on error
  */
 ast_node* ast_create_return(ast_node* value, source_location loc) {
-    ast_node* node;
     XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     
     node->type = AST_RETURN;

@@ -12,6 +12,7 @@
 #include <pthread.h>
 #include "../../../../include/auditor_internal.h"
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Initialize security audit system
  * @param log_file Path to audit log file
@@ -22,9 +23,7 @@ int security_audit_init(const char* log_file) {
         return 0; // Already initialized
     }
     
-    if (!log_file) {
-        return -1;
-    }
+    XMD_VALIDATE_PTRS(-1, log_file);
     
     if (pthread_mutex_init(&audit_state.mutex, NULL) != 0) {
         return -1;

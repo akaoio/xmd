@@ -15,15 +15,15 @@
 #include "store.h"
 #include "utils.h"
 #include "variable.h"
+#include "../../utils/common/common_macros.h"
 /**
  * @brief Substitute variables in AST text content
  * @param content Text containing variable references
  * @param variables Variable store
  * @return Substituted text (must be freed) or NULL
+ */
 char* ast_substitute_variables(const char* content, store* variables) {
-    if (!content) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, content);
     
     if (!variables) {
         return xmd_strdup(content);

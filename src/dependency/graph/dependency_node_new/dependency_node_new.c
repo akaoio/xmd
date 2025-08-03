@@ -17,7 +17,7 @@
  * @return New dependency node or NULL on error
  */
 DependencyNode* dependency_node_new(Module* module) {
-    XMD_NULL_CHECK(module, NULL);
+    XMD_VALIDATE_PTRS(NULL, module);
     
     XMD_CREATE_VALIDATED(node, DependencyNode, sizeof(DependencyNode), NULL);
     

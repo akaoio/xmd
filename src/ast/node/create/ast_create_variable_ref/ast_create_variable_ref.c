@@ -22,9 +22,7 @@
  * @return New variable ref node or NULL on error
  */
 ast_node* ast_create_variable_ref(const char* name, source_location loc) {
-    if (!name) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, name);
     
     XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     

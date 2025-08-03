@@ -18,9 +18,7 @@
  * @return New identifier node or NULL on error
  */
 ast_node* ast_create_identifier(const char* name, source_location loc) {
-    if (!name) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, name);
     
     if (name && strstr(name, "= ")) {
         XMD_DEBUG("Creating suspicious identifier: '%s'", name);

@@ -9,6 +9,7 @@
 
 #include <stddef.h>
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief DJB2 hash function
  * @param key String to hash
@@ -16,7 +17,8 @@
  * @return Hash value
  */
 size_t xmd_hash_key(const char* key, size_t capacity) {
-    if (!key || capacity == 0) {
+    XMD_VALIDATE_PTRS(0, key);
+    if (capacity == 0) {
         return 0;
     }
     unsigned long hash = 5381;

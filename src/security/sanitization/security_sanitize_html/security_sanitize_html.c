@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 
 // Forward declarations for utility functions - to be implemented
 // static bool is_safe_html_tag(const char* tag);
@@ -30,9 +31,7 @@ static size_t process_html_tag(const char* tag_content, char* output,
  * @return Sanitized HTML (must be freed) or NULL on error
  */
 char* security_sanitize_html(const char* html) {
-    if (!html) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, html);
     
     size_t input_len = strlen(html);
     char* result = xmd_malloc(input_len * 2 + 1); // Extra space for entity encoding

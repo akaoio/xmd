@@ -52,11 +52,8 @@ ast_node* ast_parse_loop(const char** pos) {
         return NULL;
     }
     
-    char* var_name = xmd_malloc(var_len + 1);
-    if (!var_name) {
-        printf("[ERROR] ast_parse_loop: Memory allocation failed for loop variable\n");
-        return NULL;
-    }
+    char* var_name;
+    XMD_MALLOC_DYNAMIC(var_name, var_len + 1, NULL);
     strncpy(var_name, var_start, var_len);
     var_name[var_len] = '\0';
     
@@ -81,11 +78,8 @@ ast_node* ast_parse_loop(const char** pos) {
     }
     
     size_t iterable_len = start - iterable_start;
-    char* iterable_text = xmd_malloc(iterable_len + 1);
-    if (!iterable_text) {
-        XMD_FREE_SAFE(var_name);
-        return NULL;
-    }
+    char* iterable_text;
+    XMD_MALLOC_DYNAMIC(iterable_text, iterable_len + 1, NULL);
     
     strncpy(iterable_text, iterable_start, iterable_len);
     iterable_text[iterable_len] = '\0';

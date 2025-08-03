@@ -20,8 +20,7 @@
   * /
  */
 xmd_processor* xmd_processor_create(const xmd_config* config) {
-    xmd_processor* processor = xmd_calloc(1, sizeof(xmd_processor));
-    if (!processor) return NULL;
+    XMD_CREATE_VALIDATED(processor, xmd_processor, sizeof(xmd_processor), NULL);
     
     // Initialize variable store
     processor->variables = store_create();

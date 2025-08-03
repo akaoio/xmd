@@ -16,9 +16,7 @@
  * @return true if valid, false if invalid
  */
 bool xmd_validate(const char* content) {
-    if (!content) {
-        return false;
-    }
+    XMD_VALIDATE_PTRS(false, content);
     
     // Basic XMD syntax validation
     size_t len = strlen(content);

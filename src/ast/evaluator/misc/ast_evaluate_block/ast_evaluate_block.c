@@ -21,8 +21,9 @@
  * @return AST value result or NULL on error
  */
 ast_value* ast_evaluate_block(ast_node* node, ast_evaluator* evaluator) {
-    if (!node || node->type != AST_BLOCK || !evaluator) {
-        XMD_ERROR_RETURN(NULL, "ast_evaluate_block: Evaluation failed");
+    XMD_VALIDATE_PTRS(NULL, node, evaluator);
+    if (node->type != AST_BLOCK) {
+        XMD_ERROR_RETURN(NULL, "ast_evaluate_block: Expected AST_BLOCK node");
     }
     
     ast_value* result = NULL;

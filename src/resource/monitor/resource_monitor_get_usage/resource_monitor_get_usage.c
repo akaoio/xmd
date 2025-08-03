@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include "../../../../include/resource.h"
 #include "../../../../include/platform.h"
+#include "../../../utils/common/common_macros.h"
 
 size_t get_memory_usage(void);
 int count_file_descriptors(void);
@@ -14,9 +15,7 @@ int count_file_descriptors(void);
  * @return 0 on success, -1 on error
  */
 int resource_monitor_get_usage(ResourceMonitor* monitor, ResourceUsage* usage) {
-    if (!monitor || !usage) {
-        return -1;
-    }
+    XMD_VALIDATE_PTRS(-1, monitor, usage);
     
     memset(usage, 0, sizeof(ResourceUsage));
     

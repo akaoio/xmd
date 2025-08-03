@@ -7,11 +7,9 @@
 #include "../../../../include/resource.h"
 #include "../../../../include/utils.h"
 #include "../../../../include/config_internal.h"
+#include "../../../utils/common/common_macros.h"
 ResourceLimiter* resource_limiter_new(void) {
-    ResourceLimiter* limiter = xmd_malloc(sizeof(ResourceLimiter));
-    if (!limiter) {
-        return NULL;
-    }
+    XMD_CREATE_VALIDATED(limiter, ResourceLimiter, sizeof(ResourceLimiter), NULL);
     
     // Get limits from global configuration
     xmd_internal_config* config = xmd_internal_config_get_global();

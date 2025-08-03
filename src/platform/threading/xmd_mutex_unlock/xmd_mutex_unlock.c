@@ -5,13 +5,14 @@
  */
 
 #include "../../../../include/platform_internal.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Unlock mutex
  * @param mutex Mutex to unlock
  * @return 0 on success, -1 on error
  */
 int xmd_mutex_unlock(xmd_mutex_t* mutex) {
-    if (!mutex) return -1;
+    XMD_VALIDATE_PTRS(-1, mutex);
 #ifdef XMD_PLATFORM_WINDOWS
     LeaveCriticalSection(mutex);
     return 0;

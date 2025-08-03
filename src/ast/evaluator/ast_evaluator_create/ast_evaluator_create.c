@@ -25,10 +25,7 @@
  * @return New evaluator or NULL on error
  */
 ast_evaluator* ast_evaluator_create(store* variables, processor_context* ctx) {
-    ast_evaluator* evaluator = xmd_calloc(1, sizeof(ast_evaluator));
-    if (!evaluator) {
-        XMD_ERROR_RETURN(NULL, "ast_evaluator_create: Evaluation failed");
-    }
+    XMD_CREATE_VALIDATED(evaluator, ast_evaluator, sizeof(ast_evaluator), NULL);
     
     evaluator->variables = variables ? variables : store_create();
     evaluator->functions = store_create();  // Create functions store

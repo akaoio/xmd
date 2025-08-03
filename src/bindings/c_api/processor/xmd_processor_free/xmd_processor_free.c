@@ -18,7 +18,7 @@
   * /
  */
 void xmd_processor_free(xmd_processor* processor) {
-    if (!processor) return;
+    XMD_ENTRY_VALIDATE_VOID(processor);
     fflush(stdout);
     
     // Safely destroy stores with NULL checks

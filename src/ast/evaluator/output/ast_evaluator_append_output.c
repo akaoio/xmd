@@ -18,9 +18,7 @@
  * @return 0 on success, -1 on error
  */
 int ast_evaluator_append_output(ast_evaluator* evaluator, const char* text) {
-    if (!evaluator || !text) {
-        return -1;
-    }
+    XMD_VALIDATE_PTRS(-1, evaluator, text);
     
     size_t text_len = strlen(text);
     if (text_len == 0) {

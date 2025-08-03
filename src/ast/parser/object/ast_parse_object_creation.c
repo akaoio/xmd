@@ -66,8 +66,9 @@ ast_node* ast_parse_object_creation(const char** pos, const char* obj_name) {
             start++;
         }
         size_t value_len = start - value_start;
-        char* value_str = xmd_malloc(value_len + 1);
-        if (value_str) {
+        char* value_str;
+        XMD_MALLOC_DYNAMIC(value_str, value_len + 1, NULL);
+        {
             strncpy(value_str, value_start, value_len);
             value_str[value_len] = '\0';
             

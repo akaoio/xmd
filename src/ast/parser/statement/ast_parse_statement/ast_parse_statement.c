@@ -147,8 +147,9 @@ ast_node* ast_parse_statement(const char** pos) {
     if (*paren_check == '(' && paren_check > start) {
         // Parse function name
         size_t func_name_len = paren_check - start;
-        char* func_name = xmd_malloc(func_name_len + 1);
-        if (func_name) {
+        char* func_name;
+        XMD_MALLOC_DYNAMIC(func_name, func_name_len + 1, NULL);
+        {
             strncpy(func_name, start, func_name_len);
             func_name[func_name_len] = '\0';
             
@@ -198,8 +199,9 @@ ast_node* ast_parse_statement(const char** pos) {
         if (*var_pos == '}') {
             // Extract variable name
             size_t var_len = var_pos - (start + 2);
-            char* var_name = xmd_malloc(var_len + 1);
-            if (var_name) {
+            char* var_name;
+            XMD_MALLOC_DYNAMIC(var_name, var_len + 1, NULL);
+            {
                 strncpy(var_name, start + 2, var_len);
                 var_name[var_len] = '\0';
                 
@@ -243,8 +245,9 @@ ast_node* ast_parse_statement(const char** pos) {
     if (text_pos > text_start) {
         // Extract plain text content
         size_t text_len = text_pos - text_start;
-        char* text_content = xmd_malloc(text_len + 1);
-        if (text_content) {
+        char* text_content;
+        XMD_MALLOC_DYNAMIC(text_content, text_len + 1, NULL);
+        {
             strncpy(text_content, text_start, text_len);
             text_content[text_len] = '\0';
             

@@ -12,6 +12,7 @@
 #include <string.h>
 #include "../../../include/native_xmd.h"
 #include "../../../include/utils.h"
+#include "../../utils/common/common_macros.h"
 
 // Forward declaration for dependency
 extern bool xmd_is_native_syntax(const char* content);
@@ -22,9 +23,7 @@ extern bool xmd_is_native_syntax(const char* content);
  * @return Human-readable syntax type name
  */
 const char* xmd_get_syntax_name(const char* content) {
-    if (!content) {
-        return "empty";
-    }
+    XMD_VALIDATE_PTRS("empty", content);
     
     if (xmd_is_native_syntax(content)) {
         return "native-xmd";

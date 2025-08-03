@@ -20,8 +20,7 @@
  * @return New object access node or NULL on error
  */
 ast_node* ast_create_object_access(ast_node* object_expr, const char* property_name, source_location loc) {
-    if (!object_expr) return NULL;
-    if (!property_name) return NULL;
+    XMD_VALIDATE_PTRS(NULL, object_expr, property_name);
     
     XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     

@@ -10,6 +10,7 @@
 
 #include "../../../../include/dependency.h"
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Add child dependency to node
  * @param parent Parent node
@@ -17,9 +18,7 @@
  * @return 0 on success, -1 on error
  */
 int dependency_node_add_child(DependencyNode* parent, DependencyNode* child) {
-    if (!parent || !child) {
-        return -1;
-    }
+    XMD_VALIDATE_PTRS(-1, parent, child);
     
     // Check if we need to expand capacity
     if (parent->child_count >= parent->child_capacity) {

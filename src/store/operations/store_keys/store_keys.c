@@ -11,6 +11,7 @@
 #include "../../../../include/store.h"
 #include "../../../../include/store_internal.h"
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Get all keys from store
@@ -19,10 +20,7 @@
  * @return Array of key strings (must be freed) or NULL
  */
 char** store_keys(store* s, size_t* count) {
-    if (!s || !count) {
-        if (count) *count = 0;
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, s, count);
     
     // Count keys
     size_t key_count = 0;
@@ -40,11 +38,8 @@ char** store_keys(store* s, size_t* count) {
     }
     
     // Allocate array
-    char** keys = xmd_malloc(key_count * sizeof(char*));
-    if (!keys) {
-        *count = 0;
-        return NULL;
-    }
+    char** keys;
+    XMD_MALLOC_DYNAMIC(keys, key_count * sizeof(char*), (*count = 0, NULL));
     
     // Fill array
     size_t idx = 0;

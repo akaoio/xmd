@@ -54,11 +54,9 @@ ast_node* ast_parse_method(const char** pos) {
             return NULL; // No method name found
         }
         size_t name_len = start - name_start;
-        method_name = xmd_malloc(name_len + 1);
-        if (method_name) {
-            strncpy(method_name, name_start, name_len);
-            method_name[name_len] = '\0';
-        }
+        XMD_MALLOC_DYNAMIC(method_name, name_len + 1, NULL);
+        strncpy(method_name, name_start, name_len);
+        method_name[name_len] = '\0';
     }
     
     if (!method_name) {

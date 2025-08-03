@@ -19,9 +19,7 @@ void dependency_node_free(DependencyNode* node);
  * @param graph Graph to free
  */
 void dependency_graph_free(DependencyGraph* graph) {
-    if (!graph) {
-        return;
-    }
+    XMD_ENTRY_VALIDATE_VOID(graph);
     
     // Free all nodes
     if (graph->nodes) {

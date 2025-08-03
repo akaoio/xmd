@@ -20,9 +20,7 @@
  * @return New binary op node or NULL on error
  */
 ast_node* ast_create_binary_op(binary_operator op, ast_node* left, ast_node* right, source_location loc) {
-    if (!left || !right) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, left, right);
     
     XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     

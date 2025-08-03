@@ -9,6 +9,7 @@
  */
 
 #include "../../../../include/dependency.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Add dependency relationship
  * @param graph Dependency graph
@@ -17,9 +18,7 @@
  * @return 0 on success, -1 on error
  */
 int dependency_graph_add_dependency(DependencyGraph* graph, const char* parent_name, const char* child_name) {
-    if (!graph || !parent_name || !child_name) {
-        return -1;
-    }
+    XMD_VALIDATE_PTRS(-1, graph, parent_name, child_name);
     
     DependencyNode* parent = dependency_graph_find_node(graph, parent_name);
     DependencyNode* child = dependency_graph_find_node(graph, child_name);

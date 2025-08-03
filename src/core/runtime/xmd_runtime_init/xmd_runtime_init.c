@@ -1,20 +1,13 @@
 #include "xmd_runtime_init.h"
+#include "../xmd_runtime_global_config/xmd_runtime_global_config.h"
 #include "../../../../include/core_macros.h"
+#include "../../../utils/common/common_macros.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-static xmd_runtime_config g_runtime_config = {
-    .debug_mode = false,
-    .strict_mode = false,
-    .safe_mode = true,
-    .max_stack_depth = 1000,
-    .max_recursion_depth = 100,
-    .version = "0.0.2"
-};
-
 bool xmd_runtime_init(const xmd_runtime_config* config) {
-    XMD_RUNTIME_VALIDATE_CONFIG(config, "xmd_runtime_init");
+    XMD_VALIDATE_PTRS(false, config);
     
     g_runtime_config.debug_mode = config->debug_mode;
     g_runtime_config.strict_mode = config->strict_mode;

@@ -19,7 +19,7 @@
   * /
  */
 void c_api_xmd_cleanup(void* handle) {
-    if (!handle) return;
+    XMD_ENTRY_VALIDATE_VOID(handle);
     xmd_context_internal* ctx = (xmd_context_internal*)handle;
     if (ctx->config) config_destroy(ctx->config);
     if (ctx->global_variables) store_destroy(ctx->global_variables);

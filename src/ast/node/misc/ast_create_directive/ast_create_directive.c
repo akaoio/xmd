@@ -12,6 +12,7 @@
 #include "cli.h"
 #include "utils.h"
 #include "variable.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Create AST directive node
@@ -20,14 +21,9 @@
  * @return New directive node or NULL on error
  */
 ast_node* ast_create_directive(const char* command, source_location loc) {
-    if (!command) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, command);
     
-    ast_node* node = xmd_malloc(sizeof(ast_node));
-    if (!node) {
-        return NULL;
-    }
+    XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     
     node->type = AST_DIRECTIVE;
     node->data.directive.command = xmd_strdup(command);

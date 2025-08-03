@@ -8,15 +8,14 @@
  */
 
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Simple hash function for strings
  * @param key String key to hash
  * @return Hash value
  */
 unsigned int hash_string(const char* key) {
-    if (!key) {
-        return 0;
-    }
+    XMD_VALIDATE_PTRS(0, key);
     unsigned int hash = 0;
     const char* p = key;
     while (*p) {

@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include "../../../../include/performance_internal.h"
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Function implementation
@@ -14,8 +15,8 @@
 char* perf_profiler_generate_report(perf_profiler* profiler) {
     if (!profiler) return NULL;
     
-    char* report = xmd_malloc(2048);
-    if (!report) return NULL;
+    char* report;
+    XMD_MALLOC_DYNAMIC(report, 2048, NULL);
     
     int64_t diff_seconds = profiler->end_time.seconds - profiler->start_time.seconds;
     int64_t diff_nanoseconds = profiler->end_time.nanoseconds - profiler->start_time.nanoseconds;

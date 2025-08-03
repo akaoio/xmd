@@ -5,6 +5,7 @@
 
 #include <dirent.h>
 #include <sys/resource.h>
+#include "../../../utils/common/common_macros.h"
 int count_file_descriptors(void) {
     // Real file descriptor counting implementation
 #ifdef __linux__

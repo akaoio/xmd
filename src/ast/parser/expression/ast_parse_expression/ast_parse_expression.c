@@ -86,11 +86,8 @@ ast_node* ast_parse_expression(const char** pos) {
             // Extract and parse the element
             size_t elem_len = start - elem_start;
             if (elem_len > 0) {
-                char* elem_str = xmd_malloc(elem_len + 1);
-                if (!elem_str) {
-                    XMD_FREE_SAFE(array);
-                    return NULL;
-                }
+                char* elem_str;
+                XMD_MALLOC_DYNAMIC(elem_str, elem_len + 1, NULL);
                 strncpy(elem_str, elem_start, elem_len);
                 elem_str[elem_len] = '\0';
                 
@@ -171,10 +168,8 @@ ast_node* ast_parse_expression(const char** pos) {
     }
     
     size_t expr_len = start - expr_start;
-    char* expr_str = xmd_malloc(expr_len + 1);
-    if (!expr_str) {
-        return NULL;
-    }
+    char* expr_str;
+    XMD_MALLOC_DYNAMIC(expr_str, expr_len + 1, NULL);
     strncpy(expr_str, expr_start, expr_len);
     expr_str[expr_len] = '\0';
     

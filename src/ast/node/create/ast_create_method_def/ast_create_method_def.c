@@ -20,9 +20,7 @@
  * @return New method def node or NULL on error
  */
 ast_node* ast_create_method_def(const char* name, bool is_private, source_location loc) {
-    if (!name) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, name);
     
     XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     

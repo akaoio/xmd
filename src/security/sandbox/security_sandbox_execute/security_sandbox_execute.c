@@ -12,6 +12,7 @@
 #include <stddef.h>
 #include "../../../../include/security.h"
 #include "../../../../include/auditor_internal.h"
+#include "../../../utils/common/common_macros.h"
 
 // Forward declaration for validation function
 security_result security_validate_command(const char* command);
@@ -23,7 +24,8 @@ security_result security_validate_command(const char* command);
  * @return 0 on success, -1 on error
  */
 int security_sandbox_execute(const char* command, char* result, size_t max_size) {
-    if (!command || !result || max_size == 0) {
+    XMD_VALIDATE_PTRS(-1, command, result);
+    if (max_size == 0) {
         return -1;
     }
     

@@ -100,13 +100,12 @@ ast_node* ast_parse_comparison_expression(const char* expr) {
         // String literal - remove quotes
         size_t len = strlen(left_str);
         if (len >= 2 && left_str[len-1] == '"') {
-            char* string_val = xmd_malloc(len - 1);
-            if (string_val) {
-                strncpy(string_val, left_str + 1, len - 2);
-                string_val[len - 2] = '\0';
-                left = ast_create_string_literal(string_val, loc);
-                XMD_FREE_SAFE(string_val);
-            }
+            char* string_val;
+            XMD_MALLOC_DYNAMIC(string_val, len - 1, NULL);
+            strncpy(string_val, left_str + 1, len - 2);
+            string_val[len - 2] = '\0';
+            left = ast_create_string_literal(string_val, loc);
+            XMD_FREE_SAFE(string_val);
         }
     } else if (isdigit(*left_str) || *left_str == '-') {
         double val = atof(left_str);
@@ -120,13 +119,12 @@ ast_node* ast_parse_comparison_expression(const char* expr) {
     if (*right_str == '"') {
         size_t len = strlen(right_str);
         if (len >= 2 && right_str[len-1] == '"') {
-            char* string_val = xmd_malloc(len - 1);
-            if (string_val) {
-                strncpy(string_val, right_str + 1, len - 2);
-                string_val[len - 2] = '\0';
-                right = ast_create_string_literal(string_val, loc);
-                XMD_FREE_SAFE(string_val);
-            }
+            char* string_val;
+            XMD_MALLOC_DYNAMIC(string_val, len - 1, NULL);
+            strncpy(string_val, right_str + 1, len - 2);
+            string_val[len - 2] = '\0';
+            right = ast_create_string_literal(string_val, loc);
+            XMD_FREE_SAFE(string_val);
         }
     } else if (isdigit(*right_str) || *right_str == '-') {
         double val = atof(right_str);

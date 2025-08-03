@@ -7,7 +7,7 @@
 #include "../../../../include/resource.h"
 #include "../../../utils/common/common_macros.h"
 void resource_monitor_free(ResourceMonitor* monitor) {
-    if (!monitor) return;
+    XMD_ENTRY_VALIDATE_VOID(monitor);
     XMD_FREE_SAFE(monitor->last_error);
     XMD_FREE_SAFE(monitor);
 }

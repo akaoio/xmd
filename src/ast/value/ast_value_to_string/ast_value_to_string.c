@@ -29,8 +29,9 @@ char* ast_value_to_string(ast_value* value) {
             return xmd_strdup(value->value.string_value);
             
         case AST_VAL_NUMBER: {
-            char* buffer = xmd_malloc(32);
-            if (buffer) {
+            char* buffer;
+            XMD_MALLOC_DYNAMIC(buffer, 32, NULL);
+            {
                 snprintf(buffer, 32, "%.6g", value->value.number_value);
             }
             return buffer;
@@ -45,7 +46,8 @@ char* ast_value_to_string(ast_value* value) {
         case AST_VAL_ARRAY: {
             // Calculate total size needed
             size_t total_size = 3; // "[]\0"
-            char** element_strings = xmd_malloc(sizeof(char*) * value->value.array_value.element_count);
+            char** element_strings;
+            XMD_MALLOC_DYNAMIC(element_strings, sizeof(char*) * value->value.array_value.element_count, NULL);
             XMD_NULL_CHECK(element_strings);
             
             // Convert each element to string
@@ -64,14 +66,8 @@ char* ast_value_to_string(ast_value* value) {
             }
             
             // Build array string
-            char* result = xmd_malloc(total_size);
-            if (!result) {
-                for (size_t i = 0; i < value->value.array_value.element_count; i++) {
-                    XMD_FREE_SAFE(element_strings[i]);
-                }
-                XMD_FREE_SAFE(element_strings);
-                return NULL;
-            }
+            char* result;
+            XMD_MALLOC_DYNAMIC(result, total_size, NULL);
             
             strcpy(result, "[");
             for (size_t i = 0; i < value->value.array_value.element_count; i++) {

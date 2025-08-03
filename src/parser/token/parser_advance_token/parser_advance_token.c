@@ -6,6 +6,7 @@
  */
 
 #include "../../../../include/ast_parser.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Advance parser to next token
@@ -13,7 +14,8 @@
  * @return Current token after advancing
  */
 token* parser_advance_token(parser_state* state) {
-    if (!state || !state->current) return NULL;
+    XMD_VALIDATE_PTRS(NULL, state);
+    if (!state->current) return NULL;
     
     if (state->current->next) {
         state->current = state->current->next;

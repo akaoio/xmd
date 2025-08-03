@@ -8,9 +8,7 @@
 #include "../../../../include/utils.h"
 #include "../../../utils/common/common_macros.h"
 void set_monitor_error(ResourceMonitor* monitor, const char* message) {
-    if (!monitor || !message) {
-        return;
-    }
+    XMD_ENTRY_VALIDATE_VOID(monitor, message);
     XMD_FREE_SAFE(monitor->last_error);
     monitor->last_error = xmd_strdup(message);
 }

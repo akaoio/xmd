@@ -9,6 +9,7 @@
  */
 
 #include "../../../../include/dependency.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Calculate in-degrees for all nodes
  * @param graph Dependency graph
@@ -16,9 +17,7 @@
  * @return 0 on success, -1 on error
  */
 int calculate_in_degrees(DependencyGraph* graph, int* in_degrees) {
-    if (!graph || !in_degrees) {
-        return -1;
-    }
+    XMD_VALIDATE_PTRS(-1, graph, in_degrees);
     
     // Initialize all in-degrees to 0
     for (size_t i = 0; i < graph->node_count; i++) {

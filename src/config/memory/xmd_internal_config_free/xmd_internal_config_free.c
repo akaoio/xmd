@@ -15,10 +15,8 @@
  * @brief Free internal configuration and all allocated resources
  * @param config Configuration to free
  */
-void xmd_internal_config_XMD_FREE_SAFE(xmd_internal_config* config) {
-    if (!config) {
-        return;
-    }
+void xmd_internal_config_free(xmd_internal_config* config) {
+    XMD_ENTRY_VALIDATE_VOID(config);
     
     // Free paths configuration
     XMD_FREE_SAFE(config->paths.proc_status_path);

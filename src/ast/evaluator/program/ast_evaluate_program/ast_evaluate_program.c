@@ -17,9 +17,7 @@
  * @return String output (must be freed)
  */
 char* ast_evaluate_program(ast_node* program, ast_evaluator* evaluator) {
-    if (!program || !evaluator) {
-        return xmd_strdup("");
-    }
+    XMD_VALIDATE_PTRS(xmd_strdup(""), program, evaluator);
     
     // Evaluate the program node
     ast_value* result = ast_evaluate_program_node(program, evaluator);

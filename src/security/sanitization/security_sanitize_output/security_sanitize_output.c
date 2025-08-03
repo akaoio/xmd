@@ -11,15 +11,14 @@
 #include <string.h>
 #include <stdlib.h>
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Sanitize output string for safe rendering
  * @param input Input string to sanitize
  * @return Sanitized string (must be freed) or NULL on error
  */
 char* security_sanitize_output(const char* input) {
-    if (!input) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, input);
     
     size_t input_len = strlen(input);
     size_t output_size = input_len * 6 + 1; // Worst case for HTML encoding

@@ -20,7 +20,7 @@ xmd_error_code cli_xmd_cleanup(void) {
     
     // Free global configuration if it exists
     if (global_config) {
-        xmd_internal_config_XMD_FREE_SAFE(global_config);
+        xmd_internal_config_free(global_config);
         xmd_internal_config_set_global(NULL);
     }
     

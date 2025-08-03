@@ -16,9 +16,7 @@
  * @param node Node to free (can be NULL)
  */
 void ast_free(ast_node* node) {
-    if (!node) {
-        return;
-    }
+    XMD_ENTRY_VALIDATE_VOID(node);
     
     switch (node->type) {
         case AST_PROGRAM:

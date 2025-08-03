@@ -21,8 +21,7 @@
   * /
  */
 void* c_api_xmd_init(const char* config_path) {
-    xmd_context_internal* ctx = xmd_calloc(1, sizeof(xmd_context_internal));
-    if (!ctx) return NULL;
+    XMD_CREATE_VALIDATED(ctx, xmd_context_internal, sizeof(xmd_context_internal), NULL);
     
     ctx->config = config_create();
     if (!ctx->config) { 

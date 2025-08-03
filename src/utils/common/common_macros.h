@@ -152,6 +152,34 @@
         } \
     } while(0)
 
+/**
+ * Dynamic malloc with size calculation and error handling
+ * Usage: XMD_MALLOC_DYNAMIC(ptr, size, return_val)
+ */
+#define XMD_MALLOC_DYNAMIC(ptr, size, return_val) \
+    do { \
+        (ptr) = xmd_malloc(size); \
+        if (!(ptr)) { \
+            fprintf(stderr, "[ERROR] Dynamic allocation failed (%zu bytes) at %s:%d\n", \
+                    (size_t)(size), __FILE__, __LINE__); \
+            return (return_val); \
+        } \
+    } while(0)
+
+/**
+ * Standard calloc with automatic error handling
+ * Usage: XMD_CALLOC_STANDARD(ptr, count, type, return_val)
+ */
+#define XMD_CALLOC_STANDARD(ptr, count, type, return_val) \
+    do { \
+        (ptr) = (type*)xmd_calloc(count, sizeof(type)); \
+        if (!(ptr)) { \
+            fprintf(stderr, "[ERROR] Calloc allocation failed (" #type "[%zu]) at %s:%d\n", \
+                    (size_t)(count), __FILE__, __LINE__); \
+            return (return_val); \
+        } \
+    } while(0)
+
 /* ==================== STRING OPERATION MACROS ==================== */
 
 /**

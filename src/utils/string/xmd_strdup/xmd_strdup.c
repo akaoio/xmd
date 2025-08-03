@@ -10,13 +10,14 @@
 #include <string.h>
 #include <stdlib.h>
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Duplicate string safely
  * @param str String to duplicate
  * @return Duplicated string or NULL on failure
  */
 char* xmd_strdup(const char* str) {
-    if (!str) return NULL;
+    XMD_VALIDATE_PTRS(NULL, str);
     
     size_t len = strlen(str);
     char* dup = malloc(len + 1);

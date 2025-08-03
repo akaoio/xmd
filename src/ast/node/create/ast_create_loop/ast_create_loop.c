@@ -20,9 +20,7 @@
  * @return New loop node or NULL on error
  */
 ast_node* ast_create_loop(const char* variable, ast_node* iterable, source_location loc) {
-    if (!variable || !iterable) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, variable, iterable);
     
     XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     

@@ -9,15 +9,14 @@
 
 #include <string.h>
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Trim whitespace from string
  * @param str String to trim (modified in place)
  * @return Trimmed string
  */
 char* xmd_strtrim(char* str) {
-    if (!str) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, str);
     
     // Trim leading whitespace
     char* start = str;

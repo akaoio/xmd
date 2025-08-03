@@ -9,6 +9,7 @@
 
 #include "ast_node.h"
 #include "variable.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Add an argument to a directive or function call
  * @param node Directive or function call node
@@ -16,9 +17,7 @@
  * @return 0 on success, -1 on error
  */
 int ast_add_argument(ast_node* node, ast_node* argument) {
-    if (!node || !argument) {
-        return -1;
-    }
+    XMD_VALIDATE_PTRS(-1, node, argument);
     
     // Determine which union member to use
     ast_node*** arguments_ptr;

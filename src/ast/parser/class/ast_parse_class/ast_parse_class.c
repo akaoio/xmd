@@ -38,7 +38,8 @@ ast_node* ast_parse_class(const char** pos) {
         XMD_ERROR_RETURN(NULL, "ast_parse_class: Missing class name after 'class' keyword");
     }
     
-    char* class_name = xmd_malloc(name_len + 1);
+    char* class_name;
+    XMD_MALLOC_DYNAMIC(class_name, name_len + 1, NULL);
     strncpy(class_name, name_start, name_len);
     class_name[name_len] = '\0';
     
@@ -53,9 +54,9 @@ ast_node* ast_parse_class(const char** pos) {
         while (*start && (isalnum(*start) || *start == '_')) {
             start++;
         }
-        size_t parent_len = parent_start - start;
+        size_t parent_len = start - parent_start;
         if (parent_len > 0) {
-            parent_class = xmd_malloc(parent_len + 1);
+            XMD_MALLOC_DYNAMIC(parent_class, parent_len + 1, NULL);
             strncpy(parent_class, parent_start, parent_len);
             parent_class[parent_len] = '\0';
         }

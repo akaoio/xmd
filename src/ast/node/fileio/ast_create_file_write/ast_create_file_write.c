@@ -22,7 +22,6 @@
  */
 ast_node* ast_create_file_write(const char* file_path, const char* content, source_location loc) {
     XMD_VALIDATE_PTRS(NULL, file_path, content);
-    ast_node* node;
     XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     
     node->type = AST_FILE_WRITE;

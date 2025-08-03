@@ -23,7 +23,7 @@
  * @return AST node (identifier or object access)
  */
 ast_node* ast_parse_object_access(const char* identifier_str, source_location loc) {
-    if (!identifier_str) return NULL;
+    XMD_VALIDATE_PTRS(NULL, identifier_str);
     
     
     // Look for dot to detect object property access
@@ -35,10 +35,8 @@ ast_node* ast_parse_object_access(const char* identifier_str, source_location lo
     
     // Extract object name (before '.')
     size_t object_name_len = dot_pos - identifier_str;
-    char* object_name = xmd_malloc(object_name_len + 1);
-    if (!object_name) {
-        return NULL;
-    }
+    char* object_name;
+    XMD_MALLOC_DYNAMIC(object_name, object_name_len + 1, NULL);
     strncpy(object_name, identifier_str, object_name_len);
     object_name[object_name_len] = '\0';
     
@@ -50,11 +48,8 @@ ast_node* ast_parse_object_access(const char* identifier_str, source_location lo
         return ast_create_identifier(identifier_str, loc);
     }
     
-    char* property_name = xmd_malloc(property_len + 1);
-    if (!property_name) {
-        XMD_FREE_SAFE(object_name);
-        return NULL;
-    }
+    char* property_name;
+    XMD_MALLOC_DYNAMIC(property_name, property_len + 1, NULL);
     strcpy(property_name, property_start);
     
     

@@ -10,17 +10,17 @@
 
 #include <stdbool.h>
 #include <string.h>
-#include "variable.h"
-#include "variable_internal.h"
+#include <math.h>
+#include "../../../../include/variable.h"
+#include "../../../../include/variable_internal.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Convert variable to boolean
  * @return Boolean representation
  */
 bool variable_to_boolean(const variable* var) {
-    if (!var) {
-        return false;
-    }
+    XMD_VALIDATE_PTRS(false, var);
     
     switch (var->type) {
         case VAR_NULL:
@@ -36,6 +36,6 @@ bool variable_to_boolean(const variable* var) {
             return var->value.array_value && var->value.array_value->count > 0;
         case VAR_OBJECT:
             return var->value.object_value && var->value.object_value->count > 0;
+    }
     return false;
-}
 }

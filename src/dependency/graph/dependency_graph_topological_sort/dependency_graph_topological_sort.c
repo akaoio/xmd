@@ -20,25 +20,20 @@
  * @return 0 on success, -1 on error or cycle detected
  */
 int dependency_graph_topological_sort(DependencyGraph* graph) {
-    if (!graph) {
-        return -1;
-    }
+    XMD_VALIDATE_PTRS(-1, graph);
     
     if (graph->node_count == 0) {
         return 0;
     }
     
     // Allocate arrays
-    int* in_degrees = xmd_malloc(graph->node_count * sizeof(int));
-    bool* visited = xmd_malloc(graph->node_count * sizeof(bool));
-    Module** result = xmd_malloc(graph->node_count * sizeof(Module*));
+    int* in_degrees;
+    bool* visited;
+    Module** result;
     
-    if (!in_degrees || !visited || !result) {
-        XMD_FREE_SAFE(in_degrees);
-        XMD_FREE_SAFE(visited);
-        XMD_FREE_SAFE(result);
-        return -1;
-    }
+    XMD_MALLOC_DYNAMIC(in_degrees, graph->node_count * sizeof(int), -1);
+    XMD_MALLOC_DYNAMIC(visited, graph->node_count * sizeof(bool), -1);
+    XMD_MALLOC_DYNAMIC(result, graph->node_count * sizeof(Module*), -1);
     
     // Initialize arrays
     for (size_t i = 0; i < graph->node_count; i++) {
@@ -105,7 +100,7 @@ int dependency_graph_topological_sort(DependencyGraph* graph) {
         XMD_FREE_SAFE(graph->load_order);
     }
     
-    graph->load_order = xmd_malloc(result_count * sizeof(char*));
+    XMD_MALLOC_DYNAMIC(graph->load_order, result_count * sizeof(char*), -1);
     for (size_t i = 0; i < result_count; i++) {
         graph->load_order[i] = xmd_strdup(result[i]->name);
     }

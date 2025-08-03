@@ -8,17 +8,17 @@
  * Extracted from: src/variable.c
  */
 
-#include "variable.h"
-#include "variable_internal.h"
+#include <stdlib.h>
+#include "../../../../include/variable.h"
+#include "../../../../include/variable_internal.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Convert variable to number
  * @return Numeric representation
  */
 double variable_to_number(const variable* var) {
-    if (!var) {
-        return 0.0;
-    }
+    XMD_VALIDATE_PTRS(0.0, var);
     
     switch (var->type) {
         case VAR_NULL:

@@ -13,6 +13,7 @@
 #include <pthread.h>
 #include "../../../../include/auditor_internal.h"
 #include "../../../../include/security.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Log security audit entry
  * @param type Audit event type
@@ -28,7 +29,8 @@ int security_audit_log(audit_event_type type, const char* message,
                       int source_line, security_result result) {
     (void)type;    // Will be used for filtering in future
     (void)result;  // Will be used for result tracking
-    if (!audit_state.initialized || !message) {
+    XMD_VALIDATE_PTRS(-1, message);
+    if (!audit_state.initialized) {
         return -1;
     }
     

@@ -8,13 +8,14 @@
 #include <stdlib.h>
 #include "../../../../include/ast_parser.h"
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Free parser state and associated memory
  * @param state Parser state to free
  */
-void parser_state_XMD_FREE_SAFE(parser_state* state) {
-    if (!state) return;
+void parser_state_free(parser_state* state) {
+    XMD_ENTRY_VALIDATE_VOID(state);
     
     if (state->error_message) {
         XMD_FREE_SAFE(state->error_message);

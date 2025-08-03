@@ -22,9 +22,7 @@
  * @return New class def node or NULL on error
  */
 ast_node* ast_create_class_def(const char* name, const char* parent_class, source_location loc) {
-    if (!name) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, name);
     
     XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     

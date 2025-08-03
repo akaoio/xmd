@@ -10,14 +10,15 @@
 #include "../../../../include/config_internal.h"
 #include "../../../../include/xmd.h"
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Create new configuration with default values
  * @return New configuration or NULL on error
  */
 xmd_config* config_create(void) {
-    xmd_internal_config* config = xmd_calloc(1, sizeof(xmd_internal_config));
-    if (!config) return NULL;
+    xmd_internal_config* config;
+    XMD_CALLOC_STANDARD(config, 1, sizeof(xmd_internal_config), NULL);
     
     // Set up default values (temporarily commented out - missing implementations)
     // config->limits = create_default_limits();

@@ -16,7 +16,7 @@
   * /
  */
 void xmd_result_free(xmd_result* result) {
-    if (!result) return;
+    XMD_ENTRY_VALIDATE_VOID(result);
     XMD_FREE_SAFE(result->output);
     XMD_FREE_SAFE(result->error_message);
     XMD_FREE_SAFE(result);

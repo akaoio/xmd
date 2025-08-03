@@ -17,10 +17,8 @@
  * @return New configuration or NULL on error
  */
 xmd_internal_config* xmd_internal_config_new(void) {
-    xmd_internal_config* config = xmd_malloc(sizeof(xmd_internal_config));
-    if (!config) {
-        return NULL;
-    }
+    xmd_internal_config* config;
+    XMD_MALLOC_DYNAMIC(config, sizeof(xmd_internal_config), NULL);
     
     // Initialize with default values
     memset(config, 0, sizeof(xmd_internal_config));

@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stddef.h>
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Safe string concatenation with bounds checking
  * @param dest Destination buffer
@@ -18,7 +19,8 @@
  * @return 0 on success, -1 on failure
  */
 int xmd_strcat_safe(char* dest, const char* src, size_t dest_size) {
-    if (!dest || !src || dest_size == 0) {
+    XMD_VALIDATE_PTRS(-1, dest, src);
+    if (dest_size == 0) {
         return -1;
     }
     size_t dest_len = strlen(dest);

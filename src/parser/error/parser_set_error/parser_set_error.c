@@ -27,7 +27,7 @@ void parser_set_error(parser_state* state, const char* message, ...) {
         XMD_FREE_SAFE(state->error_message);
     }
     
-    // Allocate new error message
+    // Allocate new error message - custom size allocation
     state->error_message = xmd_malloc(512);
     if (!state->error_message) {
         state->has_error = true;

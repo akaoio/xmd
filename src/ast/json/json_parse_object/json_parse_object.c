@@ -26,6 +26,7 @@ extern variable* json_parse_value(const char* json, size_t* pos);
  * @return Parsed variable or NULL
  */
 variable* json_parse_object(const char* json, size_t* pos) {
+    XMD_VALIDATE_PTRS(NULL, json, pos);
     variable* obj = variable_create_object();
     (*pos)++; // Skip '{'
     

@@ -9,6 +9,7 @@
 
 #include "ast_node.h"
 #include "variable.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Add an element to an array literal
  * @param array Array literal node
@@ -16,7 +17,8 @@
  * @return 0 on success, -1 on error
  */
 int ast_add_element(ast_node* array, ast_node* element) {
-    if (!array || !element || array->type != AST_ARRAY_LITERAL) {
+    XMD_VALIDATE_PTRS(-1, array, element);
+    if (array->type != AST_ARRAY_LITERAL) {
         return -1;
     }
     

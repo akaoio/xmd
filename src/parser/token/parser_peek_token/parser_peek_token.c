@@ -6,6 +6,7 @@
  */
 
 #include "../../../../include/ast_parser.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Peek at next token without advancing parser
@@ -13,6 +14,9 @@
  * @return Next token or NULL if at end
  */
 token* parser_peek_token(parser_state* state) {
-    if (!state || !state->current) return NULL;
+    XMD_VALIDATE_PTRS(NULL, state);
+    if (!state->current) {
+        XMD_ERROR_RETURN(NULL, "parser_peek_token: Parser at end of token stream");
+    }
     return state->current->next;
 }

@@ -8,14 +8,15 @@
 
 #include "../../../../include/config_internal.h"
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Create default limits configuration
  * @return Default limits configuration or NULL on error
  */
 limits_config* create_default_limits(void) {
-    limits_config* limits = xmd_calloc(1, sizeof(limits_config));
-    if (!limits) return NULL;
+    limits_config* limits;
+    XMD_CALLOC_STANDARD(limits, 1, sizeof(limits_config), NULL);
     
     // Set default limits
     limits->max_memory = 100 * 1024 * 1024;  // 100MB

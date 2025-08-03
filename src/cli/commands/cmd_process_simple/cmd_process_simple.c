@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "../../../../include/xmd.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Process an XMD file using the simple processing pipeline
@@ -16,10 +17,7 @@
  * @return 0 on success, 1 on error
  */
 int cmd_process_simple(const char* filename) {
-    if (!filename) {
-        fprintf(stderr, "Error: NULL filename provided\n");
-        return 1;
-    }
+    XMD_VALIDATE_PTRS(1, filename);
     
     printf("Processing XMD file: %s\n", filename);
     

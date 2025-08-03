@@ -32,11 +32,8 @@ char** variable_object_keys(const variable* object_var, size_t* count) {
         return NULL;
     }
     
-    char** keys = xmd_malloc(obj->count * sizeof(char*));
-    if (!keys) {
-        *count = 0;
-        return NULL;
-    }
+    char** keys;
+    XMD_MALLOC_DYNAMIC(keys, obj->count * sizeof(char*), NULL);
     
     for (size_t i = 0; i < obj->count; i++) {
         keys[i] = xmd_strdup(obj->pairs[i].key);

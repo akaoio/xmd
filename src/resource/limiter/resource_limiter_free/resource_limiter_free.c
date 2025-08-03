@@ -7,9 +7,7 @@
 #include "../../../../include/resource.h"
 #include "../../../utils/common/common_macros.h"
 void resource_limiter_free(ResourceLimiter* limiter) {
-    if (!limiter) {
-        return;
-    }
+    XMD_ENTRY_VALIDATE_VOID(limiter);
     XMD_FREE_SAFE(limiter->last_error);
     XMD_FREE_SAFE(limiter);
 }

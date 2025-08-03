@@ -16,7 +16,7 @@
   * /
  */
 void xmd_config_free(xmd_config* config) {
-    if (!config) return;
+    XMD_ENTRY_VALIDATE_VOID(config);
     
     xmd_internal_config* internal = (xmd_internal_config*)config;
     

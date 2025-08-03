@@ -6,6 +6,7 @@
  */
 
 #include "../../../../include/ast_parser.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Get current error message from parser state
@@ -13,6 +14,7 @@
  * @return Error message string or NULL if no error
  */
 const char* parser_get_error(parser_state* state) {
-    if (!state || !state->has_error) return NULL;
+    XMD_VALIDATE_PTRS(NULL, state);
+    if (!state->has_error) return NULL;
     return state->error_message;
 }

@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Escape string for JSON
@@ -17,11 +18,12 @@
  * @return Escaped string (must be freed)
  */
 char* json_escape_string(const char* str) {
-    if (!str) return xmd_strdup("null");
+    XMD_VALIDATE_PTRS(xmd_strdup("null"), str);
     
     size_t len = strlen(str);
     size_t max_len = len * 2 + 3; // Worst case: all chars need escaping + quotes
-    char* result = xmd_malloc(max_len);
+    char* result;
+    XMD_MALLOC_DYNAMIC(result, max_len, xmd_strdup("null"));
     size_t pos = 0;
     
     result[pos++] = '"';

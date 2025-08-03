@@ -21,9 +21,7 @@
   * /
  */
 xmd_result* xmd_process_file(xmd_processor* processor, const char* filename) {
-    if (!processor || !filename) {
-        return c_api_create_result(-1, NULL, "Invalid processor or filename");
-    }
+    XMD_VALIDATE_PTRS(c_api_create_result(-1, NULL, "Invalid processor or filename"), processor, filename);
     
     // Read file content
     FILE* file = fopen(filename, "r");

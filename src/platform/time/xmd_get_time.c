@@ -5,13 +5,14 @@
  */
 
 #include "../../../include/platform_internal.h"
+#include "../../utils/common/common_macros.h"
 /**
  * @brief Get current high-resolution time
  * @param time Output time structure
  * @return 0 on success, -1 on error
  */
 int xmd_get_time(xmd_time_t* time) {
-    if (!time) return -1;
+    XMD_VALIDATE_PTRS(-1, time);
     
 #ifdef XMD_PLATFORM_WINDOWS
     LARGE_INTEGER freq, counter;

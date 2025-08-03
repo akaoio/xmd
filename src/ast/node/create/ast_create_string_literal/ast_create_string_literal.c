@@ -18,9 +18,7 @@
  * @return New string node or NULL on error
  */
 ast_node* ast_create_string_literal(const char* value, source_location loc) {
-    if (!value) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, value);
     
     XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     memset(node, 0, sizeof(ast_node));

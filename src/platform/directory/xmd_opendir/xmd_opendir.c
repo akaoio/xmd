@@ -6,6 +6,7 @@
 
 #include "../../../../include/platform_internal.h"
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Open directory for reading
  * @param path Directory path
@@ -16,7 +17,9 @@ xmd_dir_t xmd_opendir(const char* path) {
 #ifdef XMD_PLATFORM_WINDOWS
     char search_path[MAX_PATH];
     snprintf(search_path, sizeof(search_path), "%s\\*", path);
-    return _findfirst(search_path, (struct _finddata_t*)xmd_malloc(sizeof(struct _finddata_t)));
+    struct _finddata_t* finddata;
+    XMD_MALLOC_DYNAMIC(finddata, sizeof(struct _finddata_t), XMD_INVALID_DIR);
+    return _findfirst(search_path, finddata);
 #else
     return opendir(path);
 #endif

@@ -9,14 +9,13 @@
 
 #include <stdlib.h>
 #include "../../../include/conditional.h"
+#include "../../utils/common/common_macros.h"
 /**
  * @brief Free condition context
  * @param ctx Context to free
-  * /
  */
-void condition_context_XMD_FREE_SAFE(ConditionContext* ctx) {
-    if (ctx) {
-        XMD_FREE_SAFE(ctx->last_error);
-        XMD_FREE_SAFE(ctx);
-    }
+void condition_context_free(ConditionContext* ctx) {
+    XMD_ENTRY_VALIDATE_VOID(ctx);
+    XMD_FREE_SAFE(ctx->last_error);
+    XMD_FREE_SAFE(ctx);
 }

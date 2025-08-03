@@ -21,7 +21,7 @@
  * @return String literal AST node or NULL  
  */
 ast_node* ast_parse_string_literal(const char** start, const char** pos) {
-    XMD_ENTRY_VALIDATE(start, pos);
+    XMD_VALIDATE_PTRS(NULL, start, pos);
     
     if (**start != '"') {
         XMD_ERROR_RETURN(NULL, "Expected opening quote in string literal");

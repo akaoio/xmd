@@ -12,6 +12,7 @@
 #include <stddef.h>
 #include "../../../../include/auditor_internal.h"
 #include "../../../../include/security.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Get audit entries within time range
  * @param start_time Start timestamp
@@ -24,8 +25,9 @@ int security_audit_get_entries(uint64_t start_time, uint64_t end_time,
                                security_audit_entry** entries, size_t* count) {
     (void)start_time;  // Time filtering to be implemented
     (void)end_time;    // Time filtering to be implemented
-    if (!audit_state.initialized || !entries || !count) {
-        if (count) *count = 0;
+    XMD_VALIDATE_PTRS(-1, entries, count);
+    if (!audit_state.initialized) {
+        *count = 0;
         return -1;
     }
     

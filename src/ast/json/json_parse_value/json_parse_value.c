@@ -27,6 +27,7 @@ extern variable* json_parse_array(const char* json, size_t* pos);
  * @return Parsed variable or NULL
  */
 variable* json_parse_value(const char* json, size_t* pos) {
+    XMD_VALIDATE_PTRS(NULL, json, pos);
     // Skip whitespace
     while (json[*pos] && (json[*pos] == ' ' || json[*pos] == '\t' || 
                          json[*pos] == '\n' || json[*pos] == '\r')) {

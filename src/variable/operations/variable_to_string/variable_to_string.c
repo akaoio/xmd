@@ -17,9 +17,7 @@
 #include "../../../utils/common/common_macros.h"
 
 char* variable_to_string(const variable* var) {
-    if (!var) {
-        return xmd_strdup("");
-    }
+    XMD_VALIDATE_PTRS(xmd_strdup(""), var);
     
     switch (var->type) {
         case VAR_STRING:

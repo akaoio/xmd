@@ -13,7 +13,7 @@
 #include "utils.h"
 #include "../../../utils/common/common_macros.h"
 void ast_value_free(ast_value* val) {
-    if (!val) return;
+    XMD_ENTRY_VALIDATE_VOID(val);
     
     switch (val->type) {
         case AST_VAL_STRING:

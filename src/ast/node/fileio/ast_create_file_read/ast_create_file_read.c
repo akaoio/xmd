@@ -21,7 +21,6 @@
  */
 ast_node* ast_create_file_read(const char* file_path, source_location loc) {
     XMD_VALIDATE_PTRS(NULL, file_path);
-    ast_node* node;
     XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     
     node->type = AST_FILE_READ;

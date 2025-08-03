@@ -28,9 +28,7 @@
  * Full YAML support would require libyaml
  */
 variable* yaml_parse_simple(const char* yaml) {
-    if (!yaml) {
-        return variable_create_null();
-    }
+    XMD_VALIDATE_PTRS(variable_create_null(), yaml);
     
     // Skip whitespace
     while (*yaml && (*yaml == ' ' || *yaml == '\t' || *yaml == '\n')) {

@@ -20,8 +20,8 @@ int dependency_check_circular_from(DependencyDetector* detector, const char* mod
  * @return 1 if circular dependencies found, 0 otherwise, -1 on error
  */
 int dependency_check_circular(DependencyDetector* detector) {
-    XMD_NULL_CHECK(detector, -1);
-    XMD_NULL_CHECK(detector->graph, -1);
+    XMD_VALIDATE_PTRS(-1, detector);
+    XMD_VALIDATE_PTRS(-1, detector->graph);
     
     reset_visit_states(detector->graph);
     

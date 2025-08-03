@@ -10,6 +10,7 @@
 
 #include <string.h>
 #include "../../../../include/dependency.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Find node by module name
  * @param graph Dependency graph
@@ -17,9 +18,7 @@
  * @return Dependency node or NULL if not found
  */
 DependencyNode* dependency_graph_find_node(DependencyGraph* graph, const char* module_name) {
-    if (!graph || !module_name) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, graph, module_name);
     
     for (size_t i = 0; i < graph->node_count; i++) {
         if (graph->nodes[i] && graph->nodes[i]->module && 

@@ -35,8 +35,8 @@ ast_node* ast_parse_range_loop(const char** pos) {
     }
     
     size_t var_len = start - var_start;
-    char* var_name = xmd_malloc(var_len + 1);
-    XMD_NULL_CHECK(var_name);
+    char* var_name;
+    XMD_MALLOC_DYNAMIC(var_name, var_len + 1, NULL);
     strncpy(var_name, var_start, var_len);
     var_name[var_len] = '\0';
     

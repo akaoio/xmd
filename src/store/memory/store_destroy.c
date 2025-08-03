@@ -19,9 +19,7 @@
  * @param s Store to destroy
  */
 void store_destroy(store* s) {
-    if (!s) {
-        return;
-    }
+    XMD_ENTRY_VALIDATE_VOID(s);
     
     fflush(stdout);
     for (size_t i = 0; i < s->capacity; i++) {

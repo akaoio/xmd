@@ -13,6 +13,7 @@
 #include "../../../include/native_xmd.h"
 #include "../../../include/utils.h"
 #include "../../../include/store.h"
+#include "../../utils/common/common_macros.h"
 
 // Forward declaration for dependencies
 extern bool xmd_is_native_syntax(const char* content);
@@ -24,9 +25,7 @@ extern char* ast_process_xmd_content(const char* input, store* variables);
  * @return Processed output (caller must free)
  */
 char* xmd_dispatch_content(const char* content) {
-    if (!content) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, content);
     
     // Detect content type
     if (xmd_is_native_syntax(content)) {

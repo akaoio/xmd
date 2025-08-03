@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include "../../../../include/devtools.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Log debug message with line info
  * @param file Source file name
@@ -17,4 +18,5 @@
   * /
  */
 void debugger_log(const char* file, int line, const char* message) {
+    XMD_ENTRY_VALIDATE_VOID(file, message);
 }

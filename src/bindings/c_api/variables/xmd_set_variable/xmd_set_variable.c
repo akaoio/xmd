@@ -10,6 +10,7 @@
 #include "../../../../../include/xmd.h"
 #include "../../../../../include/store.h"
 #include "../../../../../include/variable.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Set XMD processor variable
  * @param processor XMD processor
@@ -19,7 +20,7 @@
   * /
  */
 xmd_error_code xmd_set_variable(xmd_processor* processor, const char* key, const char* value) {
-    if (!processor || !key || !value) return XMD_ERROR_INVALID_ARGUMENT;
+    XMD_VALIDATE_PTRS(XMD_ERROR_INVALID_ARGUMENT, processor, key, value);
     store* variables = (store*)processor;
     variable* var = variable_create_string(value);
     if (!var) return XMD_ERROR_OUT_OF_MEMORY;

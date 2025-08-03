@@ -9,6 +9,7 @@
 
 #include <stddef.h>
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Expand array capacity
  * @param array Pointer to array pointer
@@ -17,7 +18,8 @@
  * @return New capacity or 0 on failure
  */
 size_t xmd_expand_array(void** array, size_t current_capacity, size_t element_size) {
-    if (!array || element_size == 0) {
+    XMD_VALIDATE_PTRS(0, array);
+    if (element_size == 0) {
         return 0;
     }
     size_t new_capacity = current_capacity == 0 ? 1 : current_capacity * 2;

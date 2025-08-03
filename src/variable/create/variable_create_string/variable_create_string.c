@@ -25,11 +25,7 @@ variable* variable_create_string(const char* value) {
     var->type = VAR_STRING;
     var->ref_count = 1;
     if (value == NULL) {
-        var->value.string_value = malloc(1);
-        if (!var->value.string_value) {
-            XMD_FREE_SAFE(var);
-            return NULL;
-        }
+        XMD_MALLOC_DYNAMIC(var->value.string_value, 1, NULL);
         var->value.string_value[0] = '\0';
     } else {
         var->value.string_value = xmd_strdup(value);

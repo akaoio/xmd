@@ -11,6 +11,7 @@
 #include "ast_node.h"
 #include "utils.h"
 #include "variable.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Create File.list node
@@ -19,10 +20,7 @@
  * @return File list node or NULL
  */
 ast_node* ast_create_file_list(const char* directory_path, source_location loc) {
-    ast_node* node = xmd_calloc(1, sizeof(ast_node));
-    if (!node) {
-        return NULL;
-    }
+    XMD_CREATE_VALIDATED(node, ast_node, sizeof(ast_node), NULL);
     
     node->type = AST_FILE_LIST;
     node->location = loc;

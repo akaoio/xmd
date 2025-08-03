@@ -22,11 +22,7 @@ variable* variable_create_object(void) {
     XMD_CREATE_VALIDATED(var, variable, sizeof(variable), NULL);
     
     var->type = VAR_OBJECT;
-    var->value.object_value = xmd_malloc(sizeof(variable_object));
-    if (!var->value.object_value) {
-        XMD_FREE_SAFE(var);
-        return NULL;
-    }
+    XMD_MALLOC_DYNAMIC(var->value.object_value, sizeof(variable_object), NULL);
     var->value.object_value->pairs = NULL;
     var->value.object_value->count = 0;
     var->value.object_value->capacity = 0;

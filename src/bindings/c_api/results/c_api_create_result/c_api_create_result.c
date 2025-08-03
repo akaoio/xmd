@@ -21,10 +21,7 @@
   * /
  */
 xmd_result* c_api_create_result(int error_code, const char* output, const char* error_message) {
-    xmd_result* result = xmd_malloc(sizeof(xmd_result));
-    if (!result) {
-        return NULL;
-    }
+    XMD_CREATE_VALIDATED(result, xmd_result, sizeof(xmd_result), NULL);
     
     result->error_code = error_code;
     result->processing_time_ms = 0.0;

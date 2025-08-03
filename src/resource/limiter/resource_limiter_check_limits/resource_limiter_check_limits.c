@@ -5,6 +5,7 @@
 
 #include <stddef.h>
 #include "../../../../include/resource.h"
+#include "../../../utils/common/common_macros.h"
 
 size_t get_memory_usage(void);
 void set_limiter_error(ResourceLimiter* limiter, const char* error);
@@ -12,7 +13,7 @@ void set_limiter_error(ResourceLimiter* limiter, const char* error);
  * @return 0 if within limits, -1 if exceeded
  */
 int resource_limiter_check_limits(ResourceLimiter* limiter, ResourceUsage* usage) {
-    if (!limiter) return -1;
+    XMD_VALIDATE_PTRS(-1, limiter);
     
     // Check memory usage
     size_t memory_usage = get_memory_usage();

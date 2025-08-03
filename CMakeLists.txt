@@ -428,6 +428,7 @@ set(XMD_LIB_SOURCES
     "src/core/runtime/xmd_runtime_init/xmd_runtime_init.c"
     "src/core/runtime/xmd_runtime_cleanup/xmd_runtime_cleanup.c"
     "src/core/runtime/xmd_runtime_status/xmd_runtime_status.c"
+    "src/core/runtime/xmd_runtime_global_config/xmd_runtime_global_config.c"
     "src/core/config/xmd_set_config/xmd_set_config.c"
     "src/core/config/xmd_get_config/xmd_get_config.c"
     "src/core/license/copyright/copyright.c"

@@ -14,15 +14,14 @@
 #include "ast.h"
 #include "variable.h"
 #include "utils.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Convert AST value to variable
  * @param value AST value to convert
  * @return Variable or NULL on error
  */
 variable* ast_value_to_variable(ast_value* value) {
-    if (!value) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, value);
     
     switch (value->type) {
         case AST_VAL_STRING:

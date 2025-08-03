@@ -5,6 +5,7 @@
  */
 
 #include "../../../../include/platform_internal.h"
+#include "../../../utils/common/common_macros.h"
 #include <string.h>
 /**
  * @brief Create a new process
@@ -14,7 +15,7 @@
  * @return 0 on success, -1 on error
  */
 int xmd_process_create(const char* command, char* const argv[], xmd_process_t* process) {
-    if (!command || !process) return -1;
+    XMD_VALIDATE_PTRS(-1, command, process);
 #ifdef XMD_PLATFORM_WINDOWS
     STARTUPINFOA si;
     PROCESS_INFORMATION pi;

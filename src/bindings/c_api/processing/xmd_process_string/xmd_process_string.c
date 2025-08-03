@@ -27,9 +27,7 @@ xmd_result* xmd_process_string(xmd_processor* processor,
                                const char* input, 
                                size_t input_length) {
     (void)input_length;  // Length validation may be added in future
-    if (!processor || !input) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, processor, input);
     
     if (!processor->initialized) {
         return c_api_create_result(-1, NULL, "Processor not initialized");

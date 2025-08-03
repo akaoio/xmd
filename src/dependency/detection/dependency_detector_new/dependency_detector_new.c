@@ -18,16 +18,12 @@
  * @return New dependency detector or NULL on error
  */
 DependencyDetector* dependency_detector_new(DependencyGraph* graph) {
+    XMD_VALIDATE_PTRS(NULL, graph);
     XMD_CREATE_VALIDATED(detector, DependencyDetector, sizeof(DependencyDetector), NULL);
     
     detector->graph = graph;
     detector->cycle_path = NULL;
     detector->cycle_path_count = 0;
-    
-    if (!detector->graph) {
-        XMD_FREE_SAFE(detector);
-        return NULL;
-    }
     
     return detector;
 }

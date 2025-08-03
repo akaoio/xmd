@@ -11,15 +11,14 @@
 #include "../../../../include/store.h"
 #include "../../../../include/store_internal.h"
 #include "../../../../include/variable.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Clear all entries from store
  * @param s Store to clear
  */
 void store_clear(store* s) {
-    if (!s) {
-        return;
-    }
+    XMD_ENTRY_VALIDATE_VOID(s);
     
     for (size_t i = 0; i < s->capacity; i++) {
         store_entry* entry = s->buckets[i];

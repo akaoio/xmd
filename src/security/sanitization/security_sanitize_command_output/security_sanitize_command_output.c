@@ -11,15 +11,14 @@
 #include <string.h>
 #include <stdlib.h>
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 /**
  * @brief Sanitize command output
  * @param output Command output to sanitize
  * @return Sanitized output (must be freed)
  */
 char* security_sanitize_command_output(const char* output) {
-    if (!output) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTRS(NULL, output);
     
     size_t len = strlen(output);
     char* sanitized = xmd_malloc(len * 2 + 1); // Extra space for escaping

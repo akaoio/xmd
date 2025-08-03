@@ -9,6 +9,7 @@
 
 #include "ast_node.h"
 #include "variable.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Add a statement to a program or block node
  * @param block Program or block node
@@ -16,9 +17,7 @@
  * @return 0 on success, -1 on error
  */
 int ast_add_statement(ast_node* block, ast_node* statement) {
-    if (!block || !statement) {
-        return -1;
-    }
+    XMD_VALIDATE_PTRS(-1, block, statement);
     
     if (block->type != AST_PROGRAM && block->type != AST_BLOCK) {
         return -1;

@@ -8,6 +8,7 @@
  */
 
 #include "../../../../include/config.h"
+#include "../../../utils/common/common_macros.h"
 #include <stdlib.h>
 /**
  * @brief Load configuration from environment variables
@@ -16,7 +17,7 @@
   * /
  */
 int config_load_env(xmd_config* config) {
-    if (!config) return -1;
+    XMD_VALIDATE_PTRS(-1, config);
     
     xmd_internal_config* internal = (xmd_internal_config*)config;
     

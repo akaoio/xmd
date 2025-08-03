@@ -16,9 +16,7 @@
  * @param node Node to free
  */
 void dependency_node_free(DependencyNode* node) {
-    if (!node) {
-        return;
-    }
+    XMD_ENTRY_VALIDATE_VOID(node);
     
     XMD_FREE_SAFE(node->children);
     XMD_FREE_SAFE(node);

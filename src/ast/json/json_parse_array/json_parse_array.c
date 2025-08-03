@@ -14,6 +14,7 @@
 #include "../../../../include/store.h"
 #include "../../../../include/variable.h"
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 
 // Forward declaration for json_parse_value
 extern variable* json_parse_value(const char* json, size_t* pos);
@@ -25,6 +26,7 @@ extern variable* json_parse_value(const char* json, size_t* pos);
  * @return Parsed variable or NULL
  */
 variable* json_parse_array(const char* json, size_t* pos) {
+    XMD_VALIDATE_PTRS(NULL, json, pos);
     variable* arr = variable_create_array();
     (*pos)++; // Skip '['
     

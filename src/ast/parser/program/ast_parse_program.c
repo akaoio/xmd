@@ -19,7 +19,7 @@
  * @return AST program node or NULL
  */
 ast_node* ast_parse_program(const char* input) {
-    XMD_NULL_CHECK_RETURN(input, NULL);
+    XMD_VALIDATE_PTRS(NULL, input);
     
     
     // Create program node

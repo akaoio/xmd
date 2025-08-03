@@ -26,9 +26,7 @@ extern char* ast_process_xmd_content(const char* input, store* variables);
  */
 xmd_result* xmd_process_string_api(void* handle, const char* input, size_t input_length) {
     (void)input_length;  // Reserved for future validation
-    if (!handle || !input) {
-        return NULL; // Return NULL for invalid parameters
-    }
+    XMD_VALIDATE_PTRS(NULL, handle, input);
     
     xmd_processor* processor = (xmd_processor*)handle;
     if (!processor->initialized) {

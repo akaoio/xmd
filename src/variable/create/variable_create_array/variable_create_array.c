@@ -22,11 +22,7 @@ variable* variable_create_array(void) {
     XMD_CREATE_VALIDATED(var, variable, sizeof(variable), NULL);
     
     var->type = VAR_ARRAY;
-    var->value.array_value = xmd_malloc(sizeof(variable_array));
-    if (!var->value.array_value) {
-        XMD_FREE_SAFE(var);
-        return NULL;
-    }
+    XMD_MALLOC_DYNAMIC(var->value.array_value, sizeof(variable_array), NULL);
     var->value.array_value->items = NULL;
     var->value.array_value->count = 0;
     var->value.array_value->capacity = 0;

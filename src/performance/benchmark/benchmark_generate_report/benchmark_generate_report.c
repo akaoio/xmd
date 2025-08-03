@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include "../../../../include/performance_internal.h"
 #include "../../../../include/utils.h"
+#include "../../../utils/common/common_macros.h"
 
 /**
  * @brief Generate benchmark report
@@ -20,10 +21,8 @@ char* benchmark_generate_report(benchmark_suite* suite) {
     }
     
     size_t report_size = 4096;
-    char* report = xmd_malloc(report_size);
-    if (!report) {
-        return NULL;
-    }
+    char* report;
+    XMD_MALLOC_DYNAMIC(report, report_size, NULL);
     
     snprintf(report, report_size, 
         "Benchmark Report: %s\n"
