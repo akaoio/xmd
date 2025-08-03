@@ -1,0 +1,19 @@
+// Test 15: Simple Math
+
+set a 10
+set b 5
+
+set sum a + b
+print "10 + 5 = " + sum
+
+set diff a - b
+print "10 - 5 = " + diff
+
+set prod a * b
+print "10 * 5 = " + prod
+
+set quot a / b
+print "10 / 5 = " + quot
+
+set mod a % b
+print "10 % 5 = " + mod

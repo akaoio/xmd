@@ -353,7 +353,7 @@ void test_error_conditions() {
 void test_xmd_directives() {
     printf("Testing XMD directive tokenization...\n");
     
-    const char* input = "<!-- xmd:set var = \"value\" -->";
+    const char* input = "<!-- xmd set var = \"value\" -->";
     token* tokens = lexer_enhanced_tokenize(input, "test.xmd");
     
     assert(tokens != NULL);

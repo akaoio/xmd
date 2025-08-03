@@ -36,8 +36,8 @@ void test_infinite_depth_nested_loops(void) {
     // Create nested structure
     char* pos = brutal_input + strlen(brutal_input);
     for (int depth = 0; depth < 50; depth++) {
-        pos += sprintf(pos, "<!-- xmd:set array%d=\"1,2,3\" -->\n", depth);
-        pos += sprintf(pos, "<!-- xmd:for item%d in array%d -->\n", depth, depth);
+        pos += sprintf(pos, "<!-- xmd set array%d=\"1,2,3\" -->\n", depth);
+        pos += sprintf(pos, "<!-- xmd for item%d in array%d -->\n", depth, depth);
         pos += sprintf(pos, "Level %d: {{item%d}}\n", depth, depth);
     }
     
@@ -46,7 +46,7 @@ void test_infinite_depth_nested_loops(void) {
     
     // Close all loops
     for (int depth = 49; depth >= 0; depth--) {
-        pos += sprintf(pos, "<!-- xmd:endfor -->\n");
+        pos += sprintf(pos, "<!-- xmd endfor -->\n");
     }
     
     pos += sprintf(pos, "\nTest completed.\n");
@@ -91,50 +91,50 @@ void test_mixed_brutal_nesting(void) {
     
     const char* mixed_brutal = 
         "# Mixed Brutal Nesting Test\n\n"
-        "<!-- xmd:set numbers=\"1,2,3,4,5,6,7,8,9,10\" -->\n"
-        "<!-- xmd:set conditions=\"true,false,true,false,true\" -->\n"
+        "<!-- xmd set numbers=\"1,2,3,4,5,6,7,8,9,10\" -->\n"
+        "<!-- xmd set conditions=\"true,false,true,false,true\" -->\n"
         
         // Level 1: for loop
-        "<!-- xmd:for num in numbers -->\n"
+        "<!-- xmd for num in numbers -->\n"
         "Level 1 - Number: {{num}}\n"
         
         // Level 2: if statement  
-        "<!-- xmd:if num > 5 -->\n"
+        "<!-- xmd if num > 5 -->\n"
         "  High number detected: {{num}}\n"
         
         // Level 3: nested for loop
-        "  <!-- xmd:for cond in conditions -->\n"
+        "  <!-- xmd for cond in conditions -->\n"
         "    Level 3 - Condition: {{cond}}\n"
         
         // Level 4: nested if
-        "    <!-- xmd:if cond == \"true\" -->\n"
+        "    <!-- xmd if cond == \"true\" -->\n"
         "      Level 4 - TRUE branch\n"
         
         // Level 5: another for loop
-        "      <!-- xmd:for inner_num in numbers -->\n"
+        "      <!-- xmd for inner_num in numbers -->\n"
         "        Level 5 - Inner: {{inner_num}}\n"
         
         // Level 6: complex if/elif/else
-        "        <!-- xmd:if inner_num < 3 -->\n"
+        "        <!-- xmd if inner_num < 3 -->\n"
         "          Level 6 - Small: {{inner_num}}\n"
-        "        <!-- xmd:elif inner_num > 7 -->\n"
+        "        <!-- xmd elif inner_num > 7 -->\n"
         "          Level 6 - Large: {{inner_num}}\n"
-        "        <!-- xmd:else -->\n"
+        "        <!-- xmd else -->\n"
         "          Level 6 - Medium: {{inner_num}}\n"
-        "        <!-- xmd:endif -->\n"
+        "        <!-- xmd endif -->\n"
         
-        "      <!-- xmd:endfor -->\n"
-        "    <!-- xmd:else -->\n"
+        "      <!-- xmd endfor -->\n"
+        "    <!-- xmd else -->\n"
         "      Level 4 - FALSE branch\n"
-        "    <!-- xmd:endif -->\n"
-        "  <!-- xmd:endfor -->\n"
+        "    <!-- xmd endif -->\n"
+        "  <!-- xmd endfor -->\n"
         
-        "<!-- xmd:elif num < 3 -->\n"
+        "<!-- xmd elif num < 3 -->\n"
         "  Low number: {{num}}\n"
-        "<!-- xmd:else -->\n"
+        "<!-- xmd else -->\n"
         "  Medium number: {{num}}\n"
-        "<!-- xmd:endif -->\n"
-        "<!-- xmd:endfor -->\n"
+        "<!-- xmd endif -->\n"
+        "<!-- xmd endfor -->\n"
         
         "\n✅ Mixed nesting completed!\n";
     
@@ -194,16 +194,16 @@ void test_memory_stress_brutal(void) {
     const char* memory_brutal = 
         "# Memory Stress Test\n\n"
         "Processing massive array with 1000 elements...\n\n"
-        "<!-- xmd:for num in massive_array -->\n"
-        "  <!-- xmd:if num % 100 == 0 -->\n"
+        "<!-- xmd for num in massive_array -->\n"
+        "  <!-- xmd if num % 100 == 0 -->\n"
         "    **Milestone {{num}}** reached!\n"
-        "    <!-- xmd:for inner in \"a,b,c,d,e\" -->\n"
+        "    <!-- xmd for inner in \"a,b,c,d,e\" -->\n"
         "      Sub-item {{inner}} for {{num}}\n"
-        "    <!-- xmd:endfor -->\n"
-        "  <!-- xmd:elif num % 50 == 0 -->\n"
+        "    <!-- xmd endfor -->\n"
+        "  <!-- xmd elif num % 50 == 0 -->\n"
         "    Half-century: {{num}}\n"
-        "  <!-- xmd:endif -->\n"
-        "<!-- xmd:endfor -->\n"
+        "  <!-- xmd endif -->\n"
+        "<!-- xmd endfor -->\n"
         "\n✅ Memory stress test completed!\n";
     
     // Monitor memory usage
@@ -256,22 +256,22 @@ void test_malformed_nesting_brutal(void) {
         "# Malformed Nesting Test\n\n"
         
         // Missing endif
-        "<!-- xmd:if true -->\n"
+        "<!-- xmd if true -->\n"
         "Missing endif content\n"
         
         // Extra endfor
-        "<!-- xmd:endfor -->\n"
+        "<!-- xmd endfor -->\n"
         
         // Nested without opening
-        "<!-- xmd:else -->\n"
+        "<!-- xmd else -->\n"
         "Orphaned else\n"
         
         // Mixed up nesting
-        "<!-- xmd:for item in \"1,2,3\" -->\n"
-        "  <!-- xmd:if true -->\n"
+        "<!-- xmd for item in \"1,2,3\" -->\n"
+        "  <!-- xmd if true -->\n"
         "    Content\n"
-        "  <!-- xmd:endfor -->  <!-- Wrong closer! -->\n"
-        "<!-- xmd:endif -->     <!-- Wrong closer! -->\n"
+        "  <!-- xmd endfor -->  <!-- Wrong closer! -->\n"
+        "<!-- xmd endif -->     <!-- Wrong closer! -->\n"
         
         "\nMalformed test completed.\n";
     

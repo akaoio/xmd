@@ -18,7 +18,7 @@ static void test_phase8_integration(void) {
     printf("Testing Phase 8 integration...\n");
     
     // 1. Test linter with example content
-    const char* sample_content = "# XMD Integration Test\n\n<!-- xmd:set version=\"8.0\" -->\nVersion: {{version}}\n\n<!-- xmd:if version -->\nThis is version {{version}}\n<!-- xmd:endif -->";
+    const char* sample_content = "# XMD Integration Test\n\n<!-- xmd set version=\"8.0\" -->\nVersion: {{version}}\n\n<!-- xmd if version -->\nThis is version {{version}}\n<!-- xmd endif -->";
     
     int lint_result = linter_check(sample_content);
     printf("Linter result: %d\n", lint_result);
@@ -49,7 +49,7 @@ static void test_tool_chain_workflow(void) {
     // 2. Format code
     // 3. Debug if needed
     
-    const char* workflow_content = "# My Document\n\n<!-- xmd:set name=\"developer\" -->\nHello {{name}}!";
+    const char* workflow_content = "# My Document\n\n<!-- xmd set name=\"developer\" -->\nHello {{name}}!";
     
     // Step 1: Lint the content
     printf("Step 1: Linting content...\n");

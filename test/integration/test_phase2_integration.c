@@ -63,7 +63,7 @@ void test_lexer_with_template_syntax() {
     printf("Testing lexer with template syntax...\n");
     
     const char* markdown = "# Project {{name}}\n\n"
-                          "<!-- xmd:set version=\"1.0\" -->\n"
+                          "<!-- xmd set version=\"1.0\" -->\n"
                           "Version: {{version}}";
     
     lexer* lex = lexer_create(markdown);
@@ -79,7 +79,7 @@ void test_lexer_with_template_syntax() {
     token* t2 = lexer_next_token(lex);
     assert(t2 != NULL);
     assert(t2->type == TOKEN_XMD_DIRECTIVE);
-    assert(strstr(t2->value, "xmd:set") != NULL);
+    assert(strstr(t2->value, "xmd set") != NULL);
     
     // Third token should be text
     token* t3 = lexer_next_token(lex);

@@ -1,3 +1,0 @@
-set scores 95, 98, 100
-set first_score scores[0]
-print "First score: " + first_score

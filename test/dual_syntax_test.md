@@ -4,14 +4,14 @@ This file tests both syntaxes to verify the dispatcher routing.
 
 ## HTML Comment Syntax (Legacy)
 
-<!-- xmd:set legacy_name="Legacy System" -->
-<!-- xmd:set legacy_score=100 -->
+<!-- xmd set legacy_name="Legacy System" -->
+<!-- xmd set legacy_score=100 -->
 
 Legacy Test: {{legacy_name}} with score {{legacy_score}}
 
-<!-- xmd:if legacy_score >= 90 -->
+<!-- xmd if legacy_score >= 90 -->
 Legacy: Excellent!
-<!-- xmd:endif -->
+<!-- xmd endif -->
 
 ## Native XMD Syntax (Genesis Vision)
 
@@ -27,7 +27,7 @@ if native_score >= 90
 
 ## Mixed Usage Test
 
-<!-- xmd:set shared_var="Shared between systems" -->
+<!-- xmd set shared_var="Shared between systems" -->
 
 ```xmd
 print "Can native access HTML var? " + shared_var

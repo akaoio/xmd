@@ -26,7 +26,7 @@ xmd version
 
 Create `example.md`:
 ```markdown
-<!-- xmd:
+<!-- xmd 
 set name = "Developer"
 set date = exec date +"%Y-%m-%d"
 -->
@@ -35,9 +35,9 @@ set date = exec date +"%Y-%m-%d"
 
 Today is {{date}}.
 
-<!-- xmd: for i in 1..3 -->
+<!-- xmd for i in 1..3 -->
 - Item {{i}}
-<!-- xmd: endfor -->
+<!-- xmd endfor -->
 ```
 
 ### 2. Process the file
@@ -60,16 +60,16 @@ xmd example.md -v name="Alice"
 
 ### Variables
 ```markdown
-<!-- xmd: set user = "John" -->
-<!-- xmd: set count = 42 -->
-<!-- xmd: set active = true -->
+<!-- xmd set user = "John" -->
+<!-- xmd set count = 42 -->
+<!-- xmd set active = true -->
 ```
 
 ### Advanced Scripting Features
 
 #### Array Literals and Iteration
 ```markdown
-<!-- xmd:
+<!-- xmd 
 set technologies = ["C", "JavaScript", "Python", "Go"]
 set content = ""
 for tech in technologies
@@ -80,7 +80,7 @@ for tech in technologies
 
 #### Dynamic Imports
 ```markdown
-<!-- xmd:
+<!-- xmd 
 set sections = ["intro.md", "setup.md", "usage.md"]
 set documentation = ""
 for section in sections
@@ -91,7 +91,7 @@ for section in sections
 
 #### String Concatenation
 ```markdown
-<!-- xmd:
+<!-- xmd 
 set title = "XMD Guide"
 set version = "v2.0"
 set header = "# " + title + " " + version
@@ -101,23 +101,23 @@ set header = "# " + title + " " + version
 
 ### Command Execution
 ```markdown
-<!-- xmd: exec ls -la -->
-<!-- xmd: set files = exec find . -name "*.md" -->
+<!-- xmd exec ls -la -->
+<!-- xmd set files = exec find . -name "*.md" -->
 ```
 
 ### Functions
 ```markdown
-<!-- xmd:
+<!-- xmd 
 set data = "Hello World"
 print(data)
 -->
 
-<!-- xmd: cmd("echo 'Hello from cmd!'") -->
+<!-- xmd cmd("echo 'Hello from cmd!'") -->
 ```
 
 ### Complex Multiline Scripts
 ```markdown
-<!-- xmd:
+<!-- xmd 
 set project_files = ["README.md", "CHANGELOG.md", "LICENSE.md"]
 set toc = "# Table of Contents\n\n"
 for file in project_files

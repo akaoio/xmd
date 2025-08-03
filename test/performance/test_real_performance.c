@@ -66,7 +66,7 @@ char* generate_large_file(int size_kb) {
     }
     pos += written;
     
-    written = snprintf(content + pos, buffer_size - pos, "<!-- xmd:set doc_size=\"%dKB\" -->\n", size_kb);
+    written = snprintf(content + pos, buffer_size - pos, "<!-- xmd set doc_size=\"%dKB\" -->\n", size_kb);
     if (written < 0 || pos + written >= buffer_size - 1) {
         free(content);
         return NULL;
@@ -92,7 +92,7 @@ char* generate_large_file(int size_kb) {
         if (written < 0 || pos + written >= buffer_size - 1) break;
         pos += written;
         
-        written = snprintf(content + pos, buffer_size - pos, "<!-- xmd:set section_%d=\"Section %d Content\" -->\n", 
+        written = snprintf(content + pos, buffer_size - pos, "<!-- xmd set section_%d=\"Section %d Content\" -->\n", 
                           section, section);
         if (written < 0 || pos + written >= buffer_size - 1) break;
         pos += written;
@@ -102,7 +102,7 @@ char* generate_large_file(int size_kb) {
         pos += written;
         
         // Add some conditional content  
-        written = snprintf(content + pos, buffer_size - pos, "<!-- xmd:if doc_size == \"%dKB\" -->\n", size_kb);
+        written = snprintf(content + pos, buffer_size - pos, "<!-- xmd if doc_size == \"%dKB\" -->\n", size_kb);
         if (written < 0 || pos + written >= buffer_size - 1) break;
         pos += written;
         
@@ -110,12 +110,12 @@ char* generate_large_file(int size_kb) {
         if (written < 0 || pos + written >= buffer_size - 1) break;
         pos += written;
         
-        written = snprintf(content + pos, buffer_size - pos, "<!-- xmd:endif -->\n\n");
+        written = snprintf(content + pos, buffer_size - pos, "<!-- xmd endif -->\n\n");
         if (written < 0 || pos + written >= buffer_size - 1) break;
         pos += written;
         
         // Add loop
-        written = snprintf(content + pos, buffer_size - pos, "<!-- xmd:for i in 1..5 -->\n");
+        written = snprintf(content + pos, buffer_size - pos, "<!-- xmd for i in 1..5 -->\n");
         if (written < 0 || pos + written >= buffer_size - 1) break;
         pos += written;
         
@@ -123,7 +123,7 @@ char* generate_large_file(int size_kb) {
         if (written < 0 || pos + written >= buffer_size - 1) break;
         pos += written;
         
-        written = snprintf(content + pos, buffer_size - pos, "<!-- xmd:endfor -->\n\n");
+        written = snprintf(content + pos, buffer_size - pos, "<!-- xmd endfor -->\n\n");
         if (written < 0 || pos + written >= buffer_size - 1) break;
         pos += written;
         
@@ -199,7 +199,7 @@ void test_file_size_performance(void) {
         
         // Verify processing worked correctly
         assert(strstr(result->output, "Large Test Document") != NULL);
-        assert(strstr(result->output, "xmd:") == NULL); // No unprocessed directives
+        assert(strstr(result->output, "xmd ") == NULL); // No unprocessed directives
         
         xmd_result_free(result);
         free(content);
@@ -234,8 +234,8 @@ void test_nested_performance(void) {
     
     // Create 10 levels of nesting
     for (int i = 0; i < 10; i++) {
-        pos += sprintf(content + pos, "<!-- xmd:set level%d=\"yes\" -->\n", i);
-        pos += sprintf(content + pos, "<!-- xmd:if level%d == \"yes\" -->\n", i);
+        pos += sprintf(content + pos, "<!-- xmd set level%d=\"yes\" -->\n", i);
+        pos += sprintf(content + pos, "<!-- xmd if level%d == \"yes\" -->\n", i);
         pos += sprintf(content + pos, "Level %d\n", i);
     }
     
@@ -243,7 +243,7 @@ void test_nested_performance(void) {
     
     // Close all levels
     for (int i = 9; i >= 0; i--) {
-        pos += sprintf(content + pos, "<!-- xmd:endif -->\n");
+        pos += sprintf(content + pos, "<!-- xmd endif -->\n");
     }
     
     content[pos] = '\0';
@@ -282,9 +282,9 @@ void test_loop_performance(void) {
     // Test with large loops
     const char* loop_test = 
         "# Loop Performance Test\n"
-        "<!-- xmd:for i in 1..1000 -->\n"
+        "<!-- xmd for i in 1..1000 -->\n"
         "Item {{i}}\n"
-        "<!-- xmd:endfor -->\n";
+        "<!-- xmd endfor -->\n";
     
     double start = get_time_ms();
     xmd_result* result = xmd_process_string(processor, loop_test, strlen(loop_test));
@@ -349,7 +349,7 @@ void test_variable_performance(void) {
     
     // Set 100 variables
     for (int i = 0; i < 100; i++) {
-        pos += sprintf(content + pos, "<!-- xmd:set var%d=\"Value %d\" -->\n", i, i);
+        pos += sprintf(content + pos, "<!-- xmd set var%d=\"Value %d\" -->\n", i, i);
     }
     
     // Reference each variable multiple times

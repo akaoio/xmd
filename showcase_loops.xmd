@@ -1,5 +1,0 @@
-# XMD Loop Demonstration
-print "Forward loop:"
-for i in 1 .. 3
-    print i
-print "Done\!"

@@ -5,7 +5,7 @@ XMD supports clean multiline syntax for complex operations, including advanced s
 ## Basic Syntax
 
 ```markdown
-<!-- xmd:
+<!-- xmd 
 directive1
 directive2
 directive3
@@ -17,7 +17,7 @@ directive3
 XMD now supports script-like syntax with arrays, loops, and string concatenation:
 
 ```markdown
-<!-- xmd:
+<!-- xmd 
 set items = ["file1.md", "file2.md", "file3.md"]
 set content = ""
 for item in items
@@ -31,7 +31,7 @@ for item in items
 ### Variable Declaration
 
 ```markdown
-<!-- xmd:
+<!-- xmd 
 set name = "Project X"
 set version = "2.0.0"
 set author = "Development Team"
@@ -42,7 +42,7 @@ set date = exec date +"%Y-%m-%d"
 ### Command Execution
 
 ```markdown
-<!-- xmd:
+<!-- xmd 
 set hostname = exec hostname
 set kernel = exec uname -r
 set uptime = exec uptime -p
@@ -55,7 +55,7 @@ Uptime: {{uptime}}
 ### Functions
 
 ```markdown
-<!-- xmd:
+<!-- xmd 
 set user = exec whoami
 set home = exec echo $HOME
 print(user)
@@ -66,26 +66,26 @@ print(home)
 ### Control Flow
 
 ```markdown
-<!-- xmd:
+<!-- xmd 
 set env = "production"
 set debug = false
 -->
 
-<!-- xmd: if env == "production" -->
+<!-- xmd if env == "production" -->
 ⚠️ Production Environment
-<!-- xmd: endif -->
+<!-- xmd endif -->
 
-<!-- xmd: if debug -->
+<!-- xmd if debug -->
 Debug output enabled
-<!-- xmd: else -->
+<!-- xmd else -->
 Debug output disabled
-<!-- xmd: endif -->
+<!-- xmd endif -->
 ```
 
 ### Advanced Array Processing
 
 ```markdown
-<!-- xmd:
+<!-- xmd 
 set services = ["nginx", "mysql", "redis", "postgresql"]
 set report = "# Service Status Report\n\n"
 for service in services
@@ -98,7 +98,7 @@ for service in services
 ### Dynamic Documentation Generation
 
 ```markdown
-<!-- xmd:
+<!-- xmd 
 set chapters = ["introduction.md", "setup.md", "usage.md", "api.md"]
 set documentation = "# Complete Guide\n\n"
 for chapter in chapters
@@ -112,7 +112,7 @@ for chapter in chapters
 ### Project Status Report
 
 ```markdown
-<!-- xmd:
+<!-- xmd 
 set project = "MyApp"
 set branch = exec git branch --show-current
 set commits = exec git rev-list --count HEAD
@@ -125,7 +125,7 @@ set lastCommit = exec git log -1 --pretty=format:"%h - %s"
 - Total commits: {{commits}}
 - Last commit: {{lastCommit}}
 
-<!-- xmd:
+<!-- xmd 
 print("Generated at: ")
 cmd("date '+%Y-%m-%d %H:%M:%S'")
 -->
@@ -134,7 +134,7 @@ cmd("date '+%Y-%m-%d %H:%M:%S'")
 ### Dynamic Configuration
 
 ```markdown
-<!-- xmd:
+<!-- xmd 
 set config = {
   "app": "WebServer",
   "port": 8080,
@@ -143,9 +143,9 @@ set config = {
 }
 -->
 
-<!-- xmd: for key in ["app", "port", "ssl", "workers"] -->
+<!-- xmd for key in ["app", "port", "ssl", "workers"] -->
 {{key}}: {{config[key]}}
-<!-- xmd: endfor -->
+<!-- xmd endfor -->
 ```
 
 ## Best Practices

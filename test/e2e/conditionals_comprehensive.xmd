@@ -1,0 +1,105 @@
+# E2E XMD Conditionals Test Suite
+# Comprehensive testing of XMD conditional functionality
+
+print "=== XMD CONDITIONALS E2E TEST SUITE ==="
+print ""
+
+# Test 1: Basic if statement (correct XMD syntax)
+print "Test 1: Basic If Statement"
+set score 85
+if score >= 80
+    print "Excellent score!"
+print ""
+
+# Test 2: If-else statement
+print "Test 2: If-Else Statement"
+set temperature 25
+if temperature > 30
+    print "It's hot outside"
+else
+    print "Temperature is comfortable"
+print ""
+
+# Test 3: Multiple conditions with elif
+print "Test 3: Multiple Conditions with elif"
+set number 15
+if number > 20
+    print "Number is greater than 20"
+elif number > 10
+    print "Number is greater than 10 but not 20"
+else
+    print "Number is 10 or less"
+print ""
+
+# Test 4: String comparisons with equals
+print "Test 4: String Comparisons"
+set status "active"
+if status = "active"
+    print "System is active"
+else
+    print "System is inactive"
+print ""
+
+# Test 5: Boolean conditions
+print "Test 5: Boolean Conditions"
+set is_enabled true
+set is_ready false
+if is_enabled
+    print "Feature is enabled"
+if is_ready
+    print "System is ready"
+else
+    print "System is not ready"
+print ""
+
+# Test 6: Simple arithmetic equality
+print "Test 6: Arithmetic Equality"
+set a 10
+set b 5
+set c 15
+if a + b = c
+    print "Math check passed: 10 + 5 = 15"
+else
+    print "Math check failed"
+print ""
+
+# Test 7: Single-line if with then
+print "Test 7: Single-line If with then"
+set value 100
+if value = 100 then print "Perfect score!"
+print ""
+
+# Test 8: Nested conditionals
+print "Test 8: Nested Conditionals"
+set user_type "admin"
+set logged_in true
+if logged_in
+    if user_type = "admin"
+        print "Admin access granted"
+    else
+        print "User access granted"
+else
+    print "Please log in"
+print ""
+
+# Test 9: Multiple comparisons
+print "Test 9: Multiple Comparisons"
+set x 5
+set y 10
+if x < y
+    print "x is less than y"
+if x <= y
+    print "x is less than or equal to y"
+print ""
+
+# Test 10: Conditional assignment
+print "Test 10: Conditional Assignment"
+set age 25
+if age >= 18
+    set status "adult"
+else
+    set status "minor"
+print "Status: " + status
+print ""
+
+print "=== CONDITIONALS E2E TESTS COMPLETE ==="

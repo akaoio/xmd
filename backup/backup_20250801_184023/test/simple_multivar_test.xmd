@@ -1,5 +1,0 @@
-set x 10
-print x
-set a 1, b 2
-print a
-print b

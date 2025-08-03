@@ -1,0 +1,13 @@
+// Test 13: Import/Export
+
+// Test export
+export set version "1.0.0"
+
+export function greet name
+    return "Hello " + name
+
+// Test import (simulated)
+import "test.xmd"
+
+print version
+print greet "World"

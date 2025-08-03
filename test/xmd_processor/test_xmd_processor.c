@@ -26,13 +26,13 @@ void test_basic_variable_substitution(void) {
     assert(vars != NULL);
     
     const char* input = 
-        "<!-- xmd:set name=\"World\" -->\n"
+        "<!-- xmd set name=\"World\" -->\n"
         "Hello {{name}}!\n";
     
     char* result = ast_process_xmd_content(input, vars);
     assert(result != NULL);
     assert(strstr(result, "Hello World!") != NULL);
-    assert(strstr(result, "xmd:set") == NULL); // Directive should be removed
+    assert(strstr(result, "xmd set") == NULL); // Directive should be removed
     
     free(result);
     store_destroy(vars);
@@ -50,14 +50,14 @@ void test_conditional_logic(void) {
     
     // Test 1: if condition true
     const char* input1 = 
-        "<!-- xmd:set role=\"admin\" -->\n"
-        "<!-- xmd:if role == \"admin\" -->\n"
+        "<!-- xmd set role=\"admin\" -->\n"
+        "<!-- xmd if role == \"admin\" -->\n"
         "Admin access granted\n"
-        "<!-- xmd:elif role == \"user\" -->\n"
+        "<!-- xmd elif role == \"user\" -->\n"
         "User access\n"
-        "<!-- xmd:else -->\n"
+        "<!-- xmd else -->\n"
         "Guest access\n"
-        "<!-- xmd:endif -->\n";
+        "<!-- xmd endif -->\n";
     
     char* result1 = ast_process_xmd_content(input1, vars);
     assert(result1 != NULL);
@@ -69,14 +69,14 @@ void test_conditional_logic(void) {
     
     // Test 2: elif condition true  
     const char* input2 = 
-        "<!-- xmd:set role=\"user\" -->\n"
-        "<!-- xmd:if role == \"admin\" -->\n"
+        "<!-- xmd set role=\"user\" -->\n"
+        "<!-- xmd if role == \"admin\" -->\n"
         "Admin access granted\n"
-        "<!-- xmd:elif role == \"user\" -->\n"
+        "<!-- xmd elif role == \"user\" -->\n"
         "User access\n"
-        "<!-- xmd:else -->\n"
+        "<!-- xmd else -->\n"
         "Guest access\n"
-        "<!-- xmd:endif -->\n";
+        "<!-- xmd endif -->\n";
     
     char* result2 = ast_process_xmd_content(input2, vars);
     assert(result2 != NULL);
@@ -88,14 +88,14 @@ void test_conditional_logic(void) {
     
     // Test 3: else condition
     const char* input3 = 
-        "<!-- xmd:set role=\"unknown\" -->\n"
-        "<!-- xmd:if role == \"admin\" -->\n"
+        "<!-- xmd set role=\"unknown\" -->\n"
+        "<!-- xmd if role == \"admin\" -->\n"
         "Admin access granted\n"
-        "<!-- xmd:elif role == \"user\" -->\n"
+        "<!-- xmd elif role == \"user\" -->\n"
         "User access\n"
-        "<!-- xmd:else -->\n"
+        "<!-- xmd else -->\n"
         "Guest access\n"
-        "<!-- xmd:endif -->\n";
+        "<!-- xmd endif -->\n";
     
     char* result3 = ast_process_xmd_content(input3, vars);
     assert(result3 != NULL);
@@ -118,7 +118,7 @@ void test_multiline_directives(void) {
     assert(vars != NULL);
     
     const char* input = 
-        "<!-- xmd:\n"
+        "<!-- xmd \n"
         "set project=\"XMD\"\n"
         "set version=\"1.0\"\n"
         "set status=\"unified\"\n"
@@ -146,20 +146,20 @@ void test_nested_conditionals(void) {
     assert(vars != NULL);
     
     const char* input = 
-        "<!-- xmd:set dept=\"engineering\" -->\n"
-        "<!-- xmd:set level=\"senior\" -->\n"
-        "<!-- xmd:if dept == \"engineering\" -->\n"
+        "<!-- xmd set dept=\"engineering\" -->\n"
+        "<!-- xmd set level=\"senior\" -->\n"
+        "<!-- xmd if dept == \"engineering\" -->\n"
         "Engineering Department\n"
-        "  <!-- xmd:if level == \"senior\" -->\n"
+        "  <!-- xmd if level == \"senior\" -->\n"
         "  Senior Engineer\n"
-        "  <!-- xmd:elif level == \"junior\" -->\n"
+        "  <!-- xmd elif level == \"junior\" -->\n"
         "  Junior Engineer\n"
-        "  <!-- xmd:endif -->\n"
-        "<!-- xmd:elif dept == \"marketing\" -->\n"
+        "  <!-- xmd endif -->\n"
+        "<!-- xmd elif dept == \"marketing\" -->\n"
         "Marketing Department\n"
-        "<!-- xmd:else -->\n"
+        "<!-- xmd else -->\n"
         "Unknown Department\n"
-        "<!-- xmd:endif -->\n";
+        "<!-- xmd endif -->\n";
     
     char* result = ast_process_xmd_content(input, vars);
     assert(result != NULL);
@@ -182,7 +182,7 @@ void test_command_execution(void) {
     store* vars = store_create();
     assert(vars != NULL);
     
-    const char* input = "<!-- xmd:exec echo \"Hello from command\" -->\n";
+    const char* input = "<!-- xmd exec echo \"Hello from command\" -->\n";
     
     char* result = ast_process_xmd_content(input, vars);
     assert(result != NULL);
@@ -235,7 +235,7 @@ void test_malformed_directives(void) {
     assert(vars != NULL);
     
     // Test unclosed comment
-    const char* input1 = "<!-- xmd:set name=\"test\"\nHello {{name}}";
+    const char* input1 = "<!-- xmd set name=\"test\"\nHello {{name}}";
     char* result1 = ast_process_xmd_content(input1, vars);
     assert(result1 != NULL);
     // Should handle gracefully, copying the malformed comment as-is
@@ -244,7 +244,7 @@ void test_malformed_directives(void) {
     
     // Test malformed if without endif
     const char* input2 = 
-        "<!-- xmd:if true -->\n"
+        "<!-- xmd if true -->\n"
         "This should appear\n"
         "No endif\n";
     char* result2 = ast_process_xmd_content(input2, vars);
@@ -267,23 +267,23 @@ void test_complete_workflow(void) {
     
     const char* input = 
         "# XMD Processor Test\n\n"
-        "<!-- xmd:\n"
+        "<!-- xmd \n"
         "set user=\"Alice\"\n"
         "set role=\"admin\"\n"
         "set project=\"XMD Parser\"\n"
         "-->\n"
         "Welcome {{user}}!\n\n"
-        "<!-- xmd:if role == \"admin\" -->\n"
+        "<!-- xmd if role == \"admin\" -->\n"
         "## Admin Dashboard\n"
         "Project: {{project}}\n"
-        "<!-- xmd:exec echo \"System status: OK\" -->\n"
-        "<!-- xmd:elif role == \"user\" -->\n"
+        "<!-- xmd exec echo \"System status: OK\" -->\n"
+        "<!-- xmd elif role == \"user\" -->\n"
         "## User Dashboard\n"
         "Limited access for {{user}}\n"
-        "<!-- xmd:else -->\n"
+        "<!-- xmd else -->\n"
         "## Guest Access\n"
         "Please log in\n"
-        "<!-- xmd:endif -->\n\n"
+        "<!-- xmd endif -->\n\n"
         "Thank you for using {{project}}!\n";
     
     char* result = ast_process_xmd_content(input, vars);
@@ -299,7 +299,7 @@ void test_complete_workflow(void) {
     // Verify excluded content is not present
     assert(strstr(result, "User Dashboard") == NULL);
     assert(strstr(result, "Guest Access") == NULL);
-    assert(strstr(result, "xmd:") == NULL); // No directives should remain
+    assert(strstr(result, "xmd ") == NULL); // No directives should remain
     
     free(result);
     store_destroy(vars);
@@ -317,12 +317,12 @@ void test_performance(void) {
     
     // Create a large input with many variables and conditionals
     char* large_input = malloc(10000);
-    strcpy(large_input, "<!-- xmd:set counter=\"0\" -->\n");
+    strcpy(large_input, "<!-- xmd set counter=\"0\" -->\n");
     
     for (int i = 0; i < 100; i++) {
         char line[100];
         snprintf(line, sizeof(line), 
-                "Line %d: {{counter}} <!-- xmd:if counter == \"0\" -->Zero<!-- xmd:endif -->\n", i);
+                "Line %d: {{counter}} <!-- xmd if counter == \"0\" -->Zero<!-- xmd endif -->\n", i);
         strcat(large_input, line);
     }
     

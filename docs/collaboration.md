@@ -20,20 +20,20 @@ Create `dashboard.md`:
 
 ```markdown
 # Team Dashboard
-**Last Updated:** <!-- xmd:exec date '+%Y-%m-%d %H:%M:%S' -->
+**Last Updated:** <!-- xmd exec date '+%Y-%m-%d %H:%M:%S' -->
 
 ## Team Members
 
-<!-- xmd:import update/backend.md -->
+<!-- xmd import update/backend.md -->
 ---
-<!-- xmd:import update/frontend.md -->
+<!-- xmd import update/frontend.md -->
 ---
-<!-- xmd:import update/tester.md -->
+<!-- xmd import update/tester.md -->
 ---
-<!-- xmd:import update/coordinator.md -->
+<!-- xmd import update/coordinator.md -->
 
 ## Quick Stats
-<!-- xmd:exec ls update/*.md | wc -l | tr -d ' ' --> active members
+<!-- xmd exec ls update/*.md | wc -l | tr -d ' ' --> active members
 ```
 
 ### 3. Start Live Dashboard
@@ -272,17 +272,17 @@ Create your own role templates by copying and modifying the examples above.
 ### Multi-Project Dashboards
 ```markdown
 # Multi-Project Dashboard
-<!-- xmd:import project1/teamwork/dashboard.md -->
+<!-- xmd import project1/teamwork/dashboard.md -->
 ---
-<!-- xmd:import project2/teamwork/dashboard.md -->
+<!-- xmd import project2/teamwork/dashboard.md -->
 ```
 
 ### Team Metrics
 ```markdown
 ## Team Metrics
-**Total Members:** <!-- xmd:exec ls update/*.md | wc -l -->
-**Files Changed Today:** <!-- xmd:exec find . -name "*.md" -newer .yesterday -type f | wc -l -->
-**Active Projects:** <!-- xmd:exec grep -l "🔄" update/*.md | wc -l -->
+**Total Members:** <!-- xmd exec ls update/*.md | wc -l -->
+**Files Changed Today:** <!-- xmd exec find . -name "*.md" -newer .yesterday -type f | wc -l -->
+**Active Projects:** <!-- xmd exec grep -l "🔄" update/*.md | wc -l -->
 ```
 
 ### Integration with Git
@@ -299,8 +299,8 @@ chmod +x .git/hooks/pre-commit
 - Restart watch: `pkill xmd && ../tools/xmd/xmd watch dashboard.md live_dashboard.md &`
 
 **Import not working?**
-- Use single quotes or no quotes: `<!-- xmd:import 'file.md' -->`
-- Avoid double quotes: `<!-- xmd:import "file.md" -->` ❌
+- Use single quotes or no quotes: `<!-- xmd import 'file.md' -->`
+- Avoid double quotes: `<!-- xmd import "file.md" -->` ❌
 
 **Multiple agents causing conflicts?**
 - Each agent should only edit their own update/<role>.md file

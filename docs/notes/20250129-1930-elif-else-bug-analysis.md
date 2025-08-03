@@ -72,13 +72,13 @@ The fix would require:
 
 Create test case:
 ```
-<!-- xmd:if false -->
+<!-- xmd if false -->
 Should not appear
-<!-- xmd:elif true -->
+<!-- xmd elif true -->
 Should appear once
-<!-- xmd:else -->
+<!-- xmd else -->
 Should not appear
-<!-- xmd:endif -->
+<!-- xmd endif -->
 ```
 
 If bug exists, both "Should appear once" and "Should not appear" would be output.

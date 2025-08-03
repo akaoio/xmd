@@ -8,6 +8,7 @@
  */
 
 #include <stddef.h>
+#include <stdint.h>
 #include <string.h>
 #include "../../../../include/variable.h"
 #include "../../../../include/variable_internal.h"

@@ -34,7 +34,7 @@ Successfully improved test success rate from initial failures to 23/25 tests pas
 
 ### Phase 2: XMD Processor Conditional Fix
 1. Analyze conditional evaluation logic in XMD processor
-2. Check variable scope handling for `xmd:set` vs external store
+2. Check variable scope handling for `xmd set` vs external store
 3. Ensure real implementation without mocks (Rule 7)
 4. Fix memory management if needed (Rule 14)
 

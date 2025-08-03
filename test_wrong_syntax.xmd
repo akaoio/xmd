@@ -1,2 +1,0 @@
-set y = 100
-print "This should not work"

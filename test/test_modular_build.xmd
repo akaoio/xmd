@@ -1,21 +1,21 @@
-<!-- xmd:set name "Modular Build" -->
-<!-- xmd:set version "0.0.2" -->
-<!-- xmd:set success true -->
+<!-- xmd set name "Modular Build" -->
+<!-- xmd set version "0.0.2" -->
+<!-- xmd set success true -->
 
 # {{name}} Test - Version {{version}}
 
 Success: {{success}}
 
-<!-- xmd:set count 0 -->
-<!-- xmd:for i in 1..3 -->
-    <!-- xmd:set count {{count}} + 1 -->
+<!-- xmd set count 0 -->
+<!-- xmd for i in 1..3 -->
+    <!-- xmd set count {{count}} + 1 -->
     Item {{i}}: Count is now {{count}}
-<!-- xmd:endfor -->
+<!-- xmd endfor -->
 
 Final count: {{count}}
 
-<!-- xmd:if count = 3 -->
+<!-- xmd if count = 3 -->
     ✅ Loop functionality working!
-<!-- xmd:endif -->
+<!-- xmd endif -->
 
-<!-- xmd:exec echo "Build test complete" -->
+<!-- xmd exec echo "Build test complete" -->

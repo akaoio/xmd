@@ -1,7 +1,0 @@
-set scores 95, 98, 100
-print "Array test:"
-print scores
-print "Indexing test:"
-print scores[0]
-print scores[1]
-print scores[2]

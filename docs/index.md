@@ -51,7 +51,7 @@ Welcome to XMD - eXtended MarkDown processor with advanced scripting capabilitie
 
 ### Script Blocks
 ```markdown
-<!-- xmd:
+<!-- xmd 
 set files = ["config.md", "setup.md", "deploy.md"]
 set documentation = ""
 for file in files

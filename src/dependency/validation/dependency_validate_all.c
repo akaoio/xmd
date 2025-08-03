@@ -30,9 +30,7 @@ int dependency_validate_all(ModuleRegistry* registry) {
     // Build dependency graph from registry - REAL IMPLEMENTATION NEEDED
     // This function was declared but never implemented - adding stub to prevent linker errors
     DependencyGraph* graph = dependency_graph_new();
-    if (!graph) {
-        return -1;
-    }
+    XMD_NULL_CHECK(graph, -1);
     
     // Create detector
     DependencyDetector* detector = dependency_detector_new(graph);

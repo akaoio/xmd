@@ -23,7 +23,7 @@ extern char* ast_process_xmd_content(const char* input, store* variables);
 void test_direct_exec_large_output() {
     printf("Testing direct exec with large output...\n");
     
-    const char* input = "<!-- xmd:exec find /usr -name '*.h' 2>/dev/null | head -1000 -->";
+    const char* input = "<!-- xmd exec find /usr -name '*.h' 2>/dev/null | head -1000 -->";
     store* vars = store_create();
     
     char* result = ast_process_xmd_content(input, vars);
@@ -52,7 +52,7 @@ void test_direct_exec_large_output() {
 void test_set_var_exec_large_output() {
     printf("Testing set var from exec with large output...\n");
     
-    const char* input = "<!-- xmd:set files = exec find /usr -name '*.h' 2>/dev/null | head -200 -->\n{{files}}";
+    const char* input = "<!-- xmd set files = exec find /usr -name '*.h' 2>/dev/null | head -200 -->\n{{files}}";
     store* vars = store_create();
     
     char* result = ast_process_xmd_content(input, vars);
@@ -93,7 +93,7 @@ void test_set_var_exec_large_output() {
 void test_print_large_variable() {
     printf("Testing print function with large variable...\n");
     
-    const char* input = "<!-- xmd:set data = exec find /usr -name '*.h' 2>/dev/null | head -1000 --><!-- xmd:print(data) -->";
+    const char* input = "<!-- xmd set data = exec find /usr -name '*.h' 2>/dev/null | head -1000 --><!-- xmd print(data) -->";
     store* vars = store_create();
     
     char* result = ast_process_xmd_content(input, vars);

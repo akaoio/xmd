@@ -1,8 +1,0 @@
-set x 42
-print "x = {{x}}"
-
-set y = 100
-print "y = {{y}}"
-
-set name "Alice"
-print "Hello {{name}}"

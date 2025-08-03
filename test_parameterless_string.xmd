@@ -1,4 +1,0 @@
-function get_hello
-    return "Hello World"
-
-print get_hello

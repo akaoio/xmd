@@ -1,0 +1,19 @@
+// Test 11: Error Handling
+
+function divide a b
+    try
+        if b = 0
+            throw "Divide by zero"
+        return a / b
+    catch err
+        return "Error: " + err
+
+print divide 10 2
+print divide 10 0
+
+// Simple try-catch
+try
+    set x 10 / 0
+    print x
+catch e
+    print "Caught error: " + e

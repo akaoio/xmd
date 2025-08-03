@@ -65,7 +65,7 @@ void test_cli_exec_directive(void) {
     printf("Testing CLI with exec directive...\n");
     
     // Create test file
-    const char* test_content = "# Test Document\n\n<!-- xmd:exec echo \"CLI test successful\" -->\n";
+    const char* test_content = "# Test Document\n\n<!-- xmd exec echo \"CLI test successful\" -->\n";
     create_test_file("test_exec.md", test_content);
     
     // Execute XMD
@@ -86,7 +86,7 @@ void test_cli_exec_directive(void) {
     
     // Verify output
     assert(strstr(output, "CLI test successful") != NULL);
-    assert(strstr(output, "xmd:exec") == NULL); // Directive should be processed
+    assert(strstr(output, "xmd exec") == NULL); // Directive should be processed
     
     // Cleanup
     unlink("test_exec.md");
@@ -101,8 +101,8 @@ void test_cli_variables(void) {
     printf("Testing CLI with variables...\n");
     
     const char* test_content = 
-        "<!-- xmd:set user=\"Alice\" -->\n"
-        "<!-- xmd:set role=\"Developer\" -->\n"
+        "<!-- xmd set user=\"Alice\" -->\n"
+        "<!-- xmd set role=\"Developer\" -->\n"
         "Welcome {{user}}, you are logged in as {{role}}.\n";
     
     create_test_file("test_vars.md", test_content);
@@ -115,7 +115,7 @@ void test_cli_variables(void) {
     assert(exit_code == 0);
     
     assert(strstr(output, "Welcome Alice, you are logged in as Developer.") != NULL);
-    assert(strstr(output, "xmd:set") == NULL);
+    assert(strstr(output, "xmd set") == NULL);
     assert(strstr(output, "{{user}}") == NULL);
     
     unlink("test_vars.md");
@@ -130,14 +130,14 @@ void test_cli_conditionals(void) {
     printf("Testing CLI with conditionals...\n");
     
     const char* test_content = 
-        "<!-- xmd:set env=\"production\" -->\n"
-        "<!-- xmd:if env == \"production\" -->\n"
+        "<!-- xmd set env=\"production\" -->\n"
+        "<!-- xmd if env == \"production\" -->\n"
         "⚠️ Production Environment\n"
-        "<!-- xmd:elif env == \"staging\" -->\n"
+        "<!-- xmd elif env == \"staging\" -->\n"
         "🧪 Staging Environment\n"  
-        "<!-- xmd:else -->\n"
+        "<!-- xmd else -->\n"
         "💻 Development Environment\n"
-        "<!-- xmd:endif -->\n";
+        "<!-- xmd endif -->\n";
     
     create_test_file("test_cond.md", test_content);
     
@@ -164,11 +164,11 @@ void test_cli_loops(void) {
     printf("Testing CLI with loops...\n");
     
     const char* test_content = 
-        "<!-- xmd:set items=\"apple,banana,orange\" -->\n"
+        "<!-- xmd set items=\"apple,banana,orange\" -->\n"
         "## Shopping List\n"
-        "<!-- xmd:for item in items -->\n"
+        "<!-- xmd for item in items -->\n"
         "- {{item}}\n"
-        "<!-- xmd:endfor -->\n";
+        "<!-- xmd endfor -->\n";
     
     create_test_file("test_loop.md", test_content);
     
@@ -182,7 +182,7 @@ void test_cli_loops(void) {
     assert(strstr(output, "- apple") != NULL);
     assert(strstr(output, "- banana") != NULL);
     assert(strstr(output, "- orange") != NULL);
-    assert(strstr(output, "xmd:for") == NULL);
+    assert(strstr(output, "xmd for") == NULL);
     
     unlink("test_loop.md");
     
@@ -196,7 +196,7 @@ void test_cli_multiline(void) {
     printf("Testing CLI with multiline directives...\n");
     
     const char* test_content = 
-        "<!-- xmd:\n"
+        "<!-- xmd \n"
         "set title=\"XMD Test\"\n"
         "set version=\"1.0.0\"\n"
         "set author=\"Test Suite\"\n"
@@ -228,7 +228,7 @@ void test_cli_stdin(void) {
     printf("Testing CLI with stdin input...\n");
     
     // Create a temporary file for testing
-    const char* test_content = "<!-- xmd:exec echo \"stdin test\" -->\n";
+    const char* test_content = "<!-- xmd exec echo \"stdin test\" -->\n";
     FILE* temp = fopen("test_stdin.md", "w");
     fprintf(temp, "%s", test_content);
     fclose(temp);
@@ -255,7 +255,7 @@ void test_cli_validate(void) {
     printf("Testing CLI validate command...\n");
     
     // Valid file
-    const char* valid_content = "<!-- xmd:set x=\"test\" -->\n{{x}}";
+    const char* valid_content = "<!-- xmd set x=\"test\" -->\n{{x}}";
     create_test_file("test_valid.md", valid_content);
     
     char output[MAX_OUTPUT_SIZE] = {0};
@@ -269,7 +269,7 @@ void test_cli_validate(void) {
     unlink("test_valid.md");
     
     // Invalid file (unclosed directive)
-    const char* invalid_content = "<!-- xmd:if true\nNo endif";
+    const char* invalid_content = "<!-- xmd if true\nNo endif";
     create_test_file("test_invalid.md", invalid_content);
     
     snprintf(command, sizeof(command), "%s validate test_invalid.md 2>&1", XMD_BINARY);
@@ -313,25 +313,25 @@ void test_cli_real_world(void) {
     
     const char* test_content = 
         "# Project Status Report\n\n"
-        "<!-- xmd:\n"
+        "<!-- xmd \n"
         "set project=\"XMD Parser\"\n"
         "set version=\"1.0.0\"\n"
         "set tests_passed=\"42\"\n"
         "set tests_total=\"42\"\n"
         "-->\n"
         "## {{project}} v{{version}}\n\n"
-        "<!-- xmd:exec date +\"%Y-%m-%d\" -->\n\n"
+        "<!-- xmd exec date +\"%Y-%m-%d\" -->\n\n"
         "### Test Results\n"
-        "<!-- xmd:if tests_passed == tests_total -->\n"
+        "<!-- xmd if tests_passed == tests_total -->\n"
         "✅ All tests passed! ({{tests_passed}}/{{tests_total}})\n"
-        "<!-- xmd:else -->\n"
+        "<!-- xmd else -->\n"
         "❌ Some tests failed: {{tests_passed}}/{{tests_total}}\n"
-        "<!-- xmd:endif -->\n\n"
+        "<!-- xmd endif -->\n\n"
         "### Components\n"
-        "<!-- xmd:set components=\"Lexer,Parser,Executor,CLI\" -->\n"
-        "<!-- xmd:for component in components -->\n"
+        "<!-- xmd set components=\"Lexer,Parser,Executor,CLI\" -->\n"
+        "<!-- xmd for component in components -->\n"
         "- [x] {{component}}\n"
-        "<!-- xmd:endfor -->\n";
+        "<!-- xmd endfor -->\n";
     
     create_test_file("test_real.md", test_content);
     

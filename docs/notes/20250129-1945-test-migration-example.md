@@ -43,13 +43,13 @@ void test_basic_variable_substitution(void) {
     assert(vars != NULL);
     
     const char* input = 
-        "<!-- xmd:set name=\"World\" -->\n"
+        "<!-- xmd set name=\"World\" -->\n"
         "Hello {{name}}!\n";
     
     char* result = process_xmd_content(input, vars);
     assert(result != NULL);
     assert(strstr(result, "Hello World!") != NULL);
-    assert(strstr(result, "xmd:set") == NULL);
+    assert(strstr(result, "xmd set") == NULL);
     
     free(result);
     store_destroy(vars);
@@ -66,13 +66,13 @@ void test_basic_variable_substitution(void) {
     assert(vars != NULL);
     
     const char* input = 
-        "<!-- xmd:set name=\"World\" -->\n"
+        "<!-- xmd set name=\"World\" -->\n"
         "Hello {{name}}!\n";
     
     char* result = ast_process_xmd_content(input, vars);
     assert(result != NULL);
     assert(strstr(result, "Hello World!") != NULL);
-    assert(strstr(result, "xmd:set") == NULL);
+    assert(strstr(result, "xmd set") == NULL);
     
     free(result);
     store_destroy(vars);

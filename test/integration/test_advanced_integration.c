@@ -39,7 +39,7 @@ void test_documentation_generation_pipeline(void) {
     // Create the main template file
     FILE* template = fopen("test_integration/template.md", "w");
     fprintf(template, 
-        "<!-- xmd:\n"
+        "<!-- xmd \n"
         "set title = \"XMD Documentation\"\n"
         "set version = \"v1.1.0\"\n"
         "set sections = [\"test_integration/docs/intro.md\", \"test_integration/docs/features.md\", \"test_integration/docs/examples.md\"]\n"
@@ -131,7 +131,7 @@ void test_configuration_management_scenario(void) {
     // Create deployment template
     FILE* deploy_template = fopen("test_config/deploy.md", "w");
     fprintf(deploy_template,
-        "<!-- xmd:\n"
+        "<!-- xmd \n"
         "set environments = [\"dev\", \"prod\"]\n"
         "set configs = [\"test_config/dev.md\", \"test_config/prod.md\"]\n"
         "set deployment_guide = \"# Deployment Guide\\n\\n\"\n"
@@ -194,7 +194,7 @@ void test_report_generation_with_commands(void) {
     const char* report_template = 
         "# System Report\n"
         "\n"
-        "<!-- xmd:\n"
+        "<!-- xmd \n"
         "set sections = [\"System Info\", \"Disk Usage\", \"Process Count\"]\n"
         "set commands = [\"uname -a\", \"df -h | head -3\", \"ps aux | wc -l\"]\n"
         "set report = \"\"\n"
@@ -207,7 +207,7 @@ void test_report_generation_with_commands(void) {
         "\n"
         "{{report}}\n"
         "\n"
-        "Report generated on: <!-- xmd: exec date -->\n";
+        "Report generated on: <!-- xmd exec date -->\n";
     
     char* output = process_xmd_content_enhanced(report_template, variables);
     assert(output != NULL);
@@ -250,7 +250,7 @@ void test_api_documentation_generation(void) {
     const char* api_template =
         "# API Documentation\n"
         "\n"
-        "<!-- xmd:\n"
+        "<!-- xmd \n"
         "set endpoints = [\"test_api/users.md\", \"test_api/posts.md\", \"test_api/auth.md\"]\n"
         "set api_docs = \"## Available Endpoints\\n\\n\"\n"
         "set endpoint_count = \"\"\n"
@@ -263,7 +263,7 @@ void test_api_documentation_generation(void) {
         "\n"
         "{{api_docs}}\n"
         "\n"
-        "Total endpoints documented: <!-- xmd: set total = \"3\" -->{{total}}\n";
+        "Total endpoints documented: <!-- xmd set total = \"3\" -->{{total}}\n";
     
     store* variables = store_create();
     char* result = process_xmd_content_enhanced(api_template, variables);
@@ -320,7 +320,7 @@ void test_project_structure_analysis(void) {
     const char* analysis_template =
         "# Project Analysis\n"
         "\n"
-        "<!-- xmd:\n"
+        "<!-- xmd \n"
         "set directories = [\"src\", \"docs\", \"tests\"]\n"
         "set analysis = \"## Project Structure\\n\\n\"\n"
         "set dir_count = \"\"\n"
@@ -332,7 +332,7 @@ void test_project_structure_analysis(void) {
         "\n"
         "{{analysis}}\n"
         "\n"
-        "<!-- xmd: set file_count = exec find test_project -type f | wc -l -->\n"
+        "<!-- xmd set file_count = exec find test_project -type f | wc -l -->\n"
         "Total files found: {{file_count}}\n";
     
     store* variables = store_create();

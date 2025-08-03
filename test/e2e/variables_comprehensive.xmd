@@ -1,0 +1,71 @@
+# E2E XMD Variables Test Suite
+# Comprehensive testing of XMD variable functionality
+
+print "=== XMD VARIABLES E2E TEST SUITE ==="
+print ""
+
+# Test 1: String variables
+print "Test 1: String Variables"
+set message "Hello XMD World!"
+set name "Quality Tester"
+print "Message: " + message
+print "Name: " + name
+print ""
+
+# Test 2: Number variables  
+print "Test 2: Number Variables"
+set count 42
+set pi 3.14159
+set negative -17
+print "Count: " + count
+print "Pi: " + pi  
+print "Negative: " + negative
+print ""
+
+# Test 3: Boolean variables
+print "Test 3: Boolean Variables"  
+set is_active true
+set is_complete false
+print "Active: " + is_active
+print "Complete: " + is_complete
+print ""
+
+# Test 4: Variable arithmetic
+print "Test 4: Variable Arithmetic"
+set a 10
+set b 5
+set sum a + b
+set product a * b
+set difference a - b
+print "10 + 5 = " + sum
+print "10 * 5 = " + product  
+print "10 - 5 = " + difference
+print ""
+
+# Test 5: String concatenation
+print "Test 5: String Concatenation"
+set first "XMD"
+set second "Language"
+set combined first + " " + second
+print "Combined: " + combined
+print ""
+
+# Test 6: Variable reassignment
+print "Test 6: Variable Reassignment"
+set counter 1
+print "Initial: " + counter
+set counter 2
+print "After update: " + counter
+set counter counter + 10
+print "After increment: " + counter
+print ""
+
+# Test 7: Complex variable expressions
+print "Test 7: Complex Expressions"
+set base 100
+set multiplier 1.5
+set result base * multiplier + 25
+print "Complex calculation: " + result
+print ""
+
+print "=== VARIABLES E2E TESTS COMPLETE ==="

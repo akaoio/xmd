@@ -1,2 +1,0 @@
-set scores 95, 98, 100
-print scores[0]

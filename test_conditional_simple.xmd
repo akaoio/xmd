@@ -1,8 +1,0 @@
-# SIMPLE CONDITIONAL TEST
-set x 10
-print "Before conditional"
-
-if x = 10
-    print "Inside conditional"
-
-print "After conditional"

@@ -1,0 +1,8 @@
+set x 10
+print x
+
+set name "Hello"
+print name
+
+set y 20
+print x + y

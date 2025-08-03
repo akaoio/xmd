@@ -1,0 +1,23 @@
+// Test 10: Classes
+
+class Animal
+    constructor name
+        set self.name name
+
+    speak
+        return self.name + " makes a sound"
+
+class Dog extends Animal
+    constructor name breed
+        super name
+        set self.breed breed
+
+    speak
+        return self.name + " says woof!"
+
+// Create instances
+set myDog new Dog "Buddy" "Golden Retriever"
+print myDog.speak
+
+set myAnimal new Animal "Generic"
+print myAnimal.speak

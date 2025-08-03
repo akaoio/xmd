@@ -8,6 +8,7 @@
  * Extracted from: src/variable.c
  */
 
+#include <stdint.h>
 #include "store_internal.h"
 #include "variable.h"
 #include "variable_internal.h"

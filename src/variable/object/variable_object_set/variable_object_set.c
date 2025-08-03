@@ -9,6 +9,8 @@
  */
 
 #include <stdbool.h>
+#include <stdint.h>
+#include <string.h>
 #include "store_internal.h"
 #include "variable.h"
 #include "variable_internal.h"
@@ -53,7 +55,7 @@ bool variable_object_set(variable* object_var, const char* key, variable* value)
         obj->capacity = new_capacity;
     }
     
-    obj->pairs[obj->count].key = strdup(key);
+    obj->pairs[obj->count].key = xmd_strdup(key);
     if (!obj->pairs[obj->count].key) {
         return false;
     }

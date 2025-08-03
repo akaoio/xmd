@@ -15,17 +15,17 @@
 #include "../../include/cli.h"
 
 /**
- * @brief Test xmd:exec through C API
+ * @brief Test xmd exec through C API
  */
 void test_exec_through_c_api(void) {
-    printf("Testing xmd:exec through C API layer...\n");
+    printf("Testing xmd exec through C API layer...\n");
     
     // Initialize XMD
     void* handle = xmd_init(NULL);
     assert(handle != NULL);
     
     // Test simple exec command
-    const char* input = "<!-- xmd:exec echo \"Hello from C API\" -->\n";
+    const char* input = "<!-- xmd exec echo \"Hello from C API\" -->\n";
     xmd_result* result = xmd_process_string(handle, input, strlen(input));
     
     assert(result != NULL);
@@ -35,7 +35,7 @@ void test_exec_through_c_api(void) {
     // The critical test: output should contain the executed command's result
     // NOT just the wrapped input!
     assert(strstr(result->output, "Hello from C API") != NULL);
-    assert(strstr(result->output, "<!-- xmd:exec") == NULL); // Directive should be processed
+    assert(strstr(result->output, "<!-- xmd exec") == NULL); // Directive should be processed
     
     printf("Output: %s\n", result->output);
     
@@ -54,14 +54,14 @@ void test_variables_through_c_api(void) {
     void* handle = xmd_init(NULL);
     assert(handle != NULL);
     
-    // Test with xmd:set directive instead
-    const char* input = "<!-- xmd:set name=\"TestUser\" -->\nHello {{name}}!";
+    // Test with xmd set directive instead
+    const char* input = "<!-- xmd set name=\"TestUser\" -->\nHello {{name}}!";
     xmd_result* result = xmd_process_string(handle, input, strlen(input));
     
     assert(result != NULL);
     assert(result->error_code == 0);
     assert(strstr(result->output, "Hello TestUser!") != NULL);
-    assert(strstr(result->output, "xmd:set") == NULL); // Directive should be processed
+    assert(strstr(result->output, "xmd set") == NULL); // Directive should be processed
     
     xmd_result_free(result);
     xmd_cleanup(handle);

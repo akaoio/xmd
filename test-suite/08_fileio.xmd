@@ -1,0 +1,21 @@
+// Test 8: File I/O
+
+// Write to file
+File.write "test.txt" "Hello from XMD!"
+print "File written"
+
+// Read from file
+set content File.read "test.txt"
+print "File content: " + content
+
+// Check if file exists
+set exists File.exists "test.txt"
+print "File exists: " + exists
+
+// List directory files
+set files File.list "."
+print files
+
+// Delete file
+File.delete "test.txt"
+print "File deleted"

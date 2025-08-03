@@ -69,28 +69,28 @@ To empower developers, DevOps engineers, and technical writers worldwide with a 
 
 ### How XMD Solves These Problems
 
-XMD introduces programmability through HTML comments with the `<!-- xmd: -->` namespace, enabling:
+XMD introduces programmability through HTML comments with the `<!-- xmd -->` namespace, enabling:
 
 ```markdown
-<!-- xmd:set env="production" -->
-<!-- xmd:import servers from "config/servers.json" -->
+<!-- xmd set env="production" -->
+<!-- xmd import servers from "config/servers.json" -->
 
 # {{env}} Server Status Report
 
-Generated: <!-- xmd:exec date -->
+Generated: <!-- xmd exec date -->
 
-<!-- xmd:for server in servers[env] -->
+<!-- xmd for server in servers[env] -->
 ## {{server.name}} ({{server.ip}})
 
-Status: <!-- xmd:exec nc -zv {{server.ip}} {{server.port}} && echo "✅ Online" || echo "❌ Offline" -->
+Status: <!-- xmd exec nc -zv {{server.ip}} {{server.port}} && echo "✅ Online" || echo "❌ Offline" -->
 
-<!-- xmd:if server.metrics -->
+<!-- xmd if server.metrics -->
 ### Performance Metrics
-- CPU: <!-- xmd:exec ssh {{server.ip}} "top -bn1 | grep 'Cpu(s)' | awk '{print $2}'" -->%
-- Memory: <!-- xmd:exec ssh {{server.ip}} "free -m | awk 'NR==2{printf \"%.2f%%\", $3*100/$2}'" -->
-- Disk: <!-- xmd:exec ssh {{server.ip}} "df -h / | awk 'NR==2{print $5}'" -->
-<!-- xmd:endif -->
-<!-- xmd:endfor -->
+- CPU: <!-- xmd exec ssh {{server.ip}} "top -bn1 | grep 'Cpu(s)' | awk '{print $2}'" -->%
+- Memory: <!-- xmd exec ssh {{server.ip}} "free -m | awk 'NR==2{printf \"%.2f%%\", $3*100/$2}'" -->
+- Disk: <!-- xmd exec ssh {{server.ip}} "df -h / | awk 'NR==2{print $5}'" -->
+<!-- xmd endif -->
+<!-- xmd endfor -->
 ```
 
 ### Core Capabilities
@@ -163,7 +163,7 @@ Status: <!-- xmd:exec nc -zv {{server.ip}} {{server.port}} && echo "✅ Online" 
 **User Story**: As a developer, I want to define and use variables so I can parameterize my documentation.
 
 **Acceptance Criteria**:
-- Set variables with `<!-- xmd:set key="value" -->`
+- Set variables with `<!-- xmd set key="value" -->`
 - Reference with `{{variable}}` syntax
 - Support nested objects and arrays
 - Type inference and validation
@@ -181,7 +181,7 @@ Status: <!-- xmd:exec nc -zv {{server.ip}} {{server.port}} && echo "✅ Online" 
 **User Story**: As a system admin, I want to embed command outputs so my docs show real system state.
 
 **Acceptance Criteria**:
-- Execute shell commands with `<!-- xmd:exec -->`
+- Execute shell commands with `<!-- xmd exec -->`
 - Configurable timeout and retry logic
 - Output formatting options (raw, JSON, table)
 - Permission-based command whitelist
@@ -190,8 +190,8 @@ Status: <!-- xmd:exec nc -zv {{server.ip}} {{server.port}} && echo "✅ Online" 
 **User Story**: As a technical writer, I want to reuse content components across documents.
 
 **Acceptance Criteria**:
-- Import with `<!-- xmd:import -->`
-- Export with `<!-- xmd:export -->`
+- Import with `<!-- xmd import -->`
+- Export with `<!-- xmd export -->`
 - Relative and absolute path resolution
 - Circular dependency detection
 
@@ -205,7 +205,7 @@ Status: <!-- xmd:exec nc -zv {{server.ip}} {{server.port}} && echo "✅ Online" 
 
 #### S2: Permission Model
 ```yaml
-xmd:
+xmd 
   permissions:
     exec:
       whitelist:
@@ -509,5 +509,5 @@ The focus on community, open source principles, and universal accessibility posi
 ---
 
 *Document Version: 2.0 - Open Source Edition*  
-*Last Updated: <!-- xmd:exec date '+%Y-%m-%d' -->*  
+*Last Updated: <!-- xmd exec date '+%Y-%m-%d' -->*  
 *Status: Community Review*

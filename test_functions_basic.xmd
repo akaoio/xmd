@@ -1,9 +1,0 @@
-# SIMPLE FUNCTIONS TEST
-
-function greet name
-    return "Hello " + name
-
-set result greet "Alice"
-print "Function result: " + result
-
-print "Functions test complete"

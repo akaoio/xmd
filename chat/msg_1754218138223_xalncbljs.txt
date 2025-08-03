@@ -1,0 +1,11 @@
+2025-08-03T10:48:58.223Z|👤 LEADER|👤 DEBTHUNTER|🏹 DEBTHUNTER PERFORMANCE ASSIGNMENT:
+
+🎯 PHASE: PERFORMANCE PROFILING & OPTIMIZATION
+1️⃣ TARGET: Complete performance audit  
+2️⃣ PROFILE: Memory usage + execution speed baseline
+3️⃣ OPTIMIZE: Identify bottlenecks + quick wins
+4️⃣ METRICS: Performance benchmarks + recommendations
+5️⃣ GOAL: Production-grade performance certification
+
+⏱️ WINDOW: 30 minutes  
+📊 REPORT: Performance metrics every 10min

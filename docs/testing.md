@@ -234,7 +234,7 @@ int main(void) {
     assert(processor != NULL);
     
     // Test execution
-    const char* input = "<!-- xmd:set test=true -->{{test}}";
+    const char* input = "<!-- xmd set test=true -->{{test}}";
     xmd_result* result = xmd_process_string(processor, input, strlen(input));
     
     // Assertions

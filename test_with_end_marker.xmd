@@ -1,5 +1,0 @@
-function get_constant
-    return 42
-
-print get_constant
-print "end"

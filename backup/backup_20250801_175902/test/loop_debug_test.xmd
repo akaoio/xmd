@@ -1,5 +1,0 @@
-# Loop Debug Test
-print "Testing basic range creation:"
-for i in 1..3
-print "After loop, i ="
-print i

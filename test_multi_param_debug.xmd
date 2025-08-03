@@ -1,4 +1,0 @@
-function concat_simple a b
-    return a + " " + b
-
-print concat_simple "Hello" "World"

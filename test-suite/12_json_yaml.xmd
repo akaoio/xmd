@@ -1,0 +1,20 @@
+// Test 12: JSON/YAML Operations
+
+// Create an object
+set user name "Alice", age 30
+
+// JSON stringify
+set j json.stringify user
+print "JSON: " + j
+
+// JSON parse
+set u1 json.parse j
+print u1
+
+// YAML stringify
+set y yaml.stringify user  
+print "YAML: " + y
+
+// YAML parse
+set u2 yaml.parse y
+print u2

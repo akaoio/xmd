@@ -1,0 +1,93 @@
+# E2E XMD Functions Test Suite
+# Comprehensive testing of XMD function functionality
+
+print "=== XMD FUNCTIONS E2E TEST SUITE ==="
+print ""
+
+# Test 1: Basic function definition and call
+print "Test 1: Basic Function"
+function greet name
+    return "Hello " + name
+
+set result1 greet "Tester"
+print "Result: " + result1
+print ""
+
+# Test 2: Function with multiple parameters
+print "Test 2: Multiple Parameters"
+function add_numbers a b
+    return a + b
+
+set sum add_numbers 15 25
+print "15 + 25 = " + sum
+print ""
+
+# Test 3: Function with string manipulation
+print "Test 3: String Manipulation Function"
+function format_message prefix content
+    return prefix + ": " + content
+
+set formatted format_message "INFO" "XMD is working great"
+print formatted
+print ""
+
+# Test 4: Function with calculations
+print "Test 4: Mathematical Function"
+function calculate_area width height
+    return width * height
+
+set area calculate_area 10 5
+print "Area (10 x 5): " + area
+print ""
+
+# Test 5: Function returning boolean logic
+print "Test 5: Boolean Logic Function"
+function is_positive number
+    return number > 0
+
+set positive_check is_positive 42
+set negative_check is_positive -5
+print "42 is positive: " + positive_check
+print "-5 is positive: " + negative_check
+print ""
+
+# Test 6: Nested function calls
+print "Test 6: Nested Function Calls"
+function double_value x
+    return x * 2
+
+function add_ten x
+    return x + 10
+
+set nested_result add_ten double_value 5
+print "add_ten(double_value(5)): " + nested_result
+print ""
+
+# Test 7: Function with conditionals
+print "Test 7: Function with Conditionals"
+function get_grade score
+    if score >= 90
+        return "A"
+    else
+        return "B"
+
+set grade1 get_grade 95
+set grade2 get_grade 85
+print "Grade for 95: " + grade1
+print "Grade for 85: " + grade2
+print ""
+
+# Test 8: Recursive function (simple)
+print "Test 8: Simple Recursive Pattern"
+function count_down n
+    if n > 0
+        print "Counting: " + n
+        return count_down n - 1
+    else
+        return "Done!"
+
+set countdown_result count_down 3
+print countdown_result
+print ""
+
+print "=== FUNCTIONS E2E TESTS COMPLETE ==="

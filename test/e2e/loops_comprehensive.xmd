@@ -1,0 +1,65 @@
+# E2E XMD Loops Test Suite
+# Comprehensive testing of XMD loop functionality
+
+print "=== XMD LOOPS E2E TEST SUITE ==="
+print ""
+
+# Test 1: Basic for loop with range (correct XMD syntax)
+print "Test 1: Basic For Loop (Range)"
+for i in 1 .. 3
+    print "Iteration: " + i
+
+print ""
+
+# Test 2: Repeat N times
+print "Test 2: Repeat N Times"
+loop 3 times
+    print "Repeated action"
+
+print ""
+
+# Test 3: For loop with variables
+print "Test 3: For Loop with Variables"
+set start 1
+set end 2
+for i in start .. end
+    print "Variable range: " + i
+
+print ""
+
+# Test 4: For loop with calculations
+print "Test 4: For Loop with Calculations"
+set total 0
+for i in 1 .. 3
+    set total total + i
+    print "Sum so far: " + total
+
+print "Final total: " + total
+print ""
+
+# Test 5: While loop
+print "Test 5: While Loop"
+set count 0
+while count < 3
+    print "Count: " + count
+    set count count + 1
+
+print ""
+
+# Test 6: For loop with array (if supported)
+print "Test 6: For Loop with Array"
+set items "apple", "banana", "cherry"
+for item in items
+    print "Fruit: " + item
+
+print ""
+
+# Test 7: For loop with break
+print "Test 7: For Loop with Break"
+for i in 1 .. 10
+    print "Number: " + i
+    if i = 3 then break
+
+print ""
+
+print "=== LOOPS E2E TESTS COMPLETE ==="

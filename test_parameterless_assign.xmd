@@ -1,5 +1,0 @@
-function get_hello
-    return "Hello World"
-
-set result get_hello
-print result

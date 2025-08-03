@@ -1,2 +1,0 @@
-for i in 5 .. 1
-    print i

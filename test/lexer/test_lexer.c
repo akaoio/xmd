@@ -170,14 +170,14 @@ void test_lexer_html_comments(void) {
  * @brief Test lexing XMD directives
  */
 void test_lexer_xmd_directives(void) {
-    const char* input = "<!-- xmd:set name=\"value\" -->\n<!-- xmd:if condition -->";
+    const char* input = "<!-- xmd set name=\"value\" -->\n<!-- xmd if condition -->";
     lexer* lex = lexer_create(input);
     
     // First directive
     token* t1 = lexer_next_token(lex);
     assert(t1 != NULL);
     assert(t1->type == TOKEN_XMD_DIRECTIVE);
-    assert(strcmp(t1->value, "<!-- xmd:set name=\"value\" -->") == 0);
+    assert(strcmp(t1->value, "<!-- xmd set name=\"value\" -->") == 0);
     assert(t1->line == 1);
     assert(t1->column == 1);
     token_free(t1);
@@ -186,7 +186,7 @@ void test_lexer_xmd_directives(void) {
     token* t2 = lexer_next_token(lex);
     assert(t2 != NULL);
     assert(t2->type == TOKEN_XMD_DIRECTIVE);
-    assert(strcmp(t2->value, "<!-- xmd:if condition -->") == 0);
+    assert(strcmp(t2->value, "<!-- xmd if condition -->") == 0);
     assert(t2->line == 2);
     assert(t2->column == 1);
     token_free(t2);
@@ -334,7 +334,7 @@ void test_lexer_mixed_content(void) {
         "Hello {{name}}!\n"
         "- Item 1\n"
         "- Item 2\n"
-        "<!-- xmd:set var=\"value\" -->\n"
+        "<!-- xmd set var=\"value\" -->\n"
         "```\ncode block\n```\n"
         "<!-- comment -->";
     
@@ -370,7 +370,7 @@ void test_lexer_mixed_content(void) {
  */
 void test_lexer_error_handling(void) {
     // Test with malformed XMD directive
-    const char* input = "<!-- xmd:invalid";
+    const char* input = "<!-- xmd invalid";
     lexer* lex = lexer_create(input);
     
     token* t = lexer_next_token(lex);

@@ -86,11 +86,11 @@ xmd process doc.md --trace
 1. **Check variable syntax:**
    ```markdown
    <!-- Correct -->
-   <!-- xmd:set name="Alice" -->
+   <!-- xmd set name="Alice" -->
    Hello {{name}}!
    
    <!-- Incorrect -->
-   <!-- xmd:set name=Alice -->  <!-- Missing quotes for strings -->
+   <!-- xmd set name=Alice -->  <!-- Missing quotes for strings -->
    Hello {name}!               <!-- Wrong interpolation syntax -->
    ```
 
@@ -107,35 +107,35 @@ xmd process doc.md --trace
 ### Range Syntax Not Working
 
 **Symptoms:**
-- `<!-- xmd:for i in 1..5 -->` doesn't expand
+- `<!-- xmd for i in 1..5 -->` doesn't expand
 - Loop variable appears literally
 
 **Solutions:**
 1. **Use correct HTML comment syntax:**
    ```markdown
    <!-- Correct -->
-   <!-- xmd:for i in 1..3 -->
+   <!-- xmd for i in 1..3 -->
    Item {{i}}
-   <!-- xmd:endfor -->
+   <!-- xmd endfor -->
    
    <!-- Incorrect -->
-   xmd:for i in 1..3    <!-- Missing HTML comment wrapper -->
-   <!-- xmd:for i in 1...3 -->  <!-- Triple dots not supported -->
+   xmd for i in 1..3    <!-- Missing HTML comment wrapper -->
+   <!-- xmd for i in 1...3 -->  <!-- Triple dots not supported -->
    ```
 
 2. **Check range limits:**
    ```markdown
    <!-- This works (under 1000 limit) -->
-   <!-- xmd:for i in 1..100 -->
+   <!-- xmd for i in 1..100 -->
    
    <!-- This is skipped (over limit) -->
-   <!-- xmd:for i in 1..5000 -->
+   <!-- xmd for i in 1..5000 -->
    ```
 
 ### Command Execution Not Working
 
 **Symptoms:**
-- `<!-- xmd:exec command -->` appears literally
+- `<!-- xmd exec command -->` appears literally
 - No command output
 
 **Solutions:**
@@ -149,10 +149,10 @@ xmd process doc.md --trace
 2. **Verify command exists:**
    ```markdown
    <!-- Test with simple command -->
-   <!-- xmd:exec echo "test" -->
+   <!-- xmd exec echo "test" -->
    
    <!-- Check command exists -->
-   <!-- xmd:exec which ls -->
+   <!-- xmd exec which ls -->
    ```
 
 ### File Processing Errors
@@ -232,14 +232,14 @@ xmd process doc.md --trace
 1. **Optimize loops:**
    ```markdown
    <!-- Avoid large ranges -->
-   <!-- xmd:for i in 1..10 -->     <!-- Good -->
-   <!-- xmd:for i in 1..1000 -->   <!-- Slower -->
+   <!-- xmd for i in 1..10 -->     <!-- Good -->
+   <!-- xmd for i in 1..1000 -->   <!-- Slower -->
    ```
 
 2. **Cache expensive operations:**
    ```markdown
    <!-- Cache command results -->
-   <!-- xmd:set timestamp=now -->
+   <!-- xmd set timestamp=now -->
    Time: {{timestamp}}  <!-- Reuse instead of multiple exec calls -->
    ```
 
@@ -313,7 +313,7 @@ When reporting issues, include:
 
 3. **Input document (minimal example):**
    ```markdown
-   <!-- xmd:set test="value" -->
+   <!-- xmd set test="value" -->
    Result: {{test}}
    ```
 

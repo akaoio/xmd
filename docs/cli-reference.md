@@ -121,7 +121,7 @@ xmd document.md -o output.md
 ```bash
 # Template with array processing
 cat > template.md << 'EOF'
-<!-- xmd:
+<!-- xmd 
 set technologies = ["C", "JavaScript", "Go"]
 set content = ""
 for tech in technologies
@@ -167,7 +167,7 @@ cd build && python -m http.server 8000
 ```bash
 # Multi-file documentation generation
 cat > docs.md << 'EOF'
-<!-- xmd:
+<!-- xmd 
 set sections = ["intro.md", "api.md", "examples.md"] 
 set guide = "# Complete Guide\n\n"
 for section in sections

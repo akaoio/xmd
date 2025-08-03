@@ -34,7 +34,7 @@ Tests all Genesis mobile-first syntax features:
 
 ### 2. Dual Syntax Test (`dual_syntax_test.md`)
 Validates dispatcher routing between:
-- HTML comment syntax (legacy): <!-- xmd:set var="value" -->
+- HTML comment syntax (legacy): <!-- xmd set var="value" -->
 - Native XMD syntax (Genesis vision): set var "value"
 - Mixed usage scenarios
 - Variable sharing between systems

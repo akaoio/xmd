@@ -207,7 +207,7 @@ void test_multiline_directive_formatting(void) {
     store* variables = store_create();
     
     // Test that script blocks don't create extra line breaks
-    const char* input = "<!-- xmd:\nset items = [\"a\", \"b\"]\nset result = \"\"\nfor item in items\n    result += item\n-->\n# Title\n\nContent here.";
+    const char* input = "<!-- xmd \nset items = [\"a\", \"b\"]\nset result = \"\"\nfor item in items\n    result += item\n-->\n# Title\n\nContent here.";
     
     char* output = process_xmd_content_enhanced(input, variables);
     assert(output != NULL);

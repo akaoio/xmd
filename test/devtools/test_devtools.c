@@ -34,7 +34,7 @@ static void test_linter_check(void) {
     printf("Testing linter check...\n");
     
     // Test linter with valid content
-    int result = linter_check("# Valid XMD\n\n<!-- xmd:set name=\"test\" -->");
+    int result = linter_check("# Valid XMD\n\n<!-- xmd set name=\"test\" -->");
     if (result != 0) {
         printf("ERROR: linter_check returned %d\n", result);
         return;
@@ -50,7 +50,7 @@ static void test_formatter_format(void) {
     printf("Testing formatter format...\n");
     
     // Test formatter
-    int result = formatter_format("  # Test\n\n    <!-- xmd:set name=\"test\" -->", "test_output/formatted.md");
+    int result = formatter_format("  # Test\n\n    <!-- xmd set name=\"test\" -->", "test_output/formatted.md");
     if (result != 0) {
         printf("ERROR: formatter_format returned %d\n", result);
         return;

@@ -1,5 +1,0 @@
-function get_number
-    return 42
-
-set result get_number
-print result

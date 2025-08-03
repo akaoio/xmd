@@ -1,4 +1,0 @@
-function test_func
-    return "works"
-
-print test_func

@@ -1,7 +1,0 @@
-function get_constant  
-    return 42
-
-set result get_constant
-print "Result is:"
-print result
-print "Done"

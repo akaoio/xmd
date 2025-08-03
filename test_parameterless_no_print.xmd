@@ -1,4 +1,0 @@
-function get_constant
-    return 42
-
-set result get_constant

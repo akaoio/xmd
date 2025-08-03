@@ -1,6 +1,0 @@
-# Simple function test
-function greet name
-    return "Hello, " + name
-
-set result greet "Team"
-print result

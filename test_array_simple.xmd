@@ -1,8 +1,0 @@
-```xmd
-set scores 95, 98, 100
-set names "Alice", "Bob", "Charlie"
-print "Testing array access:"
-print "First score: " + scores[0]
-print "Second name: " + names[1]
-print "Last score: " + scores[2]
-```

@@ -23,7 +23,7 @@ typedef enum {
     TOKEN_LIST_ITEM,      /**< List item (- * +) */
     TOKEN_CODE_BLOCK,     /**< Code block (``` or indented) */
     TOKEN_HTML_COMMENT,   /**< HTML comment (<!-- -->) */
-    TOKEN_XMD_DIRECTIVE,  /**< XMD directive (<!-- xmd: -->) */
+    TOKEN_XMD_DIRECTIVE,  /**< XMD directive (<!-- xmd -->) */
     TOKEN_VARIABLE_REF,   /**< Variable reference ({{var}}) */
     
     /* Enhanced tokens for AST parsing */

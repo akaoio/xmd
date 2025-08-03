@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stddef.h>
+#include <stdint.h>
 #include "../../../../include/variable.h"
 #include "../../../../include/variable_internal.h"
 #include "../../../utils/common/common_macros.h"

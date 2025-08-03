@@ -7,9 +7,9 @@ XMD supports powerful range expressions in for loops, allowing you to iterate ov
 ### Simple Numeric Ranges
 
 ```markdown
-<!-- xmd:for i in 1..5 -->
+<!-- xmd for i in 1..5 -->
 Item {{i}}
-<!-- xmd:endfor -->
+<!-- xmd endfor -->
 ```
 
 **Output:**
@@ -24,9 +24,9 @@ Item 5
 ### Reverse Ranges
 
 ```markdown
-<!-- xmd:for i in 5..1 -->
+<!-- xmd for i in 5..1 -->
 Countdown: {{i}}
-<!-- xmd:endfor -->
+<!-- xmd endfor -->
 ```
 
 **Output:**
@@ -43,12 +43,12 @@ Countdown: 1
 ### Variables as Range Bounds
 
 ```markdown
-<!-- xmd:set start=3 -->
-<!-- xmd:set end=7 -->
+<!-- xmd set start=3 -->
+<!-- xmd set end=7 -->
 
-<!-- xmd:for i in start..end -->
+<!-- xmd for i in start..end -->
 Port 808{{i}}: Checking...
-<!-- xmd:endfor -->
+<!-- xmd endfor -->
 ```
 
 **Output:**
@@ -63,17 +63,17 @@ Port 8087: Checking...
 ### Mixed Variable and Literal
 
 ```markdown
-<!-- xmd:set max=4 -->
+<!-- xmd set max=4 -->
 
 <!-- Left variable, right literal -->
-<!-- xmd:for i in max..10 -->
+<!-- xmd for i in max..10 -->
 Step {{i}}
-<!-- xmd:endfor -->
+<!-- xmd endfor -->
 
 <!-- Left literal, right variable -->
-<!-- xmd:for i in 1..max -->
+<!-- xmd for i in 1..max -->
 Phase {{i}}
-<!-- xmd:endfor -->
+<!-- xmd endfor -->
 ```
 
 ## Advanced Patterns
@@ -81,30 +81,30 @@ Phase {{i}}
 ### Dynamic Range Generation
 
 ```markdown
-<!-- xmd:set servers=3 -->
-<!-- xmd:set start_port=8080 -->
+<!-- xmd set servers=3 -->
+<!-- xmd set start_port=8080 -->
 
 ## Server Configuration
 
-<!-- xmd:for i in 1..servers -->
+<!-- xmd for i in 1..servers -->
 ### Server {{i}}
 - Port: {{start_port + i - 1}}
 - Config: server{{i}}.conf
-<!-- xmd:endfor -->
+<!-- xmd endfor -->
 ```
 
 ### Nested Ranges
 
 ```markdown
-<!-- xmd:for cluster in 1..2 -->
+<!-- xmd for cluster in 1..2 -->
 ## Cluster {{cluster}}
 
-<!-- xmd:for node in 1..3 -->
+<!-- xmd for node in 1..3 -->
 ### Node cluster{{cluster}}-node{{node}}
 - IP: 192.168.{{cluster}}.{{node}}
 - Status: Active
-<!-- xmd:endfor -->
-<!-- xmd:endfor -->
+<!-- xmd endfor -->
+<!-- xmd endfor -->
 ```
 
 **Output:**
@@ -136,45 +136,45 @@ Phase {{i}}
 ### Port Scanning Report
 
 ```markdown
-<!-- xmd:set base_port=8080 -->
-<!-- xmd:set port_count=5 -->
+<!-- xmd set base_port=8080 -->
+<!-- xmd set port_count=5 -->
 
 # Port Status Report
 
-<!-- xmd:for i in 0..port_count -->
-<!-- xmd:set current_port=base_port + i -->
-- Port {{current_port}}: <!-- xmd:exec netstat -ln | grep :{{current_port}} >/dev/null && echo "🟢 Open" || echo "🔴 Closed" -->
-<!-- xmd:endfor -->
+<!-- xmd for i in 0..port_count -->
+<!-- xmd set current_port=base_port + i -->
+- Port {{current_port}}: <!-- xmd exec netstat -ln | grep :{{current_port}} >/dev/null && echo "🟢 Open" || echo "🔴 Closed" -->
+<!-- xmd endfor -->
 ```
 
 ### Numbered List Generation
 
 ```markdown
-<!-- xmd:set total_items=10 -->
+<!-- xmd set total_items=10 -->
 
 # Top {{total_items}} Issues
 
-<!-- xmd:for rank in 1..total_items -->
-{{rank}}. Issue #{{rank * 100}} - Priority: <!-- xmd:if rank <= 3 -->🔴 High<!-- xmd:elif rank <= 7 -->🟡 Medium<!-- xmd:else -->🟢 Low<!-- xmd:endif -->
-<!-- xmd:endfor -->
+<!-- xmd for rank in 1..total_items -->
+{{rank}}. Issue #{{rank * 100}} - Priority: <!-- xmd if rank <= 3 -->🔴 High<!-- xmd elif rank <= 7 -->🟡 Medium<!-- xmd else -->🟢 Low<!-- xmd endif -->
+<!-- xmd endfor -->
 ```
 
 ### Load Balancer Configuration
 
 ```markdown
-<!-- xmd:set lb_count=3 -->
-<!-- xmd:set backend_per_lb=4 -->
+<!-- xmd set lb_count=3 -->
+<!-- xmd set backend_per_lb=4 -->
 
 # Load Balancer Configuration
 
-<!-- xmd:for lb in 1..lb_count -->
+<!-- xmd for lb in 1..lb_count -->
 ## Load Balancer {{lb}}
 
 ### Backends
-<!-- xmd:for backend in 1..backend_per_lb -->
+<!-- xmd for backend in 1..backend_per_lb -->
 - Backend {{backend}}: 10.{{lb}}.0.{{backend}}:8080
-<!-- xmd:endfor -->
-<!-- xmd:endfor -->
+<!-- xmd endfor -->
+<!-- xmd endfor -->
 ```
 
 ## Range Limits and Validation
@@ -191,14 +191,14 @@ XMD includes safety limits to prevent infinite loops:
 
 ```markdown
 <!-- This will be skipped safely -->
-<!-- xmd:for i in 1..10000 -->
+<!-- xmd for i in 1..10000 -->
 This won't process - range too large
-<!-- xmd:endfor -->
+<!-- xmd endfor -->
 
 <!-- This will work -->  
-<!-- xmd:for i in 1..100 -->
+<!-- xmd for i in 1..100 -->
 Item {{i}}
-<!-- xmd:endfor -->
+<!-- xmd endfor -->
 ```
 
 ## Range Syntax Rules
@@ -217,10 +217,10 @@ Item {{i}}
 All of these are equivalent:
 
 ```markdown
-<!-- xmd:for i in 1..5 -->
-<!-- xmd:for i in 1 .. 5 -->  
-<!-- xmd:for i in 1.. 5 -->
-<!-- xmd:for i in 1 ..5 -->
+<!-- xmd for i in 1..5 -->
+<!-- xmd for i in 1 .. 5 -->  
+<!-- xmd for i in 1.. 5 -->
+<!-- xmd for i in 1 ..5 -->
 ```
 
 ### Invalid Patterns
@@ -244,9 +244,9 @@ All of these are equivalent:
 
 ```markdown
 <!-- Good: Simple sequence -->
-<!-- xmd:for i in 1..10 -->
+<!-- xmd for i in 1..10 -->
 Step {{i}}
-<!-- xmd:endfor -->
+<!-- xmd endfor -->
 ```
 
 ### When to Use Arrays
@@ -259,10 +259,10 @@ Step {{i}}
 
 ```markdown
 <!-- Good: Non-sequential data -->
-<!-- xmd:set servers=["web1", "api2", "db3"] -->
-<!-- xmd:for server in servers -->
+<!-- xmd set servers=["web1", "api2", "db3"] -->
+<!-- xmd for server in servers -->
 Server: {{server}}
-<!-- xmd:endfor -->
+<!-- xmd endfor -->
 ```
 
 ## Command-Line Integration
@@ -274,9 +274,9 @@ Ranges work seamlessly with command-line variables:
 xmd process report.md -v start=1 -v end=10
 
 # Document uses variables in range
-<!-- xmd:for i in start..end -->
+<!-- xmd for i in start..end -->
 Report item {{i}}
-<!-- xmd:endfor -->
+<!-- xmd endfor -->
 ```
 
 ## Performance Notes

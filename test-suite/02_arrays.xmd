@@ -1,0 +1,25 @@
+// Test 2: Arrays
+
+// Inline array
+set scores 1, 2, 3
+print scores
+
+// Try accessing array element
+set first scores[0]
+print first
+
+// Multiline array
+set items
+    "pen",
+    "book",
+    "lamp",
+
+print items
+
+// Array in variable
+set numbers 10, 20, 30, 40
+print numbers
+
+// For loop over array
+for item in items
+    print item

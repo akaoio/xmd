@@ -12,7 +12,7 @@
 
 /**
  * @brief Process XMD directive found in HTML comment
- * @param directive_content Content between <!-- xmd: and -->
+ * @param directive_content Content between <!-- xmd and -->
  * @param ctx Processor context
  * @param output Output buffer for generated content
  * @param output_capacity Current capacity of output buffer

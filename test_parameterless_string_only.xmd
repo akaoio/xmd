@@ -1,4 +1,0 @@
-function get_message
-    return "Hello"
-
-set result get_message

@@ -31,7 +31,7 @@ function plan price // local var
 plan 900 // call plan function with param price = 900
 ```
 
-Would print "price is 900", because it "price" in "plan" is local
+Would print "price is 900", because "price" in "plan" is local
 
 ---
 
