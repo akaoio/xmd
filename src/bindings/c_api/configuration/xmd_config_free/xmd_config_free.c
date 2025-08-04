@@ -9,7 +9,7 @@
 
 #include "../../../../../include/xmd.h"
 #include "../../../../../include/config_internal.h"
-#include "../../../../utils/common/common_macros.h"
+#include "../../../../../utils/common/common_macros.h"
 /**
  * @brief Free XMD configuration
  * @param config Configuration to free
@@ -27,7 +27,7 @@ void xmd_config_free(xmd_config* config) {
     
     // Free module search paths if they exist
     if (internal->paths.module_search_paths) {
-        for (size_t i = 0; i < internal->paths.module_search_path_count; i++) {
+        FOR_EACH_INDEX(i, internal->paths.module_search_path_count) {
             XMD_FREE_SAFE(internal->paths.module_search_paths[i]);
         }
         XMD_FREE_SAFE(internal->paths.module_search_paths);
@@ -35,7 +35,7 @@ void xmd_config_free(xmd_config* config) {
     
     // Free security exec whitelist
     if (internal->security.exec_whitelist) {
-        for (size_t i = 0; i < internal->security.exec_whitelist_count; i++) {
+        FOR_EACH_INDEX(i, internal->security.exec_whitelist_count) {
             XMD_FREE_SAFE(internal->security.exec_whitelist[i]);
         }
         XMD_FREE_SAFE(internal->security.exec_whitelist);

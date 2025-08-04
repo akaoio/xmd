@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../../../../include/xmd.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 
 /**
  * @brief Get XMD configuration parameter
@@ -21,11 +21,12 @@ const char* xmd_get_config(const char* key) {
     // This would typically query a global config structure
     // For basic functionality, return default values for known keys
     
-    if (strcmp(key, "version") == 0) {
+    // USE MACRO INSTEAD OF BOILERPLATE
+    if (STR_EQUALS(key, "version")) {
         return "0.0.2";
-    } else if (strcmp(key, "syntax") == 0) {
+    } else if (STR_EQUALS(key, "syntax")) {
         return "XMD";
-    } else if (strcmp(key, "debug") == 0) {
+    } else if (STR_EQUALS(key, "debug")) {
         return "false";
     }
     

@@ -17,6 +17,7 @@
 #include "ast_node.h"
 #include "variable.h"
 #include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 /**
  * @brief Evaluate conditional node (if/elif/else)
  * @param node Conditional AST node
@@ -37,15 +38,12 @@ ast_value* ast_evaluate_conditional(ast_node* node, ast_evaluator* evaluator) {
         return ast_value_create_string("");
     }
     
-    // Evaluate the condition
+    // Evaluate the condition using high-impact macro
     ast_value* condition_result = ast_evaluate(node->data.conditional.condition, evaluator);
-    if (!condition_result) {
-        printf("DEBUG: Condition evaluation failed\n");
-        return NULL;
-    }
+    XMD_VALIDATE_PTR_RETURN(condition_result, NULL);
     
     bool condition_true = false;
-    // Determine if condition is true
+    // Convert condition to boolean using consolidated pattern
     if (condition_result->type == AST_VAL_BOOLEAN) {
         condition_true = condition_result->value.boolean_value;
     } else if (condition_result->type == AST_VAL_NUMBER) {

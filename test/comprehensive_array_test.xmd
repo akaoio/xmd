@@ -1,8 +1,0 @@
-set scores 1, 2, 3
-set names "Alice", "Bob", "Charlie"
-print "First score: {{scores[0]}}"
-print "Second score: {{scores[1]}}"
-print "Third score: {{scores[2]}}"
-print "First name: {{names[0]}}"
-print "Second name: {{names[1]}}"
-print "Third name: {{names[2]}}"

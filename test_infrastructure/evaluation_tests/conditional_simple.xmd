@@ -1,4 +1,0 @@
-set score 100
-if score = 100
-    Perfect score!
-endif

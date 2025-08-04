@@ -1,0 +1,1 @@
+2025-08-03T12:06:03.331Z|👤 LEADER|👤 SYSTEMS|Please create your detailed plan in plans/systems/plan.md per Genesis directive. Focus on: AST evaluator fixes, performance optimization, memory management. Coordinate with developer on parser/evaluator split. Use sandbox/ for development!

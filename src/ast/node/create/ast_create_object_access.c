@@ -8,8 +8,8 @@
  */
 
 #include <stdlib.h>
-#include "../../../../include/ast.h"
-#include "../../../../include/utils.h"
+#include "ast.h"
+#include "utils.h"
 #include "../../../utils/common/common_macros.h"
 
 /**

@@ -218,7 +218,9 @@
 /* Use GNU extension for compatibility, suppress warning with pragma */
 #ifdef __GNUC__
 #pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#pragma GCC diagnostic ignored "-Wvariadic-macros"
+#endif
 #endif
 
 #define XMD_ERROR_RETURN(return_val, fmt, ...) \
@@ -516,6 +518,256 @@ char* read_file(const char* path) {
             code; \
             entry_var = entry_var->next; \
         } \
+    } while(0)
+
+/* ==================== ZERO DUPLICATION CAMPAIGN MACROS ==================== */
+/* Phase 4: Aggressive deduplication to achieve 0% technical debt */
+
+/**
+ * Allocate and validate in one operation
+ * Eliminates pattern: ptr = malloc(); if (!ptr) return NULL;
+ * Usage: XMD_ALLOCATE_AND_VALIDATE(result, ast_value, NULL);
+ */
+#define XMD_ALLOCATE_AND_VALIDATE(ptr, type, ret_val) \
+    do { \
+        (ptr) = XMD_MALLOC(sizeof(type)); \
+        if (!(ptr)) return (ret_val); \
+    } while(0)
+
+/**
+ * Validate condition and return custom value
+ * Eliminates pattern: if (!condition) return value;
+ * Usage: XMD_VALIDATE_AND_RETURN(ptr != NULL, ERROR_CODE);
+ */
+#define XMD_VALIDATE_AND_RETURN(condition, ret_val) \
+    do { \
+        if (!(condition)) return (ret_val); \
+    } while(0)
+
+/**
+ * Free pointer and set to NULL (safer than just free)
+ * Eliminates pattern: free(ptr); ptr = NULL;
+ * Usage: XMD_FREE_AND_NULL(my_pointer);
+ */
+#define XMD_FREE_AND_NULL(ptr) \
+    do { \
+        XMD_FREE(ptr); \
+        (ptr) = NULL; \
+    } while(0)
+
+/**
+ * Validate array bounds before access
+ * Eliminates pattern: if (index < 0 || index >= size) return NULL;
+ * Usage: XMD_VALIDATE_ARRAY_BOUNDS(idx, array_size, NULL);
+ */
+#define XMD_VALIDATE_ARRAY_BOUNDS(index, size, ret_val) \
+    do { \
+        if ((index) < 0 || (size_t)(index) >= (size_t)(size)) \
+            return (ret_val); \
+    } while(0)
+
+/**
+ * Cleanup resources and return
+ * Eliminates pattern: free(a); free(b); return val;
+ * Usage: XMD_CLEANUP_AND_RETURN(XMD_FREE(tmp); XMD_FREE(buf), -1);
+ */
+#define XMD_CLEANUP_AND_RETURN(cleanup_code, ret_val) \
+    do { \
+        cleanup_code; \
+        return (ret_val); \
+    } while(0)
+
+/**
+ * String duplicate with validation
+ * Eliminates pattern: str = strdup(src); if (!str) return NULL;
+ * Usage: XMD_STRDUP_AND_VALIDATE(dest, source, NULL);
+ */
+#define XMD_STRDUP_AND_VALIDATE(dest, src, ret_val) \
+    do { \
+        (dest) = xmd_strdup(src); \
+        if (!(dest)) return (ret_val); \
+    } while(0)
+
+/**
+ * Allocate array with validation
+ * Eliminates pattern: arr = calloc(n, size); if (!arr) return NULL;
+ * Usage: XMD_CALLOC_AND_VALIDATE(array, 10, sizeof(int), NULL);
+ */
+#define XMD_CALLOC_AND_VALIDATE(ptr, count, size, ret_val) \
+    do { \
+        (ptr) = XMD_CALLOC(count, size); \
+        if (!(ptr)) return (ret_val); \
+    } while(0)
+
+/**
+ * Initialize structure to zero
+ * Eliminates pattern: memset(&struct, 0, sizeof(struct));
+ * Usage: XMD_ZERO_STRUCT(my_struct);
+ */
+#define XMD_ZERO_STRUCT(s) memset(&(s), 0, sizeof(s))
+
+/**
+ * Initialize pointer structure to zero
+ * Eliminates pattern: memset(ptr, 0, sizeof(*ptr));
+ * Usage: XMD_ZERO_PTR_STRUCT(my_ptr);
+ */
+#define XMD_ZERO_PTR_STRUCT(ptr) memset((ptr), 0, sizeof(*(ptr)))
+
+/* ==================== ULTIMATE ZERO DUPLICATION MACROS ==================== */
+/* Phase 5: Complete elimination of ALL boilerplate patterns */
+
+/**
+ * AST node type checking macro
+ * Eliminates: if (node->type == AST_XXX)
+ * Usage: if (AST_CHECK_TYPE(node, AST_FUNCTION_DEF))
+ */
+#define AST_CHECK_TYPE(node, type) ((node) && (node)->type == (type))
+
+/**
+ * Simple error output macro
+ * Eliminates: fprintf(stderr, "Error: ...\n");
+ * Usage: XMD_ERROR_MSG("Failed to create processor");
+ */
+#define XMD_ERROR_MSG(fmt, ...) \
+    fprintf(stderr, "Error: " fmt "\n", ##__VA_ARGS__)
+
+/**
+ * String equality check
+ * Eliminates: strcmp(str, "literal") == 0
+ * Usage: if (STR_EQUALS(key, "config_file_path"))
+ */
+#define STR_EQUALS(str, literal) \
+    ((str) && strcmp((str), (literal)) == 0)
+
+/**
+ * String inequality check
+ * Usage: if (STR_NOT_EQUALS(key, "config"))
+ */
+#define STR_NOT_EQUALS(str, literal) \
+    (!(str) || strcmp((str), (literal)) != 0)
+
+/**
+ * String prefix equality check
+ * Eliminates: strncmp(str, "prefix", N) == 0
+ * Usage: if (STRN_EQUALS(line, "if ", 3))
+ */
+#define STRN_EQUALS(str, literal, len) \
+    ((str) && strncmp((str), (literal), (len)) == 0)
+
+/**
+ * String prefix inequality check
+ * Usage: if (STRN_NOT_EQUALS(line, "else", 4))
+ */
+#define STRN_NOT_EQUALS(str, literal, len) \
+    (!(str) || strncmp((str), (literal), (len)) != 0)
+
+/**
+ * Variable scope with automatic ref/unref
+ * Eliminates: variable_ref(var); ... variable_unref(var);
+ * Usage: VAR_SCOPE(var, { // use var });
+ */
+#define VAR_SCOPE(var, code) \
+    do { \
+        if (var) variable_ref(var); \
+        code; \
+        if (var) variable_unref(var); \
+    } while(0)
+
+/**
+ * Generic variable creation
+ * Eliminates: multiple variable_create_XXX calls
+ * Usage: VAR_CREATE_STRING("hello"), VAR_CREATE_NUMBER(42)
+ */
+#define VAR_CREATE_STRING(str) variable_create_string(str)
+#define VAR_CREATE_NUMBER(num) variable_create_number(num)
+#define VAR_CREATE_BOOLEAN(val) variable_create_boolean(val)
+#define VAR_CREATE_NULL() variable_create_null()
+
+/**
+ * Type-safe allocation macros
+ * Eliminates: malloc(sizeof(type))
+ * Usage: XMD_ALLOC_TYPE(ast_node), XMD_ALLOC_ARRAY(char, 100)
+ */
+#define XMD_ALLOC_TYPE(type) ((type*)XMD_MALLOC(sizeof(type)))
+#define XMD_ALLOC_ARRAY(type, count) ((type*)XMD_MALLOC(sizeof(type) * (count)))
+
+/**
+ * Standard for loop iteration
+ * Eliminates: for (i = 0; i < count; i++)
+ * Usage: FOR_EACH_INDEX(i, array->count) { process(array[i]); }
+ */
+#define FOR_EACH_INDEX(var, count) \
+    for (size_t var = 0; var < (size_t)(count); var++)
+
+/**
+ * Reverse iteration
+ * Usage: FOR_EACH_REVERSE(i, count) { process(array[i]); }
+ */
+#define FOR_EACH_REVERSE(var, count) \
+    for (size_t var = (size_t)(count); var-- > 0;)
+
+/**
+ * Return NULL if condition
+ * Eliminates: if (condition) return NULL;
+ * Usage: RETURN_NULL_IF(!ptr);
+ */
+#define RETURN_NULL_IF(condition) \
+    do { if (condition) return NULL; } while(0)
+
+/**
+ * Return value if condition
+ * Usage: RETURN_IF(error, -1);
+ */
+#define RETURN_IF(condition, value) \
+    do { if (condition) return (value); } while(0)
+
+/**
+ * String length validation
+ * Eliminates: if (strlen(str) > MAX)
+ * Usage: STR_LEN_CHECK(input, >, MAX_LEN, -1);
+ */
+#define STR_LEN_CHECK(str, op, value, ret_val) \
+    do { \
+        if ((str) && strlen(str) op (value)) \
+            return (ret_val); \
+    } while(0)
+
+/**
+ * While not null loop
+ * Eliminates: while (ptr != NULL)
+ * Usage: WHILE_NOT_NULL(current) { process(current); current = current->next; }
+ */
+#define WHILE_NOT_NULL(ptr) while ((ptr) != NULL)
+
+/**
+ * Safe string operations
+ * Usage: SAFE_STRLEN(str) returns 0 if str is NULL
+ */
+#define SAFE_STRLEN(str) ((str) ? strlen(str) : 0)
+#define SAFE_STRCMP(s1, s2) ((s1) && (s2) ? strcmp(s1, s2) : -1)
+
+/**
+ * Min/Max macros (type-safe)
+ * Usage: MIN(a, b), MAX(a, b)
+ */
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+
+/**
+ * Array size macro
+ * Usage: ARRAY_SIZE(my_array)
+ */
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
+
+/**
+ * Swap values macro
+ * Usage: SWAP(a, b, temp_type);
+ */
+#define SWAP(a, b, type) \
+    do { \
+        type _swap_temp = (a); \
+        (a) = (b); \
+        (b) = _swap_temp; \
     } while(0)
 
 #endif /* XMD_COMMON_MACROS_H */

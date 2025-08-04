@@ -15,14 +15,16 @@
 #include "ast_node.h"
 #include "ast_parser.h"
 #include "utils.h"
-#include "../../../../utils/common/common_macros.h"
+#include "../../../../../utils/common/common_macros.h"
+#include "../../../../../utils/common/validation_macros.h"
 /**
  * @brief Parse if-then single line (Genesis syntax)
  * @param pos Pointer to current position
  * @return Conditional AST node or NULL
  */
 ast_node* ast_parse_if_then(const char** pos) {
-    XMD_VALIDATE_PTRS(NULL, pos, *pos);
+    // Validate input parameters
+    XMD_VALIDATE_PARAMS_2(NULL, pos, *pos);
     
     const char* start = *pos;
     

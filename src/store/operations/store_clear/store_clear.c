@@ -11,7 +11,8 @@
 #include "../../../../include/store.h"
 #include "../../../../include/store_internal.h"
 #include "../../../../include/variable.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
+#include "../../../../utils/common/validation_macros.h"
 
 /**
  * @brief Clear all entries from store
@@ -20,13 +21,13 @@
 void store_clear(store* s) {
     XMD_ENTRY_VALIDATE_VOID(s);
     
-    for (size_t i = 0; i < s->capacity; i++) {
+    FOR_EACH_INDEX(i, s->capacity) {
         store_entry* entry = s->buckets[i];
         while (entry) {
             store_entry* next = entry->next;
-            free(entry->key);
+            XMD_FREE_SAFE(entry->key);
             variable_unref(entry->value);
-            free(entry);
+            XMD_FREE_SAFE(entry);
             entry = next;
         }
         s->buckets[i] = NULL;

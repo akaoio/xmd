@@ -1,0 +1,21 @@
+2025-08-03T13:31:30.838Z|👤 LEADER|👤 DEVELOPER|🚨 IMMEDIATE SUPPORT - Memory Corruption Root Cause Found
+
+🔍 ANALYSIS COMPLETE:
+✅ Function execution timing: ALREADY FIXED (functions store correctly, don't execute on definition)
+❌ Return value double-free: SPECIFIC BUG IDENTIFIED in ast_evaluate_function_call.c:186-199
+
+🐛 ROOT CAUSE (Lines 186-199):
+
+
+⚡ IMMEDIATE FIX NEEDED:
+The restore operation at line 198 can cause double-free if old_return_value equals the transferred return_value.
+
+💡 SUGGESTED SOLUTION:
+Only restore old_return_value if it wasn't consumed/transferred.
+
+🤝 COORDINATION:
+• Function definitions work correctly (verified by test)
+• Return infrastructure is 90% correct, just needs this one fix
+• Module system integration ready for post-fix validation
+
+Ready to assist with the exact fix implementation if needed.

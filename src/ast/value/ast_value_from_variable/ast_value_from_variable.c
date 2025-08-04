@@ -12,21 +12,28 @@
 #include "ast.h"
 #include "variable.h"
 #include "utils.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
+#include "../../../../utils/common/validation_macros.h"
+
 /**
  * @brief Convert variable to ast_value - MISSING FUNCTION
  */
 ast_value* ast_value_from_variable(variable* var) {
     XMD_VALIDATE_PTRS(NULL, var);
     
-    switch (var->type) {
-        case VAR_STRING:
-            return ast_value_create_string(var->value.string_value);
-        case VAR_NUMBER:
-            return ast_value_create_number(var->value.number_value);
-        case VAR_BOOLEAN:
-            return ast_value_create_boolean(var->value.boolean_value);
-        case VAR_ARRAY: {
+    // Use the XMD_VARIABLE_TYPE_DISPATCH macro to eliminate switch duplication
+    XMD_VARIABLE_TYPE_DISPATCH(var,
+        // VAR_STRING case
+        return ast_value_create_string(var->value.string_value),
+        
+        // VAR_NUMBER case
+        return ast_value_create_number(var->value.number_value),
+        
+        // VAR_BOOLEAN case
+        return ast_value_create_boolean(var->value.boolean_value),
+        
+        // VAR_ARRAY case
+        {
             // Create array ast_value
             ast_value* array_val = ast_value_create_array();
             if (!array_val) return NULL;
@@ -37,8 +44,15 @@ ast_value* ast_value_from_variable(variable* var) {
                 array_val->value.array_value.elements[i] = ast_value_from_variable(var->value.array_value->items[i]);
             }
             return array_val;
-        }
-        default:
-            return ast_value_create_string("");
-    }
+        },
+        
+        // VAR_OBJECT case
+        return ast_value_create_string(""),
+        
+        // VAR_NULL case  
+        return ast_value_create_string(""),
+        
+        // default case
+        return ast_value_create_string("")
+    );
 }

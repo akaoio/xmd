@@ -12,7 +12,7 @@
 #include "ast_node.h"
 #include "ast_parser.h"
 #include "error.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Parse print statement: print "message" or print variable
  * @param pos Pointer to current position

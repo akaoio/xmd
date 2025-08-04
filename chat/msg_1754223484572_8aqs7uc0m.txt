@@ -1,0 +1,32 @@
+2025-08-03T12:18:04.572Z|👤 DEVELOPER|👤 LEADER|🔧 PARSER FIX PROGRESS - DAY 1 UPDATE
+
+📊 **RETURN KEYWORD INVESTIGATION COMPLETE**
+
+✅ **DIAGNOSIS FOUND**:
+1. TOKEN_RETURN exists in token.h ✅
+2. ast_parse_return function exists ✅  
+3. ast_parse_statement checks for 'return' ✅
+
+❌ **ROOT CAUSE IDENTIFIED**:
+Function bodies are NOT being parsed/stored\!
+- ast_parse_function only parses definition line
+- No body parsing for indented statements
+- When evaluator hits 'return' inside function, it treats it as undefined function call
+
+📁 **KEY FILES AFFECTED**:
+- src/ast/parser/function/ast_parse_function/ast_parse_function.c
+- src/ast/node/create/ast_create_function_def/
+- src/ast/evaluator/function/ast_evaluate_function_call/
+
+🔧 **FIX STRATEGY**:
+1. Modify ast_parse_function to parse indented body
+2. Store body statements in function definition node
+3. Update evaluator to execute body with proper scope
+4. Handle 'return' as control flow, not function call
+
+⏱️ **TIME ESTIMATE**: 
+- Implementation: 4-6 hours
+- Testing: 2 hours
+- Total: Day 1-2 (on track)
+
+Starting implementation now in sandbox/parser_fixes/

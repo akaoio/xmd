@@ -5,7 +5,7 @@
 
 #include <stdlib.h>
 #include "../../../../include/performance_internal.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 void benchmark_suite_destroy(benchmark_suite* suite) {
     if (!suite) {
         return;

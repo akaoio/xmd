@@ -17,6 +17,7 @@
 #include "store.h"
 #include "variable.h"
 #include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Evaluate identifier node
@@ -25,7 +26,7 @@
  * @return AST value result or NULL on error
  */
 ast_value* ast_evaluate_identifier(ast_node* node, ast_evaluator* evaluator) {
-    XMD_VALIDATE_PTRS(NULL, node, evaluator);
+    XMD_VALIDATE_PARAMS_2(NULL, node, evaluator);
     XMD_VALIDATE_NODE_TYPE(node, AST_IDENTIFIER, NULL, "ast_evaluate_identifier: Invalid node type");
     
     const char* var_name = node->data.identifier.name;
@@ -39,10 +40,7 @@ ast_value* ast_evaluate_identifier(ast_node* node, ast_evaluator* evaluator) {
                 // Create a function call AST node and evaluate it
                 ast_node* func_call_node;
                 func_call_node = xmd_malloc(sizeof(ast_node));
-                if (!func_call_node) {
-                    fprintf(stderr, "[ERROR] ast_evaluate_identifier: Failed to allocate function call node at %s:%d\n", __FILE__, __LINE__);
-                    return NULL;
-                }
+                XMD_VALIDATE_PTR_RETURN(func_call_node, NULL);
                 memset(func_call_node, 0, sizeof(ast_node));
                 func_call_node->type = AST_FUNCTION_CALL;
                 func_call_node->data.function_call.name = xmd_strdup(var_name);

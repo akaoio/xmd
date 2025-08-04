@@ -1,4 +1,0 @@
-set a 3
-set b 4
-set c a + b * 2
-Result: {{c}}

@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include "../../../../include/variable.h"
 #include "../../../../include/variable_internal.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 
 /**
  * @brief Free array contents (internal helper)
@@ -23,7 +23,8 @@ void variable_array_free(variable* array_var) {
     }
     
     variable_array* array = array_var->value.array_value;
-    for (size_t i = 0; i < array->count; i++) {
+    // USE MACRO INSTEAD OF BOILERPLATE
+    FOR_EACH_INDEX(i, array->count) {
         variable_unref(array->items[i]);
     }
     XMD_FREE_SAFE(array->items);

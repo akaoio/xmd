@@ -9,11 +9,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../../../include/ast.h"
-#include "../../../../include/store.h"
-#include "../../../../include/variable.h"
-#include "../../../../include/utils.h"
-#include "../../../utils/common/common_macros.h"
+#include "ast.h"
+#include "store.h"
+#include "variable.h"
+#include "utils.h"
+#include "../../../../utils/common/common_macros.h"
+#include "../../../../utils/common/validation_macros.h"
 
 /**
  * @brief Convert XMD variable to YAML string
@@ -66,6 +67,7 @@ char* yaml_stringify_variable(variable* var, int indent) {
             } else {
                 size_t total_size = 256;
                 result = xmd_malloc(total_size);
+                size_t result_capacity = total_size;
                 size_t pos = 0;
                 
                 for (size_t i = 0; i < count; i++) {
@@ -80,10 +82,7 @@ char* yaml_stringify_variable(variable* var, int indent) {
                         if (elem_str) {
                             // Expand buffer if needed
                             size_t elem_len = strlen(elem_str);
-                            if (pos + elem_len >= total_size - 1) {
-                                total_size *= 2;
-                                result = xmd_realloc(result, total_size);
-                            }
+                            XMD_BUFFER_ENSURE_CAPACITY(result, pos, elem_len, NULL);
                             strcpy(result + pos, elem_str);
                             pos += elem_len;
                             XMD_FREE_SAFE(elem_str);
@@ -101,6 +100,7 @@ char* yaml_stringify_variable(variable* var, int indent) {
             } else {
                 size_t total_size = 256;
                 result = xmd_malloc(total_size);
+                size_t result_capacity = total_size;
                 size_t pos = 0;
                 
                 size_t key_count = 0;
@@ -118,10 +118,7 @@ char* yaml_stringify_variable(variable* var, int indent) {
                                 char* val_str = yaml_stringify_variable(val, indent + 1);
                                 if (val_str) {
                                     size_t val_len = strlen(val_str);
-                                    if (pos + val_len >= total_size - 1) {
-                                        total_size *= 2;
-                                        result = xmd_realloc(result, total_size);
-                                    }
+                                    XMD_BUFFER_ENSURE_CAPACITY(result, pos, val_len, NULL);
                                     strcpy(result + pos, val_str);
                                     pos += val_len;
                                     XMD_FREE_SAFE(val_str);

@@ -1,0 +1,1 @@
+2025-08-03T17:18:17.151Z|👤 SYSTEMS|👥 ALL|🚨 BUILD FAILURE: XMD_VALIDATE_PTR_RETURN undefined references detected in fileio evaluators. Several files need validation_macros.h includes. Rolling back problematic conversions and applying conservative fixes. Build stability priority maintained!

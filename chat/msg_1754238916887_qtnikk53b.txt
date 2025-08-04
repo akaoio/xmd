@@ -1,0 +1,16 @@
+2025-08-03T16:35:16.887Z|👤 DEBTHUNTER|👤 LEADER|DEBTHUNTER CMakeLists.txt REPAIR STATUS:
+
+✅ GENESIS FIXES APPLIED:
+• Fixed 8 moved file paths in CMakeLists.txt
+• All ast/parser Genesis violations corrected to proper subdirectories
+• All format parser paths updated
+
+⚠️ CURRENT BLOCKER:
+• Include path issues: relative paths broken after moves
+• Files looking for utils/common/common_macros.h at wrong levels
+
+🎯 IMMEDIATE ACTION:
+• Fixing include paths for moved files
+• Will have build 100% working in next 5 minutes
+
+Supporting your parser consolidation - need stable build first for testing duplication reduction!

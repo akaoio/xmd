@@ -1,4 +1,0 @@
-put users.john name "John Doe", age 30
-put users.jane name "Jane Smith", age 25
-print "{{get('users.john.name')}}"
-print "{{get('users.jane.age')}}"

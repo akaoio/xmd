@@ -8,9 +8,10 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include "../../../../../include/ast.h"
-#include "../../../../../include/utils.h"
+#include "ast.h"
+#include "utils.h"
 #include "../../../../../src/utils/common/common_macros.h"
+#include "../../../../../src/utils/common/validation_macros.h"
 
 /**
  * @brief Parse assignment statement: set var value
@@ -18,44 +19,36 @@
  * @return Assignment AST node or NULL
  */
 ast_node* ast_parse_assignment(const char** pos) {
-    XMD_ENTRY_VALIDATE(pos, *pos);
+    // Validate input parameters using standard macro
+    XMD_VALIDATE_PARAMS_2(NULL, pos, *pos);
     
     const char* start = *pos;
     
-    // Skip "set "
-    if (strncmp(start, "set ", 4) != 0) {
-        XMD_ERROR_RETURN(NULL, "Expected 'set' keyword in assignment");
-    }
-    start += 4;
+    // Expect "set" keyword
+    XMD_PARSE_EXPECT_KEYWORD(&start, "set ", NULL);
     
-    // Skip whitespace
-    while (*start && isspace(*start)) start++;
+    // Skip whitespace using standard macro
+    XMD_PARSE_SKIP_WHITESPACE(&start);
     
-    // Parse variable name
-    const char* var_start = start;
-    while (*start && (isalnum(*start) || *start == '_')) {
-        start++;
-    }
+    // Parse variable identifier using standard macro
+    const char* var_start;
+    const char* var_end;
+    XMD_PARSE_IDENTIFIER(&start, var_start, var_end, NULL);
     
-    if (start == var_start) {
-        XMD_ERROR_RETURN(NULL, "Missing variable name after 'set'");
-    }
-    
-    size_t var_len = start - var_start;
+    size_t var_len = var_end - var_start;
     char* var_name;
-    XMD_MALLOC_SAFE(var_name, char[var_len + 1], NULL, "ast_parse_assignment: Memory allocation failed");
+    XMD_MALLOC_VALIDATED(var_name, char, var_len + 1, NULL);
     strncpy(var_name, var_start, var_len);
     var_name[var_len] = '\0';
     
-    // Skip whitespace
-    while (*start && isspace(*start)) start++;
-    
+    // Skip whitespace using standard macro
+    XMD_PARSE_SKIP_WHITESPACE(&start);
     
     // Skip optional equals sign
     if (*start == '=') {
         start++;
-        // Skip whitespace after equals
-        while (*start && isspace(*start)) start++;
+        // Skip whitespace after equals using standard macro
+        XMD_PARSE_SKIP_WHITESPACE(&start);
     }
     
     // Parse value expression

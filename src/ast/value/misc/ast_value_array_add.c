@@ -7,8 +7,8 @@
  * Extracted from: src/ast_consolidated.c
  */
 
-#include "../../../../include/ast.h"
-#include "../../../../include/utils.h"
+#include "ast.h"
+#include "utils.h"
 #include "utils/common/common_macros.h"
 int ast_value_array_add(ast_value* array, ast_value* element) {
     XMD_NULL_CHECK_RETURN(array, -1);

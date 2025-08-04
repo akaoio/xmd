@@ -7,8 +7,8 @@
 
 #include <stdlib.h>
 #include "utils/common/common_macros.h"
-#include "../../../../../include/ast.h"
-#include "../../../../../include/utils.h"
+#include "ast.h"
+#include "utils.h"
 
 /**
  * @brief Evaluate program AST and return string output

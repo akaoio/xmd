@@ -14,7 +14,7 @@
 #include "ast_node.h"
 #include "ast_parser.h"
 #include "module.h"
-#include "../../../../utils/common/common_macros.h"
+#include "../../../../../utils/common/common_macros.h"
 /**
  * @brief Parse class definition
  * Format: class ClassName [extends ParentClass]
@@ -35,7 +35,7 @@ ast_node* ast_parse_class(const char** pos) {
     }
     size_t name_len = start - name_start;
     if (name_len == 0) {
-        XMD_ERROR_RETURN(NULL, "ast_parse_class: Missing class name after 'class' keyword");
+        XMD_ERROR_RETURN(NULL, "ast_parse_class: Missing class name after 'class' keyword%s", "");
     }
     
     char* class_name;

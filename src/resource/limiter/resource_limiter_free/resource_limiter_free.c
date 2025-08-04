@@ -5,7 +5,7 @@
 
 #include <stdlib.h>
 #include "../../../../include/resource.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 void resource_limiter_free(ResourceLimiter* limiter) {
     XMD_ENTRY_VALIDATE_VOID(limiter);
     XMD_FREE_SAFE(limiter->last_error);

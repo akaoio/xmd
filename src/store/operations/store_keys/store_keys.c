@@ -11,7 +11,8 @@
 #include "../../../../include/store.h"
 #include "../../../../include/store_internal.h"
 #include "../../../../include/utils.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
+#include "../../../../utils/common/validation_macros.h"
 
 /**
  * @brief Get all keys from store
@@ -24,7 +25,7 @@ char** store_keys(store* s, size_t* count) {
     
     // Count keys
     size_t key_count = 0;
-    for (size_t i = 0; i < s->capacity; i++) {
+    FOR_EACH_INDEX(i, s->capacity) {
         store_entry* entry = s->buckets[i];
         while (entry) {
             key_count++;
@@ -43,19 +44,19 @@ char** store_keys(store* s, size_t* count) {
     
     // Fill array
     size_t idx = 0;
-    for (size_t i = 0; i < s->capacity && idx < key_count; i++) {
+    FOR_EACH_INDEX(i, s->capacity) {
+        if (idx >= key_count) break;
         store_entry* entry = s->buckets[i];
         while (entry && idx < key_count) {
             keys[idx] = xmd_strdup(entry->key);
-            if (!keys[idx]) {
+            XMD_VALIDATE_OR_CLEANUP(keys[idx], {
                 // Cleanup on allocation failure
-                for (size_t j = 0; j < idx; j++) {
-                    free(keys[j]);
+                FOR_EACH_INDEX(j, idx) {
+                    XMD_FREE_SAFE(keys[j]);
                 }
-                free(keys);
+                XMD_FREE_SAFE(keys);
                 *count = 0;
-                return NULL;
-            }
+            }, NULL);
             idx++;
             entry = entry->next;
         }

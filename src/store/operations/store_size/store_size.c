@@ -8,11 +8,13 @@
  */
 
 #include <stddef.h>
-#include "store.h"
-#include "store_internal.h"
+#include "../../../../include/store.h"
+#include "../../../../include/store_internal.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Get store size
  */
 size_t store_size(store* s) {
-    return s ? s->size : 0;
+    XMD_NULL_CHECK(s, 0);
+    return s->size;
 }

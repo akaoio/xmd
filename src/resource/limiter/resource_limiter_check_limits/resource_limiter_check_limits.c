@@ -5,7 +5,7 @@
 
 #include <stddef.h>
 #include "../../../../include/resource.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 
 size_t get_memory_usage(void);
 void set_limiter_error(ResourceLimiter* limiter, const char* error);

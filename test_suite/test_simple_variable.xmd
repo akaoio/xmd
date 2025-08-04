@@ -1,3 +1,0 @@
-# Simple Variable Test - Leader's minimal test case
-set x 5
-print x

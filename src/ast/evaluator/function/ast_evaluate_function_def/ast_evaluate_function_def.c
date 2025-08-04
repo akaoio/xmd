@@ -19,6 +19,7 @@
 #include "variable.h"
 #include "utils.h"
 #include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Evaluate function definition node (store function for later calls)
@@ -34,11 +35,7 @@ ast_value* ast_evaluate_function_def(ast_node* node, ast_evaluator* evaluator) {
     // Store the function AST node pointer in evaluator's functions store
     // We'll use a custom variable type that can hold a pointer
     variable* func_var;
-    func_var = xmd_malloc(sizeof(variable));
-    if (!func_var) {
-        fprintf(stderr, "[ERROR] ast_evaluate_function_def: Failed to allocate function variable at %s:%d\n", __FILE__, __LINE__);
-        return NULL;
-    }
+    XMD_MALLOC_VALIDATED(func_var, variable, sizeof(variable), NULL);
     
     // Use VAR_NULL type for function storage - the pointer won't be freed
     func_var->type = VAR_NULL; // NULL type doesn't free any value
@@ -46,29 +43,14 @@ ast_value* ast_evaluate_function_def(ast_node* node, ast_evaluator* evaluator) {
     func_var->ref_count = 1;
     
     // Store in evaluator's functions store
-    if (!evaluator->functions) {
-        fprintf(stderr, "ERROR: Functions store not initialized in evaluator\n");
+    XMD_VALIDATE_OR_CLEANUP(evaluator->functions, {
         free(func_var);
-        return NULL;
-    }
+    }, NULL);
     
     // Extract just the function name without parameters for storage key
     const char* full_name = node->data.function_def.name;
     char func_name_only[256];
-    const char* paren = strchr(full_name, '(');
-    if (paren) {
-        size_t name_len = paren - full_name;
-        if (name_len < sizeof(func_name_only)) {
-            strncpy(func_name_only, full_name, name_len);
-            func_name_only[name_len] = '\0';
-        } else {
-            strncpy(func_name_only, full_name, sizeof(func_name_only) - 1);
-            func_name_only[sizeof(func_name_only) - 1] = '\0';
-        }
-    } else {
-        strncpy(func_name_only, full_name, sizeof(func_name_only) - 1);
-        func_name_only[sizeof(func_name_only) - 1] = '\0';
-    }
+    XMD_EXTRACT_FUNCTION_NAME(full_name, func_name_only, sizeof(func_name_only));
     
     // fprintf(stderr, "DEBUG: Storing function '%s' with %zu parameters in store (ptr: %p)\n", func_name_only, node->data.function_def.parameter_count, (void*)evaluator->functions);
     store_set(evaluator->functions, func_name_only, func_var);

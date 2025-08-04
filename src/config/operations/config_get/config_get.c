@@ -8,7 +8,7 @@
 
 #include "../../../../include/config.h"
 #include "../../../../include/config_internal.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 #include <string.h>
 
 /**
@@ -20,24 +20,24 @@
 const char* config_get(const xmd_internal_config* config, const char* key) {
     XMD_VALIDATE_PTRS(NULL, config, key);
     
-    // Handle specific configuration keys
-    if (strcmp(key, "config_file_path") == 0) {
+    // Handle specific configuration keys - USE MACRO INSTEAD OF BOILERPLATE
+    if (STR_EQUALS(key, "config_file_path")) {
         return config->config_file_path;
     }
     
-    if (strcmp(key, "number_format") == 0) {
+    if (STR_EQUALS(key, "number_format")) {
         return config->precision.number_format;
     }
     
-    if (strcmp(key, "temp_dir") == 0) {
+    if (STR_EQUALS(key, "temp_dir")) {
         return config->paths.temp_dir;
     }
     
-    if (strcmp(key, "proc_status_path") == 0) {
+    if (STR_EQUALS(key, "proc_status_path")) {
         return config->paths.proc_status_path;
     }
     
-    if (strcmp(key, "proc_fd_path") == 0) {
+    if (STR_EQUALS(key, "proc_fd_path")) {
         return config->paths.proc_fd_path;
     }
     

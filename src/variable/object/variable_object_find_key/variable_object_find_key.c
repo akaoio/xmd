@@ -27,7 +27,7 @@ size_t variable_object_find_key(const variable* object_var, const char* key) {
     
     variable_object* obj = object_var->value.object_value;
     for (size_t i = 0; i < obj->count; i++) {
-        if (strcmp(obj->pairs[i].key, key) == 0) {
+        if (STR_EQUALS(obj->pairs[i].key, key)) {
             return i;
         }
     }

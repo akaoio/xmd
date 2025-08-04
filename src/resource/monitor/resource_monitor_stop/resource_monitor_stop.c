@@ -4,7 +4,7 @@
  */
 
 #include "../../../../include/resource.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 int resource_monitor_stop(ResourceMonitor* monitor) {
     XMD_VALIDATE_PTRS(-1, monitor);
     monitor->is_monitoring = 0;

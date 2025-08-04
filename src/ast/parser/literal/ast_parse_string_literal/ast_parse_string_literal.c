@@ -13,7 +13,8 @@
 #include <string.h>
 #include "ast_node.h"
 #include "ast_parser.h"
-#include "../../../../utils/common/common_macros.h"
+#include "../../../../../utils/common/common_macros.h"
+#include "../../../../../utils/common/validation_macros.h"
 /**
  * @brief Parse string literal "value"
  * @param start Pointer to starting position
@@ -21,10 +22,11 @@
  * @return String literal AST node or NULL  
  */
 ast_node* ast_parse_string_literal(const char** start, const char** pos) {
-    XMD_VALIDATE_PTRS(NULL, start, pos);
+    // Validate input parameters
+    XMD_VALIDATE_PARAMS_2(NULL, start, pos);
     
     if (**start != '"') {
-        XMD_ERROR_RETURN(NULL, "Expected opening quote in string literal");
+        XMD_ERROR_RETURN(NULL, "Expected opening quote in string literal%s", "");
     }
     
     (*start)++; // Skip opening quote
@@ -34,7 +36,7 @@ ast_node* ast_parse_string_literal(const char** start, const char** pos) {
         (*start)++;
     }
     if (**start != '"') {
-        XMD_ERROR_RETURN(NULL, "Unterminated string literal");
+        XMD_ERROR_RETURN(NULL, "Unterminated string literal%s", "");
     }
     
     size_t value_len = *start - value_start;

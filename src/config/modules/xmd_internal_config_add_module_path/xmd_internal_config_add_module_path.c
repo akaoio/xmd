@@ -8,7 +8,7 @@
 
 #include "../../../../include/config.h"
 #include "../../../../include/config_internal.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -22,8 +22,8 @@ int xmd_internal_config_add_module_path(xmd_internal_config* config, const char*
     XMD_VALIDATE_PTRS(-1, config, path);
     
     // Check if path already exists
-    for (size_t i = 0; i < config->paths.module_search_path_count; i++) {
-        if (strcmp(config->paths.module_search_paths[i], path) == 0) {
+    FOR_EACH_INDEX(i, config->paths.module_search_path_count) {
+        if (STR_EQUALS(config->paths.module_search_paths[i], path)) {
             // Path already exists
             return 0;
         }
@@ -31,17 +31,13 @@ int xmd_internal_config_add_module_path(xmd_internal_config* config, const char*
     
     // Expand the array
     size_t new_count = config->paths.module_search_path_count + 1;
-    char** new_paths = realloc(config->paths.module_search_paths, 
-                               new_count * sizeof(char*));
-    if (!new_paths) {
-        return -1;
-    }
+    char** new_paths;
+    XMD_REALLOC_VALIDATED(config->paths.module_search_paths, char*, 
+                          new_count * sizeof(char*), -1);
+    new_paths = config->paths.module_search_paths;
     
     // Add the new path
-    new_paths[config->paths.module_search_path_count] = strdup(path);
-    if (!new_paths[config->paths.module_search_path_count]) {
-        return -1;
-    }
+    XMD_STRDUP_VALIDATED(new_paths[config->paths.module_search_path_count], path, -1);
     
     // Update configuration
     config->paths.module_search_paths = new_paths;

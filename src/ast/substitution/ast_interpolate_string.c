@@ -30,19 +30,10 @@ char* ast_interpolate_string(const char* str, ast_evaluator* evaluator) {
     fflush(stdout);
     fflush(stdout);
     
-    // Early return test
-    if (!str) {
-        fflush(stdout);
-        return xmd_strdup("");
-    }
-    if (!evaluator) {
-        fflush(stdout);
-        return xmd_strdup(str);
-    }
-    if (!evaluator->variables) {
-        fflush(stdout);
-        return xmd_strdup(str);
-    }
+    // Early return test - USE MACROS INSTEAD OF BOILERPLATE
+    XMD_VALIDATE_AND_RETURN(!str, xmd_strdup(""));
+    XMD_VALIDATE_AND_RETURN(!evaluator, xmd_strdup(str));
+    XMD_VALIDATE_AND_RETURN(!evaluator->variables, xmd_strdup(str));
     
     fflush(stdout);
     
@@ -60,9 +51,7 @@ char* ast_interpolate_string(const char* str, ast_evaluator* evaluator) {
                 // Extract variable name
                 size_t var_len = var_end - var_start;
                 char* var_name = xmd_malloc(var_len + 1);
-                if (!var_name) {
-                    return xmd_strdup(str);
-                }
+                XMD_VALIDATE_AND_RETURN(!var_name, xmd_strdup(str));
                 strncpy(var_name, var_start, var_len);
                 var_name[var_len] = '\0';
                 
@@ -92,11 +81,9 @@ char* ast_interpolate_string(const char* str, ast_evaluator* evaluator) {
         }
     }
     
-    // Allocate result buffer
+    // Allocate result buffer - USE MACRO INSTEAD OF BOILERPLATE
     char* result = xmd_malloc(total_size + 1);
-    if (!result) {
-        return xmd_strdup(str);
-    }
+    XMD_VALIDATE_AND_RETURN(!result, xmd_strdup(str));
     
     // Second pass: perform substitution
     pos = str;
@@ -112,9 +99,9 @@ char* ast_interpolate_string(const char* str, ast_evaluator* evaluator) {
                 // Extract variable name
                 size_t var_len = var_end - var_start;
                 char* var_name = xmd_malloc(var_len + 1);
+                // USE MACRO WITH CLEANUP INSTEAD OF BOILERPLATE
                 if (!var_name) {
-                    XMD_FREE_SAFE(result);
-                    return xmd_strdup(str);
+                    XMD_CLEANUP_AND_RETURN(XMD_FREE_SAFE(result), xmd_strdup(str));
                 }
                 strncpy(var_name, var_start, var_len);
                 var_name[var_len] = '\0';

@@ -17,6 +17,7 @@
 #include "utils.h"
 #include "variable.h"
 #include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Evaluate break statement
@@ -28,12 +29,11 @@ ast_value* ast_evaluate_break(ast_node* node, ast_evaluator* evaluator) {
     XMD_VALIDATE_PTRS(NULL, node, evaluator);
     XMD_VALIDATE_NODE_TYPE(node, AST_BREAK, NULL, "ast_evaluate_break: Invalid node type");
     
-    // DEVELOPER ENHANCEMENT: Enhanced break statement signaling
-    // Improved loop context handling with proper break signaling
+    // ENHANCED: Break statement using control flow macro pattern
+    // Set break signal using consolidated error handling
     evaluator->has_error = true;
-    if (evaluator->error_message) {
-        XMD_FREE_SAFE(evaluator->error_message);
-    }
+    XMD_CLEANUP_RESOURCE(evaluator->error_message, xmd_free);
     evaluator->error_message = xmd_strdup("__BREAK__");
+    XMD_VALIDATE_PTR_RETURN(evaluator->error_message, NULL);
     return ast_value_create_string("");
 }

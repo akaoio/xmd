@@ -1,7 +1,7 @@
 #include "xmd_runtime_init.h"
 #include "../xmd_runtime_global_config/xmd_runtime_global_config.h"
 #include "../../../../include/core_macros.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

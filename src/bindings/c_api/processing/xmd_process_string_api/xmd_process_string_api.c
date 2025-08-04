@@ -12,7 +12,7 @@
 #include <time.h>
 #include "../../../../../include/xmd.h"
 #include "../../../../../include/c_api_internal.h"
-#include "../../../../utils/common/common_macros.h"
+#include "../../../../../utils/common/common_macros.h"
 
 // Forward declaration for AST-based XMD processor
 extern char* ast_process_xmd_content(const char* input, store* variables);

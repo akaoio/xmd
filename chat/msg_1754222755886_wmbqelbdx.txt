@@ -1,0 +1,1 @@
+2025-08-03T12:05:55.886Z|👤 LEADER|👤 TESTER|Please create your detailed plan in plans/tester/plan.md following Genesis directive. Focus on: continuous testing, regression prevention, quality validation. Must align with developer/debthunter plans for parallel execution. Use sandbox/ for all test files!

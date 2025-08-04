@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 #include <string.h>
 #include "ast_evaluator.h"
 #include "ast_node.h"
@@ -24,7 +25,7 @@
  * @return Boolean value indicating success
  */
 ast_value* ast_evaluate_file_write(ast_node* node, ast_evaluator* evaluator) {
-    XMD_VALIDATE_PTRS(NULL, node, evaluator);
+    XMD_VALIDATE_PARAMS_2(NULL, node, evaluator);
     XMD_VALIDATE_NODE_TYPE(node, AST_FILE_WRITE, NULL, "ast_evaluate_file_write: Invalid node type");
     
     const char* file_path = node->data.file_io.file_path;
@@ -34,9 +35,7 @@ ast_value* ast_evaluate_file_write(ast_node* node, ast_evaluator* evaluator) {
     
     // Evaluate content expression
     ast_value* content_value = ast_evaluate(node->data.file_io.content, evaluator);
-    if (!content_value) {
-        return ast_value_create_boolean(false);
-    }
+    XMD_VALIDATE_PTR_RETURN(content_value, ast_value_create_boolean(false));
     
     // Convert content to string
     const char* content_str = "";
@@ -59,7 +58,7 @@ ast_value* ast_evaluate_file_write(ast_node* node, ast_evaluator* evaluator) {
     }
     
     size_t bytes_written = fwrite(content_str, 1, strlen(content_str), file);
-    fclose(file);
+    XMD_FILE_CLOSE_SAFE(file);
     bool success = (bytes_written == strlen(content_str));
     XMD_FREE_SAFE(content_value);
     return ast_value_create_boolean(success);

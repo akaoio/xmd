@@ -11,7 +11,7 @@
 #include <ctype.h>
 #include "ast_node.h"
 #include "ast_parser.h"
-#include "../../../../utils/common/common_macros.h"
+#include "../../../../../utils/common/common_macros.h"
 /**
  * @brief Parse array assignment: set scores 1, 2, 3
  * @param pos Pointer to current position

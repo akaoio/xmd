@@ -1,6 +1,0 @@
-set score 85
-if score = 100
-    Perfect!
-else
-    Good job!
-endif

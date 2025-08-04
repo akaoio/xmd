@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "../../../../include/xmd.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 
 /**
  * @brief Process an XMD file using the simple processing pipeline
@@ -22,16 +22,16 @@ int cmd_process_simple(const char* filename) {
     printf("Processing XMD file: %s\n", filename);
     
     // Create default configuration
-    xmd_config* config = NULL; // xmd_config_create_default(); // Commented out - function missing
+    xmd_config* config = xmd_config_create_default();
     if (!config) {
-        // fprintf(stderr, "Error: Failed to create default config\n");
-        // return 1;
+        XMD_ERROR_MSG("Failed to create default config");
+        return 1;
     }
     
     // Create processor with config
     xmd_processor* processor = xmd_processor_create(config);
     if (!processor) {
-        fprintf(stderr, "Error: Failed to create processor\n");
+        XMD_ERROR_MSG("Failed to create processor");
         xmd_config_free(config);
         return 1;
     }
@@ -39,7 +39,7 @@ int cmd_process_simple(const char* filename) {
     // Process the file
     xmd_result* result = xmd_process_file(processor, filename);
     if (!result) {
-        fprintf(stderr, "Error: Failed to process file '%s'\n", filename);
+        XMD_ERROR_MSG("Failed to process file '%s'", filename);
         xmd_processor_free(processor);
         xmd_config_free(config);
         return 1;
@@ -54,7 +54,7 @@ int cmd_process_simple(const char* filename) {
             }
         }
     } else {
-        fprintf(stderr, "Error: %s\n", result->error_message ? result->error_message : "Unknown error");
+        XMD_ERROR_MSG("%s", result->error_message ? result->error_message : "Unknown error");
     }
     
     // Cleanup

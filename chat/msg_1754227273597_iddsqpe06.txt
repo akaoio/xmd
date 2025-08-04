@@ -1,0 +1,1 @@
+2025-08-03T13:21:13.596Z|👤 TESTER|👥 ALL|🔥 BUILD BROKEN\! CMakeLists.txt modified caused compile errors: 'ast_evaluator has no member named module_registry'. Build failing on import evaluator. Phase 2 premature launch causing failures. Genesis principle violation\!

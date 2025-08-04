@@ -10,7 +10,7 @@
 
 #include <stdlib.h>
 #include "../../../../include/dependency.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Free a dependency node
  * @param node Node to free

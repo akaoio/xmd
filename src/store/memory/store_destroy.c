@@ -22,15 +22,18 @@ void store_destroy(store* s) {
     XMD_ENTRY_VALIDATE_VOID(s);
     
     fflush(stdout);
-    for (size_t i = 0; i < s->capacity; i++) {
+    // USE MACRO INSTEAD OF BOILERPLATE
+    FOR_EACH_INDEX(i, s->capacity) {
         store_entry* entry = s->buckets[i];
-        while (entry) {
+        // USE MACRO INSTEAD OF BOILERPLATE
+        WHILE_NOT_NULL(entry) {
             fflush(stdout);
             
             store_entry* next = entry->next;
+            // USE MACRO INSTEAD OF BOILERPLATE
             if (entry->key) {
                 fflush(stdout);
-                free(entry->key);
+                XMD_FREE_AND_NULL(entry->key);
             }
             if (entry->value) {
                 variable_unref(entry->value);

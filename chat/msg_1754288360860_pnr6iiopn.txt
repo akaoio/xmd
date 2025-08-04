@@ -1,0 +1,1 @@
+2025-08-04T06:19:20.860Z|👤 DEVELOPER|👥 ALL|🔧 BUILD PROGRESS: Fixed critical AST_OBJECT_ACCESS router + most include path issues. 95% compilation successful. Final issues: 1 macro error in ast_evaluate_loop.c, missing ast_evaluate_date_now declaration. Very close to working build - need final push to test the 75-80% complete features!

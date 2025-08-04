@@ -5,6 +5,7 @@
 
 #include "../../../../include/performance_internal.h"
 #include "../../../../include/platform.h"
+#include "../../../../utils/common/validation_macros.h"
 
 /**
  * @brief FUNCTION_Start profiling session
@@ -12,7 +13,7 @@
  * @return 0 on success, -1 on error
  */
 int perf_profiler_start(perf_profiler* profiler) {
-    if (!profiler) return -1;
+    XMD_VALIDATE_PTR_RETURN(profiler, -1);
     xmd_get_time(&profiler->start_time);
     profiler->is_active = true;
     return 0;

@@ -13,19 +13,22 @@
 #include "ast_node.h"
 #include "ast_parser.h"
 #include "variable.h"
-#include "../../../../utils/common/common_macros.h"
+#include "../../../../../utils/common/common_macros.h"
+#include "../../../../../utils/common/validation_macros.h"
 /**
  * @brief Parse elif statement: elif condition
  * @param pos Pointer to current position
  * @return Conditional AST node or NULL
  */
 ast_node* ast_parse_elif(const char** pos) {
-    XMD_VALIDATE_PTRS(NULL, pos, *pos);
+    // Validate input parameters
+    XMD_VALIDATE_PARAMS_2(NULL, pos, *pos);
     
     const char* start = *pos;
-    // Skip "elif "
-    start += 5;
-    while (*start && isspace(*start)) start++;
+    // Skip "elif " using standard macro
+    XMD_PARSE_EXPECT_KEYWORD(&start, "elif ", NULL);
+    // Skip whitespace using standard macro
+    XMD_PARSE_SKIP_WHITESPACE(&start);
     // Parse condition until end of line
     const char* condition_start = start;
     while (*start && *start != '\n') {

@@ -14,7 +14,7 @@
 #include <stdint.h>
 #include "../../../../include/variable.h"
 #include "../../../../include/variable_internal.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 
 /**
  * @brief Remove property from object variable

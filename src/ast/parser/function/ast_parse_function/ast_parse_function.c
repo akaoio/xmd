@@ -18,7 +18,7 @@
 #include "error.h"
 #include "module.h"
 #include "utils.h"
-#include "../../../../utils/common/common_macros.h"
+#include "../../../../../utils/common/common_macros.h"
 /**
  * @brief Parse function definition: function name param1 param2
  * @param pos Pointer to current position

@@ -476,10 +476,9 @@ set matrix
 
 Accessing elements
 
-set x matrix[0][1]      # 2
-set y get matrix 1 2    # 6
-
-You can use square brackets for indexing or get function.
+set x matrix[0][1]      // 2
+set y matrix[1]         // [4, 5, 6]
+set z y[1]              // 5
 
 Matrix is just an array of arrays.
 

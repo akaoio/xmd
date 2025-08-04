@@ -1,5 +1,0 @@
-set name "Alice"
-set age 30
-
-Simple substitution: {{name}} is {{age}} years old.
-In a sentence: The user {{name}} has an age of {{age}}.

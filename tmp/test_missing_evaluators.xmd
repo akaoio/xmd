@@ -1,0 +1,5 @@
+set result age >= 18 ? "adult" : "minor"
+print result
+
+set double (x => x * 2)
+print "lambda created"

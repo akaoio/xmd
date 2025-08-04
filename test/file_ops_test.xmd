@@ -1,3 +1,0 @@
-File.write "test.txt" "Hello World"
-set content File.read "test.txt"
-print "Content: {{content}}"

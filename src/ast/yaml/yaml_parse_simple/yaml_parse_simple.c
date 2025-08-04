@@ -13,11 +13,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "../../../../include/ast.h"
-#include "../../../../include/store.h"
-#include "../../../../include/variable.h"
-#include "../../../../include/utils.h"
-#include "../../../utils/common/common_macros.h"
+#include "ast.h"
+#include "store.h"
+#include "variable.h"
+#include "utils.h"
+#include "../../../../utils/common/common_macros.h"
+#include "../../../../utils/common/validation_macros.h"
 
 /**
  * @brief Parse YAML string to XMD variable
@@ -63,7 +64,8 @@ variable* yaml_parse_simple(const char* yaml) {
             
             // Extract item value
             size_t len = line_end - yaml;
-            char* item_str = xmd_malloc(len + 1);
+            char* item_str;
+            XMD_MALLOC_VALIDATED(item_str, char, len + 1, NULL);
             strncpy(item_str, yaml, len);
             item_str[len] = '\0';
             
@@ -101,7 +103,8 @@ variable* yaml_parse_simple(const char* yaml) {
             
             // Extract key
             size_t key_len = colon - yaml;
-            char* key = xmd_malloc(key_len + 1);
+            char* key;
+            XMD_MALLOC_VALIDATED(key, char, key_len + 1, NULL);
             strncpy(key, yaml, key_len);
             key[key_len] = '\0';
             
@@ -117,7 +120,8 @@ variable* yaml_parse_simple(const char* yaml) {
             
             // Extract value
             size_t val_len = line_end - yaml;
-            char* val_str = xmd_malloc(val_len + 1);
+            char* val_str;
+            XMD_MALLOC_VALIDATED(val_str, char, val_len + 1, NULL);
             strncpy(val_str, yaml, val_len);
             val_str[val_len] = '\0';
             
@@ -148,7 +152,8 @@ variable* yaml_parse_simple(const char* yaml) {
         end = yaml + strlen(yaml);
     }
     size_t len = end - yaml;
-    char* str = xmd_malloc(len + 1);
+    char* str;
+    XMD_MALLOC_VALIDATED(str, char, len + 1, NULL);
     strncpy(str, yaml, len);
     str[len] = '\0';
     

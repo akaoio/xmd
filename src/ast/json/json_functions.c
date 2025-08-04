@@ -17,10 +17,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "../../../include/ast.h"
-#include "../../../include/store.h"
-#include "../../../include/variable.h"
-#include "../../../include/utils.h"
+#include "ast.h"
+#include "store.h"
+#include "variable.h"
+#include "utils.h"
 
 // Include headers for the separated functions
 extern char* json_escape_string(const char* str);

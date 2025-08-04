@@ -8,7 +8,8 @@
 
 #include "../../../../include/config.h"
 #include "../../../../include/config_internal.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
+#include "../../../../utils/common/validation_macros.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,10 +23,7 @@
 int xmd_internal_config_load_file(xmd_internal_config* config, const char* filename) {
     XMD_VALIDATE_PTRS(-1, config, filename);
     
-    FILE* file = fopen(filename, "r");
-    if (!file) {
-        return -1;
-    }
+    XMD_FILE_READ_OPEN(file, filename, -1);
     
     char line[256];
     char key[128];
@@ -61,7 +59,7 @@ int xmd_internal_config_load_file(xmd_internal_config* config, const char* filen
         config_set(config, key, value);
     }
     
-    fclose(file);
+    XMD_FILE_CLOSE_SAFE(file);
     
     // Store the config file path
     XMD_FREE_SAFE(config->config_file_path);

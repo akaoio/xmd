@@ -31,7 +31,7 @@ int dependency_graph_add_module(DependencyGraph* graph, Module* module) {
         DependencyNode** new_nodes = xmd_realloc(graph->nodes, 
                                                   new_capacity * sizeof(DependencyNode*));
         if (!new_nodes) {
-            XMD_ERROR_RETURN(-1, "Failed to reallocate graph nodes array");
+            XMD_ERROR_RETURN(-1, "Failed to reallocate graph nodes array%s", "");
         }
         graph->nodes = new_nodes;
         graph->node_capacity = new_capacity;

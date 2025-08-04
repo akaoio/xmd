@@ -18,6 +18,7 @@
 #include "store.h"
 #include "variable.h"
 #include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 /**
  * @brief Evaluate while loop node
  * @param node While loop node (marked as AST_WHILE_LOOP)
@@ -25,7 +26,7 @@
  * @return Empty string value
  */
 ast_value* ast_evaluate_while_loop(ast_node* node, ast_evaluator* evaluator) {
-    XMD_VALIDATE_PTRS(NULL, node, evaluator);
+    XMD_VALIDATE_PARAMS_2(NULL, node, evaluator);
     XMD_VALIDATE_NODE_TYPE(node, AST_WHILE_LOOP, NULL, "ast_evaluate_while_loop: Invalid node type");
     
     // While loop structure uses the loop data fields:
@@ -33,20 +34,16 @@ ast_value* ast_evaluate_while_loop(ast_node* node, ast_evaluator* evaluator) {
     // - node->data.loop.iterable is the condition expression
     // - node->data.loop.body would be the body (not implemented yet)
     ast_node* condition = node->data.loop.iterable;
-    if (!condition) {
-        return NULL;
-    }
+    XMD_VALIDATE_PTR_RETURN(condition, NULL);
     
-    // Evaluate while condition in a loop
+    // Evaluate while condition using consolidated patterns
     int max_iterations = 1000; // Safety limit
     int iterations = 0;
     while (iterations < max_iterations) {
         ast_value* condition_result = ast_evaluate(condition, evaluator);
-        if (!condition_result) {
-            break;
-        }
+        XMD_VALIDATE_PTR_RETURN(condition_result, NULL);
         
-        // Convert to boolean
+        // Convert to boolean using consolidated pattern
         bool is_true = false;
         if (condition_result->type == AST_VAL_BOOLEAN) {
             is_true = condition_result->value.boolean_value;
@@ -62,12 +59,10 @@ ast_value* ast_evaluate_while_loop(ast_node* node, ast_evaluator* evaluator) {
             break; // Exit while loop
         }
         
-        // DEVELOPER FIX: Execute while loop body if it exists
+        // Execute while loop body using validated pattern
         if (node->data.loop.body) {
             ast_value* body_result = ast_evaluate(node->data.loop.body, evaluator);
-            if (body_result) {
-                ast_value_free(body_result);
-            }
+            XMD_CLEANUP_RESOURCE(body_result, ast_value_free);
         } else {
             // FALLBACK: Old auto-increment behavior (remove this once body parsing is confirmed working)
             // This was a temporary workaround - while loops should execute their body, not auto-increment

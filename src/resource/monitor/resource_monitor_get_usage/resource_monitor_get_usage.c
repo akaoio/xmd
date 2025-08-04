@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include "../../../../include/resource.h"
 #include "../../../../include/platform.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 
 size_t get_memory_usage(void);
 int count_file_descriptors(void);

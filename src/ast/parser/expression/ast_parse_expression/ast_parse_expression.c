@@ -16,21 +16,23 @@
 #include "ast_parser.h"
 #include "variable.h"
 #include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 /**
  * @brief Parse expression (numbers, strings, variables, math)
  * @param pos Pointer to current position
  * @return Expression AST node or NULL
  */
 ast_node* ast_parse_expression(const char** pos) {
+    // Validate input parameters
+    XMD_VALIDATE_PARAMS_2(NULL, pos, *pos);
+    
     const char* start = *pos;
     
     // Skip whitespace
-    while (*start && isspace(*start) && *start != '\n') {
-        start++;
-    }
-    if (!*start || *start == '\n') {
-        XMD_ERROR_RETURN(NULL, "ast_parse_expression: Empty or newline-only input");
-    }
+    XMD_PARSE_SKIP_WHITESPACE(&start);
+    
+    // Check for end of input
+    XMD_PARSE_CHECK_END(&start, NULL);
     
     // Check if this might be an array (multiple comma-separated values)
     const char* scan = start;

@@ -15,6 +15,7 @@
 #include "ast_node.h"
 #include "variable.h"
 #include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 /**
  * @brief Evaluate File.delete operation
  * @param node File delete AST node
@@ -26,9 +27,7 @@ ast_value* ast_evaluate_file_delete(ast_node* node, ast_evaluator* evaluator) {
     XMD_VALIDATE_NODE_TYPE(node, AST_FILE_DELETE, ast_value_create_boolean(false), "ast_evaluate_file_delete: Invalid node type");
     
     const char* file_path = node->data.file_io.file_path;
-    if (!file_path) {
-        return ast_value_create_boolean(false);
-    }
+    XMD_VALIDATE_PTR_RETURN(file_path, ast_value_create_boolean(false));
     
     // Delete file using remove() 
     int result = remove(file_path);

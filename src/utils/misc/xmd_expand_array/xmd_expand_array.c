@@ -9,7 +9,7 @@
 
 #include <stddef.h>
 #include "../../../../include/utils.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Expand array capacity
  * @param array Pointer to array pointer

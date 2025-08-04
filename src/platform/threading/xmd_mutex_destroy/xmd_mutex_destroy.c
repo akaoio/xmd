@@ -5,7 +5,7 @@
  */
 
 #include "../../../../include/platform_internal.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Destroy mutex
  * @param mutex Mutex to destroy

@@ -11,7 +11,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include "../../../../include/utils.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
+#include "../../../../utils/common/validation_macros.h"
 /**
  * @brief Sanitize command output
  * @param output Command output to sanitize
@@ -21,10 +22,8 @@ char* security_sanitize_command_output(const char* output) {
     XMD_VALIDATE_PTRS(NULL, output);
     
     size_t len = strlen(output);
-    char* sanitized = xmd_malloc(len * 2 + 1); // Extra space for escaping
-    if (!sanitized) {
-        return NULL;
-    }
+    char* sanitized;
+    XMD_MALLOC_VALIDATED(sanitized, char, len * 2 + 1, NULL); // Extra space for escaping
     
     size_t j = 0;
     for (size_t i = 0; i < len; i++) {

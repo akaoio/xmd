@@ -8,7 +8,7 @@
  */
 
 #include "../../../../include/config_internal.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 
 // Global configuration instance declaration (defined in config_consolidated.c)
 extern xmd_internal_config* g_config;

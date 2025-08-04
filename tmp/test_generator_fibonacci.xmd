@@ -1,0 +1,10 @@
+function* fib
+    set a 0
+    set b 1
+    while true
+        yield a
+        set a b
+        set b a + b
+        if b > 10 then break
+
+print "Fibonacci generator test complete"

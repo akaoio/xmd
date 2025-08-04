@@ -11,7 +11,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "../../../../include/utils.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Sanitize output string for safe rendering
  * @param input Input string to sanitize

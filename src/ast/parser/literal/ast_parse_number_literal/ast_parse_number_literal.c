@@ -14,7 +14,7 @@
 #include <ctype.h>
 #include "ast_node.h"
 #include "ast_parser.h"
-#include "../../../../utils/common/common_macros.h"
+#include "../../../../../utils/common/common_macros.h"
 /**
  * @brief Parse number literal
  * @param start Pointer to starting position
@@ -22,7 +22,7 @@
  * @return Number literal AST node or NULL
  */
 ast_node* ast_parse_number_literal(const char** start, const char** pos) {
-    XMD_VALIDATE_PTRS(NULL, start, *start, pos);
+    if (!start || !*start || !pos) return NULL;
     const char* num_start = *start;
     
     // Handle negative numbers

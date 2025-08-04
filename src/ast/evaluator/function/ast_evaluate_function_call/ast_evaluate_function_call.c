@@ -19,6 +19,7 @@
 #include "variable.h"
 #include "utils.h"
 #include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 
 // Forward declaration for output append function
 int ast_evaluator_append_output(ast_evaluator* evaluator, const char* text);
@@ -32,12 +33,12 @@ char* ast_interpolate_string(const char* str, ast_evaluator* evaluator);
  * @return AST value result or NULL on error
  */
 ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) {
-    XMD_VALIDATE_PTRS(NULL, node, evaluator);
+    XMD_VALIDATE_PARAMS_2(NULL, node, evaluator);
     XMD_VALIDATE_NODE_TYPE(node, AST_FUNCTION_CALL, NULL, "ast_evaluate_function_call: Invalid node type");
     
     // Validate function name
     if (!node->data.function_call.name || strlen(node->data.function_call.name) == 0) {
-        XMD_ERROR_RETURN(NULL, "ast_evaluate_function_call: Empty or NULL function name");
+        XMD_ERROR_RETURN(NULL, "ast_evaluate_function_call: Empty or NULL function name%s", "");
     }
     
     // Handle built-in print function
@@ -63,27 +64,17 @@ ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) 
         return ast_value_create_string("");
     }
     
-    // Look up user-defined function in evaluator's functions store
-    if (!evaluator->functions) {
-        XMD_ERROR_RETURN(NULL, "ast_evaluate_function_call: No functions store available for function '%s'", node->data.function_call.name);
+    // Handle Date.now built-in function
+    if (STR_EQUALS(node->data.function_call.name, "Date.now")) {
+        return ast_evaluate_date_now(node, evaluator);
     }
+    
+    // Look up user-defined function in evaluator's functions store
+    XMD_VALIDATE_PTR_RETURN(evaluator->functions, NULL);
     
     // Extract function name without parentheses for lookup
     char func_name_clean[256];
-    const char* paren = strchr(node->data.function_call.name, '(');
-    if (paren) {
-        size_t name_len = paren - node->data.function_call.name;
-        if (name_len < sizeof(func_name_clean)) {
-            strncpy(func_name_clean, node->data.function_call.name, name_len);
-            func_name_clean[name_len] = '\0';
-        } else {
-            strncpy(func_name_clean, node->data.function_call.name, sizeof(func_name_clean) - 1);
-            func_name_clean[sizeof(func_name_clean) - 1] = '\0';
-        }
-    } else {
-        strncpy(func_name_clean, node->data.function_call.name, sizeof(func_name_clean) - 1);
-        func_name_clean[sizeof(func_name_clean) - 1] = '\0';
-    }
+    XMD_EXTRACT_FUNCTION_NAME(node->data.function_call.name, func_name_clean, sizeof(func_name_clean));
     
     // fprintf(stderr, "DEBUG: Looking for function '%s' with %zu arguments\n", func_name_clean, node->data.function_call.argument_count);
     variable* func_var = store_get(evaluator->functions, func_name_clean);
@@ -99,7 +90,8 @@ ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) 
             }
             XMD_FREE_SAFE(keys);
         }
-        XMD_ERROR_RETURN(NULL, "ast_evaluate_function_call: Function '%s' not defined", func_name_clean);
+        XMD_FUNCTION_ERROR("ast_evaluate_function_call", "Function '%s' not defined", func_name_clean);
+        return NULL;
     }
     
     // Get function definition AST node from stored variable
@@ -110,14 +102,13 @@ ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) 
     }
     
     // Backup current variable values that might be overwritten
-    variable** backup_vars = xmd_malloc(sizeof(variable*) * func_def->data.function_def.parameter_count);
-    if (!backup_vars) {
-        return ast_value_create_string("");
-    }
+    variable** backup_vars;
+    XMD_MALLOC_VALIDATED(backup_vars, variable*, sizeof(variable*) * func_def->data.function_def.parameter_count, ast_value_create_string(""));
     
     // Bind parameters to arguments
     for (size_t i = 0; i < func_def->data.function_def.parameter_count; i++) {
         const char* param_name = func_def->data.function_def.parameters[i];
+        if (!param_name) continue;
         
         // Backup existing variable value (if any)
         backup_vars[i] = store_get(evaluator->variables, param_name);
@@ -130,7 +121,6 @@ ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) 
         if (arg_value) {
             variable* param_var = ast_value_to_variable(arg_value);
             if (param_var) {
-                // fprintf(stderr, "DEBUG: Binding parameter '%s' to value\n", param_name);
                 store_set(evaluator->variables, param_name, param_var);
                 variable_unref(param_var);
             }
@@ -149,6 +139,8 @@ ast_value* ast_evaluate_function_call(ast_node* node, ast_evaluator* evaluator) 
     // Restore original variable values
     for (size_t i = 0; i < func_def->data.function_def.parameter_count; i++) {
         const char* param_name = func_def->data.function_def.parameters[i];
+        if (!param_name) continue;
+        
         if (backup_vars[i]) {
             // Restore original value
             store_set(evaluator->variables, param_name, backup_vars[i]);

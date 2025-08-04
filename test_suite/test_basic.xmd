@@ -1,6 +1,0 @@
-# Basic Test - Only variables and print
-set x 10
-set y 20
-print x
-print y
-print "Done"

@@ -17,16 +17,15 @@
 #include "token.h"
 #include "variable.h"
 #include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 /**
  * @brief Parse primary expression (number, string, identifier)
  * @param parser Parser state
  * @return AST node or NULL
  */
 ast_node* ast_parse_primary(parser_state* parser) {
-    XMD_VALIDATE_PTRS(NULL, parser);
-    if (!parser->current_token) {
-        XMD_ERROR_RETURN(NULL, "ast_parse_primary: NULL current token");
-    }
+    // Validate input parameters
+    XMD_VALIDATE_PARAMS_2(NULL, parser, parser->current_token);
     
     token* tok = parser->current_token;
     source_location loc = {tok->line, tok->column, parser->filename};

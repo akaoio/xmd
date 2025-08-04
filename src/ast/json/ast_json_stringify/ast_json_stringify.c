@@ -10,11 +10,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "../../../../include/ast.h"
-#include "../../../../include/store.h"
-#include "../../../../include/variable.h"
-#include "../../../../include/utils.h"
-#include "../../../../include/utils.h"
+#include "ast.h"
+#include "store.h"
+#include "variable.h"
+#include "utils.h"
+#include "utils.h"
 
 // Forward declaration for json_stringify_variable
 extern char* json_stringify_variable(variable* var, bool pretty, int indent);

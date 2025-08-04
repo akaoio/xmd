@@ -4,7 +4,7 @@
  */
 
 #include "../../../../include/resource.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @return 0 on success, -1 on error
  */

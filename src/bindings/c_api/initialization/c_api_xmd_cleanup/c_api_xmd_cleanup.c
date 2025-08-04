@@ -12,7 +12,7 @@
 #include "../../../../../include/c_api_internal.h"
 #include "../../../../../include/config_internal.h"
 #include "../../../../../include/store.h"
-#include "../../../../utils/common/common_macros.h"
+#include "../../../../../utils/common/common_macros.h"
 /**
  * @brief Clean up XMD C API context
  * @param handle Context handle to clean up

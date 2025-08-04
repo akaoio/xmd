@@ -10,14 +10,14 @@
 
 #include "variable.h"
 #include "variable_internal.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 
 /**
  * @brief Increment reference count
  * @return Same variable pointer for chaining
  */
 variable* variable_ref(variable* var) {
-    XMD_VALIDATE_PTRS(NULL, var);
+    if (!var) return NULL;
     
     var->ref_count++;
     return var;

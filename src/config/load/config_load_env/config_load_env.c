@@ -8,7 +8,7 @@
  */
 
 #include "../../../../include/config.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 #include <stdlib.h>
 /**
  * @brief Load configuration from environment variables

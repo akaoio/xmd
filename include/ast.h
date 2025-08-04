@@ -57,7 +57,21 @@ typedef enum {
     AST_FILE_WRITE,        /**< File.write operations */
     AST_FILE_EXISTS,       /**< File.exists operations */
     AST_FILE_DELETE,       /**< File.delete operations */
-    AST_FILE_LIST          /**< File.list operations */
+    AST_FILE_LIST,         /**< File.list operations */
+    AST_TRY_CATCH,         /**< Try-catch error handling */
+    AST_THROW,             /**< Throw statements */
+    AST_TERNARY,           /**< Ternary operator condition ? true : false */
+    AST_LAMBDA,            /**< Lambda functions (x => x * 2) */
+    AST_STRING_METHOD,     /**< String method calls (str.upper, str.split) */
+    AST_LOOP_TIMES,        /**< loop N times */
+    AST_FOR_RANGE,         /**< for i in 1..5 */
+    AST_FOR_INDEXED,       /**< for i, item in array */
+    AST_AWAIT,             /**< await expression */
+    AST_IMPORT,            /**< import statement */
+    AST_DESTRUCTURE,       /**< destructuring assignment */
+    AST_SPREAD,            /**< spread operator */
+    AST_GENERATOR_DEF,     /**< generator function definition (function*) */
+    AST_YIELD              /**< yield statement */
 } ast_node_type;
 
 /**
@@ -304,6 +318,102 @@ struct ast_node {
             ast_node* content;       /**< Content for write operations (NULL for read/exists/delete/list) */
         } file_io;
         
+        /**< Try-catch error handling */
+        struct {
+            ast_node* try_block;     /**< Try block */
+            char* catch_variable;    /**< Catch variable name */
+            ast_node* catch_block;   /**< Catch block */
+        } try_catch;
+        
+        /**< Throw statement */
+        struct {
+            ast_node* exception;     /**< Exception expression to throw */
+        } throw_stmt;
+        
+        /**< Ternary operator */
+        struct {
+            ast_node* condition;     /**< Condition expression */
+            ast_node* true_expr;     /**< True case expression */
+            ast_node* false_expr;    /**< False case expression */
+        } ternary;
+        
+        /**< Lambda function */
+        struct {
+            char** parameters;       /**< Parameter names */
+            size_t parameter_count;  /**< Number of parameters */
+            ast_node* body;          /**< Lambda body expression */
+        } lambda;
+        
+        /**< String method call */
+        struct {
+            ast_node* string_expr;   /**< String expression */
+            char* method_name;       /**< Method name (upper, lower, split, etc.) */
+            ast_node** arguments;    /**< Method arguments */
+            size_t argument_count;   /**< Number of arguments */
+        } string_method;
+        
+        /**< Loop N times */
+        struct {
+            ast_node* count_expr;    /**< Number of times to loop */
+            ast_node* body;          /**< Loop body */
+        } loop_times;
+        
+        /**< For range loop (for i in 1..5) */
+        struct {
+            char* variable;          /**< Loop variable name */
+            ast_node* start_expr;    /**< Start value */
+            ast_node* end_expr;      /**< End value */
+            ast_node* body;          /**< Loop body */
+        } for_range;
+        
+        /**< For indexed loop (for i, item in array) */
+        struct {
+            char* index_var;         /**< Index variable name */
+            char* item_var;          /**< Item variable name */
+            ast_node* array_expr;    /**< Array expression */
+            ast_node* body;          /**< Loop body */
+        } for_indexed;
+        
+        /**< Await expression */
+        struct {
+            ast_node* expression;    /**< Expression to await */
+        } await;
+        
+        /**< Import statement */
+        struct {
+            char* module_name;       /**< Module name to import */
+            char* alias;             /**< Import alias (NULL if none) */
+        } import;
+        
+        /**< Destructuring assignment */
+        struct {
+            char** target_names;     /**< Target variable names */
+            size_t target_count;     /**< Number of target variables */
+            ast_node* source_expr;   /**< Source expression (array or object) */
+            bool is_object;          /**< true for object destructuring, false for array */
+            char* rest_name;         /**< Rest parameter name (NULL if no rest) */
+        } destructure;
+        
+        /**< Spread operator */
+        struct {
+            ast_node* expression;    /**< Expression to spread */
+            bool in_array;           /**< true if spreading in array context */
+            bool in_object;          /**< true if spreading in object context */
+        } spread;
+        
+        /**< Generator function definition */
+        struct {
+            char* name;              /**< Generator function name */
+            char** parameters;       /**< Parameter names */
+            size_t parameter_count;  /**< Number of parameters */
+            ast_node* body;          /**< Generator body */
+        } generator_def;
+        
+        /**< Yield statement */
+        struct {
+            ast_node* value;         /**< Value to yield (NULL for bare yield) */
+        } yield_stmt;
+        
     } data;
 };
 
@@ -333,8 +443,20 @@ ast_node*ast_create_method_def(const char* name, bool is_private, source_locatio
 ast_node*ast_create_number_literal(double value, source_location loc);
 ast_node*ast_create_program(void);
 ast_node*ast_create_string_literal(const char* value, source_location loc);
+ast_node*ast_create_try_catch(ast_node* try_block, const char* catch_var, ast_node* catch_block, source_location loc);
+ast_node*ast_create_throw(ast_node* exception, source_location loc);
+ast_node*ast_create_ternary(ast_node* condition, ast_node* true_expr, ast_node* false_expr, source_location loc);
+ast_node*ast_create_lambda(char** parameters, size_t parameter_count, ast_node* body, source_location loc);
+ast_node*ast_create_string_method(ast_node* string_expr, const char* method_name, source_location loc);
+ast_node*ast_create_loop_times(ast_node* count_expr, ast_node* body, source_location loc);
+ast_node*ast_create_for_range(const char* variable, ast_node* start_expr, ast_node* end_expr, ast_node* body, source_location loc);
+ast_node*ast_create_for_indexed(const char* index_var, const char* item_var, ast_node* array_expr, ast_node* body, source_location loc);
+ast_node*ast_create_await(ast_node* expression, source_location loc);
+ast_node*ast_create_destructure(char** target_names, size_t target_count, ast_node* source_expr, bool is_object, const char* rest_name, source_location loc);
+ast_node*ast_create_spread(ast_node* expression, bool in_array, bool in_object, source_location loc);
 int ast_evaluate_assignment(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_binary_op(ast_node* node, ast_evaluator* evaluator);
+ast_value*ast_evaluate_unary_op(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_conditional(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_file_delete(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_file_exists(ast_node* node, ast_evaluator* evaluator);
@@ -352,6 +474,21 @@ ast_value*ast_evaluate_while_loop(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_block(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_break(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_continue(ast_node* node, ast_evaluator* evaluator);
+ast_value*ast_evaluate_try_catch(ast_node* node, ast_evaluator* evaluator);
+ast_value*ast_evaluate_throw(ast_node* node, ast_evaluator* evaluator);
+ast_value*ast_evaluate_ternary(ast_node* node, ast_evaluator* evaluator);
+ast_value*ast_evaluate_lambda(ast_node* node, ast_evaluator* evaluator);
+ast_value*ast_evaluate_string_method(ast_node* node, ast_evaluator* evaluator);
+ast_value*ast_evaluate_loop_times(ast_node* node, ast_evaluator* evaluator);
+ast_value*ast_evaluate_for_range(ast_node* node, ast_evaluator* evaluator);
+ast_value*ast_evaluate_for_indexed(ast_node* node, ast_evaluator* evaluator);
+ast_value*ast_evaluate_await(ast_node* node, ast_evaluator* evaluator);
+ast_value*ast_evaluate_destructure(ast_node* node, ast_evaluator* evaluator);
+ast_value*ast_evaluate_spread(ast_node* node, ast_evaluator* evaluator);
+ast_value*ast_evaluate_class_def(ast_node* node, ast_evaluator* evaluator);
+ast_value*ast_evaluate_import(ast_node* node, ast_evaluator* evaluator);
+ast_value*ast_evaluate_generator_def(ast_node* node, ast_evaluator* evaluator);
+ast_value*ast_evaluate_yield(ast_node* node, ast_evaluator* evaluator);
 void ast_free(ast_node* node);
 ast_node*ast_parse_array_assignment(const char** pos, const char* array_name);
 ast_node*ast_parse_class(const char** pos);
@@ -382,6 +519,10 @@ ast_node*ast_parse_conditional(const char** pos);
 ast_node*ast_parse_single_value(const char** pos);
 ast_node*ast_parse_object_creation(const char** pos, const char* first_name);
 ast_node*ast_parse_multiple_variables_handler(const char** pos, const char* first_name);
+ast_node*ast_parse_destructure(const char** pos);
+ast_node*ast_parse_spread(const char** pos);
+ast_node*ast_parse_generator_function(const char** pos);
+ast_node*ast_parse_yield(const char** pos);
 ast_value*ast_value_create_array(void);
 ast_value*ast_value_create_boolean(bool value);
 ast_value*ast_value_create_number(double value);

@@ -1,0 +1,6 @@
+function test_print
+    print "Function body executing!"
+    print "This should show output"
+
+# Call the function
+test_print

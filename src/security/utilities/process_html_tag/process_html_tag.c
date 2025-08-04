@@ -11,7 +11,7 @@
 #include <string.h>
 #include <stddef.h>
 #include <stdbool.h>
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 
 // Forward declarations
 bool is_safe_html_tag(const char* tag);
@@ -26,7 +26,7 @@ size_t extract_tag_name(const char* tag_start, char* tag_name, size_t max_len);
  */
 size_t process_html_tag(const char* tag_content, char* output, 
                               size_t output_pos, size_t max_output_size) {
-    XMD_VALIDATE_PTRS(output_pos, tag_content, output);
+    if (!tag_content || !output) return output_pos;
     if (tag_content[0] != '<') return output_pos;
     
     char tag_name[32];

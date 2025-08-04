@@ -12,7 +12,7 @@
 #include "ast_node.h"
 #include "ast_parser.h"
 #include "variable.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Parse single value (string, number, identifier) without comma handling
  * @param pos Pointer to current position

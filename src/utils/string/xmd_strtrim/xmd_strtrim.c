@@ -9,7 +9,7 @@
 
 #include <string.h>
 #include "../../../../include/utils.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Trim whitespace from string
  * @param str String to trim (modified in place)

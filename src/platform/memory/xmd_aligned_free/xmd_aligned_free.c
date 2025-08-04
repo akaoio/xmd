@@ -5,13 +5,14 @@
  */
 
 #include "../../../../include/platform_internal.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
+#include "../../../../utils/common/validation_macros.h"
 /**
  * @brief Free aligned memory
  * @param ptr Memory to free
  */
 void xmd_aligned_free(void* ptr) {
-    if (!ptr) return;
+    XMD_VALIDATE_PTR_RETURN_VOID(ptr);
 #ifdef XMD_PLATFORM_WINDOWS
     _aligned_free(ptr);
 #else

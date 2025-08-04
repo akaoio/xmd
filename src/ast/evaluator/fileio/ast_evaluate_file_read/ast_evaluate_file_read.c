@@ -11,6 +11,7 @@
 
 #include <stdlib.h>
 #include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 #include <stdio.h>
 #include "ast_evaluator.h"
 #include "ast_node.h"
@@ -23,41 +24,34 @@
  * @return String value with file contents or NULL on error
  */
 ast_value* ast_evaluate_file_read(ast_node* node, ast_evaluator* evaluator) {
-    XMD_VALIDATE_PTRS(NULL, node, evaluator);
+    XMD_VALIDATE_PARAMS_2(NULL, node, evaluator);
     XMD_VALIDATE_NODE_TYPE(node, AST_FILE_READ, NULL, "ast_evaluate_file_read: Invalid node type");
     
     const char* file_path = node->data.file_io.file_path;
-    if (!file_path) {
-        printf("[ERROR] ast_evaluate_file_read: Missing file path\n");
-        return ast_value_create_string("");
-    }
+    XMD_VALIDATE_PTR_RETURN(file_path, ast_value_create_string(""));
     
     // Open file for reading
-    FILE* file = fopen(file_path, "r");
-    if (!file) {
-        printf("[ERROR] ast_evaluate_file_read: Cannot open file '%s'\n", file_path);
-        return ast_value_create_string("");
-    }
+    XMD_FILE_READ_OPEN(file, file_path, ast_value_create_string(""));
     
     // Get file size
     fseek(file, 0, SEEK_END);
     long file_size = ftell(file);
     fseek(file, 0, SEEK_SET);
     if (file_size < 0) {
-        fclose(file);
+        XMD_FILE_CLOSE_SAFE(file);
         return ast_value_create_string("");
     }
     
     // Read file contents
     char* content = xmd_malloc(file_size + 1);
     if (!content) {
-        fclose(file);
+        XMD_FILE_CLOSE_SAFE(file);
         return ast_value_create_string("");
     }
     
     size_t bytes_read = fread(content, 1, file_size, file);
     content[bytes_read] = '\0';
-    fclose(file);
+    XMD_FILE_CLOSE_SAFE(file);
     
     // Create string value
     ast_value* result = ast_value_create_string(content);

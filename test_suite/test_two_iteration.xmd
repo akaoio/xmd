@@ -1,3 +1,0 @@
-# Two Iteration Test - Testing where hanging starts
-for i in 1 .. 2
-    print "iteration"

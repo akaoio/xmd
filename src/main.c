@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "utils/common/common_macros.h"
 
 // Function declarations from separated files
 extern void print_version(void);
@@ -23,20 +24,20 @@ int main(int argc, char* argv[]) {
     
     const char* command = argv[1];
     
-    if (strcmp(command, "process") == 0) {
+    if (STR_EQUALS(command, "process")) {
         if (argc < 3) {
-            fprintf(stderr, "Error: No file specified for processing\n");
+            XMD_ERROR_MSG("No file specified for processing");
             return 1;
         }
         return cmd_process_simple(argv[2]);
-    } else if (strcmp(command, "version") == 0 || strcmp(command, "--version") == 0) {
+    } else if (STR_EQUALS(command, "version") || STR_EQUALS(command, "--version")) {
         print_version();
         return 0;
-    } else if (strcmp(command, "help") == 0 || strcmp(command, "--help") == 0) {
+    } else if (STR_EQUALS(command, "help") || STR_EQUALS(command, "--help")) {
         print_usage(argv[0]);
         return 0;
     } else {
-        fprintf(stderr, "Error: Unknown command '%s'\n", command);
+        XMD_ERROR_MSG("Unknown command '%s'", command);
         print_usage(argv[0]);
         return 1;
     }

@@ -78,6 +78,9 @@ ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
         case AST_BINARY_OP:
             return ast_evaluate_binary_op(node, evaluator);
             
+        case AST_UNARY_OP:
+            return ast_evaluate_unary_op(node, evaluator);
+            
         case AST_FUNCTION_CALL:
             return ast_evaluate_function_call(node, evaluator);
             
@@ -95,11 +98,7 @@ ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
             }
             
         case AST_CLASS_DEF:
-            // Class definitions don't return a value, they register classes
-            if (node->data.class_def.parent_class) {
-            }
-            // Store class in evaluator context for instantiation
-            return ast_value_create_boolean(true);
+            return ast_evaluate_class_def(node, evaluator);
             
         case AST_METHOD_DEF:
             // Method definitions are handled within class context
@@ -114,6 +113,15 @@ ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
             
         case AST_WHILE_LOOP:
             return ast_evaluate_while_loop(node, evaluator);
+            
+        case AST_LOOP_TIMES:
+            return ast_evaluate_loop_times(node, evaluator);
+            
+        case AST_FOR_RANGE:
+            return ast_evaluate_for_range(node, evaluator);
+            
+        case AST_FOR_INDEXED:
+            return ast_evaluate_for_indexed(node, evaluator);
             
         case AST_BREAK:
             return ast_evaluate_break(node, evaluator);
@@ -138,6 +146,9 @@ ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
             
         case AST_ARRAY_ACCESS:
             return ast_evaluate_array_access(node, evaluator);
+            
+        case AST_OBJECT_ACCESS:
+            return ast_evaluate_object_access(node, evaluator);
             
         case AST_ARRAY_LITERAL: {
             // Create array value
@@ -171,6 +182,39 @@ ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator) {
             
             return array_val;
         }
+        
+        case AST_TERNARY:
+            return ast_evaluate_ternary(node, evaluator);
+            
+        case AST_TRY_CATCH:
+            return ast_evaluate_try_catch(node, evaluator);
+            
+        case AST_THROW:
+            return ast_evaluate_throw(node, evaluator);
+            
+        case AST_LAMBDA:
+            return ast_evaluate_lambda(node, evaluator);
+            
+        case AST_STRING_METHOD:
+            return ast_evaluate_string_method(node, evaluator);
+            
+        case AST_AWAIT:
+            return ast_evaluate_await(node, evaluator);
+            
+        case AST_IMPORT:
+            return ast_evaluate_import(node, evaluator);
+            
+        case AST_DESTRUCTURE:
+            return ast_evaluate_destructure(node, evaluator);
+            
+        case AST_SPREAD:
+            return ast_evaluate_spread(node, evaluator);
+            
+        case AST_GENERATOR_DEF:
+            return ast_evaluate_generator_def(node, evaluator);
+            
+        case AST_YIELD:
+            return ast_evaluate_yield(node, evaluator);
             
         default:
             return NULL;

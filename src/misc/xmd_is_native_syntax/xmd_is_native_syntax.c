@@ -33,13 +33,13 @@ bool xmd_is_native_syntax(const char* content) {
         }
         
         // Check for native XMD keywords
-        if (strncmp(pos, "set ", 4) == 0 ||
-            strncmp(pos, "if ", 3) == 0 ||
-            strncmp(pos, "for ", 4) == 0 ||
-            strncmp(pos, "while ", 6) == 0 ||
-            strncmp(pos, "function ", 9) == 0 ||
-            strncmp(pos, "class ", 6) == 0 ||
-            strncmp(pos, "print ", 6) == 0 ||
+        if (STRN_EQUALS(pos, "set ", 4) ||
+            STRN_EQUALS(pos, "if ", 3) ||
+            STRN_EQUALS(pos, "for ", 4) ||
+            STRN_EQUALS(pos, "while ", 6) ||
+            STRN_EQUALS(pos, "function ", 9) ||
+            STRN_EQUALS(pos, "class ", 6) ||
+            STRN_EQUALS(pos, "print ", 6) ||
             strstr(pos, "${") != NULL) {  // Native variable syntax
             return true;
         }

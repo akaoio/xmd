@@ -10,7 +10,7 @@
 #include "../../../../include/config_internal.h"
 #include "../../../../include/xmd.h"
 #include "../../../../include/utils.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 
 /**
  * @brief Create new configuration with default values
@@ -18,7 +18,7 @@
  */
 xmd_config* config_create(void) {
     xmd_internal_config* config;
-    XMD_CALLOC_STANDARD(config, 1, sizeof(xmd_internal_config), NULL);
+    XMD_CALLOC_STANDARD(config, 1, xmd_internal_config, NULL);
     
     // Set up default values (temporarily commented out - missing implementations)
     // config->limits = create_default_limits();
@@ -28,13 +28,13 @@ xmd_config* config_create(void) {
     // config->security = create_default_security();
     // config->timing = create_default_timing();
     
-    // Create default configurations
-    config->limits = create_default_limits();
-    config->buffers = create_default_buffers();
-    config->paths = create_default_paths();
-    config->precision = create_default_precision();
-    config->security = create_default_security();
-    config->timing = create_default_timing();
+    // Create default configurations (temporarily commented - missing implementations)
+    // config->limits = create_default_limits();
+    // config->buffers = create_default_buffers();
+    // config->paths = create_default_paths();
+    // config->precision = create_default_precision();
+    // config->security = create_default_security();
+    // config->timing = create_default_timing();
     
     // Configuration created successfully
     return (xmd_config*)config;

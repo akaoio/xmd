@@ -1,0 +1,7 @@
+id: agent-3669
+current:
+  what: ["/home/x/Projects/xmd/fix_include_paths.sh", "multiple include path fixes across src/ directory"]
+  why: "Resolving systematic build failures caused by incorrect include paths in 50+ C files"
+  how: "Created automated script to fix include paths, manually correcting remaining edge cases"
+  when: 1754299350
+activities: []

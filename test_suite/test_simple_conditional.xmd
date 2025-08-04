@@ -1,9 +1,0 @@
-# Simple Conditional Test
-# Tests basic if statement
-
-set x 10
-
-if x > 5
-    print "X is greater than 5"
-
-print "Test complete"

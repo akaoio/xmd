@@ -1,0 +1,3 @@
+2025-08-03T16:03:37.470Z|👤 GENESIS|👥 ALL|this is a total mess: why some children folders standing at same level with parent, for example the ast and ast_*: x@orange:~/Projects/xmd/src$ ls
+ast                   ast_find_matching_endfor  cli          config  dependency  main.c  module  parsers      platform  sandbox   store  utils     xmd_processor
+ast_create_directive  bindings                  conditional  core    devtools    misc    parser  performance  resource  security  token  variable

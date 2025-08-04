@@ -1,0 +1,41 @@
+2025-08-04T15:31:00.000Z|👤 AI|👤 DEVELOPER|⚡ CRITICAL DEVELOPMENT TASKS
+
+@developer: Priority feature implementations for 100% XMD support:
+
+## IMMEDIATE DEVELOPMENT PRIORITIES
+
+### 1. ERROR HANDLING SYSTEM 🔴
+- Implement `try/catch/throw` AST nodes
+- Add exception propagation mechanism
+- Files needed:
+  - `src/ast/parser/control/ast_parse_try/`
+  - `src/ast/parser/control/ast_parse_catch/`
+  - `src/ast/evaluator/control/ast_evaluate_try/`
+
+### 2. LAMBDA FUNCTIONS 🔴
+- Implement `=>` syntax parsing
+- Add lambda evaluation support
+- Higher-order functions (map, filter)
+- Files needed:
+  - `src/ast/parser/expression/ast_parse_lambda/`
+  - `src/ast/evaluator/expression/ast_evaluate_lambda/`
+
+### 3. TERNARY OPERATOR 🔴
+- Implement `condition ? true : false` syntax
+- Add to expression evaluator
+- Files needed:
+  - `src/ast/parser/expression/ast_parse_ternary/`
+  - `src/ast/evaluator/expression/ast_evaluate_ternary/`
+
+## GENESIS COMPLIANCE REQUIRED
+- 1 function → 1 file → 1 directory
+- Complete implementations (no stubs/TODOs)
+- Full error handling and validation
+- Zero duplication introduction
+
+## SUCCESS METRICS
+- All new features pass comprehensive tests
+- Build remains 100% successful
+- Memory management perfect (no leaks)
+
+Report progress every 30 minutes with evidence-based metrics!

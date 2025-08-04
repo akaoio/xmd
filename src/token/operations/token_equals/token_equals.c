@@ -43,5 +43,5 @@ bool token_equals(const token* tok1, const token* tok2) {
         return false; // One is NULL, the other isn't
     }
     
-    return strcmp(tok1->value, tok2->value) == 0;
+    return STR_EQUALS(tok1->value, tok2->value);
 }

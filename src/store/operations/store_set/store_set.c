@@ -14,7 +14,8 @@
 #include "../../../../include/store_internal.h"
 #include "../../../../include/utils.h"
 #include "../../../../include/variable.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
+#include "../../../../utils/common/validation_macros.h"
 
 /**
  * @brief Set value in store
@@ -28,42 +29,23 @@ bool store_set(store* s, const char* key, variable* value) {
     XMD_NULL_CHECK(key, false);
     XMD_NULL_CHECK(value, false);
     
-    // Validate key is not empty
-    if (strlen(key) == 0) {
-        XMD_ERROR_RETURN(false, "store_set: Empty key provided");
-    }
+    XMD_VALIDATE_KEY_NOT_EMPTY(key, false, "store_set");
     
     if (value->type == VAR_STRING) {
     } else if (value->type == VAR_NUMBER) {
     }
     
     unsigned int index = xmd_hash_key(key, s->capacity);
-    store_entry* entry = s->buckets[index];
-    // Check if key already exists
-    while (entry) {
-        if (strcmp(entry->key, key) == 0) {
-            variable_unref(entry->value);
-            entry->value = value;
-            variable_ref(value);
-            return true;
-        }
-        entry = entry->next;
-    }
+    XMD_HASH_TABLE_FIND_ENTRY(s, key, entry, {
+        XMD_VARIABLE_REPLACE(entry, value);
+        return true;
+    });
     
-    // Create new entry
-    XMD_CREATE_VALIDATED(new_entry, store_entry, sizeof(store_entry), false);
-    entry = new_entry;
-    
-    entry->key = xmd_strdup(key);
-    if (!entry->key) {
-        XMD_FREE_SAFE(entry);
-        return false;
-    }
-    
-    entry->value = value;
-    variable_ref(value);
-    entry->next = s->buckets[index];
-    s->buckets[index] = entry;
+    // Create new entry using store macro
+    store_entry* new_entry;
+    XMD_CREATE_STORE_ENTRY(new_entry, key, value, false);
+    new_entry->next = s->buckets[index];
+    s->buckets[index] = new_entry;
     s->size++;
     return true;
 }

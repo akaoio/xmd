@@ -5,6 +5,7 @@
  */
 
 #include "../../../../include/platform_internal.h"
+#include "../../../../utils/common/validation_macros.h"
 /**
  * @brief Get current process memory usage
  * @return Memory usage in bytes
@@ -17,7 +18,7 @@ uint64_t xmd_get_memory_usage(void) {
     }
 #elif defined(XMD_PLATFORM_LINUX) && !defined(XMD_PLATFORM_ANDROID)
     FILE* file = fopen("/proc/self/status", "r");
-    if (!file) return 0;
+    XMD_VALIDATE_PTR_RETURN(file, 0);
     char line[256];
     while (fgets(line, sizeof(line), file)) {
         if (strncmp(line, "VmRSS:", 6) == 0) {

@@ -10,11 +10,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "../../../../include/ast.h"
-#include "../../../../include/store.h"
-#include "../../../../include/variable.h"
-#include "../../../../include/utils.h"
-#include "../../../utils/common/common_macros.h"
+#include "ast.h"
+#include "store.h"
+#include "variable.h"
+#include "utils.h"
+#include "../../../../utils/common/common_macros.h"
 
 // Forward declaration for json_parse_value
 extern variable* json_parse_value(const char* json, size_t* pos);

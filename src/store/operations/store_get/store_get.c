@@ -13,6 +13,7 @@
 #include "variable.h"
 #include "utils.h"
 #include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Get value from store
@@ -24,19 +25,9 @@ variable* store_get(store* s, const char* key) {
     XMD_NULL_CHECK(s, NULL);
     XMD_NULL_CHECK(key, NULL);
     
-    // Validate key is not empty
-    if (strlen(key) == 0) {
-        XMD_ERROR_RETURN(NULL, "store_get: Empty key provided");
-    }
+    XMD_VALIDATE_KEY_NOT_EMPTY(key, NULL, "store_get");
     
-    unsigned int index = xmd_hash_key(key, s->capacity);
-    store_entry* entry = s->buckets[index];
-    while (entry) {
-        if (strcmp(entry->key, key) == 0) {
-            return entry->value;
-        }
-        entry = entry->next;
-    }
+    XMD_HASH_TABLE_FIND_ENTRY(s, key, entry, return entry->value);
     
     // Key not found - provide detailed error
     XMD_ERROR_RETURN(NULL, "store_get: Key '%s' not found in store", key);

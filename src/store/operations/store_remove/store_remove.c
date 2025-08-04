@@ -14,7 +14,8 @@
 #include "../../../../include/store_internal.h"
 #include "../../../../include/variable.h"
 #include "../../../../include/utils.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
+#include "../../../../utils/common/validation_macros.h"
 
 /**
  * @brief Remove key from store
@@ -26,16 +27,13 @@ bool store_remove(store* s, const char* key) {
     XMD_NULL_CHECK(s, false);
     XMD_NULL_CHECK(key, false);
     
-    // Validate key is not empty
-    if (strlen(key) == 0) {
-        XMD_ERROR_RETURN(false, "store_remove: Empty key provided");
-    }
+    XMD_VALIDATE_KEY_NOT_EMPTY(key, false, "store_remove");
     
     unsigned int index = xmd_hash_key(key, s->capacity);
     store_entry* entry = s->buckets[index];
     store_entry* prev = NULL;
     while (entry) {
-        if (strcmp(entry->key, key) == 0) {
+        if (STR_EQUALS(entry->key, key)) {
             if (prev) {
                 prev->next = entry->next;
             } else {

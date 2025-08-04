@@ -8,7 +8,7 @@
 
 #include "../../../../include/config.h"
 #include "../../../../include/config_internal.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 
 // Global configuration instance
 static xmd_internal_config* global_config = NULL;

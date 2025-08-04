@@ -1,4 +1,0 @@
-print "Before loop"
-for i in 1..3
-    print i
-print "After loop"

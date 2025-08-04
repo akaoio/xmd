@@ -13,33 +13,31 @@
 #include <stdlib.h>
 #include "ast.h"
 #include "utils.h"
-#include "../../../../utils/common/common_macros.h"
+#include "../../../../../utils/common/common_macros.h"
+#include "../../../../../utils/common/validation_macros.h"
 /**
  * @brief Parse a single statement
  * @param pos Pointer to current position in input
  * @return AST statement node or NULL
  */
 ast_node* ast_parse_statement(const char** pos) {
-    if (!pos || !*pos) {
-        XMD_ERROR_RETURN(NULL, "ast_parse_statement: NULL position pointer provided");
-    }
+    // Validate input parameters
+    XMD_VALIDATE_PARAMS_2(NULL, pos, *pos);
     
     // DEBUG: ast_parse_statement ENTRY - disabled after successful loop fix
     const char* start = *pos;
-    // Skip whitespace
-    while (*start && isspace(*start) && *start != '\n') {
-        start++;
-    }
     
-    if (!*start || *start == '\n') {
-        XMD_ERROR_RETURN(NULL, "ast_parse_statement: Empty statement or newline-only input");
-    }
+    // Skip whitespace using standard macro
+    XMD_PARSE_SKIP_WHITESPACE(&start);
+    
+    // Check for end of input using standard macro
+    XMD_PARSE_CHECK_END(&start, NULL);
     
     *pos = start;
     
-    // CONTROL FLOW PARSING
+    // CONTROL FLOW PARSING - USE MACRO INSTEAD OF BOILERPLATE
     // Check for IF statements (Genesis if/then syntax)
-    if (strncmp(start, "if ", 3) == 0) {
+    if (STRN_EQUALS(start, "if ", 3)) {
         const char* then_pos = strstr(start + 3, " then ");
         if (then_pos) {
             // Single line: "if condition then action"
@@ -50,25 +48,26 @@ ast_node* ast_parse_statement(const char** pos) {
         }
     }
     
-    // Check for ELIF statements
-    if (strncmp(start, "elif ", 5) == 0) {
+    // Check for ELIF statements - USE MACRO INSTEAD OF BOILERPLATE
+    if (STRN_EQUALS(start, "elif ", 5)) {
         return ast_parse_elif(pos);
     }
     
     // Check for ELSE statements
-    if (strncmp(start, "else", 4) == 0 && (start[4] == '\0' || isspace(start[4]) || start[4] == '\n')) {
+    if (STRN_EQUALS(start, "else", 4) && (start[4] == '\0' || isspace(start[4]) || start[4] == '\n')) {
         return ast_parse_else(pos);
     }
     
     // Check for WHILE loops
-    if (strncmp(start, "while ", 6) == 0) {
+    if (STRN_EQUALS(start, "while ", 6)) {
         return ast_parse_while(pos);
     }
     
     // Check for FOR loops (enhanced with range support)
-    if (strncmp(start, "for ", 4) == 0) {
+    if (STRN_EQUALS(start, "for ", 4)) {
         // Check for range syntax first
         const char* line_end = start;
+        // USE MACRO INSTEAD OF BOILERPLATE  
         while (*line_end && *line_end != '\n') {
             line_end++;
         }

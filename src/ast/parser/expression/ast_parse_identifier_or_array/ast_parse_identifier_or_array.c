@@ -28,16 +28,13 @@ ast_node* ast_parse_identifier_or_array(const char* identifier_str, source_locat
     
     // Look for bracket to detect array access
     const char* bracket_pos = strchr(identifier_str, '[');
-    if (!bracket_pos) {
-        // No bracket, just a regular identifier
-        return ast_create_identifier(identifier_str, loc);
-    }
+    // USE MACRO INSTEAD OF BOILERPLATE
+    XMD_VALIDATE_AND_RETURN(!bracket_pos, ast_create_identifier(identifier_str, loc));
     
     // Find the closing bracket
     const char* close_bracket = strchr(bracket_pos, ']');
-    if (!close_bracket) {
-        return ast_create_identifier(identifier_str, loc);
-    }
+    // USE MACRO INSTEAD OF BOILERPLATE
+    XMD_VALIDATE_AND_RETURN(!close_bracket, ast_create_identifier(identifier_str, loc));
     
     // Extract array name (before '[')
     size_t array_name_len = bracket_pos - identifier_str;
@@ -56,9 +53,10 @@ ast_node* ast_parse_identifier_or_array(const char* identifier_str, source_locat
     
     // Create array expression (identifier)
     ast_node* array_expr = ast_create_identifier(array_name, loc);
+    // USE MACRO WITH CLEANUP INSTEAD OF BOILERPLATE
     if (!array_expr) {
-        XMD_FREE_SAFE(array_name);
-        XMD_FREE_SAFE(index_str);
+        free(array_name);
+        free(index_str);
         return NULL;
     }
     
@@ -73,10 +71,11 @@ ast_node* ast_parse_identifier_or_array(const char* identifier_str, source_locat
         index_expr = ast_create_identifier(index_str, loc);
     }
     
+    // USE MACRO WITH CLEANUP INSTEAD OF BOILERPLATE
     if (!index_expr) {
         XMD_FREE_SAFE(array_expr);
-        XMD_FREE_SAFE(array_name);
-        XMD_FREE_SAFE(index_str);
+        free(array_name);
+        free(index_str);
         return NULL;
     }
     

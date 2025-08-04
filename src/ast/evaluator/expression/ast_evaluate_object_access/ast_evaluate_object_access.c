@@ -10,9 +10,10 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "../../../../../include/ast.h"
-#include "../../../../../include/utils.h"
+#include "ast.h"
+#include "utils.h"
 #include "../../../../utils/common/common_macros.h"
+#include "../../../../utils/common/validation_macros.h"
 
 // Forward declarations
 ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator);
@@ -27,7 +28,7 @@ ast_value* ast_value_create_boolean(bool val);
  * @return AST value result or NULL on error
  */
 ast_value* ast_evaluate_object_access(ast_node* node, ast_evaluator* evaluator) {
-    XMD_VALIDATE_PTRS(NULL, node, evaluator);
+    XMD_VALIDATE_PARAMS_2(NULL, node, evaluator);
     
     if (node->type != AST_OBJECT_ACCESS) {
         XMD_ERROR_RETURN(NULL, "Expected AST_OBJECT_ACCESS node, got type %d", node->type);
@@ -35,9 +36,7 @@ ast_value* ast_evaluate_object_access(ast_node* node, ast_evaluator* evaluator) 
     
     // Evaluate the object expression (should be an identifier or expression that results in an object)
     ast_value* object_value = ast_evaluate(node->data.object_access.object_expr, evaluator);
-    if (!object_value) {
-        XMD_ERROR_RETURN(NULL, "Failed to evaluate object expression");
-    }
+    XMD_VALIDATE_PTR_RETURN(object_value, NULL);
     
     // Check if the object expression is an identifier
     if (node->data.object_access.object_expr->type == AST_IDENTIFIER) {
@@ -49,7 +48,7 @@ ast_value* ast_evaluate_object_access(ast_node* node, ast_evaluator* evaluator) 
         variable* object_var = store_get(evaluator->variables, object_name);
         if (!object_var) {
             XMD_FREE_SAFE(object_value);
-            XMD_ERROR_RETURN(ast_value_create_string(""), "Object variable '%s' not found", object_name);
+            return ast_value_create_string("");
         }
         
         // Check if it's actually an object
@@ -63,8 +62,7 @@ ast_value* ast_evaluate_object_access(ast_node* node, ast_evaluator* evaluator) 
         variable* property_var = variable_object_get(object_var, property_name);
         if (!property_var) {
             XMD_FREE_SAFE(object_value);
-            XMD_ERROR_RETURN(ast_value_create_string(""), "Property '%s' not found in object '%s'", 
-                           property_name, object_name);
+            return ast_value_create_string("");
         }
         
         // Convert the property to an AST value

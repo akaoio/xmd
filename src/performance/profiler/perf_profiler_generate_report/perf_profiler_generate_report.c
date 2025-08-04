@@ -7,13 +7,14 @@
 #include <stdlib.h>
 #include "../../../../include/performance_internal.h"
 #include "../../../../include/utils.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
+#include "../../../../utils/common/validation_macros.h"
 
 /**
  * @brief Function implementation
  */
 char* perf_profiler_generate_report(perf_profiler* profiler) {
-    if (!profiler) return NULL;
+    XMD_VALIDATE_PTR_RETURN(profiler, NULL);
     
     char* report;
     XMD_MALLOC_DYNAMIC(report, 2048, NULL);

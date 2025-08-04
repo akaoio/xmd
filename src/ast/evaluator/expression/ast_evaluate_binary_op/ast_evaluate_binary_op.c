@@ -18,6 +18,7 @@
 #include "utils.h"
 #include "variable.h"
 #include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 /**
  * @brief Evaluate binary operation node
  * @param node Binary operation AST node
@@ -34,7 +35,7 @@ ast_value* ast_evaluate_binary_op(ast_node* node, ast_evaluator* evaluator) {
     if (!left || !right) {
         XMD_FREE_SAFE(left);
         XMD_FREE_SAFE(right);
-        XMD_ERROR_RETURN(NULL, "Failed to evaluate operands");
+        XMD_ERROR_RETURN(NULL, "Failed to evaluate operands%s", "");
     }
     
     ast_value* result = NULL;
@@ -56,27 +57,12 @@ ast_value* ast_evaluate_binary_op(ast_node* node, ast_evaluator* evaluator) {
                     XMD_FREE_SAFE(concat);
                 }
             } else if (left->type == AST_VAL_STRING || right->type == AST_VAL_STRING) {
-                // Mixed type concatenation - convert to strings
+                // Mixed type concatenation - USE MACRO INSTEAD OF BOILERPLATE
                 char* left_str = NULL;
                 char* right_str = NULL;
                 
-                if (left->type == AST_VAL_STRING) {
-                    left_str = xmd_strdup(left->value.string_value);
-                } else if (left->type == AST_VAL_NUMBER) {
-                    left_str = xmd_malloc(32);
-                    if (left_str) snprintf(left_str, 32, "%g", left->value.number_value);
-                } else if (left->type == AST_VAL_BOOLEAN) {
-                    left_str = xmd_strdup(left->value.boolean_value ? "true" : "false");
-                }
-                
-                if (right->type == AST_VAL_STRING) {
-                    right_str = xmd_strdup(right->value.string_value);
-                } else if (right->type == AST_VAL_NUMBER) {
-                    right_str = xmd_malloc(32);
-                    if (right_str) snprintf(right_str, 32, "%g", right->value.number_value);
-                } else if (right->type == AST_VAL_BOOLEAN) {
-                    right_str = xmd_strdup(right->value.boolean_value ? "true" : "false");
-                }
+                XMD_CONVERT_VALUE_TO_STRING(left, left_str, NULL);
+                XMD_CONVERT_VALUE_TO_STRING(right, right_str, NULL);
                 
                 if (left_str && right_str) {
                     size_t total_len = strlen(left_str) + strlen(right_str) + 1;
@@ -117,7 +103,7 @@ ast_value* ast_evaluate_binary_op(ast_node* node, ast_evaluator* evaluator) {
                 if (right->value.number_value == 0.0) {
                     XMD_FREE_SAFE(left);
                     XMD_FREE_SAFE(right);
-                    XMD_ERROR_RETURN(NULL, "ast_evaluate_binary_op: Division by zero error");
+                    XMD_ERROR_RETURN(NULL, "%s", "ast_evaluate_binary_op: Division by zero error");
                 }
                 double quotient = left->value.number_value / right->value.number_value;
                 result = ast_value_create_number(quotient);
@@ -132,7 +118,8 @@ ast_value* ast_evaluate_binary_op(ast_node* node, ast_evaluator* evaluator) {
                 bool equal = (left->value.number_value == right->value.number_value);
                 result = ast_value_create_boolean(equal);
             } else if (left->type == AST_VAL_STRING && right->type == AST_VAL_STRING) {
-                bool equal = (strcmp(left->value.string_value, right->value.string_value) == 0);
+                // USE MACRO INSTEAD OF BOILERPLATE
+                bool equal = STR_EQUALS(left->value.string_value, right->value.string_value);
                 result = ast_value_create_boolean(equal);
             } else if (left->type == AST_VAL_BOOLEAN && right->type == AST_VAL_BOOLEAN) {
                 bool equal = (left->value.boolean_value == right->value.boolean_value);
@@ -144,7 +131,8 @@ ast_value* ast_evaluate_binary_op(ast_node* node, ast_evaluator* evaluator) {
                 bool not_equal = (left->value.number_value != right->value.number_value);
                 result = ast_value_create_boolean(not_equal);
             } else if (left->type == AST_VAL_STRING && right->type == AST_VAL_STRING) {
-                bool not_equal = (strcmp(left->value.string_value, right->value.string_value) != 0);
+                // USE MACRO INSTEAD OF BOILERPLATE
+                bool not_equal = STR_NOT_EQUALS(left->value.string_value, right->value.string_value);
                 result = ast_value_create_boolean(not_equal);
             } else if (left->type == AST_VAL_BOOLEAN && right->type == AST_VAL_BOOLEAN) {
                 bool not_equal = (left->value.boolean_value != right->value.boolean_value);

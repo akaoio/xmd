@@ -15,6 +15,7 @@
 #include "store.h"
 #include "variable.h"
 #include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Evaluate array access node (array[index])
@@ -32,9 +33,7 @@ ast_value* ast_evaluate_array_access(ast_node* node, ast_evaluator* evaluator) {
         
         // Get the actual array variable from store
         variable* array_var = store_get(evaluator->variables, array_name);
-        if (!array_var) {
-            XMD_ERROR_RETURN(NULL, "Array variable '%s' not found", array_name);
-        }
+        XMD_VALIDATE_PTR_RETURN(array_var, NULL);
         
         // Check if it's actually an array
         if (variable_get_type(array_var) != VAR_ARRAY) {
@@ -43,9 +42,7 @@ ast_value* ast_evaluate_array_access(ast_node* node, ast_evaluator* evaluator) {
         
         // Evaluate the index expression
         ast_value* index_value = ast_evaluate(node->data.array_access.index_expr, evaluator);
-        if (!index_value) {
-            XMD_ERROR_RETURN(NULL, "Failed to evaluate index expression");
-        }
+        XMD_VALIDATE_PTR_RETURN(index_value, NULL);
         
         // Convert index to integer
         int index = 0;
@@ -63,7 +60,7 @@ ast_value* ast_evaluate_array_access(ast_node* node, ast_evaluator* evaluator) {
             }
         } else {
             XMD_FREE_SAFE(index_value);
-            XMD_ERROR_RETURN(NULL, "Array index must be a number");
+            XMD_ERROR_RETURN(NULL, "Array index must be a number%s", "");
         }
         
         // Get array size for bounds checking
@@ -79,7 +76,7 @@ ast_value* ast_evaluate_array_access(ast_node* node, ast_evaluator* evaluator) {
         variable* element = variable_array_get(array_var, (size_t)index);
         if (!element) {
             XMD_FREE_SAFE(index_value);
-            XMD_ERROR_RETURN(NULL, "Failed to get array element at index %d", index);
+            return NULL;
         }
         
         // Convert the element to an AST value

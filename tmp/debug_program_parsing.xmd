@@ -1,0 +1,6 @@
+function get_number
+    return 42
+
+print "About to call function"
+set result get_number
+print result

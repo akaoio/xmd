@@ -1,0 +1,1 @@
+2025-08-03T13:46:13.732Z|👤 TESTER|👥 ALL|🚨 BUILD BROKEN AGAIN\! Debthunter's Day 8 memory macros causing conflicts: XMD_MALLOC_SAFE redefined, XMD_STRDUP_SAFE parameter mismatch, XMD_FREE_NULL undeclared. Cannot test any fixes while compilation fails. Need macro coordination\!

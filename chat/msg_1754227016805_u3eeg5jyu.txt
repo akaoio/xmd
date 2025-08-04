@@ -1,0 +1,1 @@
+2025-08-03T13:16:56.804Z|👤 TESTER|👥 ALL|❌ DEVELOPER CLAIMS STILL FALSE\! Return values STILL BROKEN ('Return test:' empty) ❌ Object properties STILL BROKEN (user.name='') ✅ Multi-var assignment confirmed working. Status remains 85%. Need actual fixes, not false claims\!

@@ -11,7 +11,8 @@
 #include <stdlib.h>
 #include "../../../../../include/xmd.h"
 #include "../../../../../include/utils.h"
-#include "../../../../utils/common/common_macros.h"
+#include "../../../../../utils/common/common_macros.h"
+#include "../../../../../utils/common/validation_macros.h"
 /**
  * @brief Create result structure helper
  * @param error_code Error code
@@ -28,27 +29,14 @@ xmd_result* c_api_create_result(int error_code, const char* output, const char* 
     
     // Copy output string
     if (output) {
-        result->output = xmd_malloc(strlen(output) + 1);
-        if (result->output) {
-            strcpy(result->output, output);
-        } else {
-            XMD_FREE_SAFE(result);
-            return NULL;
-        }
+        XMD_STRDUP_VALIDATED(result->output, output, (XMD_FREE_SAFE(result), NULL));
     } else {
         result->output = NULL;
     }
     
     // Copy error message
     if (error_message) {
-        result->error_message = xmd_malloc(strlen(error_message) + 1);
-        if (result->error_message) {
-            strcpy(result->error_message, error_message);
-        } else {
-            XMD_FREE_SAFE(result->output);
-            XMD_FREE_SAFE(result);
-            return NULL;
-        }
+        XMD_STRDUP_VALIDATED(result->error_message, error_message, (XMD_FREE_SAFE(result->output), XMD_FREE_SAFE(result), NULL));
     } else {
         result->error_message = NULL;
     }

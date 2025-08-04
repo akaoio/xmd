@@ -1,9 +1,0 @@
-# Test Conditional with == operator
-set x 10
-
-if x == 10
-    print "X equals 10!"
-else
-    print "X does not equal 10"
-
-print "Test complete"

@@ -12,7 +12,7 @@
 #include <stddef.h>
 #include "../../../../include/security.h"
 #include "../../../../include/auditor_internal.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 
 // Forward declaration for validation function
 security_result security_validate_command(const char* command);

@@ -10,7 +10,7 @@
 
 #include "../../../../include/dependency.h"
 #include "../../../../include/utils.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Add child dependency to node
  * @param parent Parent node

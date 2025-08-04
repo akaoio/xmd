@@ -10,7 +10,8 @@
 #include <stdlib.h>
 #include "../../../../include/variable.h"
 #include "../../../../include/variable_internal.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
+#include "../../../../utils/common/validation_macros.h"
 
 /**
  * @brief Decrement reference count and free if zero
@@ -26,13 +27,19 @@ void variable_unref(variable* var) {
     }
     
     if (var->ref_count == 0) {
-        // Clean up based on type
-        switch (var->type) {
-            case VAR_STRING:
-                XMD_FREE_SAFE(var->value.string_value);
-                break;
-                
-            case VAR_ARRAY:
+        // Clean up based on type using XMD_VARIABLE_TYPE_DISPATCH
+        XMD_VARIABLE_TYPE_DISPATCH(var,
+            // VAR_STRING case
+            XMD_FREE_SAFE(var->value.string_value),
+            
+            // VAR_NUMBER case - no cleanup needed
+            ((void)0),
+            
+            // VAR_BOOLEAN case - no cleanup needed
+            ((void)0),
+            
+            // VAR_ARRAY case
+            {
                 if (var->value.array_value) {
                     for (size_t i = 0; i < var->value.array_value->count; i++) {
                         variable_unref(var->value.array_value->items[i]);
@@ -40,9 +47,10 @@ void variable_unref(variable* var) {
                     XMD_FREE_SAFE(var->value.array_value->items);
                     XMD_FREE_SAFE(var->value.array_value);
                 }
-                break;
-                
-            case VAR_OBJECT:
+            },
+            
+            // VAR_OBJECT case
+            {
                 if (var->value.object_value) {
                     for (size_t i = 0; i < var->value.object_value->count; i++) {
                         XMD_FREE_SAFE(var->value.object_value->pairs[i].key);
@@ -51,12 +59,14 @@ void variable_unref(variable* var) {
                     XMD_FREE_SAFE(var->value.object_value->pairs);
                     XMD_FREE_SAFE(var->value.object_value);
                 }
-                break;
-                
-            default:
-                // No cleanup needed for NULL, BOOLEAN, NUMBER
-                break;
-        }
+            },
+            
+            // VAR_NULL case - no cleanup needed
+            ((void)0),
+            
+            // default case - no cleanup needed
+            ((void)0)
+        );
         
         XMD_FREE_SAFE(var);
     }

@@ -1,4 +1,0 @@
-set user name "Alice", age 30
-put "data.json".users.alice user
-set retrieved get "data.json".users.alice.name
-print "Retrieved: {{retrieved}}"

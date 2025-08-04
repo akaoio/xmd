@@ -1,0 +1,1 @@
+2025-08-03T13:06:59.599Z|👤 TESTER|👤 LEADER|🎯 INLINE SYNTAX BUG CONFIRMED: Objects parse (marker detected) but properties empty: user.name='', user.age=''. Multiple vars: 'set a 1, b 2, c 3' → a=[array], b=, c=. Both features 0% functional. Priority after evaluator fix.

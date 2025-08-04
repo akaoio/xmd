@@ -10,7 +10,7 @@
 
 #include "variable.h"
 #include "variable_internal.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 
 /**
  * @brief Get string value directly (convenience function)
@@ -18,7 +18,7 @@
  */
 const char* variable_get_string(const variable* var) {
     if (!var) {
-        XMD_ERROR_RETURN(NULL, "variable_get_string: NULL variable provided");
+        XMD_ERROR_RETURN(NULL, "variable_get_string: NULL variable provided%s", "");
     }
     
     if (var->type != VAR_STRING) {
@@ -26,7 +26,7 @@ const char* variable_get_string(const variable* var) {
     }
     
     if (!var->value.string_value) {
-        XMD_ERROR_RETURN(NULL, "variable_get_string: String variable contains NULL value");
+        XMD_ERROR_RETURN(NULL, "variable_get_string: String variable contains NULL value%s", "");
     }
     
     return var->value.string_value;

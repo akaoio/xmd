@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../../../../include/xmd.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 
 /**
  * @brief Set XMD configuration parameter

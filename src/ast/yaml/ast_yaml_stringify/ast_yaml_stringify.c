@@ -9,11 +9,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../../../include/ast.h"
-#include "../../../../include/store.h"
-#include "../../../../include/variable.h"
-#include "../../../../include/utils.h"
-#include "../../../utils/common/common_macros.h"
+#include "ast.h"
+#include "store.h"
+#include "variable.h"
+#include "utils.h"
+#include "../../../../utils/common/common_macros.h"
 
 // Function declaration for the helper function
 char* yaml_stringify_variable(variable* var, int indent);

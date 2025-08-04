@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include "../../../../include/auditor_internal.h"
-#include "../../../utils/common/common_macros.h"
+#include "../../../../utils/common/common_macros.h"
 /**
  * @brief Cleanup security audit system
  */

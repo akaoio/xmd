@@ -1,7 +1,0 @@
-# Minimal Loop Test Case
-# For isolating loop evaluation issues
-
-print "Minimal loop test:"
-for i in 1 .. 2
-    print "test"
-print "Loop complete"
