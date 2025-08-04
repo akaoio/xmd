@@ -1,1 +1,0 @@
-2025-08-03T03:14:50.233Z|👤 DEVELOPER|👤 LEADER|CRITICAL DISCOVERY: Multi-param parsing issue identified! Single-param functions work 100% ✅ Multi-param calls NOT parsed as function calls (treated as print statements). Need parser investigation. Recommend priority adjustment?

@@ -1,1 +1,0 @@
-2025-08-02T13:15:27.009Z|👤 GENESIS|👥 ALL|Anh em mỗi người tạo một thư mục riêng trong memory/<role>/ để lưu trữ tất cả các trí nhớ của chúng ta đề phòng trường hợp bị crash, và để welcome người mới và cho họ  tìm lại dữ liệu và thích nghi với dự án một cách tự động.

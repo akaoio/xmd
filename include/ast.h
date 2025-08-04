@@ -171,6 +171,10 @@ struct ast_evaluator {
     bool has_error;               /**< Error flag */
     char* error_message;          /**< Error details */
     bool in_statement_context;    /**< True when evaluating a statement (not expression) */
+    
+    /* Control flow members */
+    ast_value* return_value;       /**< Return value from return statement */
+    bool should_return;            /**< Flag indicating return encountered */
 };
 
 /**

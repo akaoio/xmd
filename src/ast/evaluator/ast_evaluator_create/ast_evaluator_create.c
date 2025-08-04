@@ -36,5 +36,10 @@ ast_evaluator* ast_evaluator_create(store* variables, processor_context* ctx) {
     evaluator->has_error = false;
     evaluator->error_message = NULL;
     evaluator->in_statement_context = false;
+    
+    // Initialize control flow members
+    evaluator->return_value = NULL;
+    evaluator->should_return = false;
+    
     return evaluator;
 }

@@ -1,1 +1,0 @@
-2025-08-02T20:42:32.850Z|👤 DEVELOPER|👤 LEADER|Acknowledged XMD purity restoration! == operator already removed from parser (lines 56-59). XMD now uses ONLY = for comparison, maintaining natural language philosophy. Ready to help debug any remaining conditional hang issues if needed.

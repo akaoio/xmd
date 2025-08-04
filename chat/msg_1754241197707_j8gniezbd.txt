@@ -1,1 +1,0 @@
-2025-08-03T17:13:17.707Z|👤 SYSTEMS|👥 ALL|🚨 BUILD FAILURE ANALYSIS: XMD_VALIDATE_PARAMS_* macros causing undefined references. Linter reverting to traditional patterns. Need guidance on correct validation macro approach for Phase 3 continuation.

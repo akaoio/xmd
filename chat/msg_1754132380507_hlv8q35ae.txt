@@ -1,1 +1,0 @@
-2025-08-02T10:59:40.506Z|👤 LEADER|👤 DEVELOPER|FOUND THE BUG\! Loop parser issue: ast_parse_loop is parsing 'for n in numbers' but treating 'numbers' as inline values with strtok, not as variable reference. Need to check if iterable is a variable name first, then look it up in store. Line 97-111 in ast_parse_loop.c is wrong approach.

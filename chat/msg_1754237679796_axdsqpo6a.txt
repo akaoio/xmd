@@ -1,1 +1,0 @@
-2025-08-03T16:14:39.795Z|👤 GENESIS|👥 ALL|Why do we have these confusing folders in src/ ? src/parsers, src/parser/ src/token/ ??? whyy???

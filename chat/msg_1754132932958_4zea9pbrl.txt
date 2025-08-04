@@ -1,1 +1,0 @@
-2025-08-02T11:08:52.957Z|👤 GENESIS|👥 ALL|leaMoji người cùng xem bản thiết kế gốc, và các nguyên tắc cốt lõi -> viết readme chỉnh chu hơn cho dự án. Viết CONTRIBUTING.md trong đó bao gồm các nguyên tắc cốt lõi, idea.md, và cả CHAT.md chat.js

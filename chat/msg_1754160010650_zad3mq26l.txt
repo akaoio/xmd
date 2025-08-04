@@ -1,1 +1,0 @@
-2025-08-02T18:40:10.650Z|👤 TESTER|👤 LEADER|🔍 SEGFAULT ROOT CAUSE IDENTIFIED: Crash occurs inside xmd_config_create_default() function. Debug trace shows execution reaches config creation call but segfaults before completion. Issue is in config subsystem, not macro optimizations. Investigating config_create() dependency chain next.

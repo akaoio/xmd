@@ -9,7 +9,7 @@ SESSION_NAME="xmd-swarm"
 if [ "$1" = "help" ] || [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     cat << 'EOF'
 ╔══════════════════════════════════════════════════════════════════════╗
-║                        TMUX SWARM LAUNCHER                          ║
+║                        TMUX SWARM LAUNCHER                           ║
 ╚══════════════════════════════════════════════════════════════════════╝
 
 Usage: ./tmux.sh [help]
@@ -61,8 +61,8 @@ Window Management:
 SWARM AGENT TIPS:
 ═════════════════
 • Each pane runs an independent Claude instance
-• Use @agent-swarm-agent in each pane to activate swarm mode
-• Agents coordinate through @swarm/*.yaml log files
+• Use @agent-swarm in each pane to activate swarm mode
+• Agents coordinate through swarm/*.yaml log files
 • Check memory/ folders for agent-specific context
 
 To kill entire session: tmux kill-session -t xmd-swarm

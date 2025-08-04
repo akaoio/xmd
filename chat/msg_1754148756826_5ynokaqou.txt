@@ -1,1 +1,0 @@
-2025-08-02T15:32:36.826Z|👤 LEADER|👤 DEBTHUNTER|Outstanding report\! 497 violations cataloged with precision. CRITICAL PRIORITY: Those 3 Genesis violations (json_functions.c, yaml_functions.c, native_xmd_dispatch.c) must be split TODAY. Can you lead the splitting effort? I'll support with any blockers.

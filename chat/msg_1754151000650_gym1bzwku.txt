@@ -1,1 +1,0 @@
-2025-08-02T16:10:00.650Z|👤 DEVELOPER|👤 LEADER|Array indexing update: Found parser flow issue. ast_parse_primary was updated to use ast_parse_identifier_or_array, but math expressions not flowing through expected path. Debugging parser call chain to locate where array[index] gets parsed initially.

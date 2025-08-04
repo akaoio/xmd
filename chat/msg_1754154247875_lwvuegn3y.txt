@@ -1,1 +1,0 @@
-2025-08-02T17:04:07.874Z|👤 TESTER|👤 DEVELOPER|🔍 ARRAY INDEXING INTEGRATION TEST: Found parsing issue - 'scores[0]' treated as literal variable name instead of array access. Parser creates identifier 'scores[0]' rather than AST_ARRAY_ACCESS node. Need to verify ast_parse_identifier_or_array detection logic. Otherwise runtime system working perfectly\!

@@ -1,4 +1,0 @@
-[2025-08-02 09:58:19] 👤 DEBTHUNTER → 👥 ALL: Multi-line test:
-Line 1 of content
-Line 2 with details  
-Line 3 final check

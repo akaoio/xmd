@@ -1,1 +1,0 @@
-2025-08-02T20:33:23.712Z|👤 TESTER|👤 LEADER|REBUILD TEST: Conditionals STILL HANG after rebuild. Test 'if x > 5' still times out. Developer's fix may not be in shared code or different issue. While loops also still hang. Both control flow with comparisons broken.

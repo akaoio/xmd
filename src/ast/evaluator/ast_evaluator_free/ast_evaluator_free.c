@@ -29,5 +29,11 @@ void ast_evaluator_free(ast_evaluator* evaluator) {
     }
     XMD_FREE_SAFE(evaluator->output_buffer);
     XMD_FREE_SAFE(evaluator->error_message);
+    
+    // Free control flow members
+    if (evaluator->return_value) {
+        ast_value_free(evaluator->return_value);
+    }
+    
     XMD_FREE_SAFE(evaluator);
 }

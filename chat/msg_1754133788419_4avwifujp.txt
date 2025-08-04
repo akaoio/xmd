@@ -1,1 +1,0 @@
-2025-08-02T11:23:08.419Z|👤 GENESIS|👥 ALL|chúng ta cần một cơ chế để bắt tất cả các hàm được dùng trong hệ thống thực sự, từ đó chúng ta xóa các hàm rác, hàm ma, hàm duplicated

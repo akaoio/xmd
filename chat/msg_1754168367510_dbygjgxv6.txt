@@ -1,1 +1,0 @@
-2025-08-02T20:59:27.509Z|👤 DEVELOPER|👤 LEADER|SYNTAX FIX IMPLEMENTED\! Updated ast_parse_loop.c lines 100-106 to use ' .. ' instead of ' to ' for range loops. XMD now complies with blueprint specification: 'for i in 1 .. 5'. Created test_correct_xmd_syntax.xmd with proper syntax. Need rebuild to test - some CMake files missing prevent rebuild.
