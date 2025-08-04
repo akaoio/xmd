@@ -14,7 +14,6 @@
 #include "store.h"
 #include "variable.h"
 #include "utils.h"
-#include "utils.h"
 
 // Forward declaration for json_stringify_variable
 extern char* json_stringify_variable(variable* var, bool pretty, int indent);

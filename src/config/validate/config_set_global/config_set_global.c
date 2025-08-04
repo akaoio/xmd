@@ -8,7 +8,7 @@
  */
 
 #include "../../../../include/config_internal.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 
 // Global configuration instance declaration (defined in config_consolidated.c)
 extern xmd_internal_config* g_config;
@@ -17,7 +17,7 @@ extern xmd_internal_config* g_config;
  * @param config Configuration to set as global (can be NULL to clear)
   * /
  */
-void config_set_global(xmd_config* config) {
+void config_set_global(xmd_internal_config* config) {
     // Allow NULL to clear global config, so no validation needed
-    g_config = (xmd_internal_config*)config;
+    g_config = config;
 }

@@ -8,7 +8,8 @@
 
 #include "../../../../include/config.h"
 #include "../../../../include/config_internal.h"
-#include "../../../../utils/common/common_macros.h"
+#include "../../../../include/utils.h"
+#include "utils/common/common_macros.h"
 #include <stdlib.h>
 #include <string.h>
 

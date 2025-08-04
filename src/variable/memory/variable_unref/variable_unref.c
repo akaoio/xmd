@@ -10,8 +10,8 @@
 #include <stdlib.h>
 #include "../../../../include/variable.h"
 #include "../../../../include/variable_internal.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Decrement reference count and free if zero

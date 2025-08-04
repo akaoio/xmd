@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ast.h"
-#include "../../../utils/common/validation_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Create for indexed loop AST node (for i, item in array)
@@ -26,9 +26,17 @@ ast_node* ast_create_for_indexed(const char* index_var, const char* item_var, as
     XMD_VALIDATE_PTRS(NULL, index_var, item_var);
     XMD_VALIDATE_PTRS(NULL, array_expr, body);
     
-    XMD_ALLOC_CHECK(node, ast_node);
-    XMD_STRDUP_CHECK(node->data.for_indexed.index_var, index_var);
-    XMD_STRDUP_CHECK(node->data.for_indexed.item_var, item_var);
+    ast_node* node = xmd_malloc(sizeof(ast_node));
+    if (!node) return NULL;
+    
+    node->data.for_indexed.index_var = xmd_strdup(index_var);
+    node->data.for_indexed.item_var = xmd_strdup(item_var);
+    if (!node->data.for_indexed.index_var || !node->data.for_indexed.item_var) {
+        XMD_FREE_SAFE(node->data.for_indexed.index_var);
+        XMD_FREE_SAFE(node->data.for_indexed.item_var);
+        XMD_FREE_SAFE(node);
+        return NULL;
+    }
     
     node->type = AST_FOR_INDEXED;
     node->location = loc;

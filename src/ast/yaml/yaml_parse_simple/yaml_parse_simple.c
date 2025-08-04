@@ -17,8 +17,8 @@
 #include "store.h"
 #include "variable.h"
 #include "utils.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Parse YAML string to XMD variable

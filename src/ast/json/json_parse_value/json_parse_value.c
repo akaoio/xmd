@@ -14,8 +14,8 @@
 #include "store.h"
 #include "variable.h"
 #include "utils.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 
 // Forward declarations for other JSON parse functions
 extern variable* json_parse_object(const char* json, size_t* pos);

@@ -11,7 +11,7 @@
 #include "ast.h"
 #include "utils.h"
 #include "../../../utils/common/common_macros.h"
-#include "../../../utils/common/validation_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Create try-catch AST node
@@ -34,10 +34,11 @@ ast_node* ast_create_try_catch(ast_node* try_block, const char* catch_var, ast_n
     
     // Duplicate catch variable name if provided
     if (catch_var) {
-        XMD_STRDUP_VALIDATED(node->data.try_catch.catch_variable, catch_var, {
+        node->data.try_catch.catch_variable = xmd_strdup(catch_var);
+        if (!node->data.try_catch.catch_variable) {
             XMD_FREE_SAFE(node);
             return NULL;
-        });
+        }
     } else {
         node->data.try_catch.catch_variable = NULL;
     }

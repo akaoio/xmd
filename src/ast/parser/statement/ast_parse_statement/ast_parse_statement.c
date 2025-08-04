@@ -13,8 +13,8 @@
 #include <stdlib.h>
 #include "ast.h"
 #include "utils.h"
-#include "../../../../../utils/common/common_macros.h"
-#include "../../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 /**
  * @brief Parse a single statement
  * @param pos Pointer to current position in input
@@ -63,6 +63,29 @@ ast_node* ast_parse_statement(const char** pos) {
         return ast_parse_while(pos);
     }
     
+    // Check for LOOP N times syntax
+    if (STRN_EQUALS(start, "loop ", 5)) {
+        // Check if next token is a number or variable followed by "times"
+        const char* check_pos = start + 5;
+        while (*check_pos && isspace(*check_pos) && *check_pos != '\n') {
+            check_pos++;
+        }
+        
+        // Look ahead for "times" keyword
+        const char* times_check = check_pos;
+        while (*times_check && !isspace(*times_check) && *times_check != '\n') {
+            times_check++;
+        }
+        while (*times_check && isspace(*times_check) && *times_check != '\n') {
+            times_check++;
+        }
+        
+        if (STRN_EQUALS(times_check, "times", 5)) {
+            // This is "loop N times" syntax
+            return ast_parse_loop_times(pos);
+        }
+    }
+    
     // Check for FOR loops (enhanced with range support)
     if (STRN_EQUALS(start, "for ", 4)) {
         // Check for range syntax first
@@ -108,9 +131,48 @@ ast_node* ast_parse_statement(const char** pos) {
         return ast_create_continue_statement(loc);
     }
     
+    // Check for TRY/CATCH statements
+    if (STRN_EQUALS(start, "try", 3) && (start[3] == '\0' || isspace(start[3]) || start[3] == '\n')) {
+        return ast_parse_try_catch(pos);
+    }
+    
+    // Check for THROW statements
+    if (STRN_EQUALS(start, "throw ", 6)) {
+        return ast_parse_throw(pos);
+    }
+    
     // Check for SET statements (Variable assignment)
     if (strncmp(start, "set ", 4) == 0) {
         return ast_parse_assignment(pos);
+    }
+    
+    // Check for IMPORT statements
+    if (STRN_EQUALS(start, "import ", 7)) {
+        return ast_parse_import(pos);
+    }
+    
+    // Check for EXPORT statements
+    if (STRN_EQUALS(start, "export ", 7)) {
+        // For now, skip export (would need implementation)
+        while (**pos && **pos != '\n') (*pos)++;
+        if (**pos == '\n') (*pos)++;
+        return NULL;
+    }
+    
+    // Check for ASYNC function definitions
+    if (STRN_EQUALS(start, "async ", 6)) {
+        // Skip "async " and parse as function
+        *pos = start + 6;
+        XMD_PARSE_SKIP_WHITESPACE(pos);
+        if (STRN_EQUALS(*pos, "function ", 9)) {
+            // Mark function as async (would need flag in AST node)
+            return ast_parse_function(pos);
+        }
+    }
+    
+    // Check for AWAIT expressions
+    if (STRN_EQUALS(start, "await ", 6)) {
+        return ast_parse_await(pos);
     }
     
     // Check for FUNCTION definitions

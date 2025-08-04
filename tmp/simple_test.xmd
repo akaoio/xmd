@@ -1,0 +1,6 @@
+# Simple XMD Test
+
+```xmd
+set name "XMD"
+print "Hello " + name
+```

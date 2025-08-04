@@ -545,6 +545,11 @@ char* read_file(const char* path) {
     } while(0)
 
 /**
+ * Free memory using xmd_free
+ */
+#define XMD_FREE(ptr) xmd_free(ptr)
+
+/**
  * Free pointer and set to NULL (safer than just free)
  * Eliminates pattern: free(ptr); ptr = NULL;
  * Usage: XMD_FREE_AND_NULL(my_pointer);

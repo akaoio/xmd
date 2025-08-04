@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "../../../../include/xmd.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Process an XMD file using the simple processing pipeline

@@ -23,8 +23,31 @@
  * @return AST node (identifier or array access)
  */
 ast_node* ast_parse_identifier_or_array(const char* identifier_str, source_location loc) {
-    XMD_VALIDATE_PTRS(NULL, identifier_str);
+    // EMERGENCY DEBUG - Always print parameters
+    fprintf(stderr, "[EMERGENCY DEBUG] ast_parse_identifier_or_array called with identifier_str=%p\n", (void*)identifier_str);
+    if (identifier_str) {
+        // Safe string printing with length check
+        size_t len = strlen(identifier_str);
+        if (len > 0 && len < 1000) {
+            fprintf(stderr, "[EMERGENCY DEBUG] identifier_str content: '%s' (len=%zu)\n", identifier_str, len);
+        } else {
+            fprintf(stderr, "[EMERGENCY DEBUG] identifier_str has suspicious length: %zu\n", len);
+        }
+    }
     
+    // Explicit NULL check with debug output
+    if (!identifier_str) {
+        fprintf(stderr, "[ERROR] ast_parse_identifier_or_array: identifier_str is NULL\n");
+        return NULL;
+    }
+    
+    // Additional safety check for empty string
+    if (*identifier_str == '\0') {
+        fprintf(stderr, "[ERROR] ast_parse_identifier_or_array: identifier_str is empty\n");
+        return NULL;
+    }
+    
+    XMD_VALIDATE_PTRS(NULL, identifier_str);
     
     // Look for bracket to detect array access
     const char* bracket_pos = strchr(identifier_str, '[');
@@ -44,6 +67,12 @@ ast_node* ast_parse_identifier_or_array(const char* identifier_str, source_locat
     array_name[array_name_len] = '\0';
     
     // Extract index (between '[' and ']')
+    // Fix potential underflow/overflow issue
+    if (close_bracket <= bracket_pos + 1) {
+        free(array_name);
+        return ast_create_identifier(identifier_str, loc);
+    }
+    
     size_t index_len = close_bracket - bracket_pos - 1;
     char* index_str;
     XMD_MALLOC_DYNAMIC(index_str, index_len + 1, NULL);

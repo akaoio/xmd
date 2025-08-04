@@ -12,7 +12,7 @@
 #include "ast.h"
 #include "error.h"
 #include "utils.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Parse conditional statement: if condition then action
  * @param pos Pointer to current position (updated)

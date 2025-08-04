@@ -1,0 +1,16 @@
+// Test ternary operator syntax
+// According to XMD spec: age >= 18 ? "adult" : "minor"
+
+set age 20
+set result age >= 18 ? "adult" : "minor"
+print result
+
+set score 85
+set grade score >= 90 ? "A" : score >= 80 ? "B" : "C"
+print grade
+
+// Test with expressions
+set x 10
+set y 5
+set max x > y ? x : y
+print max

@@ -11,7 +11,7 @@
 #include <stdbool.h>
 #include "ast.h"
 #include "utils.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 void ast_value_free(ast_value* val) {
     XMD_ENTRY_VALIDATE_VOID(val);
     

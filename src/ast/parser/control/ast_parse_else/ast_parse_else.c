@@ -9,7 +9,7 @@
 
 #include "ast_node.h"
 #include "ast_parser.h"
-#include "../../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Parse else statement
  * @param pos Pointer to current position

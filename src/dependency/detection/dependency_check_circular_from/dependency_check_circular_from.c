@@ -9,7 +9,7 @@
  */
 
 #include "../../../../include/dependency.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 
 // Forward declaration
 DependencyNode* dependency_graph_find_node(DependencyGraph* graph, const char* module_name);

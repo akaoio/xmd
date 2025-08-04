@@ -8,8 +8,9 @@
  */
 
 #include "../../../../include/config.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "../../../../include/config_internal.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -20,7 +21,7 @@
  * @return 0 on success, -1 on error
   * /
  */
-int config_load_file(xmd_config* config, const char* filename) {
+int config_load_file(xmd_internal_config* config, const char* filename) {
     XMD_VALIDATE_PTRS(-1, config, filename);
     
     XMD_FILE_READ_OPEN(file, filename, -1);

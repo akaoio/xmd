@@ -1,0 +1,100 @@
+# XMD Language Comprehensive Test Suite
+
+This test file verifies all major XMD language features as specified in the blueprint.
+
+## 1. Variables Test
+```xmd
+set made "in Vietnam",
+    by "Nguyen Ky Son",
+    age 40
+set pi 3.14
+set active true
+set empty null
+
+print "XMD was made " + made + " by " + by + ", age " + age
+print "Pi is " + pi
+print "Active: " + active
+print "Empty: " + empty
+```
+
+## 2. Arrays Test
+```xmd
+set scores 1, 2, 3
+set items
+    "pen",
+    "book",
+    "lamp",
+
+print "Scores: " + scores[0] + ", " + scores[1] + ", " + scores[2]
+print "Items: " + items[0] + ", " + items[1] + ", " + items[2]
+```
+
+## 3. Objects Test
+```xmd
+set user name "Alice", age 30, active true
+set config
+    debug true,
+    retries 3,
+    timeout 1000,
+
+print "User: " + user.name + ", age " + user.age
+print "Config debug: " + config.debug + ", retries: " + config.retries
+```
+
+## 4. Functions Test
+```xmd
+function greet name
+    return "Hello " + name
+
+function add a b
+    return a + b
+
+set greeting greet "World"
+set sum add 5, 3
+
+print greeting
+print "5 + 3 = " + sum
+```
+
+## 5. Conditionals Test
+```xmd
+set score 85
+
+if score = 100 then print "Perfect!"
+if score >= 90
+    print "Excellent"
+elif score >= 70
+    print "Good"
+else
+    print "Try again"
+
+set result score >= 18 ? "adult" : "minor"
+print "Result: " + result
+```
+
+## 6. Loops Test
+```xmd
+loop 3 times
+    print "Loop iteration"
+
+for i in 1 .. 3
+    print "For loop: " + i
+    if i = 2 then break
+
+set numbers 10, 20, 30
+for item in numbers
+    print "Array item: " + item
+
+for i, name in ["Alice", "Bob"]
+    print i + ": " + name
+```
+
+## 7. Basic XMD Features
+```xmd
+set version "XMD v0.0.2"
+set language "XMD - eXtended MarkDown"
+
+print "Testing " + version
+print "Language: " + language
+print "Status: Working!"
+```

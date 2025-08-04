@@ -15,14 +15,14 @@
 #include "ast_node.h"
 #include "ast_parser.h"
 #include "utils.h"
-#include "../../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Parse comparison expression: variable = value
  * @param expr Expression string to parse
  * @return Binary operation AST node or NULL
  */
-static int recursion_depth = 0;
-static int max_recursion = 100;
+static _Thread_local int recursion_depth = 0;
+static const int max_recursion = 100;
 
 ast_node* ast_parse_comparison_expression(const char* expr) {
     if (!expr) {

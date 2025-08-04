@@ -9,8 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../../../include/utils.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Escape string for JSON

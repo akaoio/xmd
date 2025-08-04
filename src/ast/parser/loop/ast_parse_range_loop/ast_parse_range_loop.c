@@ -16,7 +16,7 @@
 #include "module.h"
 #include "variable.h"
 #include "utils.h"
-#include "../../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Parse Genesis range loop: "for i in 1 .. 5"
  * @param pos Pointer to current position

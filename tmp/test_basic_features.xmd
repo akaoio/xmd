@@ -1,0 +1,15 @@
+set name "Agent 9583"
+set age 25
+set score 95
+
+print "Hello from " + name
+print "Age: " + age
+print "Score: " + score
+
+if score >= 90
+    print "Excellent work!"
+else  
+    print "Keep trying"
+
+for i in 1..3
+    print "Loop iteration: " + i

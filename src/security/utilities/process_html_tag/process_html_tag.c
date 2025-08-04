@@ -11,7 +11,7 @@
 #include <string.h>
 #include <stddef.h>
 #include <stdbool.h>
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 
 // Forward declarations
 bool is_safe_html_tag(const char* tag);

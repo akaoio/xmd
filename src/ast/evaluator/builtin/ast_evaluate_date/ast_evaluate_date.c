@@ -12,73 +12,9 @@
 #include <string.h>
 #include "ast.h"
 #include "variable.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
-
-/**
- * @brief Get current timestamp in milliseconds
- * @return Current timestamp or 0 on error
- */
-static double get_current_timestamp_ms(void) {
-    struct timespec ts;
-    if (clock_gettime(CLOCK_REALTIME, &ts) == 0) {
-        return (double)(ts.tv_sec * 1000) + (double)(ts.tv_nsec / 1000000);
-    }
-    return (double)time(NULL) * 1000.0; // Fallback to seconds precision
-}
-
-/**
- * @brief Parse date string (simple YYYY-MM-DD format)
- * @param date_str Date string to parse
- * @return Timestamp in milliseconds or 0 on error
- */
-static double parse_date_string(const char* date_str) {
-    XMD_VALIDATE_PTR_RETURN(date_str, 0.0);
-    
-    struct tm tm = {0};
-    if (sscanf(date_str, "%d-%d-%d", &tm.tm_year, &tm.tm_mon, &tm.tm_mday) == 3) {
-        tm.tm_year -= 1900; // Years since 1900
-        tm.tm_mon -= 1;     // Months 0-11
-        tm.tm_hour = 0;
-        tm.tm_min = 0;
-        tm.tm_sec = 0;
-        
-        time_t t = mktime(&tm);
-        if (t != -1) {
-            return (double)t * 1000.0; // Convert to milliseconds
-        }
-    }
-    
-    return 0.0;
-}
-
-/**
- * @brief Calculate date difference
- * @param timestamp1 First timestamp in milliseconds
- * @param timestamp2 Second timestamp in milliseconds
- * @param unit Unit for difference ("years", "months", "days", "hours", "minutes", "seconds")
- * @return Difference in specified unit
- */
-static double calculate_date_diff(double timestamp1, double timestamp2, const char* unit) {
-    double diff_ms = timestamp1 - timestamp2;
-    double diff_seconds = diff_ms / 1000.0;
-    
-    if (STR_EQUALS(unit, "seconds")) {
-        return diff_seconds;
-    } else if (STR_EQUALS(unit, "minutes")) {
-        return diff_seconds / 60.0;
-    } else if (STR_EQUALS(unit, "hours")) {
-        return diff_seconds / 3600.0;
-    } else if (STR_EQUALS(unit, "days")) {
-        return diff_seconds / 86400.0;
-    } else if (STR_EQUALS(unit, "months")) {
-        return diff_seconds / (86400.0 * 30.44); // Average month
-    } else if (STR_EQUALS(unit, "years")) {
-        return diff_seconds / (86400.0 * 365.25); // Average year with leap years
-    }
-    
-    return diff_seconds; // Default to seconds
-}
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
+#include "date_functions.h"
 
 /**
  * @brief Evaluate Date function call (Date.now, Date(), etc.)

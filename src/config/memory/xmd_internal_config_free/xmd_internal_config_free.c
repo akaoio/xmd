@@ -8,7 +8,7 @@
 
 #include "../../../../include/config.h"
 #include "../../../../include/config_internal.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 #include <stdlib.h>
 
 /**
@@ -40,7 +40,8 @@ void xmd_internal_config_free(xmd_internal_config* config) {
     }
     
     // Free precision format string (cast away const for cleanup)
-    XMD_FREE_SAFE((char*)config->precision.number_format);
+    char* format_copy = (char*)config->precision.number_format;
+    XMD_FREE_SAFE(format_copy);
     
     // Free config file path
     XMD_FREE_SAFE(config->config_file_path);

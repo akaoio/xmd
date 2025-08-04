@@ -13,7 +13,7 @@
 #include "store.h"
 #include "variable.h"
 #include "utils.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 
 // Function declaration for the helper function
 char* yaml_stringify_variable(variable* var, int indent);

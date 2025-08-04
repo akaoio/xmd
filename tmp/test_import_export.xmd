@@ -1,0 +1,42 @@
+// Test import/export statements
+// According to XMD spec
+
+// Import from JSON files
+import propA newA, propB newB from "config.json"
+import description from "data.yaml"
+import "students.json"
+
+// Import XMD modules
+import Tasks
+import Utils utils
+
+// Dynamic import
+set teachers import "teachers.yaml"
+print teachers
+
+// Export variables
+export set version "1.0.0"
+
+// Export function
+export function greet name
+    return "Hello " + name
+
+// Export class
+export class Tool
+    method use
+        print "Using tool"
+
+// Batch export
+set a 15
+set b 20
+set c 30
+export a, b, c
+
+// Export with renaming
+export a A, b B, c C
+
+// Conditional export
+if environment.mode = "development"
+    export devHelper
+else
+    export prodHelper

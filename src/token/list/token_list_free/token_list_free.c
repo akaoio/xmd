@@ -9,7 +9,7 @@
 
 #include <stdlib.h>
 #include "../../../../include/token.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Free all tokens in list
  * @param list Token list head

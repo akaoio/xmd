@@ -12,7 +12,7 @@
 #include <stddef.h>
 #include "../../../../include/auditor_internal.h"
 #include "../../../../include/security.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Get audit entries within time range
  * @param start_time Start timestamp

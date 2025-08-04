@@ -13,8 +13,8 @@
 #include <string.h>
 #include "ast_node.h"
 #include "ast_parser.h"
-#include "../../../../../utils/common/common_macros.h"
-#include "../../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 /**
  * @brief Parse string literal "value"
  * @param start Pointer to starting position

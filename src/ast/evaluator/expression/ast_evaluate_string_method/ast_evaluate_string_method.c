@@ -13,7 +13,7 @@
 #include <ctype.h>
 #include "ast.h"
 #include "ast_evaluator.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Evaluate string method calls (.upper, .lower, .split, .join, etc.)

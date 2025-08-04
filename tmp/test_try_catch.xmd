@@ -1,0 +1,39 @@
+// Test try/catch error handling
+// According to XMD spec
+
+function divide a b
+    try
+        if b = 0
+            throw "Cannot divide by zero"
+        return a / b
+    catch err
+        return "Error: " + err
+
+// Test normal division
+set result1 divide 10, 2
+print result1
+
+// Test division by zero
+set result2 divide 10, 0
+print result2
+
+// Test nested try/catch
+function process_data data
+    try
+        if data = null
+            throw "Data cannot be null"
+        
+        try
+            set result data * 2
+            return result
+        catch inner_err
+            throw "Processing failed: " + inner_err
+            
+    catch outer_err
+        return "Failed: " + outer_err
+
+set test1 process_data 5
+print test1
+
+set test2 process_data null
+print test2

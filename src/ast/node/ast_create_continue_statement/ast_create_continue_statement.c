@@ -12,7 +12,6 @@
 #include <stdlib.h>
 #include "ast_node.h"
 #include "variable.h"
-#include "utils/common/common_macros.h"
 #include "utils/common/validation_macros.h"
 /**
  * @brief Create continue statement node

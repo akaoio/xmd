@@ -12,6 +12,7 @@
 #include <string.h>
 #include "../../../../include/variable.h"
 #include "../../../../include/variable_internal.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Find key index in object (internal helper)

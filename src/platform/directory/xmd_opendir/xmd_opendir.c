@@ -6,8 +6,8 @@
 
 #include "../../../../include/platform_internal.h"
 #include "../../../../include/utils.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 /**
  * @brief Open directory for reading
  * @param path Directory path

@@ -1,0 +1,32 @@
+# Basic XMD Test Script
+# Testing core language features according to blueprint
+
+# 1. Variables
+set name "XMD"
+set version 0.02
+set active true
+
+print "Testing " + name + " version " + version
+
+# 2. Arrays
+set scores 8, 9, 10
+print "Scores: " + scores
+
+# 3. Objects
+set user name "Alice", age 30, active true
+print "User: " + user.name + ", Age: " + user.age
+
+# 4. Math Operations
+set x 10
+set y 20
+set sum x + y
+print "Sum: " + sum
+
+# 5. Conditionals
+if sum = 30 then print "Math works\!"
+
+# 6. File Operations
+File.write "test_output.txt" "Hello from XMD\!"
+set content File.read "test_output.txt"
+print "File content: " + content
+EOF < /dev/null

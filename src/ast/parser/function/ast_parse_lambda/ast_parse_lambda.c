@@ -9,9 +9,10 @@
 
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
 #include "ast.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Parse lambda function expression
@@ -19,142 +20,132 @@
  * @return Lambda AST node or NULL if not a lambda expression
  */
 ast_node* ast_parse_lambda(const char** pos) {
-    XMD_VALIDATE_PTR_RETURN(pos, NULL);
-    XMD_PARSE_VALIDATE_POS(pos, NULL);
+    if (!pos || !*pos) return NULL;
     
-    const char* start = *pos;
     const char* saved_pos = *pos;
-    source_location loc = {1, *pos - start, NULL};
+    source_location loc = {1, 1, "input"};
     
-    // Parse parameters (simple case: single parameter or parenthesized list)
+    // Skip whitespace
+    while (**pos && isspace(**pos)) (*pos)++;
+    
     char** parameters = NULL;
-    size_t parameter_count = 0;
+    int param_count = 0;
     
-    XMD_PARSE_SKIP_WHITESPACE(pos);
-    
-    // Check for parenthesized parameter list
+    // Check for parenthesized parameter list (a, b) => ...
     if (**pos == '(') {
         (*pos)++; // Skip '('
-        XMD_PARSE_SKIP_WHITESPACE(pos);
         
-        // Parse parameter list
+        // Parse comma-separated parameters
+        parameters = xmd_malloc(sizeof(char*) * 10); // Max 10 params
+        if (!parameters) {
+            *pos = saved_pos;
+            return NULL;
+        }
+        
         while (**pos && **pos != ')') {
-            const char* param_start;
-            const char* param_end;
+            // Skip whitespace
+            while (**pos && isspace(**pos)) (*pos)++;
             
-            XMD_PARSE_IDENTIFIER(pos, param_start, param_end, {
-                *pos = saved_pos;
-                return NULL;
-            });
+            if (!isalpha(**pos) && **pos != '_') break;
             
-            // Grow parameter array
-            parameter_count++;
-            XMD_REALLOC_VALIDATED(parameters, char*, parameter_count * sizeof(char*), {
-                *pos = saved_pos;
-                return NULL;
-            });
+            const char* param_start = *pos;
+            while (isalnum(**pos) || **pos == '_') (*pos)++;
+            size_t param_len = *pos - param_start;
             
-            // Copy parameter name
-            size_t param_len = param_end - param_start;
-            XMD_MALLOC_VALIDATED(parameters[parameter_count - 1], char, param_len + 1, {
-                FOR_EACH_INDEX(i, parameter_count - 1) {
-                    XMD_FREE_SAFE(parameters[i]);
+            parameters[param_count] = xmd_malloc(param_len + 1);
+            if (!parameters[param_count]) {
+                for (int i = 0; i < param_count; i++) {
+                    xmd_free(parameters[i]);
                 }
-                XMD_FREE_SAFE(parameters);
+                xmd_free(parameters);
                 *pos = saved_pos;
                 return NULL;
-            });
+            }
             
-            memcpy(parameters[parameter_count - 1], param_start, param_len);
-            parameters[parameter_count - 1][param_len] = '\0';
+            memcpy(parameters[param_count], param_start, param_len);
+            parameters[param_count][param_len] = '\0';
+            param_count++;
             
-            XMD_PARSE_SKIP_WHITESPACE(pos);
+            // Skip whitespace
+            while (**pos && isspace(**pos)) (*pos)++;
             
             // Check for comma
             if (**pos == ',') {
                 (*pos)++;
-                XMD_PARSE_SKIP_WHITESPACE(pos);
+                while (**pos && isspace(**pos)) (*pos)++;
             }
         }
         
         if (**pos != ')') {
-            FOR_EACH_INDEX(i, parameter_count) {
-                XMD_FREE_SAFE(parameters[i]);
+            for (int i = 0; i < param_count; i++) {
+                xmd_free(parameters[i]);
             }
-            XMD_FREE_SAFE(parameters);
+            xmd_free(parameters);
             *pos = saved_pos;
             return NULL;
         }
         (*pos)++; // Skip ')'
-    } 
-    // Single parameter without parentheses
-    else if (isalpha(**pos) || **pos == '_') {
-        const char* param_start;
-        const char* param_end;
         
-        XMD_PARSE_IDENTIFIER(pos, param_start, param_end, {
+    } else if (isalpha(**pos) || **pos == '_') {
+        // Simple lambda: identifier => expression
+        const char* param_start = *pos;
+        while (isalnum(**pos) || **pos == '_') (*pos)++;
+        size_t param_len = *pos - param_start;
+        
+        parameters = xmd_malloc(sizeof(char*));
+        if (!parameters) {
             *pos = saved_pos;
             return NULL;
-        });
+        }
         
-        parameter_count = 1;
-        XMD_MALLOC_VALIDATED(parameters, char*, sizeof(char*), {
+        parameters[0] = xmd_malloc(param_len + 1);
+        if (!parameters[0]) {
+            xmd_free(parameters);
             *pos = saved_pos;
             return NULL;
-        });
-        
-        size_t param_len = param_end - param_start;
-        XMD_MALLOC_VALIDATED(parameters[0], char, param_len + 1, {
-            XMD_FREE_SAFE(parameters);
-            *pos = saved_pos;
-            return NULL;
-        });
+        }
         
         memcpy(parameters[0], param_start, param_len);
         parameters[0][param_len] = '\0';
+        param_count = 1;
     } else {
-        // No parameters, not a lambda
         *pos = saved_pos;
         return NULL;
     }
     
-    XMD_PARSE_SKIP_WHITESPACE(pos);
+    // Skip whitespace
+    while (**pos && isspace(**pos)) (*pos)++;
     
-    // Look for '=>' operator
+    // Check for =>
     if (strncmp(*pos, "=>", 2) != 0) {
-        // Not a lambda, restore position and cleanup
-        FOR_EACH_INDEX(i, parameter_count) {
-            XMD_FREE_SAFE(parameters[i]);
-        }
-        XMD_FREE_SAFE(parameters);
         *pos = saved_pos;
         return NULL;
     }
+    *pos += 2;
     
-    *pos += 2; // Skip '=>'
-    XMD_PARSE_SKIP_WHITESPACE(pos);
+    // Skip whitespace
+    while (**pos && isspace(**pos)) (*pos)++;
     
     // Parse body expression
     ast_node* body = ast_parse_expression(pos);
     if (!body) {
-        FOR_EACH_INDEX(i, parameter_count) {
-            XMD_FREE_SAFE(parameters[i]);
+        for (int i = 0; i < param_count; i++) {
+            xmd_free(parameters[i]);
         }
-        XMD_FREE_SAFE(parameters);
-        XMD_ERROR_RETURN(NULL, "Expected expression after '=>' in lambda");
+        xmd_free(parameters);
+        *pos = saved_pos;
+        return NULL;
     }
     
     // Create lambda node
-    ast_node* lambda = ast_create_lambda(parameters, parameter_count, body, loc);
-    
-    // Cleanup parameter array (ast_create_lambda copies the strings)
-    FOR_EACH_INDEX(i, parameter_count) {
-        XMD_FREE_SAFE(parameters[i]);
-    }
-    XMD_FREE_SAFE(parameters);
-    
+    ast_node* lambda = ast_create_lambda(parameters, param_count, body, loc);
     if (!lambda) {
+        for (int i = 0; i < param_count; i++) {
+            xmd_free(parameters[i]);
+        }
+        xmd_free(parameters);
         ast_free(body);
+        *pos = saved_pos;
         return NULL;
     }
     

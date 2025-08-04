@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stddef.h>
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/validation_macros.h"
 
 size_t get_memory_usage(void) {
     // Real memory usage implementation using /proc/self/status

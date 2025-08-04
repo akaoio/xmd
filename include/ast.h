@@ -145,6 +145,7 @@ struct ast_value {
         AST_VAL_NUMBER, 
         AST_VAL_BOOLEAN,
         AST_VAL_ARRAY,
+        AST_VAL_OBJECT,
         AST_VAL_NULL
     } type;
     union {
@@ -155,6 +156,11 @@ struct ast_value {
             ast_value** elements;
             size_t element_count;
         } array_value;
+        struct {
+            char** keys;
+            ast_value** values;
+            size_t pair_count;
+        } object_value;
     } value;
 };
 
@@ -171,6 +177,7 @@ struct ast_evaluator {
     bool has_error;               /**< Error flag */
     char* error_message;          /**< Error details */
     bool in_statement_context;    /**< True when evaluating a statement (not expression) */
+    void* module_registry;        /**< Module registry for import system */
     
     /* Control flow members */
     ast_value* return_value;       /**< Return value from return statement */
@@ -439,7 +446,7 @@ ast_node*ast_create_break_statement(source_location loc);
 ast_node*ast_create_class_def(const char* name, const char* parent_class, source_location loc);
 ast_node*ast_create_conditional(ast_node* condition, source_location loc);
 ast_node*ast_create_continue_statement(source_location loc);
-ast_node*ast_create_function_call(const char* name, source_location loc);
+ast_node* ast_create_function_call(const char* name, source_location loc);
 ast_node*ast_create_function_def(const char* name, bool is_async, source_location loc);
 ast_node*ast_create_identifier(const char* name, source_location loc);
 ast_node*ast_create_loop(const char* variable, ast_node* iterable, source_location loc);
@@ -456,8 +463,11 @@ ast_node*ast_create_loop_times(ast_node* count_expr, ast_node* body, source_loca
 ast_node*ast_create_for_range(const char* variable, ast_node* start_expr, ast_node* end_expr, ast_node* body, source_location loc);
 ast_node*ast_create_for_indexed(const char* index_var, const char* item_var, ast_node* array_expr, ast_node* body, source_location loc);
 ast_node*ast_create_await(ast_node* expression, source_location loc);
+ast_node*ast_create_import(const char* module_path, source_location loc);
 ast_node*ast_create_destructure(char** target_names, size_t target_count, ast_node* source_expr, bool is_object, const char* rest_name, source_location loc);
 ast_node*ast_create_spread(ast_node* expression, bool in_array, bool in_object, source_location loc);
+ast_node*ast_create_generator_def(const char* name, char** parameters, size_t parameter_count, ast_node* body, source_location loc);
+ast_node*ast_create_yield(ast_node* value, source_location loc);
 int ast_evaluate_assignment(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_binary_op(ast_node* node, ast_evaluator* evaluator);
 ast_value*ast_evaluate_unary_op(ast_node* node, ast_evaluator* evaluator);
@@ -527,9 +537,17 @@ ast_node*ast_parse_destructure(const char** pos);
 ast_node*ast_parse_spread(const char** pos);
 ast_node*ast_parse_generator_function(const char** pos);
 ast_node*ast_parse_yield(const char** pos);
+ast_node*ast_parse_loop_times(const char** pos);
+ast_node*ast_parse_try_catch(const char** pos);
+ast_node*ast_parse_throw(const char** pos);
+ast_node*ast_parse_import(const char** pos);
+ast_node*ast_parse_await(const char** pos);
+ast_node*ast_parse_ternary(const char** pos);
+ast_node*ast_parse_lambda(const char** pos);
 ast_value*ast_value_create_array(void);
 ast_value*ast_value_create_boolean(bool value);
 ast_value*ast_value_create_number(double value);
+ast_value*ast_value_create_object(void);
 ast_value*ast_value_create_string(const char* str);
 void ast_value_free(ast_value* val);
 ast_value*ast_value_from_variable(variable* var);
@@ -547,6 +565,7 @@ void ast_evaluator_free(ast_evaluator* evaluator);
 ast_value* ast_value_create_array(void);
 ast_value* ast_value_create_boolean(bool value);
 ast_value* ast_value_create_number(double value);
+ast_value* ast_value_create_object(void);
 ast_value* ast_value_create_string(const char* str);
 
 /* Global stores for functions and other global state */

@@ -1,30 +1,19 @@
 /**
  * @file security_sanitize_html.c
- * @brief Sanitize HTML content
+ * @brief Sanitize HTML content - Genesis compliant (1 function only)
  * @author XMD Development Team
- * @date 2025-08-01
+ * @date 2025-08-04
  * 
  * Genesis Principle: 1 function → 1 file → 1 directory
  * Part of security sanitization subsystem
+ * Helper function extracted to: ../process_html_tag/process_html_tag.c
  */
 
 #include <string.h>
 #include <stdlib.h>
 #include "../../../../include/utils.h"
-#include "../../../../utils/common/common_macros.h"
-
-// Forward declarations for utility functions - to be implemented
-// static bool is_safe_html_tag(const char* tag);
-// static size_t extract_tag_name(const char* tag_start, char* tag_name, size_t max_len);
-
-// Stub implementation for process_html_tag
-static size_t process_html_tag(const char* tag_content, char* output, 
-                              size_t output_pos, size_t max_output_size) {
-    (void)tag_content;
-    (void)output;
-    (void)max_output_size;
-    return output_pos;  // For now, just return unchanged position
-}
+#include "utils/common/common_macros.h"
+#include "../process_html_tag/process_html_tag.h"
 /**
  * @brief Sanitize HTML content
  * @param html HTML content to sanitize
@@ -35,7 +24,8 @@ char* security_sanitize_html(const char* html) {
     
     size_t input_len = strlen(html);
     char* result;
-    XMD_MALLOC_VALIDATED(result, char, input_len * 2 + 1, NULL); // Extra space for entity encoding
+    result = xmd_malloc(input_len * 2 + 1); // Extra space for entity encoding
+    if (!result) return NULL;
     
     size_t output_pos = 0;
     const char* p = html;
@@ -58,7 +48,7 @@ char* security_sanitize_html(const char* html) {
             } else {
                 // Incomplete tag, escape it
                 if (output_pos + 4 < input_len * 2) {
-                    strcpy(result + output_pos, "&lt;");
+                    memcpy(result + output_pos, "&lt;", 4);
                     output_pos += 4;
                 }
                 p++;
@@ -67,12 +57,12 @@ char* security_sanitize_html(const char* html) {
             // Regular character
             if (*p == '&') {
                 if (output_pos + 5 < input_len * 2) {
-                    strcpy(result + output_pos, "&amp;");
+                    memcpy(result + output_pos, "&amp;", 5);
                     output_pos += 5;
                 }
             } else if (*p == '>') {
                 if (output_pos + 4 < input_len * 2) {
-                    strcpy(result + output_pos, "&gt;");
+                    memcpy(result + output_pos, "&gt;", 4);
                     output_pos += 4;
                 }
             } else if (*p >= 32 && *p < 127) {

@@ -30,15 +30,22 @@ ast_value* ast_evaluate_program_node(ast_node* node, ast_evaluator* evaluator) {
     
     ast_value* result = NULL;
     for (size_t i = 0; i < node->data.program.statement_count; i++) {
-        XMD_FREE_SAFE(result);
+        // Free previous result safely - only if it exists and is not shared
+        if (result) {
+            ast_value_free(result);
+            result = NULL;
+        }
         result = ast_evaluate(node->data.program.statements[i], evaluator);
         
-        // If the result is a string literal (plain text), append it to output
-        if (result && result->type == AST_VAL_STRING && 
-            node->data.program.statements[i]->type == AST_LITERAL &&
-            node->data.program.statements[i]->data.literal.type == LITERAL_STRING) {
-            ast_evaluator_append_output(evaluator, result->value.string_value);
-            ast_evaluator_append_output(evaluator, "\n");
+        // Append result to output if it produces a value (not just assignments)
+        if (result && node->data.program.statements[i]->type != AST_ASSIGNMENT) {
+            // Convert result to string for output
+            char* result_str = ast_value_to_string(result);
+            if (result_str && strlen(result_str) > 0) {
+                ast_evaluator_append_output(evaluator, result_str);
+                ast_evaluator_append_output(evaluator, "\n");
+            }
+            XMD_FREE_SAFE(result_str);
         }
         
         if (evaluator->error_message) {

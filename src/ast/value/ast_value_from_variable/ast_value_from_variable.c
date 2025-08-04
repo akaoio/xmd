@@ -12,8 +12,8 @@
 #include "ast.h"
 #include "variable.h"
 #include "utils.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Convert variable to ast_value - MISSING FUNCTION

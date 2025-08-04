@@ -1,0 +1,103 @@
+// Test suite for for-in loop functionality in XMD
+// According to spec: for item in items, for i in 1..5, for i, name in names
+
+// Test 1: Basic for-in loop over array
+set items "apple", "banana", "cherry"
+for item in items
+    print "Item: " + item
+
+// Test 2: For loop with range (inclusive)
+print "Range 1 to 5:"
+for i in 1 .. 5
+    print i
+
+// Test 3: For loop with variables in range
+set min 10
+set max 15
+print "Range " + min + " to " + max + ":"
+for i in min .. max
+    print i
+
+// Test 4: For loop with index and value
+set names "Alice", "Bob", "Charlie"
+for i, name in names
+    print i + ": " + name
+
+// Test 5: Nested for loops
+set rows 1, 2, 3
+set cols "A", "B", "C"
+for row in rows
+    for col in cols
+        print "Cell " + col + row
+
+// Test 6: For loop with break
+print "Loop with break at 3:"
+for i in 1 .. 10
+    if i = 3 then break
+    print i
+
+// Test 7: For loop with continue
+print "Loop with continue (skip even numbers):"
+for i in 1 .. 6
+    if i % 2 = 0 then continue
+    print i
+
+// Test 8: For-in over object keys (if supported)
+set person name "John", age 30, city "NYC"
+for key in person
+    print key + ": " + person[key]
+
+// Test 9: Empty array iteration
+set empty_array
+for item in empty_array
+    print "This should not print"
+print "Empty array iteration complete"
+
+// Test 10: For-in with destructuring (advanced)
+set pairs [1, "one"], [2, "two"], [3, "three"]
+for num, word in pairs
+    print num + " = " + word
+
+// Expected output:
+// Item: apple
+// Item: banana
+// Item: cherry
+// Range 1 to 5:
+// 1
+// 2
+// 3
+// 4
+// 5
+// Range 10 to 15:
+// 10
+// 11
+// 12
+// 13
+// 14
+// 15
+// 0: Alice
+// 1: Bob
+// 2: Charlie
+// Cell A1
+// Cell B1
+// Cell C1
+// Cell A2
+// Cell B2
+// Cell C2
+// Cell A3
+// Cell B3
+// Cell C3
+// Loop with break at 3:
+// 1
+// 2
+// Loop with continue (skip even numbers):
+// 1
+// 3
+// 5
+// name: John
+// age: 30
+// city: NYC
+// Empty array iteration complete
+// 1 = one
+// 2 = two
+// 3 = three

@@ -12,7 +12,7 @@
 #include "ast.h"
 #include "utils.h"
 #include "../../../utils/common/common_macros.h"
-#include "../../../utils/common/validation_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Create string method call AST node
@@ -33,10 +33,11 @@ ast_node* ast_create_string_method(ast_node* string_expr, const char* method_nam
     node->data.string_method.argument_count = 0;
     node->data.string_method.arguments = NULL;
     
-    XMD_STRDUP_VALIDATED(node->data.string_method.method_name, method_name, {
+    node->data.string_method.method_name = xmd_strdup(method_name);
+    if (!node->data.string_method.method_name) {
         XMD_FREE_SAFE(node);
         return NULL;
-    });
+    }
     
     return node;
 }

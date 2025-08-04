@@ -10,7 +10,7 @@
 #include <string.h>
 #include <stddef.h>
 #include "../../../../include/utils.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Safe string copy with bounds checking
  * @param dest Destination buffer

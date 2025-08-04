@@ -8,7 +8,8 @@
 
 #include "../../../../include/config.h"
 #include "../../../../include/config_internal.h"
-#include "../../../../utils/common/common_macros.h"
+#include "../../../../include/utils.h"
+#include "utils/common/common_macros.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -31,13 +32,18 @@ int xmd_internal_config_add_module_path(xmd_internal_config* config, const char*
     
     // Expand the array
     size_t new_count = config->paths.module_search_path_count + 1;
-    char** new_paths;
-    XMD_REALLOC_VALIDATED(config->paths.module_search_paths, char*, 
-                          new_count * sizeof(char*), -1);
-    new_paths = config->paths.module_search_paths;
+    char** new_paths = xmd_realloc(config->paths.module_search_paths, 
+                                    new_count * sizeof(char*));
+    if (!new_paths) {
+        return -1;
+    }
     
     // Add the new path
-    XMD_STRDUP_VALIDATED(new_paths[config->paths.module_search_path_count], path, -1);
+    new_paths[config->paths.module_search_path_count] = xmd_strdup(path);
+    if (!new_paths[config->paths.module_search_path_count]) {
+        free(new_paths);
+        return -1;
+    }
     
     // Update configuration
     config->paths.module_search_paths = new_paths;

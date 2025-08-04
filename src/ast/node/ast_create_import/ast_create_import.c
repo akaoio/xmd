@@ -13,7 +13,6 @@
 #include "module.h"
 #include "utils.h"
 #include "variable.h"
-#include "utils/common/common_macros.h"
 #include "utils/common/validation_macros.h"
 
 /**
@@ -29,7 +28,7 @@ ast_node* ast_create_import(const char* module_path, source_location loc) {
     XMD_AST_CREATE_NODE(node, AST_IMPORT, NULL);
     
     // Duplicate module path string
-    XMD_STRDUP_VALIDATED(node->data.import_stmt.module_path, module_path, 
+    XMD_STRDUP_VALIDATED(node->data.import.module_name, module_path, 
                          ({ XMD_FREE_NULL(node); NULL; }));
     
     node->location = loc;

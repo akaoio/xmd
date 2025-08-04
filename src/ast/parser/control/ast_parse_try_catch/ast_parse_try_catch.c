@@ -10,8 +10,8 @@
 #include <string.h>
 #include <ctype.h>
 #include "ast.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Parse try-catch statement
@@ -38,10 +38,11 @@ ast_node* ast_parse_try_catch(const char** pos) {
     XMD_PARSE_SKIP_WHITESPACE(pos);
     
     // Expect 'catch' keyword
-    XMD_PARSE_EXPECT_KEYWORD(pos, "catch", {
+    if (strncmp(*pos, "catch", 5) != 0 || ((*pos)[5] && !isspace((*pos)[5]))) {
         ast_free(try_block);
         return NULL;
-    });
+    }
+    *pos += 5;
     
     XMD_PARSE_SKIP_WHITESPACE(pos);
     
@@ -52,16 +53,18 @@ ast_node* ast_parse_try_catch(const char** pos) {
     
     // Check if there's an identifier for the catch variable
     if (isalpha(**pos) || **pos == '_') {
-        XMD_PARSE_IDENTIFIER(pos, var_start, var_end, {
-            ast_free(try_block);
-            return NULL;
-        });
+        var_start = *pos;
+        while (isalnum(**pos) || **pos == '_') {
+            (*pos)++;
+        }
+        var_end = *pos;
         
         size_t var_len = var_end - var_start;
-        XMD_MALLOC_VALIDATED(catch_var, char, var_len + 1, {
+        catch_var = xmd_malloc(var_len + 1);
+        if (!catch_var) {
             ast_free(try_block);
             return NULL;
-        });
+        }
         
         memcpy(catch_var, var_start, var_len);
         catch_var[var_len] = '\0';

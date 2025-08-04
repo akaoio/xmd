@@ -12,7 +12,7 @@
 #include "ast.h"
 #include "utils.h"
 #include "../../../utils/common/common_macros.h"
-#include "../../../utils/common/validation_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Create lambda function AST node
@@ -35,15 +35,16 @@ ast_node* ast_create_lambda(char** parameters, size_t parameter_count, ast_node*
     
     // Copy parameters if provided
     if (parameters && parameter_count > 0) {
-        XMD_MALLOC_VALIDATED(node->data.lambda.parameters, char*, 
-                             parameter_count * sizeof(char*), {
+        node->data.lambda.parameters = xmd_malloc(parameter_count * sizeof(char*));
+        if (!node->data.lambda.parameters) {
             XMD_FREE_SAFE(node);
             return NULL;
-        });
+        }
         
         FOR_EACH_INDEX(i, parameter_count) {
             if (parameters[i]) {
-                XMD_STRDUP_VALIDATED(node->data.lambda.parameters[i], parameters[i], {
+                node->data.lambda.parameters[i] = xmd_strdup(parameters[i]);
+                if (!node->data.lambda.parameters[i]) {
                     // Cleanup previously allocated parameters
                     for (size_t j = 0; j < i; j++) {
                         XMD_FREE_SAFE(node->data.lambda.parameters[j]);
@@ -51,7 +52,7 @@ ast_node* ast_create_lambda(char** parameters, size_t parameter_count, ast_node*
                     XMD_FREE_SAFE(node->data.lambda.parameters);
                     XMD_FREE_SAFE(node);
                     return NULL;
-                });
+                }
             } else {
                 node->data.lambda.parameters[i] = NULL;
             }

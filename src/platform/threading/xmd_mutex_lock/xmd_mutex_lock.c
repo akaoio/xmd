@@ -5,7 +5,7 @@
  */
 
 #include "../../../../include/platform_internal.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Lock mutex
  * @param mutex Mutex to lock

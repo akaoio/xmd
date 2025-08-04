@@ -12,8 +12,8 @@
 #include <stdlib.h>
 #include "ast.h"
 #include "utils.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 
 // Forward declarations
 ast_value* ast_evaluate(ast_node* node, ast_evaluator* evaluator);

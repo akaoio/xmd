@@ -15,7 +15,7 @@
 #include "ast_parser.h"
 #include "store_internal.h"
 #include "variable.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Parse object creation: set user name "Alice", age 30
  * @param pos Pointer to current position

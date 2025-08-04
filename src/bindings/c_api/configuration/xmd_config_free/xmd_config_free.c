@@ -9,7 +9,7 @@
 
 #include "../../../../../include/xmd.h"
 #include "../../../../../include/config_internal.h"
-#include "../../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Free XMD configuration
  * @param config Configuration to free

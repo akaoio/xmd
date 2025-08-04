@@ -9,7 +9,7 @@
 
 #include <stdlib.h>
 #include "../../../../../include/xmd.h"
-#include "../../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Free XMD result structure
  * @param result Result to free

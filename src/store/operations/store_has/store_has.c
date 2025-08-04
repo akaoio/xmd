@@ -10,8 +10,8 @@
 #include <stdbool.h>
 #include "../../../../include/store.h"
 #include "../../../../include/store_internal.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 /**
  * @brief Check if store has key
  */

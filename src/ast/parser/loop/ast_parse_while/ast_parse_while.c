@@ -16,7 +16,7 @@
 #include "ast.h"
 #include "variable.h"
 #include "utils.h"
-#include "../../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Parse while loop statement: while condition
  * @param pos Pointer to current position

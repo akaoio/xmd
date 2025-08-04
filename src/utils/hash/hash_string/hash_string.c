@@ -8,7 +8,7 @@
  */
 
 #include "../../../../include/utils.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Simple hash function for strings
  * @param key String key to hash

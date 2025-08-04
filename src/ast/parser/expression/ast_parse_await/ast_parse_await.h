@@ -12,6 +12,6 @@
 
 #include "ast.h"
 
-ast_node* ast_parse_await(parser_state* parser);
+ast_node* ast_parse_await(const char** pos);
 
 #endif /* AST_PARSE_AWAIT_H */

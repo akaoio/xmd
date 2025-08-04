@@ -19,7 +19,7 @@
 #include "performance.h"
 #include "token.h"
 #include "variable.h"
-#include "../../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 #include "utils.h"
 /**
  * @brief Parse loop statement: for variable in iterable

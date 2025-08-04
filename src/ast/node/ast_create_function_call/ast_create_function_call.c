@@ -4,11 +4,11 @@
  * 
  * This file contains ONLY the ast_create_function_call function.
  * One function per file - Genesis principle compliance.
- * Extracted from: src/ast_consolidated.c
  */
 
+#include <stdlib.h>
+#include <string.h>
 #include "ast_node.h"
-#include "utils.h"
 #include "utils/common/validation_macros.h"
 
 /**
@@ -23,8 +23,11 @@ ast_node* ast_create_function_call(const char* name, source_location loc) {
     ast_node* node;
     XMD_AST_CREATE_NODE(node, AST_FUNCTION_CALL, NULL);
     
-    XMD_STRDUP_VALIDATED(node->data.function_call.name, name, 
-                         ({ XMD_FREE_NULL(node); NULL; }));
+    node->data.function_call.name = xmd_strdup(name);
+    if (!node->data.function_call.name) {
+        xmd_free(node);
+        return NULL;
+    }
     
     node->data.function_call.arguments = NULL;
     node->data.function_call.argument_count = 0;

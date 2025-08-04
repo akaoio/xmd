@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include "../../../../include/resource.h"
 #include "../../../../include/platform.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 int resource_monitor_reset(ResourceMonitor* monitor) {
     XMD_VALIDATE_PTRS(-1, monitor);
     memset(&monitor->start_time, 0, sizeof(xmd_time_t));

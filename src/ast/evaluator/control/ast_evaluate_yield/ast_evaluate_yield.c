@@ -12,8 +12,8 @@
 #include <string.h>
 #include "ast.h"
 #include "variable.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Evaluate yield statement

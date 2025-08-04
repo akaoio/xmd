@@ -31,7 +31,7 @@ ast_value* ast_evaluate_class_def(ast_node* node, ast_evaluator* evaluator) {
     // Store the class AST node pointer in evaluator's classes store
     // Similar to function storage but for classes
     variable* class_var;
-    XMD_MALLOC_SAFE(class_var, variable, sizeof(variable), NULL);
+    XMD_MALLOC_CHECK(class_var, sizeof(variable));
     
     // Use VAR_NULL type for class storage - the pointer won't be freed
     class_var->type = VAR_NULL;

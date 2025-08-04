@@ -10,7 +10,7 @@
 
 #include "variable.h"
 #include "variable_internal.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Get string value directly (convenience function)

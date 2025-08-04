@@ -1,0 +1,70 @@
+// Test suite for inline object creation syntax in XMD
+// According to spec: set user name "Alice", age 30, active true
+
+// Test 1: Basic inline object creation
+set user name "Alice", age 30, active true
+print "User name: " + user.name
+print "User age: " + user.age
+print "User active: " + user.active
+
+// Test 2: Nested object creation with variables
+set score 95
+set student name "Bob", grade score, passed true
+print "Student: " + student.name + " - Grade: " + student.grade
+
+// Test 3: Mixed data types in inline object
+set config debug true, retries 3, timeout 1000, host "localhost"
+print "Config debug: " + config.debug
+print "Config retries: " + config.retries
+print "Config timeout: " + config.timeout
+print "Config host: " + config.host
+
+// Test 4: Empty object creation
+set empty
+print "Empty object created"
+
+// Test 5: Object with array value
+set scores 8, 9, 10
+set profile name "Linh", scores scores, active true
+print "Profile name: " + profile.name
+print "Profile scores count: " + profile.scores.length
+
+// Test 6: Multiple inline variable declarations (different from object)
+set a 1, b 2, c "3"  // This sets multiple variables, not an object
+print "Variable a: " + a
+print "Variable b: " + b  
+print "Variable c: " + c
+
+// Test 7: Object with computed values
+set x 5
+set y 10
+set point x x, y y, sum x + y
+print "Point x: " + point.x
+print "Point y: " + point.y
+print "Point sum: " + point.sum
+
+// Test 8: Object with string keys containing spaces (if supported)
+set person "first name" "John", "last name" "Doe"
+print "Person first name: " + person["first name"]
+print "Person last name: " + person["last name"]
+
+// Expected output:
+// User name: Alice
+// User age: 30
+// User active: true
+// Student: Bob - Grade: 95
+// Config debug: true
+// Config retries: 3
+// Config timeout: 1000
+// Config host: localhost
+// Empty object created
+// Profile name: Linh
+// Profile scores count: 3
+// Variable a: 1
+// Variable b: 2
+// Variable c: 3
+// Point x: 5
+// Point y: 10
+// Point sum: 15
+// Person first name: John
+// Person last name: Doe

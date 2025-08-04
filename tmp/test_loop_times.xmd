@@ -1,0 +1,10 @@
+// Test for loop N times syntax
+// According to XMD spec: loop 100 times
+
+loop 5 times
+    print "Hello from loop"
+
+// Test with variable
+set count 3
+loop count times
+    print "Looping with variable"

@@ -1,0 +1,50 @@
+// XMD Basic Test Suite - Following Test-Driven Development
+// Tests all major features from blueprint/idea.md
+
+// 1. Variables
+set greeting "Hello XMD"
+set pi 3.14159
+set active true
+set empty null
+
+print greeting
+print "Pi value: " + pi
+
+// 2. Arrays  
+set scores 85, 90, 95
+print "First score: " + scores[0]
+
+// 3. Objects
+set user name "Alice", age 30, active true
+print "User: " + user.name + " is " + user.age
+
+// 4. Functions
+function greet name
+    return "Hello " + name
+
+set result greet "World"
+print result
+
+// 5. Conditionals
+set score 85
+if score >= 80
+    print "Excellent!"
+elif score >= 60
+    print "Good"
+else  
+    print "Keep trying"
+
+// 6. Simple Loop
+set count 0
+while count < 3
+    print "Count: " + count
+    set count count + 1
+
+// 7. Basic Math
+set a 10
+set b 20
+print "Sum: " + (a + b)
+print "Product: " + (a * b)
+
+// Test complete
+print "All basic tests passed!"

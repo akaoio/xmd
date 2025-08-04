@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include "ast_node.h"
 #include "ast_parser.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Parse XMD program - function needed by native_xmd_consolidated.c
  * @param input Input string to parse

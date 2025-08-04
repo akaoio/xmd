@@ -1,0 +1,74 @@
+// XMD Comprehensive Feature Test
+// Testing implementation against specification from blueprint/idea.md
+
+// 1. Variables - Basic assignment
+set name "Alice"
+set age 30
+set active true
+set empty null
+set pi 3.14
+
+// 2. Arrays - Inline format (preferred)
+set scores 1, 2, 3
+set items "pen", "book", "lamp"
+
+// 3. Objects - Inline format (preferred) 
+set user name "Alice", age 30, active true
+set config debug true, retries 3, timeout 1000
+
+// 4. Functions - Space-separated parameters
+function greet name
+    return "Hello " + name
+
+function add a b
+    return a + b
+
+// Test function calls
+set greeting greet "World"
+set sum add 5 3
+
+// 5. Conditionals - CRITICAL: = is comparison, NOT assignment!
+if age = 30
+    print "Age is thirty"
+elif age < 30  
+    print "Young"
+else
+    print "Older"
+
+// Ternary operator
+set status age >= 18 ? "adult" : "minor"
+
+// 6. Loops - Multiple types
+loop 3 times
+    print "Repeated message"
+
+for i in 1 .. 5
+    print "Number: " + i
+    if i = 3 then break
+
+for item in items
+    print "Item: " + item
+
+for i, name in items
+    print i + ": " + name
+
+set count 0
+while count < 3
+    print "Count: " + count
+    set count count + 1
+
+// 7. Mathematical expressions
+set x 10
+set y 5
+set result x + y * 2 - 1
+
+// 8. String operations
+set text "Hello World"
+set upper text.upper
+set parts text.split " "
+set joined parts.join "-"
+
+// 9. Print statements
+print "Basic print test"
+print "Name: " + name + ", Age: " + age
+print "Result: " + result

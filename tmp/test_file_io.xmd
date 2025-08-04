@@ -1,0 +1,34 @@
+// Test File I/O operations
+// According to XMD spec
+
+// Test File.read
+set content File.read "test.txt"
+print content
+
+// Test File.write
+File.write "output.txt" "Hello from XMD!"
+print "File written"
+
+// Test JSON operations
+set user name "Alice", age 30, active true
+File.write "user.json" json.stringify user
+print "JSON written"
+
+set loaded_user json.parse File.read "user.json"
+print loaded_user
+
+// Test YAML operations
+set config debug true, retries 3, timeout 1000
+File.write "config.yaml" yaml.stringify config
+print "YAML written"
+
+set loaded_config yaml.parse File.read "config.yaml"
+print loaded_config
+
+// Test get/put operations on JSON files
+set student_name get "students.json".alice.name
+print "Student name: " + student_name
+
+put "students.json".bob.name "Bob Smith"
+put "students.json".bob.age 20
+print "Student data updated"

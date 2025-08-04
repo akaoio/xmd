@@ -1,0 +1,20 @@
+// Test lambda/arrow function syntax
+// According to XMD spec: (x => x * 2)
+
+// Simple lambdas
+set double x => x * 2
+set result double 5
+print result
+
+// Lambda with multiple parameters
+set add (a, b) => a + b
+set sum add 10, 20
+print sum
+
+// Using lambdas with higher-order functions
+set numbers 1, 2, 3, 4, 5
+set doubled map numbers (x => x * 2)
+print doubled
+
+set evens filter numbers (x => x % 2 = 0)
+print evens

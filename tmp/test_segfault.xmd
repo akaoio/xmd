@@ -1,0 +1,7 @@
+# Simple XMD Test
+
+This is a simple test to trigger the segfault.
+
+```xmd
+print("Hello, World!")
+```

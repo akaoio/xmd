@@ -12,8 +12,8 @@
 #include <string.h>
 #include "ast.h"
 #include "variable.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Generator state structure for managing generator execution
@@ -38,23 +38,22 @@ ast_value* ast_evaluate_generator_def(ast_node* node, ast_evaluator* evaluator) 
     
     // Store the generator function in the functions store
     if (evaluator->functions) {
-        // Create a variable to hold the generator definition
-        variable* gen_var = variable_create(VAR_STRING);
+        // For now, store as a string representation
+        char* gen_str;
+        size_t str_size = 256;
+        XMD_MALLOC_VALIDATED(gen_str, char, str_size, NULL);
+        
+        snprintf(gen_str, str_size, "generator:%s(%zu params)", 
+                node->data.generator_def.name ? node->data.generator_def.name : "anonymous",
+                node->data.generator_def.parameter_count);
+        
+        // Create a variable with the string value
+        variable* gen_var = variable_create_string(gen_str);
         if (gen_var) {
-            // For now, store as a string representation
-            char* gen_str;
-            size_t str_size = 256;
-            XMD_MALLOC_VALIDATED(gen_str, char, str_size, NULL);
-            
-            snprintf(gen_str, str_size, "generator:%s(%zu params)", 
-                    node->data.generator_def.name ? node->data.generator_def.name : "anonymous",
-                    node->data.generator_def.parameter_count);
-            
-            variable_set_string(gen_var, gen_str);
             store_set(evaluator->functions, node->data.generator_def.name, gen_var);
-            
-            XMD_FREE_SAFE(gen_str);
         }
+        
+        XMD_FREE_SAFE(gen_str);
     }
     
     // Create a generator state object (simplified for now)

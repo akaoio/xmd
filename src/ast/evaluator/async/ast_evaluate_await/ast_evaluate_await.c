@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ast.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Evaluate await expression for async operations

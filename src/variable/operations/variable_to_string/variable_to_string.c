@@ -14,8 +14,8 @@
 #include "../../../../include/utils.h"
 #include "../../../../include/variable.h"
 #include "../../../../include/variable_internal.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 
 char* variable_to_string(const variable* var) {
     if (!var) return xmd_strdup("");

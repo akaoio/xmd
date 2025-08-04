@@ -14,8 +14,8 @@
 #include "../../../../include/store_internal.h"
 #include "../../../../include/utils.h"
 #include "../../../../include/variable.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Set value in store

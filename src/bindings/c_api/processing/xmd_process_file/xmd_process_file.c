@@ -12,7 +12,7 @@
 #include "../../../../../include/xmd.h"
 #include "../../../../../include/c_api_internal.h"
 #include "../../../../../include/utils.h"
-#include "../../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Process XMD file with processor
  * @param processor XMD processor

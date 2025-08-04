@@ -781,6 +781,16 @@
     } while(0)
 
 /**
+ * @brief Universal NULL validation with void return
+ */
+#define XMD_VALIDATE_PTR_RETURN_VOID(ptr) \
+    do { \
+        if (!(ptr)) { \
+            return; \
+        } \
+    } while(0)
+
+/**
  * @brief Universal NULL validation with continue (for loop contexts)
  * @details Eliminates NULL checks in loops that continue on NULL
  */

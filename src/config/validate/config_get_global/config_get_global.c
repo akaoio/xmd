@@ -16,6 +16,6 @@ extern xmd_internal_config* g_config;
  * @return Global configuration or NULL if not initialized
   * /
  */
-xmd_config* config_get_global(void) {
-    return (xmd_config*)g_config;
+xmd_internal_config* config_get_global(void) {
+    return g_config;
 }

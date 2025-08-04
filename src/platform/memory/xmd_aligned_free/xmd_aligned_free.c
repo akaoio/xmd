@@ -5,8 +5,8 @@
  */
 
 #include "../../../../include/platform_internal.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 /**
  * @brief Free aligned memory
  * @param ptr Memory to free

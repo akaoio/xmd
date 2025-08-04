@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include "../../../../include/performance_internal.h"
 #include "../../../../include/utils.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 
 uint64_t get_time_ns(void);
 void calculate_stats(uint64_t* times, uint32_t count, benchmark_result* result);

@@ -20,6 +20,7 @@
 #include "utils.h"
 #include "utils/common/common_macros.h"
 #include "utils/common/validation_macros.h"
+#include "ast/evaluator/datetime/ast_evaluate_date_now/ast_evaluate_date_now.h"
 
 // Forward declaration for output append function
 int ast_evaluator_append_output(ast_evaluator* evaluator, const char* text);

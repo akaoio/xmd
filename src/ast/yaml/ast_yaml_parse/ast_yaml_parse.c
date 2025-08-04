@@ -13,7 +13,7 @@
 #include "store.h"
 #include "variable.h"
 #include "utils.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 
 // Function declaration for the helper function
 variable* yaml_parse_simple(const char* yaml);

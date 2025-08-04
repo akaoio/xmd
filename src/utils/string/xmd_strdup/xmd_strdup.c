@@ -10,8 +10,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include "../../../../include/utils.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 /**
  * @brief Duplicate string safely
  * @param str String to duplicate

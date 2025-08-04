@@ -10,7 +10,7 @@
 #include <stddef.h>
 #include "../../../../include/store.h"
 #include "../../../../include/store_internal.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Get store size
  */

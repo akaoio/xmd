@@ -13,7 +13,7 @@
 #include <pthread.h>
 #include "../../../../include/auditor_internal.h"
 #include "../../../../include/security.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Log security audit entry
  * @param type Audit event type

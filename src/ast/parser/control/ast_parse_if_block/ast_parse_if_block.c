@@ -13,7 +13,7 @@
 #include "ast_node.h"
 #include "ast_parser.h"
 #include "ast.h"
-#include "../../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Parse if block form
  */

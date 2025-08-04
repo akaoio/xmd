@@ -13,6 +13,7 @@
 #include <stdbool.h>
 #include "../../../include/native_xmd.h"
 #include "../../../include/utils.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Check if content uses Genesis's native XMD syntax

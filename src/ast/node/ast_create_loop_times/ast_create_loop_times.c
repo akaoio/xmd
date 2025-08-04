@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ast.h"
-#include "../../../utils/common/validation_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Create loop N times AST node
@@ -23,7 +23,10 @@
 ast_node* ast_create_loop_times(ast_node* count_expr, ast_node* body, source_location loc) {
     XMD_VALIDATE_PTRS(NULL, count_expr, body);
     
-    XMD_ALLOC_CHECK(node, ast_node);
+    ast_node* node = xmd_malloc(sizeof(ast_node));
+    if (!node) {
+        return NULL;
+    }
     
     node->type = AST_LOOP_TIMES;
     node->location = loc;

@@ -12,7 +12,6 @@
 #include "cli.h"
 #include "utils.h"
 #include "variable.h"
-#include "utils/common/common_macros.h"
 #include "utils/common/validation_macros.h"
 
 /**

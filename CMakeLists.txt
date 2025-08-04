@@ -26,6 +26,26 @@ file(GLOB_RECURSE XMD_SOURCES
 # Remove main.c from the general sources (we'll add it separately)
 list(REMOVE_ITEM XMD_SOURCES "${CMAKE_SOURCE_DIR}/src/main.c")
 
+# NOTE: ast_create_* functions are required - they are called extensively by parsers
+# Do not exclude them from the build
+
+# Also remove more duplicate implementations found in subdirectories
+file(GLOB_RECURSE MORE_DUPLICATES
+    "${CMAKE_SOURCE_DIR}/src/ast/node/util/*.c"
+    "${CMAKE_SOURCE_DIR}/src/ast/node/misc/*.c"
+    "${CMAKE_SOURCE_DIR}/src/ast/evaluator/expression/ast_evaluate_await/*.c"
+    "${CMAKE_SOURCE_DIR}/src/ast/parser/function/ast_parse_function/*.c"
+    "${CMAKE_SOURCE_DIR}/src/ast/parser/function/ast_parse_potential_function_call/*.c"
+    "${CMAKE_SOURCE_DIR}/src/ast/parser/conditional/ast_parse_conditional/*.c"
+    "${CMAKE_SOURCE_DIR}/src/ast/parser/object/ast_parse_object_creation/*.c"
+    "${CMAKE_SOURCE_DIR}/src/ast/parser/output/ast_parse_print/*.c"
+    "${CMAKE_SOURCE_DIR}/src/ast/parser/program/ast_parse_program/*.c"
+    "${CMAKE_SOURCE_DIR}/src/ast/parser/variable/ast_parse_multiple_variables_handler/*.c"
+    "${CMAKE_SOURCE_DIR}/src/bindings/c_api/configuration/xmd_get_config/*.c"
+    "${CMAKE_SOURCE_DIR}/src/bindings/c_api/configuration/xmd_set_config/*.c"
+)
+list(REMOVE_ITEM XMD_SOURCES ${MORE_DUPLICATES})
+
 # Print diagnostic information
 message(STATUS "Found ${CMAKE_SOURCE_DIR}")
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")

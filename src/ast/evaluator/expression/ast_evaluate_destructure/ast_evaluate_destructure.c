@@ -12,7 +12,7 @@
 #include <string.h>
 #include "ast.h"
 #include "ast_evaluator.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Evaluate destructuring assignment

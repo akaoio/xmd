@@ -11,7 +11,6 @@
 #include "../../../../include/dependency.h"
 #include "../../../../include/utils.h"
 #include "../../../../src/utils/common/common_macros.h"
-#include "../../../../src/utils/common/common_macros.h"
 /**
  * @brief Create a new dependency graph
  * @return New dependency graph or NULL on error

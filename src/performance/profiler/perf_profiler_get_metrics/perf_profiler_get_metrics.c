@@ -4,7 +4,7 @@
  */
 
 #include "../../../../include/performance_internal.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Function implementation

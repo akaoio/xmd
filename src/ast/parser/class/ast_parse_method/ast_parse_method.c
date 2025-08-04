@@ -18,7 +18,7 @@
 #include "ast_parser.h"
 #include "module.h"
 #include "utils.h"
-#include "../../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Parse a method definition within a class
  * @param pos Pointer to current position (updated)

@@ -51,8 +51,10 @@ ast_value* ast_evaluate_binary_op(ast_node* node, ast_evaluator* evaluator) {
                 size_t len2 = strlen(right->value.string_value);
                 char* concat = xmd_malloc(len1 + len2 + 1);
                 if (concat) {
-                    strcpy(concat, left->value.string_value);
-                    strcat(concat, right->value.string_value);
+                    // Safe string operations with explicit bounds
+                    strncpy(concat, left->value.string_value, len1);
+                    concat[len1] = '\0';
+                    strncat(concat, right->value.string_value, len2);
                     result = ast_value_create_string(concat);
                     XMD_FREE_SAFE(concat);
                 }
@@ -65,11 +67,15 @@ ast_value* ast_evaluate_binary_op(ast_node* node, ast_evaluator* evaluator) {
                 XMD_CONVERT_VALUE_TO_STRING(right, right_str, NULL);
                 
                 if (left_str && right_str) {
-                    size_t total_len = strlen(left_str) + strlen(right_str) + 1;
+                    size_t len1 = strlen(left_str);
+                    size_t len2 = strlen(right_str);
+                    size_t total_len = len1 + len2 + 1;
                     char* concat = xmd_malloc(total_len);
                     if (concat) {
-                        strcpy(concat, left_str);
-                        strcat(concat, right_str);
+                        // Safe string operations with explicit bounds
+                        strncpy(concat, left_str, len1);
+                        concat[len1] = '\0';
+                        strncat(concat, right_str, len2);
                         result = ast_value_create_string(concat);
                         XMD_FREE_SAFE(concat);
                     }

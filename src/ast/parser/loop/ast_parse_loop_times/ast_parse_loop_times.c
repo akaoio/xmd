@@ -34,27 +34,58 @@ ast_node* ast_parse_loop_times(const char** pos) {
         start++;
     }
     
-    // Parse the number N
-    const char* num_start = start;
-    while (*start && isdigit(*start)) {
-        start++;
-    }
+    // Parse the count expression (number or variable)
+    const char* expr_start = start;
+    ast_node* count_expr = NULL;
     
-    if (start == num_start) {
-        // No number found
+    // Check if it's a number literal
+    if (isdigit(*start)) {
+        // Parse numeric literal
+        while (*start && isdigit(*start)) {
+            start++;
+        }
+        
+        size_t num_len = start - expr_start;
+        char num_str[32];
+        if (num_len >= sizeof(num_str)) {
+            return NULL;
+        }
+        strncpy(num_str, expr_start, num_len);
+        num_str[num_len] = '\0';
+        
+        int loop_count = atoi(num_str);
+        if (loop_count <= 0) {
+            return NULL;
+        }
+        
+        // Create number literal node
+        count_expr = ast_create_number_literal((double)loop_count, XMD_DEFAULT_SOURCE_LOCATION());
+    } else if (isalpha(*start) || *start == '_') {
+        // Parse identifier (variable)
+        while (*start && (isalnum(*start) || *start == '_')) {
+            start++;
+        }
+        
+        size_t var_len = start - expr_start;
+        if (var_len == 0) {
+            return NULL;
+        }
+        
+        char var_name[256];
+        if (var_len >= sizeof(var_name)) {
+            return NULL;
+        }
+        strncpy(var_name, expr_start, var_len);
+        var_name[var_len] = '\0';
+        
+        // Create identifier node for variable reference
+        count_expr = ast_create_identifier(var_name, XMD_DEFAULT_SOURCE_LOCATION());
+    } else {
+        // Invalid count expression
         return NULL;
     }
     
-    size_t num_len = start - num_start;
-    char num_str[32];
-    if (num_len >= sizeof(num_str)) {
-        return NULL;
-    }
-    strncpy(num_str, num_start, num_len);
-    num_str[num_len] = '\0';
-    
-    int loop_count = atoi(num_str);
-    if (loop_count <= 0) {
+    if (!count_expr) {
         return NULL;
     }
     
@@ -77,20 +108,8 @@ ast_node* ast_parse_loop_times(const char** pos) {
         start++;
     }
     
-    // Create array literal for loop count (1, 2, 3, ..., N)
+    // Create loop times node that will generate range at evaluation time
     source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
-    ast_node* count_array = ast_create_array_literal(loc);
-    if (!count_array) {
-        return NULL;
-    }
-    
-    // Generate numbers 1 to N
-    for (int i = 1; i <= loop_count; i++) {
-        ast_node* num = ast_create_number_literal((double)i, loc);
-        if (num) {
-            ast_add_element(count_array, num);
-        }
-    }
     
     // Parse loop body (indented statements)
     ast_node* loop_body = NULL;
@@ -131,11 +150,8 @@ ast_node* ast_parse_loop_times(const char** pos) {
     // Update position
     *pos = start;
     
-    // Create loop node with internal iterator variable (we'll use "_i" as internal var)
-    ast_node* loop = ast_create_loop("_i", count_array, loc);
-    if (loop && loop_body) {
-        loop->data.loop.body = loop_body;
-    }
+    // Create loop times node with count expression
+    ast_node* loop = ast_create_loop_times(count_expr, loop_body, loc);
     
     return loop;
 }

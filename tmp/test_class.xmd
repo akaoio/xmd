@@ -1,0 +1,58 @@
+// Test class definitions
+// According to XMD spec
+
+// Basic class
+class Animal
+    constructor name
+        set self.name name
+    
+    speak
+        return self.name + " makes a sound"
+
+// Create instance
+set cat new Animal "Fluffy"
+print cat.speak
+
+// Class with inheritance
+class Dog extends Animal
+    constructor name breed
+        super name
+        set self.breed breed
+    
+    speak
+        return self.name + " says woof!"
+    
+    get_breed
+        return self.breed
+
+// Create dog instance
+set dog new Dog "Max", "Golden Retriever"
+print dog.speak
+print "Breed: " + dog.get_breed
+
+// Class with private method
+class BankAccount
+    constructor balance
+        set self.balance balance
+        set self.pin "1234"
+    
+    deposit amount
+        set self.balance self.balance + amount
+        return self.balance
+    
+    withdraw amount pin
+        if self.validate_pin pin
+            if amount <= self.balance
+                set self.balance self.balance - amount
+                return self.balance
+            else
+                return "Insufficient funds"
+        else
+            return "Invalid PIN"
+    
+    private validate_pin pin
+        return pin = self.pin
+
+set account new BankAccount 1000
+print "Deposit: " + account.deposit 500
+print "Withdraw: " + account.withdraw 200, "1234"

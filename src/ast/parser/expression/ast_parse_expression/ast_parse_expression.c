@@ -185,9 +185,17 @@ ast_node* ast_parse_expression(const char** pos) {
     ast_node* result = NULL;
     source_location loc = XMD_DEFAULT_SOURCE_LOCATION();
     
-    // Check for mathematical expressions
-    if (strstr(expr_str, " + ") || strstr(expr_str, " - ") || 
+    // Check for lambda function (x => expr or (x, y) => expr)
+    if (strstr(expr_str, "=>")) {
+        const char* lambda_pos = expr_str;
+        result = ast_parse_lambda(&lambda_pos);
+    } else if (strchr(expr_str, '?') && strchr(expr_str, ':')) {
+        // Check for ternary operator (condition ? true_expr : false_expr)
+        const char* ternary_pos = expr_str;
+        result = ast_parse_ternary(&ternary_pos);
+    } else if (strstr(expr_str, " + ") || strstr(expr_str, " - ") || 
         strstr(expr_str, " * ") || strstr(expr_str, " / ")) {
+        // Check for mathematical expressions
         result = ast_parse_math_expression(expr_str);
     } else if (expr_str[0] == '"') {
         // Parse string literal

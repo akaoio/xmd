@@ -9,7 +9,7 @@
  */
 
 #include "../../../../include/dependency.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Reset visit states for all nodes
  * @param graph Dependency graph

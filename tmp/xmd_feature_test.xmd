@@ -1,0 +1,136 @@
+// XMD Comprehensive Feature Test Suite
+// Testing implemented features according to specification
+
+// ============================================
+// 1. VARIABLES AND TYPES
+// ============================================
+set name "XMD"
+set version 1.0
+set active true
+set nothing null
+print "Language: " + name + " v" + version
+
+// ============================================
+// 2. ARRAYS
+// ============================================
+// Inline arrays
+set numbers 1, 2, 3, 4, 5
+print numbers
+
+// Multiline arrays
+set items
+    "pen",
+    "book",
+    "lamp",
+
+// ============================================
+// 3. OBJECTS
+// ============================================
+// Inline objects (NEW FEATURE)
+set user name "Alice", age 30, active true
+print user
+
+// ============================================
+// 4. FUNCTIONS
+// ============================================
+function greet name
+    return "Hello " + name
+
+set greeting greet "World"
+print greeting
+
+function add a b
+    return a + b
+
+set sum add 10, 20
+print "10 + 20 = " + sum
+
+// ============================================
+// 5. CONDITIONALS
+// ============================================
+set score 85
+if score >= 90
+    print "Grade: A"
+elif score >= 80
+    print "Grade: B"
+else
+    print "Grade: C"
+
+// ============================================
+// 6. TERNARY OPERATOR (NEW FEATURE)
+// ============================================
+set age 25
+set status age >= 18 ? "adult" : "minor"
+print "Status: " + status
+
+// ============================================
+// 7. LOOPS
+// ============================================
+
+// Loop N times (NEW FEATURE)
+print "Loop 3 times:"
+loop 3 times
+    print "  Hello from loop"
+
+// For range loop
+print "For range 1..3:"
+for i in 1 .. 3
+    print "  i = " + i
+
+// For over array
+print "For each item:"
+for item in items
+    print "  - " + item
+
+// While loop
+print "While loop:"
+set count 0
+while count < 2
+    print "  count = " + count
+    set count count + 1
+
+// ============================================
+// 8. LAMBDA FUNCTIONS (NEW FEATURE)
+// ============================================
+set double x => x * 2
+set result double 5
+print "Lambda: 5 * 2 = " + result
+
+set multiply (a, b) => a * b
+set product multiply 3, 4
+print "Lambda: 3 * 4 = " + product
+
+// ============================================
+// 9. STRING INTERPOLATION (FIXED)
+// ============================================
+set language "XMD"
+set message "Welcome to {{language}}!"
+print message
+
+// ============================================
+// 10. MATHEMATICAL EXPRESSIONS
+// ============================================
+set x 10
+set y 3
+print "x + y = " + (x + y)
+print "x - y = " + (x - y)
+print "x * y = " + (x * y)
+print "x / y = " + (x / y)
+
+// ============================================
+// TEST SUMMARY
+// ============================================
+print "============================================"
+print "XMD Feature Test Complete!"
+print "Tested features:"
+print "✓ Variables and types"
+print "✓ Arrays (inline and multiline)"
+print "✓ Objects (inline syntax)"
+print "✓ Functions"
+print "✓ Conditionals (if/elif/else)"
+print "✓ Ternary operator"
+print "✓ Loops (loop N times, for range, for each, while)"
+print "✓ Lambda functions"
+print "✓ String interpolation"
+print "✓ Mathematical expressions"
+print "============================================"

@@ -5,7 +5,7 @@
  */
 
 #include "../../../../include/platform_internal.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/validation_macros.h"
 /**
  * @brief Get current process memory usage
  * @return Memory usage in bytes

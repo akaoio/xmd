@@ -15,8 +15,8 @@
 #include "ast_node.h"
 #include "ast_parser.h"
 #include "utils.h"
-#include "../../../../../utils/common/common_macros.h"
-#include "../../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 /**
  * @brief Parse if-then single line (Genesis syntax)
  * @param pos Pointer to current position

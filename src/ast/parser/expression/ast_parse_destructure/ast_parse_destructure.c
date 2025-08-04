@@ -13,7 +13,7 @@
 #include <ctype.h>
 #include "ast.h"
 #include "ast_parser.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Parse destructuring assignment
@@ -55,7 +55,7 @@ ast_node* ast_parse_destructure(const char** pos) {
     
     // Create identifier for source
     size_t source_len = *pos - source_start;
-    char* source_name = XMD_MALLOC(source_len + 1);
+    char* source_name = xmd_malloc(source_len + 1);
     if (!source_name) return NULL;
     
     strncpy(source_name, source_start, source_len);
@@ -78,7 +78,7 @@ ast_node* ast_parse_destructure(const char** pos) {
     char* rest_name = NULL;
     bool is_object = false;
     
-    target_names = XMD_MALLOC(target_capacity * sizeof(char*));
+    target_names = xmd_malloc(target_capacity * sizeof(char*));
     if (!target_names) {
         ast_free(source_expr);
         return NULL;
@@ -103,7 +103,7 @@ ast_node* ast_parse_destructure(const char** pos) {
             
             if (*pos > rest_start) {
                 size_t rest_len = *pos - rest_start;
-                rest_name = XMD_MALLOC(rest_len + 1);
+                rest_name = xmd_malloc(rest_len + 1);
                 if (rest_name) {
                     strncpy(rest_name, rest_start, rest_len);
                     rest_name[rest_len] = '\0';
@@ -122,7 +122,7 @@ ast_node* ast_parse_destructure(const char** pos) {
             // Expand array if needed
             if (target_count >= target_capacity) {
                 target_capacity *= 2;
-                char** new_targets = XMD_REALLOC(target_names, target_capacity * sizeof(char*));
+                char** new_targets = xmd_realloc(target_names, target_capacity * sizeof(char*));
                 if (!new_targets) {
                     // Cleanup and return NULL
                     for (size_t i = 0; i < target_count; i++) {
@@ -137,7 +137,7 @@ ast_node* ast_parse_destructure(const char** pos) {
             }
             
             size_t target_len = *pos - target_start;
-            target_names[target_count] = XMD_MALLOC(target_len + 1);
+            target_names[target_count] = xmd_malloc(target_len + 1);
             if (target_names[target_count]) {
                 strncpy(target_names[target_count], target_start, target_len);
                 target_names[target_count][target_len] = '\0';

@@ -1,0 +1,17 @@
+// Test XMD string interpolation with {{variable}} syntax
+set name "Alice"
+set age 30
+set city "Vietnam"
+
+// Test basic interpolation
+print "Hello {{name}}, welcome to XMD!"
+
+// Test multiple variables in one string
+print "{{name}} is {{age}} years old and lives in {{city}}"
+
+// Test with mathematical expression result
+set result 10 + 5
+print "The calculation result is {{result}}"
+
+// Test with missing variable
+print "This variable {{unknown}} should remain as-is"

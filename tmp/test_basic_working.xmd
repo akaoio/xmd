@@ -1,0 +1,24 @@
+// Basic XMD test script for Agent-7842
+// Testing fundamental XMD language features
+
+set name "Agent-7842"
+set message "XMD Build Test"
+print "Hello from " + name
+print message
+
+set x 42
+set y 3.14
+print "Numbers: " + x + " and " + y
+
+set active true
+if active then print "Status: Active"
+
+// Test array
+set items "first", "second", "third"
+print "Items count: " + items.length
+
+// Test simple function
+function greet n
+    return "Hello " + n
+
+print greet("World")

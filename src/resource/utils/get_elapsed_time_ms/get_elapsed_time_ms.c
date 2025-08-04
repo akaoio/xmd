@@ -5,7 +5,7 @@
 
 #include <stdint.h>
 #include "../../../../include/platform.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 long get_elapsed_time_ms(const xmd_time_t* start_time) {
     XMD_VALIDATE_PTRS(0, start_time);
     xmd_time_t current;

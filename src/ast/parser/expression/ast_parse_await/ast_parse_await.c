@@ -10,36 +10,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "ast.h"
-#include "ast_parse.h"
-#include "../../../../../utils/common/validation_macros.h"
+#include "utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Parse await expression
- * @param parser Parser state
+ * @param pos Pointer to current position in input
  * @return AST node or NULL on error
  */
-ast_node* ast_parse_await(parser_state* parser) {
-    XMD_VALIDATE_PARAMS_1(NULL, parser);
+ast_node* ast_parse_await(const char** pos) {
+    XMD_VALIDATE_PARAMS_2(NULL, pos, *pos);
     
-    if (!parser->current_token || parser->current_token->type != TOKEN_KEYWORD ||
-        !STR_EQUALS(parser->current_token->value, "await")) {
+    const char* start = *pos;
+    
+    // Check for 'await' keyword
+    if (strncmp(start, "await", 5) != 0 || (start[5] && !isspace(start[5]))) {
         return NULL;
     }
     
-    source_location loc = {
-        .line = parser->current_token->line,
-        .column = parser->current_token->column,
-        .filename = parser->filename  
-    };
+    // Skip 'await' keyword
+    *pos += 5;
+    while (**pos && isspace(**pos)) (*pos)++;
     
-    // Consume 'await' keyword
-    parser->current_token = parser->current_token->next;
+    source_location loc = {1, start - *pos, "input"};
     
     // Parse expression to await
-    ast_node* expression = ast_parse_expression(&parser);
+    ast_node* expression = ast_parse_expression(pos);
     if (!expression) {
-        XMD_ERROR_RETURN(NULL, "Expected expression after 'await'%s", "");
+        return NULL;
     }
     
     return ast_create_await(expression, loc);

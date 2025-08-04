@@ -13,7 +13,7 @@
 #include "../../../../include/dependency.h"
 #include "../../../../include/dependency_graph_internal.h"
 #include "../../../../include/utils.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Perform topological sort on dependency graph
  * @param graph Dependency graph

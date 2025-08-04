@@ -12,7 +12,7 @@
 #include "../../../../include/variable.h"
 #include "../../../../include/variable_internal.h"
 #include "../../../../include/utils.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Add item to array variable

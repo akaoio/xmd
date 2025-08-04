@@ -14,7 +14,7 @@
 #include "../../../../include/variable.h"
 #include "../../../../include/variable_internal.h"
 #include "../../../../include/utils.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Get all object keys

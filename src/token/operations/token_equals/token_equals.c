@@ -12,6 +12,7 @@
 #include "performance.h"
 #include "token.h"
 #include "variable.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Check if two tokens are equal
  * @param tok1 First token

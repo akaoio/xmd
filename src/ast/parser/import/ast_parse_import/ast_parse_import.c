@@ -13,6 +13,7 @@
 #include <ctype.h>
 #include "ast_parser.h"
 #include "ast_node.h"
+#include "ast.h"
 #include "utils.h"
 #include "utils/common/common_macros.h"
 #include "utils/common/validation_macros.h"

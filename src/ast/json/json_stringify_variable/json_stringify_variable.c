@@ -14,8 +14,8 @@
 #include "store.h"
 #include "variable.h"
 #include "utils.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "../../../utils/common/common_macros.h"
+#include "../../../utils/common/validation_macros.h"
 
 // Forward declaration for json_escape_string
 extern char* json_escape_string(const char* str);

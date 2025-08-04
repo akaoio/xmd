@@ -11,7 +11,7 @@
 #include "ast.h"
 #include "utils.h"
 #include "../../../utils/common/common_macros.h"
-#include "../../../utils/common/validation_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Create throw statement AST node

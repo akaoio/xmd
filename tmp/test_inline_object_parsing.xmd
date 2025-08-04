@@ -1,0 +1,16 @@
+// Test inline object parsing implementation
+
+// Test basic inline object creation 
+set user name "Alice", age 30, active true
+
+// Test another inline object
+set config debug true, retries 3, timeout 1000
+
+// Print the objects to verify they were created properly
+print "User name: {{user.name}}"
+print "User age: {{user.age}}"  
+print "User active: {{user.active}}"
+
+print "Config debug: {{config.debug}}"
+print "Config retries: {{config.retries}}"
+print "Config timeout: {{config.timeout}}"

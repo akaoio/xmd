@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ast.h"
-#include "../../../utils/common/validation_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Create for range loop AST node (for i in 1..5)
@@ -26,8 +26,14 @@ ast_node* ast_create_for_range(const char* variable, ast_node* start_expr, ast_n
     XMD_VALIDATE_PTRS(NULL, variable, start_expr);
     XMD_VALIDATE_PTRS(NULL, end_expr, body);
     
-    XMD_ALLOC_CHECK(node, ast_node);
-    XMD_STRDUP_CHECK(node->data.for_range.variable, variable);
+    ast_node* node = xmd_malloc(sizeof(ast_node));
+    if (!node) return NULL;
+    
+    node->data.for_range.variable = xmd_strdup(variable);
+    if (!node->data.for_range.variable) {
+        XMD_FREE_SAFE(node);
+        return NULL;
+    }
     
     node->type = AST_FOR_RANGE;
     node->location = loc;

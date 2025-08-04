@@ -12,7 +12,7 @@
 #include <pthread.h>
 #include "../../../../include/auditor_internal.h"
 #include "../../../../include/utils.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Initialize security audit system
  * @param log_file Path to audit log file

@@ -12,8 +12,8 @@
 #include <string.h>
 #include <ctype.h>
 #include "ast.h"
-#include "../../../../utils/common/common_macros.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/common_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Parse yield statement

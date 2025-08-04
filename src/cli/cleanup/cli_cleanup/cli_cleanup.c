@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Cleanup CLI system

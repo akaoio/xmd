@@ -21,7 +21,7 @@
 // }
 
 /**
- * @brief Interpolate variables in a string containing ${var} patterns
+ * @brief Interpolate variables in a string containing {{var}} patterns (XMD syntax)
  * @param str String with potential variable interpolations
  * @param evaluator Evaluator context with variables store
  * @return New string with variables substituted (must be freed)
@@ -42,10 +42,10 @@ char* ast_interpolate_string(const char* str, ast_evaluator* evaluator) {
     const char* pos = str;
     
     while (*pos) {
-        if (pos[0] == '$' && pos[1] == '{') {
-            // Find closing }
+        if (pos[0] == '{' && pos[1] == '{') {
+            // Find closing }}
             const char* var_start = pos + 2;
-            const char* var_end = strchr(var_start, '}');
+            const char* var_end = strstr(var_start, "}}");
             
             if (var_end) {
                 // Extract variable name
@@ -64,12 +64,12 @@ char* ast_interpolate_string(const char* str, ast_evaluator* evaluator) {
                         XMD_FREE_SAFE(var_value);
                     }
                 } else {
-                    // Keep original ${var} if not found
-                    total_size += var_len + 3; // ${}
+                    // Keep original {{var}} if not found
+                    total_size += var_len + 4; // {{}}
                 }
                 
                 XMD_FREE_SAFE(var_name);
-                pos = var_end + 1;
+                pos = var_end + 2; // Skip both closing braces
             } else {
                 // No closing }, treat as regular text
                 total_size++;
@@ -90,10 +90,10 @@ char* ast_interpolate_string(const char* str, ast_evaluator* evaluator) {
     char* out = result;
     
     while (*pos) {
-        if (pos[0] == '$' && pos[1] == '{') {
-            // Find closing }
+        if (pos[0] == '{' && pos[1] == '{') {
+            // Find closing }}
             const char* var_start = pos + 2;
-            const char* var_end = strchr(var_start, '}');
+            const char* var_end = strstr(var_start, "}}");
             
             if (var_end) {
                 // Extract variable name
@@ -111,18 +111,26 @@ char* ast_interpolate_string(const char* str, ast_evaluator* evaluator) {
                 if (var) {
                     char* var_value = variable_to_string(var);
                     if (var_value) {
-                        strcpy(out, var_value);
-                        out += strlen(var_value);
+                        size_t var_value_len = strlen(var_value);
+                        size_t remaining_space = (result + total_size) - out;
+                        if (var_value_len < remaining_space) {
+                            memcpy(out, var_value, var_value_len);
+                            out += var_value_len;
+                        }
                         XMD_FREE_SAFE(var_value);
                     }
                 } else {
-                    // Keep original ${var} if not found
-                    sprintf(out, "${%s}", var_name);
-                    out += var_len + 3;
+                    // Keep original {{var}} if not found
+                    size_t remaining_space = (result + total_size) - out;
+                    size_t needed = var_len + 4; // {{}}
+                    if (needed < remaining_space) {
+                        snprintf(out, remaining_space, "{{%s}}", var_name);
+                        out += needed;
+                    }
                 }
                 
                 XMD_FREE_SAFE(var_name);
-                pos = var_end + 1;
+                pos = var_end + 2; // Skip both closing braces
             } else {
                 // No closing }, treat as regular text
                 *out++ = *pos++;

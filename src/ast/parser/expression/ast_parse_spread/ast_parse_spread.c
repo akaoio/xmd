@@ -13,7 +13,7 @@
 #include <ctype.h>
 #include "ast.h"
 #include "ast_parser.h"
-#include "../../../../utils/common/validation_macros.h"
+#include "utils/common/validation_macros.h"
 
 /**
  * @brief Parse spread operator
@@ -54,7 +54,7 @@ ast_node* ast_parse_spread(const char** pos) {
     
     // Create identifier for the expression to spread
     size_t expr_len = *pos - expr_start;
-    char* expr_name = XMD_MALLOC(expr_len + 1);
+    char* expr_name = xmd_malloc(expr_len + 1);
     if (!expr_name) return NULL;
     
     strncpy(expr_name, expr_start, expr_len);

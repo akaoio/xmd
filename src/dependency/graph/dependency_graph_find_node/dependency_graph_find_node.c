@@ -10,7 +10,7 @@
 
 #include <string.h>
 #include "../../../../include/dependency.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Find node by module name
  * @param graph Dependency graph

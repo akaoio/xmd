@@ -14,7 +14,7 @@
 #include "ast.h"
 #include "variable.h"
 #include "utils.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 /**
  * @brief Convert AST value to variable
  * @param value AST value to convert

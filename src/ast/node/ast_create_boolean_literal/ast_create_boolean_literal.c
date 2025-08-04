@@ -9,7 +9,6 @@
 
 #include "ast_node.h"
 #include "utils.h"
-#include "utils/common/common_macros.h"
 #include "utils/common/validation_macros.h"
 
 /**

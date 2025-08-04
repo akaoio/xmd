@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include "../../../../include/performance_internal.h"
 #include "../../../../include/utils.h"
-#include "../../../../utils/common/common_macros.h"
+#include "utils/common/common_macros.h"
 
 /**
  * @brief Generate benchmark report
